@@ -22,6 +22,7 @@ dev = [
     "pytest-cov",
     "nbproject_test",
     "lamindb-setup",
+    "lamin_logger",
 ]
 
 [tool.pytest.ini_options]
