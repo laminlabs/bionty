@@ -1,16 +1,83 @@
-"""Basic biological entities.
+"""Registries for basic biological entities, coupled to public ontologies.
+
+Features
+========
+
+- Create records from entries in public ontologies using `.from_public()`.
+- Access full underlying public ontologies via `.public()` to search & bulk-create records.
+- Create in-house ontologies by using hierarchical relationships among records (`.parents`).
+- Use `.synonyms` and `.abbr` to manage synonyms.
+
+All registries inherit from :class:`~lamindb.dev.CanValidate` &
+:class:`~lamindb.dev.HasParents` to curate, validate & annotate data, and from
+:class:`~lamindb.dev.Registry` for query & search.
+
+.. dropdown:: How to ensure reproducibility across different versions of public ontologies?
+
+   It's important to track versions of external data dependencies.
+
+   `bionty` manages it under the hood:
+
+   - Versions of public databases are auto-tracked in :class:`PublicSource`.
+   - Records are indexed by universal ids, created by hashing `name` & `ontology_id` for portability across databases.
+
+.. note::
+
+   Read the guides:
+
+   - :doc:`/bio-registries`
+   - :doc:`/validate`
+
+   For more background on how public ontologies are accessed, see the utility
+   library `Bionty-base <https://lamin.ai/docs/bionty-base>`__.
+
+API
+===
 
 Import the package::
 
-   import bionty
+   import bionty as bt
 
-This is the complete API reference:
+Basic biological registries:
 
 .. autosummary::
    :toctree: .
 
-   example_function
-   ExampleClass
+   Organism
+   Gene
+   Protein
+   CellMarker
+   CellType
+   CellLine
+   Tissue
+   Disease
+   Pathway
+   Phenotype
+   ExperimentalFactor
+   DevelopmentalStage
+   Ethnicity
+
+Settings:
+
+.. autosummary::
+   :toctree: .
+
+   settings
+
+Public ontology versions:
+
+.. autosummary::
+   :toctree: .
+
+   PublicSource
+
+Developer API:
+
+.. autosummary::
+   :toctree: .
+
+   dev
+   ids
 """
 
 __version__ = "0.40.0"
@@ -52,5 +119,6 @@ if _INSTANCE_SETUP:
         Protein,
         PublicSource,
         Tissue,
+        dev,
     )
     from lnschema_bionty.dev._settings import settings
