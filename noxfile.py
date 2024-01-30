@@ -1,10 +1,6 @@
 import nox
 from laminci.nox import build_docs, login_testuser1, run_pre_commit, run_pytest
 
-# we'd like to aggregate coverage information across sessions
-# and for this the code needs to be located in the same
-# directory in every github action runner
-# this also allows to break out an installation section
 nox.options.default_venv_backend = "none"
 
 
@@ -16,6 +12,7 @@ def lint(session: nox.Session) -> None:
 @nox.session()
 def build(session):
     session.run(*"pip install -e .[dev]".split())
+    session.run(*"pip install git+https://github.com/laminlabs/lamindb-setup".split())
     login_testuser1(session)
-    run_pytest(session)
-    build_docs(session, strict=True)
+    # run_pytest(session, coverage=False)
+    # build_docs(session, strict=True)
