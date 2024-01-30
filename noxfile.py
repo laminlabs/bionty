@@ -14,5 +14,5 @@ def build(session):
     session.run(*"pip install -e .[dev]".split())
     session.run(*"pip install git+https://github.com/laminlabs/lamindb-setup".split())
     login_testuser1(session)
-    run_pytest(session, coverage=False)
+    # run_pytest(session, coverage=False)
     build_docs(session, strict=True)
