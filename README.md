@@ -1,5 +1,5 @@
 # bionty: Basic biological entities
 
-## Contributing
+bionty is documented & tested within lamindb: github.com/laminlabs/lamindb.
 
-Please run `pre-commit install` and `gitmoji -i` on the CLI before starting to work on this repository!
+See [docs](https://lamin.ai/docs/bionty).
