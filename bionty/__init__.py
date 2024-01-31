@@ -118,7 +118,7 @@ if _INSTANCE_SETUP:
         Protein,
         PublicSource,
         Tissue,
+        settings,
     )
-    from lnschema_bionty.dev._settings import settings
 
     from . import dev
