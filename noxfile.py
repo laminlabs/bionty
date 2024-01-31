@@ -12,14 +12,17 @@ def lint(session: nox.Session) -> None:
 
 @nox.session
 def docs(session: nox.Session):
-    build_docs(session, strict=True)
+    import lamindb_setup as ln_setup
+
+    login_testuser1(session)
+    ln_setup.init(storage="./docsbuild")
+    build_docs(session)
 
 
 @nox.session()
 def build(session):
     session.run(*"pip install -e .[dev]".split())
     session.run(*"pip install git+https://github.com/laminlabs/lamindb-setup".split())
-    login_testuser1(session)
     # run_pytest(session, coverage=False)
     docs(session)
     move_built_docs_to_docs_slash_project_slug()
