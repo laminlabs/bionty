@@ -22,7 +22,7 @@ def docs(session: nox.Session):
 @nox.session()
 def build(session):
     session.run(*"pip install -e .[dev]".split())
-    session.run(*"pip install git+https://github.com/laminlabs/lamindb-setup".split())
+    session.run(*"pip install git+https://github.com/laminlabs/lamindb".split())
     # run_pytest(session, coverage=False)
     docs(session)
     move_built_docs_to_docs_slash_project_slug()
