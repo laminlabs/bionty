@@ -1,6 +1,6 @@
 """Registries for basic biological entities, coupled to public ontologies.
 
-Features
+Overview
 ========
 
 - Create records from entries in public ontologies using `.from_public()`.
@@ -21,15 +21,56 @@ All registries inherit from :class:`~lamindb.dev.CanValidate` &
    - Versions of public databases are auto-tracked in :class:`PublicSource`.
    - Records are indexed by universal ids, created by hashing `name` & `ontology_id` for portability across databases.
 
+Installation
+============
+
+```bash
+pip install 'lamindb[bionty]'
+```
+
+Setup
+=====
+
+```bash
+lamin init --storage <storage_name> --schema bionty
+```
+
+Quickstart
+==========
+
+```python
+import bionty as bt
+
+# Access public ontologies
+genes = bt.Gene.public()
+genes.validate(["BRCA1", "TCF7"], field="symbol")
+
+# Create records from public ontologies
+cell_type = bt.CellType.from_public("CL:0000037")
+# view ontological hierarchy
+cell_type.view_parents()
+
+# Create in-house ontologies
+cell_type_new = bt.CellType(name="my new cell type")
+cell_type_new.save()
+cell_type_new.parents.add(cell_type)
+cell_type_new.view_parents()
+
+# Manage synonyms
+cell_type_new.add_synonyms(["my cell type", "my cell"])
+cell_type_new.set_abbr("MCT")
+```
+
 .. note::
 
    Read the guides:
 
+   - :doc:`/public-ontologies`
    - :doc:`/bio-registries`
    - :doc:`/validate`
 
    For more background on how public ontologies are accessed, see the utility
-   library `Bionty-base <https://lamin.ai/docs/bionty-base>`__.
+   library `bionty-base <https://lamin.ai/docs/bionty-base>`__.
 
 API
 ===
