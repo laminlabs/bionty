@@ -61,7 +61,7 @@ Manage synonyms:
 
    Read the guides:
 
-   - :doc:`/public-ontologies`
+   - {doc}`docs:bio-registries`
    - :doc:`/bio-registries`
    - :doc:`/validate`
 
