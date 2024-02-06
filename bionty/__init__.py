@@ -34,26 +34,33 @@ Setup
 Quickstart
 ==========
 
+Import bionty:
+
 >>> import bionty as bt
 
 Access public ontologies:
+
 >>> genes = bt.Gene.public()
 >>> genes.validate(["BRCA1", "TCF7"], field="symbol")
 
 Create records from public ontologies:
+
 >>> cell_type = bt.CellType.from_public("CL:0000037")
 >>> cell_type.save()
 
 View ontological hierarchy:
+
 >>> cell_type.view_parents()
 
 Create in-house ontologies:
+
 >>> cell_type_new = bt.CellType(name="my new cell type")
 >>> cell_type_new.save()
 >>> cell_type_new.parents.add(cell_type)
 >>> cell_type_new.view_parents()
 
 Manage synonyms:
+
 >>> cell_type_new.add_synonyms(["my cell type", "my cell"])
 >>> cell_type_new.set_abbr("MCT")
 
@@ -61,7 +68,7 @@ Manage synonyms:
 
    Read the guides:
 
-   - {doc}`docs:bio-registries`
+   - `Access public ontologies <https://lamin.ai/docs/public-ontologies>`__
    - :doc:`/bio-registries`
    - :doc:`/validate`
 
