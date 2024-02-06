@@ -24,42 +24,38 @@ All registries inherit from :class:`~lamindb.dev.CanValidate` &
 Installation
 ============
 
-```bash
-pip install 'lamindb[bionty]'
-```
+>>> pip install 'lamindb[bionty]'
 
 Setup
 =====
 
-```bash
-lamin init --storage <storage_name> --schema bionty
-```
+>>> lamin init --storage <storage_name> --schema bionty
 
 Quickstart
 ==========
 
-```python
-import bionty as bt
+>>> import bionty as bt
 
-# Access public ontologies
-genes = bt.Gene.public()
-genes.validate(["BRCA1", "TCF7"], field="symbol")
+Access public ontologies:
+>>> genes = bt.Gene.public()
+>>> genes.validate(["BRCA1", "TCF7"], field="symbol")
 
-# Create records from public ontologies
-cell_type = bt.CellType.from_public("CL:0000037")
-# view ontological hierarchy
-cell_type.view_parents()
+Create records from public ontologies:
+>>> cell_type = bt.CellType.from_public("CL:0000037")
+>>> cell_type.save()
 
-# Create in-house ontologies
-cell_type_new = bt.CellType(name="my new cell type")
-cell_type_new.save()
-cell_type_new.parents.add(cell_type)
-cell_type_new.view_parents()
+View ontological hierarchy:
+>>> cell_type.view_parents()
 
-# Manage synonyms
-cell_type_new.add_synonyms(["my cell type", "my cell"])
-cell_type_new.set_abbr("MCT")
-```
+Create in-house ontologies:
+>>> cell_type_new = bt.CellType(name="my new cell type")
+>>> cell_type_new.save()
+>>> cell_type_new.parents.add(cell_type)
+>>> cell_type_new.view_parents()
+
+Manage synonyms:
+>>> cell_type_new.add_synonyms(["my cell type", "my cell"])
+>>> cell_type_new.set_abbr("MCT")
 
 .. note::
 
