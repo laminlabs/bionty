@@ -8,9 +8,9 @@ Overview
 - Create in-house ontologies by using hierarchical relationships among records (`.parents`).
 - Use `.synonyms` and `.abbr` to manage synonyms.
 
-All registries inherit from :class:`~lamindb.dev.CanValidate` &
-:class:`~lamindb.dev.HasParents` to curate, validate & annotate data, and from
-:class:`~lamindb.dev.Registry` for query & search.
+All registries inherit from :class:`~lamindb.core.CanValidate` &
+:class:`~lamindb.core.HasParents` to curate, validate & annotate data, and from
+:class:`~lamindb.core.Registry` for query & search.
 
 .. dropdown:: How to ensure reproducibility across different versions of public ontologies?
 
