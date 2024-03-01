@@ -123,7 +123,7 @@ Developer API:
    dev
 """
 
-__version__ = "0.40.3"
+__version__ = "0.41.0"
 
 from lamindb_setup import _check_instance_setup
 from lamindb_setup._check_instance_setup import _INSTANCE_NOT_SETUP_WARNING
