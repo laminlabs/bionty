@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Version
 --- | --- | --- | --- | ---
+🏗️ Enable `ln.connect()` in lamindb | [9](https://github.com/laminlabs/bionty/pull/9) | [falexwolf](https://github.com/falexwolf) | 2024-03-07 |
 🚚 Rename dev to core | [8](https://github.com/laminlabs/bionty/pull/8) | [falexwolf](https://github.com/falexwolf) | 2024-02-29 |
 📝 Updated landing page | [7](https://github.com/laminlabs/bionty/pull/7) | [sunnyosun](https://github.com/sunnyosun) | 2024-02-06 |
 💚 Fix docs | [6](https://github.com/laminlabs/bionty/pull/6) | [sunnyosun](https://github.com/sunnyosun) | 2024-01-31 |
