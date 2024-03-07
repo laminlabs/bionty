@@ -125,11 +125,15 @@ Developer API:
 
 __version__ = "0.41.0"
 
-from lamindb_setup import _check_instance_setup
+import lamindb_setup as _lamindb_setup
+from lamindb_setup import _check_instance_setup, _check_setup
 from lamindb_setup._check_setup import _INSTANCE_NOT_SETUP_WARNING
 from lnschema_bionty import ids
 
-_INSTANCE_SETUP = _check_instance_setup(from_lamindb=True)
+if _lamindb_setup.settings.auto_connect:
+    _INSTANCE_SETUP = _check_instance_setup(from_lamindb=True)
+else:
+    _INSTANCE_SETUP = _check_setup._LAMINDB_CONNECTED_TO is not None
 
 
 class InstanceNotSetupError(Exception):
