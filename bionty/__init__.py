@@ -126,7 +126,7 @@ Developer API:
 __version__ = "0.41.0"
 
 from lamindb_setup import _check_instance_setup
-from lamindb_setup._check_instance_setup import _INSTANCE_NOT_SETUP_WARNING
+from lamindb_setup._check_setup import _INSTANCE_NOT_SETUP_WARNING
 from lnschema_bionty import ids
 
 _INSTANCE_SETUP = _check_instance_setup(from_lamindb=True)
