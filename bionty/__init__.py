@@ -125,30 +125,15 @@ Developer API:
 
 __version__ = "0.41.1"
 
-import lamindb_setup as _lamindb_setup
-from lamindb_setup import _check_instance_setup, _check_setup
-from lamindb_setup._check_setup import _INSTANCE_NOT_SETUP_WARNING
+from lamindb_setup._check_setup import InstanceNotSetupError, _check_instance_setup
 from lnschema_bionty import ids
-
-if _lamindb_setup.settings.auto_connect:
-    _INSTANCE_SETUP = _check_instance_setup(from_lamindb=True)
-else:
-    _INSTANCE_SETUP = _check_setup._LAMINDB_CONNECTED_TO is not None
-
-
-class InstanceNotSetupError(Exception):
-    pass
 
 
 def __getattr__(name):
-    raise InstanceNotSetupError(
-        f"{_INSTANCE_NOT_SETUP_WARNING}If you used the CLI to init or load an instance,"
-        " please RESTART the python session (in a notebook, restart kernel)"
-    )
+    raise InstanceNotSetupError()
 
 
-# only import all other functionality if setup was successful
-if _INSTANCE_SETUP:
+if _check_instance_setup(from_lamindb=True):
     del InstanceNotSetupError
     del __getattr__  # delete so that imports work out
     from lnschema_bionty import (
