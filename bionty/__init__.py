@@ -123,7 +123,7 @@ Developer API:
    dev
 """
 
-__version__ = "0.41.1"
+__version__ = "0.42.0"
 
 from lamindb_setup._check_setup import InstanceNotSetupError, _check_instance_setup
 from lnschema_bionty import ids
