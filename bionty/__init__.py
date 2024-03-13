@@ -120,7 +120,7 @@ Developer API:
 .. autosummary::
    :toctree: .
 
-   dev
+   core
 """
 
 __version__ = "0.42.0"
@@ -154,4 +154,4 @@ if _check_instance_setup(from_lamindb=True):
         settings,
     )
 
-    from . import dev
+    from . import core
