@@ -3,7 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Version
 --- | --- | --- | --- | ---
-🚚 Rename dev to core | [13](https://github.com/laminlabs/bionty/pull/13) | [sunnyosun](https://github.com/sunnyosun) | 2024-03-13 |
+🚚 Rename dev to core | [13](https://github.com/laminlabs/bionty/pull/13) | [sunnyosun](https://github.com/sunnyosun) | 2024-03-13 | 0.42.1
 ♻️ Simplify init | [12](https://github.com/laminlabs/bionty/pull/12) | [falexwolf](https://github.com/falexwolf) | 2024-03-08 | 0.42.0
 🚑️ Fix reload | [11](https://github.com/laminlabs/bionty/pull/11) | [sunnyosun](https://github.com/sunnyosun) | 2024-03-07 |
 🏗️ Enable `ln.connect()` in lamindb | [9](https://github.com/laminlabs/bionty/pull/9) | [falexwolf](https://github.com/falexwolf) | 2024-03-07 |
