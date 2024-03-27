@@ -3,7 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Version
 --- | --- | --- | --- | ---
-🔇 Remove py warning | [14](https://github.com/laminlabs/bionty/pull/14) | [sunnyosun](https://github.com/sunnyosun) | 2024-03-27 |
+🔇 Remove py warning | [14](https://github.com/laminlabs/bionty/pull/14) | [sunnyosun](https://github.com/sunnyosun) | 2024-03-27 | 0.42.4
 🚚 Rename dev to core | [13](https://github.com/laminlabs/bionty/pull/13) | [sunnyosun](https://github.com/sunnyosun) | 2024-03-13 | 0.42.1
 ♻️ Simplify init | [12](https://github.com/laminlabs/bionty/pull/12) | [falexwolf](https://github.com/falexwolf) | 2024-03-08 | 0.42.0
 🚑️ Fix reload | [11](https://github.com/laminlabs/bionty/pull/11) | [sunnyosun](https://github.com/sunnyosun) | 2024-03-07 |
