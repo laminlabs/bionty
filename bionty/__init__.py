@@ -9,7 +9,7 @@ Overview
 - Use `.synonyms` and `.abbr` to manage synonyms.
 
 All registries inherit from :class:`~lamindb.core.CanValidate` &
-:class:`~lamindb.core.HasParents` to curate, validate & annotate data, and from
+:class:`~lamindb.core.HasParents` to standardize, validate & annotate data, and from
 :class:`~lamindb.core.Registry` for query & search.
 
 .. dropdown:: How to ensure reproducibility across different versions of public ontologies?
