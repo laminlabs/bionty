@@ -45,7 +45,7 @@ Access public ontologies:
 
 Create records from public ontologies:
 
->>> cell_type = bt.CellType.from_public("CL:0000037")
+>>> cell_type = bt.CellType.from_public(ontology_id="CL:0000037")
 >>> cell_type.save()
 
 View ontological hierarchy:
