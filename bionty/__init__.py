@@ -10,7 +10,7 @@ Overview
 
 All registries inherit from :class:`~lamindb.core.CanValidate` &
 :class:`~lamindb.core.HasParents` to standardize, validate & annotate data, and from
-:class:`~lamindb.core.Registry` for query & search.
+:class:`~lamindb.core.Record` for query & search.
 
 .. dropdown:: How to ensure reproducibility across different versions of public ontologies?
 
