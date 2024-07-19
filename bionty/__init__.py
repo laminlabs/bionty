@@ -124,16 +124,18 @@ Developer API:
 
 __version__ = "0.44.1"
 
-from lamindb_setup._check_setup import InstanceNotSetupError, _check_instance_setup
+import lamindb  # this is needed as even the Record base class is defined in lamindb
+from lamindb_setup._check_setup import InstanceNotSetupError as _InstanceNotSetupError
+from lamindb_setup._check_setup import _check_instance_setup
 from lnschema_bionty import ids
 
 
 def __getattr__(name):
-    raise InstanceNotSetupError()
+    raise _InstanceNotSetupError()
 
 
-if _check_instance_setup(from_lamindb=True):
-    del InstanceNotSetupError
+if _check_instance_setup():
+    del _InstanceNotSetupError
     del __getattr__  # delete so that imports work out
     from lnschema_bionty import (
         CellLine,
