@@ -157,6 +157,5 @@ if _check_instance_setup():
 
     from . import core
 
-
-# backward compat
-PublicSource = Source
+    # backward compat
+    PublicSource = Source
