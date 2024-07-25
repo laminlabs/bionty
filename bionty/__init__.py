@@ -112,7 +112,7 @@ Public ontology versions:
 .. autosummary::
    :toctree: .
 
-   PublicSource
+   Source
 
 Developer API:
 
@@ -150,9 +150,13 @@ if _check_instance_setup():
         Pathway,
         Phenotype,
         Protein,
-        PublicSource,
+        Source,
         Tissue,
         settings,
     )
 
     from . import core
+
+
+# backward compat
+PublicSource = Source
