@@ -125,19 +125,28 @@ Developer API:
 __version__ = "0.45.0"
 
 import lamindb  # this is needed as even the Record base class is defined in lamindb
-from lamindb_setup._check_setup import InstanceNotSetupError as _InstanceNotSetupError
+
+# from lamindb_setup._check_setup import InstanceNotSetupError as _InstanceNotSetupError
 from lamindb_setup._check_setup import _check_instance_setup
-from lnschema_bionty import ids
+
+from . import ids
+
+# def __getattr__(name):
+#     raise _InstanceNotSetupError()
 
 
+# trigger instance loading if users
+# want to access attributes
 def __getattr__(name):
-    raise _InstanceNotSetupError()
+    if name not in {"models"}:
+        _check_instance_setup(from_lamindb=True)
+    return globals()[name]
 
 
 if _check_instance_setup():
-    del _InstanceNotSetupError
     del __getattr__  # delete so that imports work out
-    from lnschema_bionty import (
+    from .core._settings import settings
+    from .models import (
         CellLine,
         CellMarker,
         CellType,
@@ -152,10 +161,7 @@ if _check_instance_setup():
         Protein,
         Source,
         Tissue,
-        settings,
     )
-
-    from . import core
 
     # backward compat
     PublicSource = Source
