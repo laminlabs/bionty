@@ -122,7 +122,7 @@ Developer API:
    core
 """
 
-__version__ = "0.44.3"
+__version__ = "0.45.0"
 
 import lamindb  # this is needed as even the Record base class is defined in lamindb
 from lamindb_setup._check_setup import InstanceNotSetupError as _InstanceNotSetupError

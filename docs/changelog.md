@@ -3,7 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Version
 --- | --- | --- | --- | ---
-🚚 Rename PublicSource to Source | [16](https://github.com/laminlabs/bionty/pull/16) | [sunnyosun](https://github.com/sunnyosun) | 2024-07-26 |
+🚚 Rename PublicSource to Source | [16](https://github.com/laminlabs/bionty/pull/16) | [sunnyosun](https://github.com/sunnyosun) | 2024-07-26 | 0.45.0
 ♻️ Rename Registry to Record | [15](https://github.com/laminlabs/bionty/pull/15) | [falexwolf](https://github.com/falexwolf) | 2024-07-17 |
 🔇 Remove py warning | [14](https://github.com/laminlabs/bionty/pull/14) | [sunnyosun](https://github.com/sunnyosun) | 2024-03-27 | 0.42.4
 🚚 Rename dev to core | [13](https://github.com/laminlabs/bionty/pull/13) | [sunnyosun](https://github.com/sunnyosun) | 2024-03-13 | 0.42.1
