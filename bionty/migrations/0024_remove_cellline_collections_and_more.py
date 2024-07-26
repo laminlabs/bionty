@@ -5,7 +5,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("lnschema_bionty", "0023_rename_publicsource_encode_uid"),
+        ("bionty", "0023_rename_publicsource_encode_uid"),
     ]
 
     operations = [

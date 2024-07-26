@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("lnschema_bionty", "0029_alter_cellline_previous_runs_and_more"),
+        ("bionty", "0029_alter_cellline_previous_runs_and_more"),
         ("lnschema_core", "0055_artifact_type_artifactparamvalue_and_more"),
     ]
 

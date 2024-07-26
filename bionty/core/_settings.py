@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from lamin_utils import logger
-from lnschema_bionty.models import Organism
+
+from bionty.models import Organism
 
 
 class Settings:

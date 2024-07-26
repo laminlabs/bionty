@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("lnschema_bionty", "0025_artifactcellline_alter_cellline_artifacts_and_more"),
+        ("bionty", "0025_artifactcellline_alter_cellline_artifacts_and_more"),
     ]
 
     operations = [
@@ -155,7 +155,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="artifact_links",
-                to="lnschema_bionty.cellline",
+                to="bionty.cellline",
             ),
         ),
         migrations.AlterField(
@@ -184,7 +184,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="artifact_links",
-                to="lnschema_bionty.cellmarker",
+                to="bionty.cellmarker",
             ),
         ),
         migrations.AlterField(
@@ -213,7 +213,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="artifact_links",
-                to="lnschema_bionty.celltype",
+                to="bionty.celltype",
             ),
         ),
         migrations.AlterField(
@@ -242,7 +242,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="artifact_links",
-                to="lnschema_bionty.developmentalstage",
+                to="bionty.developmentalstage",
             ),
         ),
         migrations.AlterField(
@@ -271,7 +271,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="artifact_links",
-                to="lnschema_bionty.disease",
+                to="bionty.disease",
             ),
         ),
         migrations.AlterField(
@@ -300,7 +300,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="artifact_links",
-                to="lnschema_bionty.ethnicity",
+                to="bionty.ethnicity",
             ),
         ),
         migrations.AlterField(
@@ -329,7 +329,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="artifact_links",
-                to="lnschema_bionty.experimentalfactor",
+                to="bionty.experimentalfactor",
             ),
         ),
         migrations.AlterField(
@@ -369,7 +369,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="artifact_links",
-                to="lnschema_bionty.gene",
+                to="bionty.gene",
             ),
         ),
         migrations.AlterField(
@@ -398,7 +398,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="artifact_links",
-                to="lnschema_bionty.organism",
+                to="bionty.organism",
             ),
         ),
         migrations.AlterField(
@@ -427,7 +427,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="artifact_links",
-                to="lnschema_bionty.pathway",
+                to="bionty.pathway",
             ),
         ),
         migrations.AlterField(
@@ -456,7 +456,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="artifact_links",
-                to="lnschema_bionty.phenotype",
+                to="bionty.phenotype",
             ),
         ),
         migrations.AlterField(
@@ -485,7 +485,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="artifact_links",
-                to="lnschema_bionty.protein",
+                to="bionty.protein",
             ),
         ),
         migrations.AlterField(
@@ -514,7 +514,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="artifact_links",
-                to="lnschema_bionty.tissue",
+                to="bionty.tissue",
             ),
         ),
     ]

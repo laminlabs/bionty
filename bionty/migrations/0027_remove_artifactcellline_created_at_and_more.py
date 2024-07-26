@@ -7,7 +7,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("lnschema_bionty", "0026_artifactcellline_cell_line_ref_is_name_and_more"),
+        ("bionty", "0026_artifactcellline_cell_line_ref_is_name_and_more"),
     ]
 
     operations = [
@@ -189,7 +189,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="+",
-                        to="lnschema_bionty.cellmarker",
+                        to="bionty.cellmarker",
                     ),
                 ),
                 (
@@ -223,7 +223,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="+",
-                        to="lnschema_bionty.gene",
+                        to="bionty.gene",
                     ),
                 ),
             ],
@@ -249,7 +249,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="+",
-                        to="lnschema_bionty.pathway",
+                        to="bionty.pathway",
                     ),
                 ),
             ],
@@ -275,7 +275,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="+",
-                        to="lnschema_bionty.protein",
+                        to="bionty.protein",
                     ),
                 ),
             ],
@@ -286,30 +286,30 @@ class Migration(migrations.Migration):
         ),
         migrations.RunSQL(
             """
-            INSERT INTO lnschema_bionty_featuresetgene (featureset_id, gene_id)
+            INSERT INTO bionty_featuresetgene (featureset_id, gene_id)
             SELECT featureset_id, gene_id
-            FROM lnschema_bionty_gene_feature_sets;
+            FROM bionty_gene_feature_sets;
             """
         ),
         migrations.RunSQL(
             """
-            INSERT INTO lnschema_bionty_featuresetprotein (featureset_id, protein_id)
+            INSERT INTO bionty_featuresetprotein (featureset_id, protein_id)
             SELECT featureset_id, protein_id
-            FROM lnschema_bionty_protein_feature_sets;
+            FROM bionty_protein_feature_sets;
             """
         ),
         migrations.RunSQL(
             """
-            INSERT INTO lnschema_bionty_featuresetcellmarker (featureset_id, cellmarker_id)
+            INSERT INTO bionty_featuresetcellmarker (featureset_id, cellmarker_id)
             SELECT featureset_id, cellmarker_id
-            FROM lnschema_bionty_cellmarker_feature_sets;
+            FROM bionty_cellmarker_feature_sets;
             """
         ),
         migrations.RunSQL(
             """
-            INSERT INTO lnschema_bionty_featuresetpathway (featureset_id, pathway_id)
+            INSERT INTO bionty_featuresetpathway (featureset_id, pathway_id)
             SELECT featureset_id, pathway_id
-            FROM lnschema_bionty_pathway_feature_sets;
+            FROM bionty_pathway_feature_sets;
             """
         ),
         # Remove the old ManyToMany fields and replace them with the new through models
@@ -321,7 +321,7 @@ class Migration(migrations.Migration):
             model_name="gene",
             name="feature_sets",
             field=models.ManyToManyField(
-                through="lnschema_bionty.FeatureSetGene",
+                through="bionty.FeatureSetGene",
                 to="lnschema_core.FeatureSet",
                 related_name="genes",
             ),
@@ -334,7 +334,7 @@ class Migration(migrations.Migration):
             model_name="protein",
             name="feature_sets",
             field=models.ManyToManyField(
-                through="lnschema_bionty.FeatureSetProtein",
+                through="bionty.FeatureSetProtein",
                 to="lnschema_core.FeatureSet",
                 related_name="proteins",
             ),
@@ -347,7 +347,7 @@ class Migration(migrations.Migration):
             model_name="cellmarker",
             name="feature_sets",
             field=models.ManyToManyField(
-                through="lnschema_bionty.FeatureSetCellMarker",
+                through="bionty.FeatureSetCellMarker",
                 to="lnschema_core.FeatureSet",
                 related_name="cell_markers",
             ),
@@ -360,7 +360,7 @@ class Migration(migrations.Migration):
             model_name="pathway",
             name="feature_sets",
             field=models.ManyToManyField(
-                through="lnschema_bionty.FeatureSetPathway",
+                through="bionty.FeatureSetPathway",
                 to="lnschema_core.FeatureSet",
                 related_name="pathways",
             ),

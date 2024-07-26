@@ -24,7 +24,7 @@ def create_or_get_organism_record(
         if isinstance(organism, Record):
             organism_record = organism
         elif isinstance(organism, str):
-            from lnschema_bionty import Organism
+            from .models import Organism
 
             try:
                 # existing organism record

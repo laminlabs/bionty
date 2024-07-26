@@ -8,7 +8,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("lnschema_bionty", "0024_remove_cellline_collections_and_more"),
+        ("bionty", "0024_remove_cellline_collections_and_more"),
     ]
 
     operations = [
@@ -50,9 +50,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "organism",
-                    models.ForeignKey(
-                        on_delete=models.CASCADE, to="lnschema_bionty.Organism"
-                    ),
+                    models.ForeignKey(on_delete=models.CASCADE, to="bionty.Organism"),
                 ),
             ],
         ),
@@ -94,9 +92,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "gene",
-                    models.ForeignKey(
-                        on_delete=models.CASCADE, to="lnschema_bionty.Gene"
-                    ),
+                    models.ForeignKey(on_delete=models.CASCADE, to="bionty.Gene"),
                 ),
             ],
         ),
@@ -138,9 +134,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "protein",
-                    models.ForeignKey(
-                        on_delete=models.CASCADE, to="lnschema_bionty.Protein"
-                    ),
+                    models.ForeignKey(on_delete=models.CASCADE, to="bionty.Protein"),
                 ),
             ],
         ),
@@ -182,9 +176,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "cell_marker",
-                    models.ForeignKey(
-                        on_delete=models.CASCADE, to="lnschema_bionty.CellMarker"
-                    ),
+                    models.ForeignKey(on_delete=models.CASCADE, to="bionty.CellMarker"),
                 ),
             ],
         ),
@@ -226,9 +218,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "tissue",
-                    models.ForeignKey(
-                        on_delete=models.CASCADE, to="lnschema_bionty.Tissue"
-                    ),
+                    models.ForeignKey(on_delete=models.CASCADE, to="bionty.Tissue"),
                 ),
             ],
         ),
@@ -270,9 +260,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "cell_type",
-                    models.ForeignKey(
-                        on_delete=models.CASCADE, to="lnschema_bionty.CellType"
-                    ),
+                    models.ForeignKey(on_delete=models.CASCADE, to="bionty.CellType"),
                 ),
             ],
         ),
@@ -314,9 +302,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "disease",
-                    models.ForeignKey(
-                        on_delete=models.CASCADE, to="lnschema_bionty.Disease"
-                    ),
+                    models.ForeignKey(on_delete=models.CASCADE, to="bionty.Disease"),
                 ),
             ],
         ),
@@ -358,9 +344,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "cell_line",
-                    models.ForeignKey(
-                        on_delete=models.CASCADE, to="lnschema_bionty.CellLine"
-                    ),
+                    models.ForeignKey(on_delete=models.CASCADE, to="bionty.CellLine"),
                 ),
             ],
         ),
@@ -402,9 +386,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "phenotype",
-                    models.ForeignKey(
-                        on_delete=models.CASCADE, to="lnschema_bionty.Phenotype"
-                    ),
+                    models.ForeignKey(on_delete=models.CASCADE, to="bionty.Phenotype"),
                 ),
             ],
         ),
@@ -446,9 +428,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "pathway",
-                    models.ForeignKey(
-                        on_delete=models.CASCADE, to="lnschema_bionty.Pathway"
-                    ),
+                    models.ForeignKey(on_delete=models.CASCADE, to="bionty.Pathway"),
                 ),
             ],
         ),
@@ -492,7 +472,7 @@ class Migration(migrations.Migration):
                     "experimental_factor",
                     models.ForeignKey(
                         on_delete=models.CASCADE,
-                        to="lnschema_bionty.ExperimentalFactor",
+                        to="bionty.ExperimentalFactor",
                     ),
                 ),
             ],
@@ -537,7 +517,7 @@ class Migration(migrations.Migration):
                     "developmental_stage",
                     models.ForeignKey(
                         on_delete=models.CASCADE,
-                        to="lnschema_bionty.DevelopmentalStage",
+                        to="bionty.DevelopmentalStage",
                     ),
                 ),
             ],
@@ -580,102 +560,100 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "ethnicity",
-                    models.ForeignKey(
-                        on_delete=models.CASCADE, to="lnschema_bionty.Ethnicity"
-                    ),
+                    models.ForeignKey(on_delete=models.CASCADE, to="bionty.Ethnicity"),
                 ),
             ],
         ),
         # Insert data into the new through models
         migrations.RunSQL(
             f"""
-            INSERT INTO lnschema_bionty_artifactorganism (artifact_id, organism_id, feature_id, created_by_id, created_at)
+            INSERT INTO bionty_artifactorganism (artifact_id, organism_id, feature_id, created_by_id, created_at)
             SELECT artifact_id, organism_id, NULL, {1}, CURRENT_TIMESTAMP
-            FROM lnschema_bionty_organism_artifacts;
+            FROM bionty_organism_artifacts;
             """  # Replace with appropriate user_id logic
         ),
         migrations.RunSQL(
             f"""
-            INSERT INTO lnschema_bionty_artifactgene (artifact_id, gene_id, feature_id, created_by_id, created_at)
+            INSERT INTO bionty_artifactgene (artifact_id, gene_id, feature_id, created_by_id, created_at)
             SELECT artifact_id, gene_id, NULL, {1}, CURRENT_TIMESTAMP
-            FROM lnschema_bionty_gene_artifacts;
+            FROM bionty_gene_artifacts;
             """  # Replace with appropriate user_id logic
         ),
         migrations.RunSQL(
             f"""
-            INSERT INTO lnschema_bionty_artifactprotein (artifact_id, protein_id, feature_id, created_by_id, created_at)
+            INSERT INTO bionty_artifactprotein (artifact_id, protein_id, feature_id, created_by_id, created_at)
             SELECT artifact_id, protein_id, NULL, {1}, CURRENT_TIMESTAMP
-            FROM lnschema_bionty_protein_artifacts;
+            FROM bionty_protein_artifacts;
             """  # Replace with appropriate user_id logic
         ),
         migrations.RunSQL(
             f"""
-            INSERT INTO lnschema_bionty_artifactcellmarker (artifact_id, cell_marker_id, feature_id, created_by_id, created_at)
+            INSERT INTO bionty_artifactcellmarker (artifact_id, cell_marker_id, feature_id, created_by_id, created_at)
             SELECT artifact_id, cellmarker_id, NULL, {1}, CURRENT_TIMESTAMP
-            FROM lnschema_bionty_cellmarker_artifacts;
+            FROM bionty_cellmarker_artifacts;
             """  # Replace with appropriate user_id logic
         ),
         migrations.RunSQL(
             f"""
-            INSERT INTO lnschema_bionty_artifacttissue (artifact_id, tissue_id, feature_id, created_by_id, created_at)
+            INSERT INTO bionty_artifacttissue (artifact_id, tissue_id, feature_id, created_by_id, created_at)
             SELECT artifact_id, tissue_id, NULL, {1}, CURRENT_TIMESTAMP
-            FROM lnschema_bionty_tissue_artifacts;
+            FROM bionty_tissue_artifacts;
             """  # Replace with appropriate user_id logic
         ),
         migrations.RunSQL(
             f"""
-            INSERT INTO lnschema_bionty_artifactcelltype (artifact_id, cell_type_id, feature_id, created_by_id, created_at)
+            INSERT INTO bionty_artifactcelltype (artifact_id, cell_type_id, feature_id, created_by_id, created_at)
             SELECT artifact_id, celltype_id, NULL, {1}, CURRENT_TIMESTAMP
-            FROM lnschema_bionty_celltype_artifacts;
+            FROM bionty_celltype_artifacts;
             """  # Replace with appropriate user_id logic
         ),
         migrations.RunSQL(
             f"""
-            INSERT INTO lnschema_bionty_artifactdisease (artifact_id, disease_id, feature_id, created_by_id, created_at)
+            INSERT INTO bionty_artifactdisease (artifact_id, disease_id, feature_id, created_by_id, created_at)
             SELECT artifact_id, disease_id, NULL, {1}, CURRENT_TIMESTAMP
-            FROM lnschema_bionty_disease_artifacts;
+            FROM bionty_disease_artifacts;
             """  # Replace with appropriate user_id logic
         ),
         migrations.RunSQL(
             f"""
-            INSERT INTO lnschema_bionty_artifactcellline (artifact_id, cell_line_id, feature_id, created_by_id, created_at)
+            INSERT INTO bionty_artifactcellline (artifact_id, cell_line_id, feature_id, created_by_id, created_at)
             SELECT artifact_id, cellline_id, NULL, {1}, CURRENT_TIMESTAMP
-            FROM lnschema_bionty_cellline_artifacts;
+            FROM bionty_cellline_artifacts;
             """  # Replace with appropriate user_id logic
         ),
         migrations.RunSQL(
             f"""
-            INSERT INTO lnschema_bionty_artifactphenotype (artifact_id, phenotype_id, feature_id, created_by_id, created_at)
+            INSERT INTO bionty_artifactphenotype (artifact_id, phenotype_id, feature_id, created_by_id, created_at)
             SELECT artifact_id, phenotype_id, NULL, {1}, CURRENT_TIMESTAMP
-            FROM lnschema_bionty_phenotype_artifacts;
+            FROM bionty_phenotype_artifacts;
             """  # Replace with appropriate user_id logic
         ),
         migrations.RunSQL(
             f"""
-            INSERT INTO lnschema_bionty_artifactpathway (artifact_id, pathway_id, feature_id, created_by_id, created_at)
+            INSERT INTO bionty_artifactpathway (artifact_id, pathway_id, feature_id, created_by_id, created_at)
             SELECT artifact_id, pathway_id, NULL, {1}, CURRENT_TIMESTAMP
-            FROM lnschema_bionty_pathway_artifacts;
+            FROM bionty_pathway_artifacts;
             """  # Replace with appropriate user_id logic
         ),
         migrations.RunSQL(
             f"""
-            INSERT INTO lnschema_bionty_artifactexperimentalfactor (artifact_id, experimental_factor_id, feature_id, created_by_id, created_at)
+            INSERT INTO bionty_artifactexperimentalfactor (artifact_id, experimental_factor_id, feature_id, created_by_id, created_at)
             SELECT artifact_id, experimentalfactor_id, NULL, {1}, CURRENT_TIMESTAMP
-            FROM lnschema_bionty_experimentalfactor_artifacts;
+            FROM bionty_experimentalfactor_artifacts;
             """  # Replace with appropriate user_id logic
         ),
         migrations.RunSQL(
             f"""
-            INSERT INTO lnschema_bionty_artifactdevelopmentalstage (artifact_id, developmental_stage_id, feature_id, created_by_id, created_at)
+            INSERT INTO bionty_artifactdevelopmentalstage (artifact_id, developmental_stage_id, feature_id, created_by_id, created_at)
             SELECT artifact_id, developmentalstage_id, NULL, {1}, CURRENT_TIMESTAMP
-            FROM lnschema_bionty_developmentalstage_artifacts;
+            FROM bionty_developmentalstage_artifacts;
             """  # Replace with appropriate user_id logic
         ),
         migrations.RunSQL(
             f"""
-            INSERT INTO lnschema_bionty_artifactethnicity (artifact_id, ethnicity_id, feature_id, created_by_id, created_at)
+            INSERT INTO bionty_artifactethnicity (artifact_id, ethnicity_id, feature_id, created_by_id, created_at)
             SELECT artifact_id, ethnicity_id, NULL, {1}, CURRENT_TIMESTAMP
-            FROM lnschema_bionty_ethnicity_artifacts;
+            FROM bionty_ethnicity_artifacts;
             """  # Replace with appropriate user_id logic
         ),
         # Remove the old ManyToMany fields and replace them with the new through models
@@ -687,7 +665,7 @@ class Migration(migrations.Migration):
             model_name="organism",
             name="artifacts",
             field=models.ManyToManyField(
-                through="lnschema_bionty.ArtifactOrganism",
+                through="bionty.ArtifactOrganism",
                 to="lnschema_core.Artifact",
                 related_name="organisms",
             ),
@@ -700,7 +678,7 @@ class Migration(migrations.Migration):
             model_name="gene",
             name="artifacts",
             field=models.ManyToManyField(
-                through="lnschema_bionty.ArtifactGene",
+                through="bionty.ArtifactGene",
                 to="lnschema_core.Artifact",
                 related_name="genes",
             ),
@@ -713,7 +691,7 @@ class Migration(migrations.Migration):
             model_name="protein",
             name="artifacts",
             field=models.ManyToManyField(
-                through="lnschema_bionty.ArtifactProtein",
+                through="bionty.ArtifactProtein",
                 to="lnschema_core.Artifact",
                 related_name="proteins",
             ),
@@ -726,7 +704,7 @@ class Migration(migrations.Migration):
             model_name="cellmarker",
             name="artifacts",
             field=models.ManyToManyField(
-                through="lnschema_bionty.ArtifactCellMarker",
+                through="bionty.ArtifactCellMarker",
                 to="lnschema_core.Artifact",
                 related_name="cell_markers",
             ),
@@ -739,7 +717,7 @@ class Migration(migrations.Migration):
             model_name="tissue",
             name="artifacts",
             field=models.ManyToManyField(
-                through="lnschema_bionty.ArtifactTissue",
+                through="bionty.ArtifactTissue",
                 to="lnschema_core.Artifact",
                 related_name="tissues",
             ),
@@ -752,7 +730,7 @@ class Migration(migrations.Migration):
             model_name="celltype",
             name="artifacts",
             field=models.ManyToManyField(
-                through="lnschema_bionty.ArtifactCellType",
+                through="bionty.ArtifactCellType",
                 to="lnschema_core.Artifact",
                 related_name="cell_types",
             ),
@@ -765,7 +743,7 @@ class Migration(migrations.Migration):
             model_name="disease",
             name="artifacts",
             field=models.ManyToManyField(
-                through="lnschema_bionty.ArtifactDisease",
+                through="bionty.ArtifactDisease",
                 to="lnschema_core.Artifact",
                 related_name="diseases",
             ),
@@ -778,7 +756,7 @@ class Migration(migrations.Migration):
             model_name="cellline",
             name="artifacts",
             field=models.ManyToManyField(
-                through="lnschema_bionty.ArtifactCellLine",
+                through="bionty.ArtifactCellLine",
                 to="lnschema_core.Artifact",
                 related_name="cell_lines",
             ),
@@ -791,7 +769,7 @@ class Migration(migrations.Migration):
             model_name="phenotype",
             name="artifacts",
             field=models.ManyToManyField(
-                through="lnschema_bionty.ArtifactPhenotype",
+                through="bionty.ArtifactPhenotype",
                 to="lnschema_core.Artifact",
                 related_name="phenotypes",
             ),
@@ -804,7 +782,7 @@ class Migration(migrations.Migration):
             model_name="pathway",
             name="artifacts",
             field=models.ManyToManyField(
-                through="lnschema_bionty.ArtifactPathway",
+                through="bionty.ArtifactPathway",
                 to="lnschema_core.Artifact",
                 related_name="pathways",
             ),
@@ -817,7 +795,7 @@ class Migration(migrations.Migration):
             model_name="experimentalfactor",
             name="artifacts",
             field=models.ManyToManyField(
-                through="lnschema_bionty.ArtifactExperimentalFactor",
+                through="bionty.ArtifactExperimentalFactor",
                 to="lnschema_core.Artifact",
                 related_name="experimental_factors",
             ),
@@ -830,7 +808,7 @@ class Migration(migrations.Migration):
             model_name="developmentalstage",
             name="artifacts",
             field=models.ManyToManyField(
-                through="lnschema_bionty.ArtifactDevelopmentalStage",
+                through="bionty.ArtifactDevelopmentalStage",
                 to="lnschema_core.Artifact",
                 related_name="developmental_stages",
             ),
@@ -843,7 +821,7 @@ class Migration(migrations.Migration):
             model_name="ethnicity",
             name="artifacts",
             field=models.ManyToManyField(
-                through="lnschema_bionty.ArtifactEthnicity",
+                through="bionty.ArtifactEthnicity",
                 to="lnschema_core.Artifact",
                 related_name="ethnicities",
             ),

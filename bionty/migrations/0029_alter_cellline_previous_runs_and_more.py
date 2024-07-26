@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("lnschema_bionty", "0028_squashed"),
+        ("bionty", "0028_squashed"),
         ("lnschema_core", "0054_alter_feature_previous_runs_and_more"),
     ]
 

@@ -9,7 +9,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("lnschema_bionty", "0027_remove_artifactcellline_created_at_and_more"),
+        ("bionty", "0027_remove_artifactcellline_created_at_and_more"),
     ]
 
     operations = [

@@ -9,7 +9,7 @@ def sync_all_sources_to_latest():
         >>> from bionty.core import sync_all_sources_to_latest
         >>> sync_all_sources_to_latest()
     """
-    from lnschema_bionty.models import Source
+    from bionty.models import Source
 
     records = Source.filter().all()
     df_sources = bionty_base.display_available_sources().reset_index()
@@ -41,7 +41,7 @@ def set_latest_sources_as_currently_used():
         >>> from bionty.core import set_latest_sources_as_currently_used
         >>> set_latest_sources_as_currently_used()
     """
-    from lnschema_bionty.models import Source
+    from bionty.models import Source
 
     records = Source.filter().all()
     df = records.df()

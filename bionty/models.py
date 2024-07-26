@@ -87,10 +87,10 @@ class BioRecord(Record, HasParents, CanValidate):
         # raise error if no organism is passed
         if hasattr(self.__class__, "organism_id"):
             if kwargs.get("organism") is None and kwargs.get("organism_id") is None:
-                import lnschema_bionty as lb
+                from .core._settings import settings
 
-                if lb.settings.organism is not None:
-                    kwargs["organism"] = lb.settings.organism
+                if settings.organism is not None:
+                    kwargs["organism"] = settings.organism
                 else:
                     raise RuntimeError("please pass a organism!")
             elif kwargs.get("organism") is not None:
@@ -212,11 +212,11 @@ class BioRecord(Record, HasParents, CanValidate):
             source_name = source.source
             version = source.version
         else:
-            import lnschema_bionty as lb
+            from .core._settings import settings
 
             if hasattr(cls, "organism_id"):
-                if organism is None and lb.settings.organism is not None:
-                    organism = lb.settings.organism.name
+                if organism is None and settings.organism is not None:
+                    organism = settings.organism.name
             source_name = None
             version = None
 

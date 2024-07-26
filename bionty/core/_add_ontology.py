@@ -1,8 +1,9 @@
 from typing import Iterable, List, Optional, Set, Type, Union
 
 import pandas as pd
-from lnschema_bionty.models import BioRecord, Source
 from lnschema_core.models import Record
+
+from bionty.models import BioRecord, Source
 
 
 def get_all_ancestors(df: pd.DataFrame, ontology_ids: Iterable[str]) -> Set[str]:
@@ -109,7 +110,8 @@ def add_ontology_from_df(
     ignore_conflicts: bool = True,
 ):
     import lamindb as ln
-    from lnschema_bionty._bionty import get_source_record
+
+    from bionty._bionty import get_source_record
 
     public = registry.public(organism=organism, source=source)
     df_all = prepare_dataframe(public.df())
