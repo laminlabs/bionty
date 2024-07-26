@@ -124,8 +124,6 @@ Developer API:
 
 __version__ = "0.45.0"
 
-import lamindb  # this is needed as even the Record base class is defined in lamindb
-
 # from lamindb_setup._check_setup import InstanceNotSetupError as _InstanceNotSetupError
 from lamindb_setup._check_setup import _check_instance_setup
 
@@ -144,6 +142,8 @@ def __getattr__(name):
 
 
 if _check_instance_setup():
+    import lamindb  # this is needed as even the Record base class is defined in lamindb
+
     del __getattr__  # delete so that imports work out
     from .core._settings import settings
     from .models import (
