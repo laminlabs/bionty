@@ -11,7 +11,8 @@
    set_latest_sources_as_currently_used
 """
 
-from bionty.models import BioRecord, PublicOntology, StaticReference
+from bionty.base import PublicOntology
+from bionty.models import BioRecord, StaticReference
 
 from ._add_ontology import add_ontology
 from ._bionty import (

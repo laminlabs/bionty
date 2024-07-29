@@ -69,7 +69,7 @@ Manage synonyms:
    Read the guides:
 
    - `Access public ontologies <https://lamin.ai/docs/public-ontologies>`__
-   - :doc:`/bio-registries`
+   - :doc:`docs:bio-registries`
 
    For more background on how public ontologies are accessed, see the utility
    library `bionty-base <https://lamin.ai/docs/bionty-base>`__.

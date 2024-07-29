@@ -46,8 +46,8 @@ class BioRecord(Record, HasParents, CanValidate):
     Notes:
         For more info, see tutorials:
 
-        - :doc:`/bionty`
-        - :doc:`bio-registries`
+        - :doc:`docs:bionty`
+        - :doc:`docs:bio-registries`
     """
 
     class Meta:
@@ -236,9 +236,9 @@ class BioRecord(Record, HasParents, CanValidate):
         """Create a record or records from public reference based on a single field value.
 
         Notes:
-            For more info, see tutorial :doc:`/bionty`
+            For more info, see tutorial :doc:`docs:bionty`
 
-            Bulk create protein records via :class:`~lamindb.core.Record.from_values`.
+            Bulk create protein records via :meth:`~docs:lamindb.core.Record.from_values`.
 
         Examples:
             Create a record by passing a field value:
@@ -297,7 +297,7 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
     """Organism - `NCBI Taxonomy <https://www.ncbi.nlm.nih.gov/taxonomy/>`__, `Ensembl Organism <https://useast.ensembl.org/info/about/species.html>`__.
 
     Notes:
-        For more info, see tutorials :doc:`bio-registries` and :doc:`docs:organism`.
+        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:organism`.
 
 
     Examples:
@@ -364,9 +364,9 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
     """Genes - `Ensembl <https://ensembl.org/>`__, `NCBI Gene <https://www.ncbi.nlm.nih.gov/gene/>`__.
 
     Notes:
-        For more info, see tutorials :doc:`bio-registries` and :doc:`docs:gene`.
+        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:gene`.
 
-        Bulk create Gene records via :class:`~lamindb.core.Record.from_values`.
+        Bulk create Gene records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
         >>> record = bionty.Gene.from_public(symbol="TCF7", organism="human")
@@ -449,9 +449,9 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
     """Proteins - `Uniprot <https://www.uniprot.org/>`__.
 
     Notes:
-        For more info, see tutorials :doc:`bio-registries` and :doc:`docs:protein`.
+        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:protein`.
 
-        Bulk create Protein records via :class:`~lamindb.core.Record.from_values`.
+        Bulk create Protein records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
         >>> record = bionty.Protein.from_public(name="Synaptotagmin-15B", organism="human")
@@ -534,9 +534,9 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
     """Cell markers - `CellMarker <http://xteam.xbio.top/CellMarker>`__.
 
     Notes:
-        For more info, see tutorials :doc:`bio-registries` and :doc:`docs:cell_marker`.
+        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:cell_marker`.
 
-        Bulk create CellMarker records via :class:`~lamindb.core.Record.from_values`.
+        Bulk create CellMarker records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
         >>> record = bionty.CellMarker.from_public(name="PD1", organism="human")
@@ -621,9 +621,9 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
     """Tissues - `Uberon <http://obophenotype.github.io/uberon/>`__.
 
     Notes:
-        For more info, see tutorials :doc:`bio-registries` :doc:`docs:tissue`.
+        For more info, see tutorials :doc:`docs:bio-registries` :doc:`docs:tissue`.
 
-        Bulk create Tissue records via :class:`~lamindb.core.Record.from_values`.
+        Bulk create Tissue records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
         >>> record = bionty.Tissue.from_public(name="brain")
@@ -695,9 +695,9 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
     """Cell types - `Cell Ontology <https://obophenotype.github.io/cell-ontology/>`__.
 
     Notes:
-        For more info, see tutorials :doc:`bio-registries` and :doc:`docs:cell_type`.
+        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:cell_type`.
 
-        Bulk create CellType records via :class:`~lamindb.core.Record.from_values`.
+        Bulk create CellType records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
         >>> record = bionty.CellType.from_public(name="T cell")
@@ -769,7 +769,7 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
     """Diseases - `Mondo <https://mondo.monarchinitiative.org/>`__, `Human Disease <https://disease-ontology.org/>`__.
 
     Notes:
-        Bulk create Disease records via :class:`~lamindb.core.Record.from_values`.
+        Bulk create Disease records via :meth:`~docs:lamindb.core.Record.from_values`.
 
         For more info, see tutorials: :doc:`docs:disease`.
 
@@ -843,9 +843,9 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
     """Cell lines - `Cell Line Ontology <https://github.com/CLO-ontology/CLO>`__.
 
     Notes:
-        For more info, see tutorials :doc:`bio-registries` and :doc:`docs:cell_line`.
+        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:cell_line`.
 
-        Bulk create CellLine records via :class:`~lamindb.core.Record.from_values`.
+        Bulk create CellLine records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
         >>> standard_name = bionty.CellLine.public().standardize(["K562"])[0]
@@ -921,9 +921,9 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
     `Zebrafish Phenotype <http://obofoundry.org/ontology/zp.html>`__.
 
     Notes:
-        For more info, see tutorials :doc:`bio-registries` and :doc:`docs:phenotype`.
+        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:phenotype`.
 
-        Bulk create Phenotype records via :class:`~lamindb.core.Record.from_values`.
+        Bulk create Phenotype records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
         >>> record = bionty.Phenotype.from_public(name="Arachnodactyly")
@@ -997,9 +997,9 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
     `Pathway Ontology <https://bioportal.bioontology.org/ontologies/PW>`__.
 
     Notes:
-        For more info, see tutorials :doc:`bio-registries` and :doc:`docs:pathway`.
+        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:pathway`.
 
-        Bulk create Pathway records via :class:`~lamindb.core.Record.from_values`.
+        Bulk create Pathway records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
         >>> record = bionty.Pathway.from_public(ontology_id="GO:1903353")
@@ -1078,9 +1078,9 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
     """Experimental factors - `Experimental Factor Ontology <https://www.ebi.ac.uk/ols/ontologies/efo>`__.
 
     Notes:
-        For more info, see tutorials :doc:`bio-registries` and :doc:`docs:experimental_factor`.
+        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:experimental_factor`.
 
-        Bulk create ExperimentalFactor records via :class:`~lamindb.core.Record.from_values`.
+        Bulk create ExperimentalFactor records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
         >>> standard_name = bionty.ExperimentalFactor.public().standardize(["scRNA-seq"])
@@ -1164,9 +1164,9 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
     `Mouse Developmental Stages <https://github.com/obophenotype/developmental-stage-ontologies/wiki/MmusDv>`__.  # noqa.
 
     Notes:
-        For more info, see tutorials :doc:`bio-registries` and :doc:`docs:developmental_stage`.
+        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:developmental_stage`.
 
-        Bulk create DevelopmentalStage records via :class:`~lamindb.core.Record.from_values`.
+        Bulk create DevelopmentalStage records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
         >>> record = bionty.DevelopmentalStage.from_public(name="neurula stage")
@@ -1243,9 +1243,9 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
     """Ethnicity - `Human Ancestry Ontology <https://github.com/EBISPOT/hancestro>`__.
 
     Notes:
-        For more info, see tutorials :doc:`bio-registries` and :doc:`docs:ethnicity`.
+        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:ethnicity`.
 
-        Bulk create Ethnicity records via :class:`~lamindb.core.Record.from_values`.
+        Bulk create Ethnicity records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
         >>> record = bionty.Ethnicity.from_public(name="European")
