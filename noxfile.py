@@ -16,7 +16,7 @@ def docs(session: nox.Session):
 
 
 @nox.session
-@nox.parametrize("group", ["bionty-base-unit", "bionty-base-docs"])
+@nox.parametrize("group", ["bionty-unit", "bionty-docs"])
 def build(session: nox.Session, group: str):
     session.run(*"uv pip install --system -e .[dev]".split())
     # session.run(*"pip install git+https://github.com/laminlabs/lamindb".split())
