@@ -14,21 +14,25 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
 ]
 dependencies = [
-    "lnschema_core>=0.69.0",
-    "bionty_base==0.38.0",
+    "lamindb",
+    "filelock",
+    "requests",
+    "pyyaml",
 ]
 
 [project.urls]
 Home = "https://github.com/laminlabs/bionty"
 
 [project.optional-dependencies]
-test = [
+dev = [
     "pre-commit",
     "nox",
     "requests",
     "pytest>=6.0",
     "pytest-cov",
     "nbproject-test",
+    "pronto>=2.5.4, <2.5.6",
+    "laminci",
 ]
 
 [tool.pytest.ini_options]
