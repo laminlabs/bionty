@@ -26,7 +26,7 @@ from ._bionty import encode_uid, lookup2kwargs
 if TYPE_CHECKING:
     from pandas import DataFrame
 
-    from bionty.base import PublicOntology
+    from .base import PublicOntology
 
 
 class StaticReference:
