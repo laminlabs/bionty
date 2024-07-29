@@ -124,10 +124,12 @@ Developer API:
 
 __version__ = "0.45.0"
 
+from . import base, ids
+
+base.sync_sources()
+
 # from lamindb_setup._check_setup import InstanceNotSetupError as _InstanceNotSetupError
 from lamindb_setup._check_setup import _check_instance_setup
-
-from . import base, ids
 
 # def __getattr__(name):
 #     raise _InstanceNotSetupError()

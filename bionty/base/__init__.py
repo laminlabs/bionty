@@ -52,10 +52,6 @@ External API:
    Ontology
 """
 
-from ._sync_sources import sync_sources
-
-sync_sources()
-
 # dynamic classes
 from . import dev
 from ._display_sources import display_available_sources, display_currently_used_sources
@@ -64,6 +60,7 @@ from ._ontology import Ontology
 # tools
 from ._public_ontology import PublicOntology, PublicOntologyField
 from ._settings import settings
+from ._sync_sources import sync_sources
 
 # sources
 from .dev._handle_sources import reset_sources
