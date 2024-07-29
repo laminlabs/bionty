@@ -18,7 +18,7 @@ All registries inherit from :class:`~lamindb.core.CanValidate` &
 
    `bionty` manages it under the hood:
 
-   - Versions of public databases are auto-tracked in :class:`PublicSource`.
+   - Versions of public databases are auto-tracked in :class:`Source`.
    - Records are indexed by universal ids, created by hashing `name` & `ontology_id` for portability across databases.
 
 Installation
