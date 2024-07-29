@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import bionty_base
 from django.core.exceptions import ObjectDoesNotExist
 from lamin_utils import logger
 from lnschema_core.models import Record
+
+import bionty.base as bionty_base
 
 from . import ids
 
@@ -120,7 +121,7 @@ def lookup2kwargs(orm: Record, *args, **kwargs) -> dict:
         bionty_kwargs = arg[0]._asdict()
 
     if len(bionty_kwargs) > 0:
-        import bionty_base
+        import bionty.base as bionty_base
 
         # add organism and source
         organism_record = create_or_get_organism_record(

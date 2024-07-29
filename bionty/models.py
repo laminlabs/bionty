@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Tuple, overload
 
-import bionty_base
 import numpy as np
-from bionty_base import PublicOntology
 from django.db import models
 from django.db.models import CASCADE, PROTECT
 from lamin_utils import logger
@@ -20,11 +18,15 @@ from lnschema_core.models import (
     TracksUpdates,
 )
 
+import bionty.base as bionty_base
+
 from . import ids
 from ._bionty import encode_uid, lookup2kwargs
 
 if TYPE_CHECKING:
     from pandas import DataFrame
+
+    from bionty.base import PublicOntology
 
 
 class StaticReference:

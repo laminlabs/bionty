@@ -1,5 +1,6 @@
-import bionty_base
 from lamin_utils import logger
+
+import bionty.base as bionty_base
 
 
 def sync_all_sources_to_latest():

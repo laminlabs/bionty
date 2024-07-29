@@ -122,7 +122,8 @@ def add_ontology_from_df(
         new_ontology_ids = get_new_ontology_ids(registry, ontology_ids, df_all)
         df = df_all[df_all.index.isin(new_ontology_ids)]
 
-    source_record = get_source_record(public)
+    # TODO: consider StaticReference
+    source_record = get_source_record(public)  # type:ignore
     # do not create records from obsolete terms
     records = [
         r

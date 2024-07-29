@@ -1,0 +1,92 @@
+{
+  "cell_ranger_v8_0_0": {
+    "id": "X3Y4Z5A6B7C8",
+    "name": "Cell Ranger v8.0.0",
+    "versions": "8.0.0",
+    "reference": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
+  },
+  "cell_ranger_v7_2_0": {
+    "id": "N4F5G6H7I8J9",
+    "name": "Cell Ranger v7.2.0",
+    "versions": "7.2.0",
+    "reference": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
+  },
+  "cell_ranger_v7_1_0": {
+    "id": "V2RbClSNDq4H",
+    "name": "Cell Ranger v7.1.0",
+    "versions": "7.1.0",
+    "reference": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
+  },
+  "cell_ranger_v7_0_1": {
+    "id": "T3r0zDQQJ97p",
+    "name": "Cell Ranger v7.0.1",
+    "versions": "7.0.1",
+    "reference": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
+  },
+  "cell_ranger_v7_0_0": {
+    "id": "t28U9XvyjCEw",
+    "name": "Cell Ranger v7.0.0",
+    "versions": "7.0.0",
+    "reference": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
+  },
+  "cell_ranger_v6_1_2": {
+    "id": "G4R5bC6a9DcX",
+    "name": "Cell Ranger v6.1.2",
+    "versions": "6.1.2",
+    "reference": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/6.1"
+  },
+  "cell_ranger_v6_0_0": {
+    "id": "F6U8dE2tJ3LZ",
+    "name": "Cell Ranger v6.0.0",
+    "versions": "6.0.0",
+    "reference": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/6.0"
+  },
+  "spaceranger_v3_0_0": {
+    "id": "A1B2C3D4E5F6",
+    "name": "Spaceranger v3.0.0",
+    "versions": "3.0.0",
+    "reference": "https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest"
+  },
+  "spaceranger_v2_1_1": {
+    "id": "G7H8I9J0K1L2",
+    "name": "Spaceranger v2.1.1",
+    "versions": "2.1.1",
+    "reference": "https://support.10xgenomics.com/spatial-gene-expression/software/downloads/2.1"
+  },
+  "spaceranger_v2_1_0": {
+    "id": "M3N4O5P6Q7R8",
+    "name": "Spaceranger v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://support.10xgenomics.com/spatial-gene-expression/software/downloads/2.1"
+  },
+  "spaceranger_v2_0_1": {
+    "id": "M9V2bR6aK3eD",
+    "name": "Spaceranger v2.0.1",
+    "versions": "2.0.1",
+    "reference": "https://support.10xgenomics.com/spatial-gene-expression/software/downloads/2.0"
+  },
+  "xenium_v2_0_0": {
+    "id": "S1T2U3V4W5X6",
+    "name": "Xenium v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://www.10xgenomics.com/products/xenium"
+  },
+  "xenium_v1_7_1": {
+    "id": "Y7Z8A9B0C1D2",
+    "name": "Xenium v1.7.1",
+    "versions": "1.7.1",
+    "reference": "https://www.10xgenomics.com/products/xenium"
+  },
+  "xenium_v1_7_0": {
+    "id": "E3F4G5H6I7J8",
+    "name": "Xenium v1.7.0",
+    "versions": "1.7.0",
+    "reference": "https://www.10xgenomics.com/products/xenium"
+  },
+  "xenium_v1_6_0": {
+    "id": "K9L0M1N2O3P4",
+    "name": "Xenium v1.6.0",
+    "versions": "1.6.0",
+    "reference": "https://www.10xgenomics.com/products/xenium"
+  }
+}
