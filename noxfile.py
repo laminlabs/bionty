@@ -10,9 +10,9 @@ def lint(session: nox.Session) -> None:
     run_pre_commit(session)
 
 
-@nox.session
-def docs(session: nox.Session):
-    build_docs(session, strict=True)
+# @nox.session
+# def docs(session: nox.Session):
+#     build_docs(session, strict=True)
 
 
 @nox.session
@@ -27,4 +27,4 @@ def build(session: nox.Session, group: str):
         session.run(*f"pytest {coverage_args} ./tests".split())
     elif group == "bionty-docs":
         session.run(*f"pytest -s {coverage_args} ./docs/guide".split())
-        docs(session)
+        build_docs(session, strict=True)
