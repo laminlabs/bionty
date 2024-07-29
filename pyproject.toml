@@ -18,6 +18,7 @@ dependencies = [
     "filelock",
     "requests",
     "pyyaml",
+    "pronto>=2.5.4, <2.5.6",
 ]
 
 [project.urls]
@@ -31,7 +32,6 @@ dev = [
     "pytest>=6.0",
     "pytest-cov",
     "nbproject-test",
-    "pronto>=2.5.4, <2.5.6",
     "bioregistry",
     "sqlalchemy",
     "mysqlclient",
