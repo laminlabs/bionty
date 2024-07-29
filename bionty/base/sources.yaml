@@ -1,0 +1,350 @@
+version: "0.2.6"
+Organism:
+  ensembl:
+    vertebrates:
+      release-112:
+        url: https://ftp.ensembl.org/pub/release-112/species_EnsemblVertebrates.txt
+        md5: 0ec37e77f4bc2d0b0b47c6c62b9f122d
+      release-111:
+        url: https://ftp.ensembl.org/pub/release-111/species_EnsemblVertebrates.txt
+        md5: 2846df83899eaa61f8043db4c036e883
+      release-110:
+        url: https://ftp.ensembl.org/pub/release-110/species_EnsemblVertebrates.txt
+        md5: f3faf95648d3a2b50fd3625456739706
+      release-109:
+        url: https://ftp.ensembl.org/pub/release-109/species_EnsemblVertebrates.txt
+        md5: 7595bb989f5fec07eaca5e2138f67bd4
+      release-108:
+        url: https://ftp.ensembl.org/pub/release-108/species_EnsemblVertebrates.txt
+        md5: d97c1ee302e4072f5f5c7850eff0b642
+    bacteria:
+      release-57:
+        url: https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/release-57/species_EnsemblBacteria.txt
+        md5: ee28510ed5586ea7ab4495717c96efc8
+    fungi:
+      release-57:
+        url: http://ftp.ensemblgenomes.org/pub/fungi/release-57/species_EnsemblFungi.txt
+        md5: dbcde58f4396ab8b2480f7fe9f83df8a
+    metazoa:
+      release-57:
+        url: http://ftp.ensemblgenomes.org/pub/metazoa/release-57/species_EnsemblMetazoa.txt
+        md5: 424636a574fec078a61cbdddb05f9132
+    plants:
+      release-57:
+        url: https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-57/species_EnsemblPlants.txt
+        md5: eadaa1f3e527e4c3940c90c7fa5c8bf4
+    name: Ensembl
+    website: https://www.ensembl.org
+  ncbitaxon:
+    all:
+      2023-06-20:
+        url: s3://bionty-assets/df_all__ncbitaxon__2023-06-20__Organism.parquet
+        md5: 00d97ba65627f1cd65636d2df22ea76c
+    name: NCBItaxon Ontology
+    website: https://github.com/obophenotype/ncbitaxon
+Gene:
+  ensembl:
+    human:
+      release-112:
+        url: s3://bionty-assets/df_human__ensembl__release-112__Gene.parquet
+        md5: 4ccda4d88720a326737376c534e8446b
+      release-111:
+        url: s3://bionty-assets/df_human__ensembl__release-111__Gene.parquet
+        md5: f9183bc44abb34459984e137b5de8af1
+      release-110:
+        url: s3://bionty-assets/df_human__ensembl__release-110__Gene.parquet
+        md5: 832f3947e83664588d419608a469b528
+      release-109:
+        url: s3://bionty-assets/human_ensembl_release-109_Gene_lookup.parquet
+        md5: 72da9968c74e96d136a489a6102a4546
+    mouse:
+      release-112:
+        url: s3://bionty-assets/df_mouse__ensembl__release-112__Gene.parquet
+        md5: 519cf7b8acc3c948274f66f3155a3210
+      release-111:
+        url: s3://bionty-assets/df_mouse__ensembl__release-111__Gene.parquet
+        md5: 5c071655347458307ac92b208f3c903a
+      release-110:
+        url: s3://bionty-assets/df_mouse__ensembl__release-110__Gene.parquet
+        md5: fa4ce130f2929aefd7ac3bc8eaf0c4de
+      release-109:
+        url: s3://bionty-assets/mouse_ensembl_release-109_Gene_lookup.parquet
+        md5: 08a1165061151b270b985317322bd2ed
+    saccharomyces cerevisiae:
+      release-112:
+        url: s3://bionty-assets/df_saccharomyces cerevisiae__ensembl__release-112__Gene.parquet
+        md5: 11775126b101233525a0a9e2dd64edae
+      release-111:
+        url: s3://bionty-assets/df_saccharomyces cerevisiae__ensembl__release-111__Gene.parquet
+        md5: a15fab1d9d15a56d32fd2fd8a8fa250a
+      release-110:
+        url: s3://bionty-assets/df_saccharomyces cerevisiae__ensembl__release-110__Gene.parquet
+        md5: 2e59495a3e87ea6575e408697dd73459
+    name: Ensembl
+    website: https://www.ensembl.org
+Protein:
+  uniprot:
+    human:
+      2024-03:
+        url: s3://bionty-assets/df_human__uniprot__2024-03__Protein.parquet
+        md5: b5b9e7645065b4b3187114f07e3f402f
+      2023-03:
+        url: s3://bionty-assets/df_human__uniprot__2023-03__Protein.parquet
+        md5: 1c46e85c6faf5eff3de5b4e1e4edc4d3
+      2023-02:
+        url: s3://bionty-assets/human_uniprot_2023-02_Protein_lookup.parquet
+        md5: 0cb7264eb43f91bd04dac792dd879241
+    mouse:
+      2024-03:
+        url: s3://bionty-assets/df_mouse__uniprot__2024-03__Protein.parquet
+        md5: b1b6a196eb853088d36198d8e3749ec4
+      2023-03:
+        url: s3://bionty-assets/df_mouse__uniprot__2023-03__Protein.parquet
+        md5: 9d5e9a8225011d3218e10f9bbb96a46c
+      2023-02:
+        url: s3://bionty-assets/mouse_uniprot_2023-02_Protein_lookup.parquet
+        md5: dcae4f62f5df145a5c15163fce7e9135
+    name: Uniprot
+    website: https://www.uniprot.org
+CellMarker:
+  cellmarker:
+    human:
+      2.0:
+        url: s3://bionty-assets/human_cellmarker_2.0_CellMarker_lookup.parquet
+        md5: d565d4a542a5c7e7a06255975358e4f4
+    mouse:
+      2.0:
+        url: s3://bionty-assets/mouse_cellmarker_2.0_CellMarker_lookup.parquet
+        md5: 189586732c63be949e40dfa6a3636105
+    name: CellMarker
+    website: http://bio-bigdata.hrbmu.edu.cn/CellMarker
+CellLine:
+  clo:
+    all:
+      2022-03-21:
+        url: https://data.bioontology.org/ontologies/CLO/submissions/65/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
+        md5: ea58a1010b7e745702a8397a526b3a33
+    name: Cell Line Ontology
+    website: https://bioportal.bioontology.org/ontologies/CLO
+CellType:
+  cl:
+    all:
+      2024-02-13:
+        url: http://purl.obolibrary.org/obo/cl/releases/2024-02-13/cl.owl
+        mod5: d6d962b58c48f372c2c98b71e0833242
+      2023-08-24:
+        url: http://purl.obolibrary.org/obo/cl/releases/2023-08-24/cl.owl
+        md5: 46e7dd89421f1255cf0191eca1548f73
+      2023-04-20:
+        url: http://purl.obolibrary.org/obo/cl/releases/2023-04-20/cl-base.owl
+        md5: 58cdc1545f0d35e6fce76a65331b00fb
+      2023-02-15:
+        url: http://purl.obolibrary.org/obo/cl/releases/2023-02-15/cl-base.owl
+        md5: 9331a6a029cb1863bd0584ab41508df7
+      2022-08-16:
+        url: http://purl.obolibrary.org/obo/cl/releases/2022-08-16/cl.owl
+        md5: d0655766574e63f3fe5ed56d3c030880
+    name: Cell Ontology
+    website: https://obophenotype.github.io/cell-ontology
+Tissue:
+  uberon:
+    all:
+      2024-02-20:
+        url: http://purl.obolibrary.org/obo/uberon/releases/2024-02-20/uberon.owl
+        md5: 2048667b5fdf93192384bdf53cafba18
+      2023-09-05:
+        url: http://purl.obolibrary.org/obo/uberon/releases/2023-09-05/uberon.owl
+        md5: abcee3ede566d1311d758b853ccdf5aa
+      2023-04-19:
+        url: http://purl.obolibrary.org/obo/uberon/releases/2023-04-19/uberon.owl
+        md5: 5611dd1375d5a95ac7d7de8e25e6016f
+      2023-02-14:
+        url: http://purl.obolibrary.org/obo/uberon/releases/2023-02-14/uberon.owl
+        md5: 3f94e22fae4cdde88a555c5cd59c47da
+      2022-08-19:
+        url: http://purl.obolibrary.org/obo/uberon/releases/2022-08-19/uberon.owl
+        md5: c7c958a1ee48fdce146f2c1763eed27e
+    name: Uberon multi-species anatomy ontology
+    website: http://obophenotype.github.io/uberon
+Disease:
+  mondo:
+    all:
+      2024-02-06:
+        url: http://purl.obolibrary.org/obo/mondo/releases/2024-02-06/mondo.owl
+        md5: 78914fa236773c5ea6605f7570df6245
+      2023-08-02:
+        url: http://purl.obolibrary.org/obo/mondo/releases/2023-08-02/mondo.owl
+        md5: 7f33767422042eec29f08b501fc851db
+      2023-04-04:
+        url: http://purl.obolibrary.org/obo/mondo/releases/2023-04-04/mondo.owl
+        md5: 700c43dd9ba51aecc7a8edfc3bc2dab1
+      2023-02-06:
+        url: http://purl.obolibrary.org/obo/mondo/releases/2023-02-06/mondo.owl
+        md5: 2b7d479d4bd02a94eab47d1c9e64c5db
+      2022-10-11:
+        url: http://purl.obolibrary.org/obo/mondo/releases/2022-10-11/mondo.owl
+        md5: 04b808d05c2c2e81430b20a0e87552bb
+    name: Mondo Disease Ontology
+    website: https://mondo.monarchinitiative.org
+  doid:
+    human:
+      2024-01-31:
+        url: http://purl.obolibrary.org/obo/doid/releases/2024-01-31/doid.obo
+        md5: b36c15a4610757094f8db64b78ae2693
+      2023-03-31:
+        url: http://purl.obolibrary.org/obo/doid/releases/2023-03-31/doid.obo
+        md5: 64f083a1e47867c307c8eae308afc3bb
+      2023-01-30:
+        url: http://purl.obolibrary.org/obo/doid/releases/2023-01-30/doid.obo
+        md5: 9f0c92ad2896dda82195e9226a06dc36
+    name: Human Disease Ontology
+    website: https://disease-ontology.org
+  icd:
+    human:
+      icd-11-2023:
+        url: s3://bionty-assets/df_human__icd__icd-11-2023__Disease.parquet
+        md5: 16263aef644d2c62c47b7b1ecfbad9d6
+      icd-10-2024:
+        url: s3://bionty-assets/df_human__icd__icd-10-2024__Disease.parquet
+        md5: cda43c983700518d76bd44c0e2c869d1
+      icd-10-2020:
+        url: s3://bionty-assets/df_human__icd__icd-10-2020__Disease.parquet
+        md5: 93ec5734fcc2edd64686d5ffc6f6105f
+      icd-9-2011:
+        url: s3://bionty-assets/df_human__icd__icd-9-2011__Disease.parquet
+        md5: cb3aefb3c4f7b2c47bf3de38453350c7
+    name: International Classification of Diseases (ICD)
+    website: https://www.who.int/standards/classifications/classification-of-diseases
+ExperimentalFactor:
+  efo:
+    all:
+      3.63.0:
+        url: http://www.ebi.ac.uk/efo/releases/v3.63.0/efo.owl
+        md5: 603e6f6981d53d501c5921aa3940b095
+      3.57.0:
+        url: http://www.ebi.ac.uk/efo/releases/v3.57.0/efo.owl
+        md5: 2ecafc69b3aba7bdb31ad99438505c05
+      3.48.0:
+        url: http://www.ebi.ac.uk/efo/releases/v3.48.0/efo.owl
+        md5: 3367e9a9ae3dee9113024e5108c49091
+    name: The Experimental Factor Ontology
+    website: https://bioportal.bioontology.org/ontologies/EFO
+Phenotype:
+  hp:
+    human:
+      2024-03-06:
+        url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2024-03-06/hp.owl
+        md5: 36b0d00c24a68edb9131707bc146a4c7
+      2023-06-17:
+        url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2023-06-17/hp.owl
+        md5: 65e8d96bc81deb893163927063b10c06
+      2023-04-05:
+        url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2023-04-05/hp.owl
+        md5: bdf866e11d37cf6fd2aef25c325b2c8a
+      2023-01-27:
+        url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2023-01-27/hp.owl
+        md5: ceeb3ada771908deef620d74cd8e6b0f
+    name: Human Phenotype Ontology
+    website: https://hpo.jax.org
+  mp:
+    mammalian:
+      2024-02-07:
+        url: https://github.com/mgijax/mammalian-phenotype-ontology/releases/download/v2024-02-07/mp.owl
+        md5: 31c27ed2c7d5774f8b20a77e4e1fd278
+      2023-05-31:
+        url: https://github.com/mgijax/mammalian-phenotype-ontology/releases/download/v2023-05-31/mp.owl
+        md5: be89052cf6d9c0b6197038fe347ef293
+    name: Mammalian Phenotype Ontology
+    website: https://github.com/mgijax/mammalian-phenotype-ontology
+  zp:
+    zebrafish:
+      2024-01-22:
+        url: https://github.com/obophenotype/zebrafish-phenotype-ontology/releases/download/v2024-01-22/zp.owl
+        md5: 01600a5d392419b27fc567362d4cfff8
+      2022-12-17:
+        url: https://github.com/obophenotype/zebrafish-phenotype-ontology/releases/download/v2022-12-17/zp.owl
+        md5: 03430b567bf153216c0fa4c3440b3b24
+    name: Zebrafish Phenotype Ontology
+    website: https://github.com/obophenotype/zebrafish-phenotype-ontology
+  phe:
+    human:
+      1.2:
+        url: s3://bionty-assets/df_human__phe__1.2__Phenotype.parquet
+        md5: 741033ee1b13df7c41b4849e8bd02f13
+    name: Phecodes ICD10 map
+    website: https://phewascatalog.org/phecodes_icd10
+  pato:
+    all:
+      2023-05-18:
+        url: http://purl.obolibrary.org/obo/pato/releases/2023-05-18/pato.owl
+        md5: bd472f4971492109493d4ad8a779a8dd
+    name: Phenotype And Trait Ontology
+    website: https://github.com/pato-ontology/pato
+Pathway:
+  go:
+    all:
+      2023-05-10:
+        url: https://data.bioontology.org/ontologies/GO/submissions/1814/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
+        md5: e9845499eadaef2418f464cd7e9ac92e
+    name: Gene Ontology
+    website: http://geneontology.org
+  pw:
+    all:
+      7.82:
+        url: https://data.bioontology.org/ontologies/PW/submissions/112/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
+        md5: 392eb131d0513f9a186128ea4935edc9
+      7.79:
+        url: https://data.bioontology.org/ontologies/PW/submissions/109/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
+        md5: 02e2337bb1ab7cc4332ef6acc4cbdfa6
+    name: Pathway Ontology
+    website: https://www.ebi.ac.uk/ols/ontologies/pw
+BFXPipeline:
+  lamin:
+    all:
+      1.0.0:
+        url: s3://bionty-assets/bfxpipelines.json
+        md5: a7eff57a256994692fba46e0199ffc94
+    name: Bioinformatics Pipeline
+    website: https://lamin.ai
+Drug:
+  dron:
+    all:
+      2024-03-02:
+        url: https://data.bioontology.org/ontologies/DRON/submissions/22/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
+        md5: 84138459de4f65034e979f4e46783747
+      2023-03-10:
+        url: https://data.bioontology.org/ontologies/DRON/submissions/17/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
+        md5: 75e86011158fae76bb46d96662a33ba3
+    name: Drug Ontology
+    website: https://bioportal.bioontology.org/ontologies/DRON
+DevelopmentalStage:
+  hsapdv:
+    human:
+      2020-03-10:
+        url: http://aber-owl.net/media/ontologies/HSAPDV/11/hsapdv.owl
+        md5: 52181d59df84578ed69214a5cb614036
+    name: Human Developmental Stages
+    website: https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv
+  mmusdv:
+    mouse:
+      2020-03-10:
+        url: http://aber-owl.net/media/ontologies/MMUSDV/9/mmusdv.owl
+        md5: 5bef72395d853c7f65450e6c2a1fc653
+    name: Mouse Developmental Stages
+    website: https://github.com/obophenotype/developmental-stage-ontologies/wiki/MmusDv
+Ethnicity:
+  hancestro:
+    human:
+      3.0:
+        url: https://github.com/EBISPOT/hancestro/raw/3.0/hancestro-base.owl
+        md5: 76dd9efda9c2abd4bc32fc57c0b755dd
+    name: Human Ancestry Ontology
+    website: https://github.com/EBISPOT/hancestro
+BioSample:
+  ncbi:
+    all:
+      2023-09:
+        url: s3://bionty-assets/df_all__ncbi__2023-09__BioSample.parquet
+        md5: 918db9bd1734b97c596c67d9654a4126
+    name: NCBI BioSample attributes
+    website: https://www.ncbi.nlm.nih.gov/biosample/docs/attributes
