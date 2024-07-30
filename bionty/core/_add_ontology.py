@@ -1,4 +1,4 @@
-from typing import Iterable, List, Optional, Set, Type, Union
+from typing import Iterable, List, Optional, Set, Tuple, Type, Union
 
 import pandas as pd
 from lnschema_core.models import Record
@@ -33,7 +33,7 @@ def prepare_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 def get_new_ontology_ids(
     registry: Type[BioRecord], ontology_ids: Iterable[str], df_all: pd.DataFrame
-) -> Set[str]:
+) -> Tuple[Set[str], Set[str]]:
     parents_ids = get_all_ancestors(df_all, ontology_ids)
     ontology_ids = set(ontology_ids) | parents_ids
     existing_ontology_ids = set(
@@ -41,7 +41,7 @@ def get_new_ontology_ids(
             "ontology_id", flat=True
         )
     )
-    return ontology_ids - existing_ontology_ids
+    return (ontology_ids - existing_ontology_ids), ontology_ids
 
 
 def create_records(
@@ -114,26 +114,30 @@ def add_ontology_from_df(
     from bionty._bionty import get_source_record
 
     public = registry.public(organism=organism, source=source)
-    df_all = prepare_dataframe(public.df())
+    df = prepare_dataframe(public.df())
 
     if ontology_ids is None:
-        df = df_all
+        df_new = df
+        df_all = df
     else:
-        new_ontology_ids = get_new_ontology_ids(registry, ontology_ids, df_all)
-        df = df_all[df_all.index.isin(new_ontology_ids)]
+        new_ontology_ids, all_ontology_ids = get_new_ontology_ids(
+            registry, ontology_ids, df
+        )
+        df_new = df[df.index.isin(new_ontology_ids)]
+        df_all = df[df.index.isin(all_ontology_ids)]
 
     # TODO: consider StaticReference
     source_record = get_source_record(public)  # type:ignore
     # do not create records from obsolete terms
     records = [
         r
-        for r in create_records(registry, df, source_record)
+        for r in create_records(registry, df_new, source_record)
         if not r.name.startswith("obsolete")
     ]
     registry.objects.bulk_create(records, ignore_conflicts=ignore_conflicts)
 
     all_records = registry.filter().all()
-    link_records = create_link_records(registry, df, all_records)
+    link_records = create_link_records(registry, df_all, all_records)
     ln.save(link_records, ignore_conflicts=ignore_conflicts)
 
     if ontology_ids is None and len(records) > 0:
