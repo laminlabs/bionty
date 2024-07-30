@@ -26,7 +26,8 @@ def get_all_ancestors(df: pd.DataFrame, ontology_ids: Iterable[str]) -> Set[str]
 
 
 def prepare_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    if df.index.name != "ontology_id" and "ontology_id" in df.columns:
+    df = df.reset_index()
+    if "ontology_id" in df.columns:
         return df.set_index("ontology_id")
     return df
 
