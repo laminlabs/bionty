@@ -18,8 +18,8 @@ All registries inherit from :class:`~lamindb.core.CanValidate` &
 
    `bionty` manages it under the hood:
 
-   - Versions of public databases are auto-tracked in :class:`Source`.
-   - Records are indexed by universal ids, created by hashing `name` & `ontology_id` for portability across databases.
+   - Versions of ontology sources are auto-tracked in :class:`Source`.
+   - Records are indexed by universal ids, created by hashing `ontology_id` for portability across databases.
 
 Installation
 ============
@@ -71,8 +71,7 @@ Manage synonyms:
    - `Access public ontologies <https://lamin.ai/docs/public-ontologies>`__
    - :doc:`docs:bio-registries`
 
-   For more background on how public ontologies are accessed, see the utility
-   library `bionty-base <https://lamin.ai/docs/bionty-base>`__.
+   For more background on how public ontologies are accessed, see `bionty.base`.
 
 API
 ===
@@ -107,7 +106,7 @@ Settings:
 
    settings
 
-Public ontology versions:
+Ontology versions:
 
 .. autosummary::
    :toctree: .
@@ -120,9 +119,16 @@ Developer API:
    :toctree: .
 
    core
+
+Bionty base:
+
+.. autosummary::
+   :toctree: .
+
+   base
 """
 
-__version__ = "0.45.0"
+__version__ = "0.46.0"
 
 from . import base, ids
 
