@@ -1446,10 +1446,10 @@ class FeatureSetPathway(Record, LinkORM):
 
 class ArtifactOrganism(Record, LinkORM, TracksRun):
     id = models.BigAutoField(primary_key=True)
-    artifact = models.ForeignKey(Artifact, CASCADE, related_name="organism_links")
-    organism = models.ForeignKey("Organism", PROTECT, related_name="artifact_links")
+    artifact = models.ForeignKey(Artifact, CASCADE, related_name="links_organism")
+    organism = models.ForeignKey("Organism", PROTECT, related_name="links_artifact")
     feature = models.ForeignKey(
-        Feature, PROTECT, null=True, default=None, related_name="artifactorganism_links"
+        Feature, PROTECT, null=True, default=None, related_name="links_artifactorganism"
     )
     label_ref_is_name = models.BooleanField(null=True, default=None)
     feature_ref_is_name = models.BooleanField(null=True, default=None)
@@ -1457,10 +1457,10 @@ class ArtifactOrganism(Record, LinkORM, TracksRun):
 
 class ArtifactGene(Record, LinkORM, TracksRun):
     id = models.BigAutoField(primary_key=True)
-    artifact = models.ForeignKey(Artifact, CASCADE, related_name="gene_links")
-    gene = models.ForeignKey("Gene", PROTECT, related_name="artifact_links")
+    artifact = models.ForeignKey(Artifact, CASCADE, related_name="links_gene")
+    gene = models.ForeignKey("Gene", PROTECT, related_name="links_artifact")
     feature = models.ForeignKey(
-        Feature, PROTECT, null=True, default=None, related_name="artifactgene_links"
+        Feature, PROTECT, null=True, default=None, related_name="links_artifactgene"
     )
     gene_ref_is_symbol = models.BooleanField(null=True, default=None)
     feature_ref_is_symbol = models.BooleanField(null=True, default=None)
@@ -1468,10 +1468,10 @@ class ArtifactGene(Record, LinkORM, TracksRun):
 
 class ArtifactProtein(Record, LinkORM, TracksRun):
     id = models.BigAutoField(primary_key=True)
-    artifact = models.ForeignKey(Artifact, CASCADE, related_name="protein_links")
-    protein = models.ForeignKey("Protein", PROTECT, related_name="artifact_links")
+    artifact = models.ForeignKey(Artifact, CASCADE, related_name="links_protein")
+    protein = models.ForeignKey("Protein", PROTECT, related_name="links_artifact")
     feature = models.ForeignKey(
-        Feature, PROTECT, null=True, default=None, related_name="artifactprotein_links"
+        Feature, PROTECT, null=True, default=None, related_name="links_artifactprotein"
     )
     label_ref_is_name = models.BooleanField(null=True, default=None)
     feature_ref_is_name = models.BooleanField(null=True, default=None)
@@ -1479,15 +1479,15 @@ class ArtifactProtein(Record, LinkORM, TracksRun):
 
 class ArtifactCellMarker(Record, LinkORM, TracksRun):
     id = models.BigAutoField(primary_key=True)
-    artifact = models.ForeignKey(Artifact, CASCADE, related_name="cell_marker_links")
+    artifact = models.ForeignKey(Artifact, CASCADE, related_name="links_cell_marker")
     # follow the .lower() convention in link models
-    cellmarker = models.ForeignKey("CellMarker", PROTECT, related_name="artifact_links")
+    cellmarker = models.ForeignKey("CellMarker", PROTECT, related_name="links_artifact")
     feature = models.ForeignKey(
         Feature,
         PROTECT,
         null=True,
         default=None,
-        related_name="artifactcellmarker_links",
+        related_name="links_artifactcellmarker",
     )
     label_ref_is_name = models.BooleanField(null=True, default=None)
     feature_ref_is_name = models.BooleanField(null=True, default=None)
@@ -1495,10 +1495,10 @@ class ArtifactCellMarker(Record, LinkORM, TracksRun):
 
 class ArtifactTissue(Record, LinkORM, TracksRun):
     id = models.BigAutoField(primary_key=True)
-    artifact = models.ForeignKey(Artifact, CASCADE, related_name="tissue_links")
-    tissue = models.ForeignKey("Tissue", PROTECT, related_name="artifact_links")
+    artifact = models.ForeignKey(Artifact, CASCADE, related_name="links_tissue")
+    tissue = models.ForeignKey("Tissue", PROTECT, related_name="links_artifact")
     feature = models.ForeignKey(
-        Feature, PROTECT, null=True, default=None, related_name="artifacttissue_links"
+        Feature, PROTECT, null=True, default=None, related_name="links_artifacttissue"
     )
     label_ref_is_name = models.BooleanField(null=True, default=None)
     feature_ref_is_name = models.BooleanField(null=True, default=None)
@@ -1506,11 +1506,11 @@ class ArtifactTissue(Record, LinkORM, TracksRun):
 
 class ArtifactCellType(Record, LinkORM, TracksRun):
     id = models.BigAutoField(primary_key=True)
-    artifact = models.ForeignKey(Artifact, CASCADE, related_name="cell_type_links")
+    artifact = models.ForeignKey(Artifact, CASCADE, related_name="links_cell_type")
     # follow the .lower() convention in link models
-    celltype = models.ForeignKey("CellType", PROTECT, related_name="artifact_links")
+    celltype = models.ForeignKey("CellType", PROTECT, related_name="links_artifact")
     feature = models.ForeignKey(
-        Feature, PROTECT, null=True, default=None, related_name="artifactcelltype_links"
+        Feature, PROTECT, null=True, default=None, related_name="links_artifactcelltype"
     )
     label_ref_is_name = models.BooleanField(null=True, default=None)
     feature_ref_is_name = models.BooleanField(null=True, default=None)
@@ -1518,10 +1518,10 @@ class ArtifactCellType(Record, LinkORM, TracksRun):
 
 class ArtifactDisease(Record, LinkORM, TracksRun):
     id = models.BigAutoField(primary_key=True)
-    artifact = models.ForeignKey(Artifact, CASCADE, related_name="disease_links")
-    disease = models.ForeignKey("Disease", PROTECT, related_name="artifact_links")
+    artifact = models.ForeignKey(Artifact, CASCADE, related_name="links_disease")
+    disease = models.ForeignKey("Disease", PROTECT, related_name="links_artifact")
     feature = models.ForeignKey(
-        Feature, PROTECT, null=True, default=None, related_name="artifactdisease_links"
+        Feature, PROTECT, null=True, default=None, related_name="links_artifactdisease"
     )
     label_ref_is_name = models.BooleanField(null=True, default=None)
     feature_ref_is_name = models.BooleanField(null=True, default=None)
@@ -1529,11 +1529,11 @@ class ArtifactDisease(Record, LinkORM, TracksRun):
 
 class ArtifactCellLine(Record, LinkORM, TracksRun):
     id = models.BigAutoField(primary_key=True)
-    artifact = models.ForeignKey(Artifact, CASCADE, related_name="cell_line_links")
+    artifact = models.ForeignKey(Artifact, CASCADE, related_name="links_cell_line")
     # follow the .lower() convention in link models
-    cellline = models.ForeignKey("CellLine", PROTECT, related_name="artifact_links")
+    cellline = models.ForeignKey("CellLine", PROTECT, related_name="links_artifact")
     feature = models.ForeignKey(
-        Feature, PROTECT, null=True, default=None, related_name="artifactcellline_links"
+        Feature, PROTECT, null=True, default=None, related_name="links_artifactcellline"
     )
     label_ref_is_name = models.BooleanField(null=True, default=None)
     feature_ref_is_name = models.BooleanField(null=True, default=None)
@@ -1541,14 +1541,14 @@ class ArtifactCellLine(Record, LinkORM, TracksRun):
 
 class ArtifactPhenotype(Record, LinkORM, TracksRun):
     id = models.BigAutoField(primary_key=True)
-    artifact = models.ForeignKey(Artifact, CASCADE, related_name="phenotype_links")
-    phenotype = models.ForeignKey("Phenotype", PROTECT, related_name="artifact_links")
+    artifact = models.ForeignKey(Artifact, CASCADE, related_name="links_phenotype")
+    phenotype = models.ForeignKey("Phenotype", PROTECT, related_name="links_artifact")
     feature = models.ForeignKey(
         Feature,
         PROTECT,
         null=True,
         default=None,
-        related_name="artifactphenotype_links",
+        related_name="links_artifactphenotype",
     )
     label_ref_is_name = models.BooleanField(null=True, default=None)
     feature_ref_is_name = models.BooleanField(null=True, default=None)
@@ -1556,10 +1556,10 @@ class ArtifactPhenotype(Record, LinkORM, TracksRun):
 
 class ArtifactPathway(Record, LinkORM, TracksRun):
     id = models.BigAutoField(primary_key=True)
-    artifact = models.ForeignKey(Artifact, CASCADE, related_name="pathway_links")
-    pathway = models.ForeignKey("Pathway", PROTECT, related_name="artifact_links")
+    artifact = models.ForeignKey(Artifact, CASCADE, related_name="links_pathway")
+    pathway = models.ForeignKey("Pathway", PROTECT, related_name="links_artifact")
     feature = models.ForeignKey(
-        Feature, PROTECT, null=True, default=None, related_name="artifactpathway_links"
+        Feature, PROTECT, null=True, default=None, related_name="links_artifactpathway"
     )
     label_ref_is_name = models.BooleanField(null=True, default=None)
     feature_ref_is_name = models.BooleanField(null=True, default=None)
@@ -1568,17 +1568,17 @@ class ArtifactPathway(Record, LinkORM, TracksRun):
 class ArtifactExperimentalFactor(Record, LinkORM, TracksRun):
     id = models.BigAutoField(primary_key=True)
     artifact = models.ForeignKey(
-        Artifact, CASCADE, related_name="experimental_factor_links"
+        Artifact, CASCADE, related_name="links_experimental_factor"
     )
     experimentalfactor = models.ForeignKey(
-        "ExperimentalFactor", PROTECT, related_name="artifact_links"
+        "ExperimentalFactor", PROTECT, related_name="links_artifact"
     )
     feature = models.ForeignKey(
         Feature,
         PROTECT,
         null=True,
         default=None,
-        related_name="artifactexperimentalfactor_links",
+        related_name="links_artifactexperimentalfactor",
     )
     label_ref_is_name = models.BooleanField(null=True, default=None)
     feature_ref_is_name = models.BooleanField(null=True, default=None)
@@ -1587,18 +1587,18 @@ class ArtifactExperimentalFactor(Record, LinkORM, TracksRun):
 class ArtifactDevelopmentalStage(Record, LinkORM, TracksRun):
     id = models.BigAutoField(primary_key=True)
     artifact = models.ForeignKey(
-        Artifact, CASCADE, related_name="developmental_stage_links"
+        Artifact, CASCADE, related_name="links_developmental_stage"
     )
     # follow the .lower() convention in link models
     developmentalstage = models.ForeignKey(
-        "DevelopmentalStage", PROTECT, related_name="artifact_links"
+        "DevelopmentalStage", PROTECT, related_name="links_artifact"
     )
     feature = models.ForeignKey(
         Feature,
         PROTECT,
         null=True,
         default=None,
-        related_name="artifactdevelopmentalstage_links",
+        related_name="links_artifactdevelopmentalstage",
     )
     label_ref_is_name = models.BooleanField(null=True, default=None)
     feature_ref_is_name = models.BooleanField(null=True, default=None)
@@ -1606,14 +1606,14 @@ class ArtifactDevelopmentalStage(Record, LinkORM, TracksRun):
 
 class ArtifactEthnicity(Record, LinkORM, TracksRun):
     id = models.BigAutoField(primary_key=True)
-    artifact = models.ForeignKey(Artifact, CASCADE, related_name="ethnicity_links")
-    ethnicity = models.ForeignKey("Ethnicity", PROTECT, related_name="artifact_links")
+    artifact = models.ForeignKey(Artifact, CASCADE, related_name="links_ethnicity")
+    ethnicity = models.ForeignKey("Ethnicity", PROTECT, related_name="links_artifact")
     feature = models.ForeignKey(
         Feature,
         PROTECT,
         null=True,
         default=None,
-        related_name="artifactethnicity_links",
+        related_name="links_artifactethnicity",
     )
     label_ref_is_name = models.BooleanField(null=True, default=None)
     feature_ref_is_name = models.BooleanField(null=True, default=None)
