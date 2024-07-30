@@ -114,7 +114,7 @@ def add_ontology_from_df(
 
     from bionty._bionty import get_source_record
 
-    public = registry.public(organism=organism, source=source)
+    public = registry.public(organism=organism or source.organism, source=source)
     df = prepare_dataframe(public.df())
 
     if ontology_ids is None:
@@ -156,7 +156,7 @@ def add_ontology(
     registry = records[0]._meta.model
     source = source or records[0].source
     if hasattr(registry, "organism_id"):
-        organism = organism or records[0].organism_id
+        organism = organism or records[0].organism
     ontology_ids = [r.ontology_id for r in records]
     add_ontology_from_df(
         registry=registry,
