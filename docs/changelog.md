@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Version
 --- | --- | --- | --- | ---
+🐛 Fix core import and parents save | [18](https://github.com/laminlabs/bionty/pull/18) | [sunnyosun](https://github.com/sunnyosun) | 2024-07-30 |
 🏗️  Integrate `lnschema-bionty` and `bionty-base` into `bionty` | [17](https://github.com/laminlabs/bionty/pull/17) | [sunnyosun](https://github.com/sunnyosun) | 2024-07-29 | 0.46.0
 🚚 Rename PublicSource to Source | [16](https://github.com/laminlabs/bionty/pull/16) | [sunnyosun](https://github.com/sunnyosun) | 2024-07-26 | 0.45.0
 ♻️ Rename Registry to Record | [15](https://github.com/laminlabs/bionty/pull/15) | [falexwolf](https://github.com/falexwolf) | 2024-07-17 |
