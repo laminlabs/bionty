@@ -7,7 +7,6 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     dependencies = [
         ("bionty", "0030_rename_publicsource_source_and_more"),
-        ("lnschema_core", "0058_remove_transform_latest_report"),
     ]
 
     operations = [
