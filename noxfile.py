@@ -13,9 +13,9 @@ def lint(session: nox.Session) -> None:
 @nox.parametrize("group", ["bionty-unit", "bionty-docs"])
 def build(session: nox.Session, group: str):
     session.run(*"uv pip install --system -e .[dev]".split())
-    # session.run(*"pip install git+https://github.com/laminlabs/lamindb".split())
+    session.run(*"pip install git+https://github.com/laminlabs/lamindb@main".split())
     session.run(
-        *"pip install git+https://github.com/laminlabs/lamindb-setup@single-bionty-repo".split()
+        *"pip install git+https://github.com/laminlabs/lamindb-setup@main".split()
     )
     # session.run(*"pip install git+https://github.com/laminlabs/lnschema-core".split())
     coverage_args = "--cov=bionty --cov-append --cov-report=term-missing"
