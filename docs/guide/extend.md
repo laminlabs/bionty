@@ -67,9 +67,9 @@ If desired, the new ontology can be set as default. See {doc}`./config` for more
 
 ## New entities
 
-Adding new entities to Bionty requires subclassing the {class}`bionty.core.PublicOntology` and modifying the `sources_local.yaml` file.
+Adding new entities to Bionty requires subclassing the {class}`bionty.base.PublicOntology` and modifying the `sources_local.yaml` file.
 
-The {class}`bionty.core.PublicOntology` requires several properties to be defined:
+The {class}`bionty.base.PublicOntology` requires several properties to be defined:
 
 ```python
 organism: str,
