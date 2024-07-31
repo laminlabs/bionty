@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Version
 --- | --- | --- | --- | ---
+🎨 Make `CellMarker.name` unique together with `organism` | [22](https://github.com/laminlabs/bionty/pull/22) | [sunnyosun](https://github.com/sunnyosun) | 2024-07-31 |
 🐛 Fix add_ontology | [20](https://github.com/laminlabs/bionty/pull/20) | [sunnyosun](https://github.com/sunnyosun) | 2024-07-31 |
 🐛 Fix core import and parents save | [18](https://github.com/laminlabs/bionty/pull/18) | [sunnyosun](https://github.com/sunnyosun) | 2024-07-30 |
 🏗️  Integrate `lnschema-bionty` and `bionty-base` into `bionty` | [17](https://github.com/laminlabs/bionty/pull/17) | [sunnyosun](https://github.com/sunnyosun) | 2024-07-29 | 0.46.0
