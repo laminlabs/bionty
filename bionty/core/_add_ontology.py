@@ -114,8 +114,6 @@ def add_ontology_from_df(
 
     from bionty._bionty import get_source_record
 
-    if isinstance(source, Source):
-        organism = source.organism
     public = registry.public(organism=organism, source=source)
     df = prepare_dataframe(public.df())
 
@@ -139,14 +137,14 @@ def add_ontology_from_df(
     ]
     registry.objects.bulk_create(records, ignore_conflicts=ignore_conflicts)
 
-    all_records = registry.filter().all()
+    # all records of the source in the database
+    all_records = registry.filter(source=source_record).all()
     link_records = create_link_records(registry, df_all, all_records)
     ln.save(link_records, ignore_conflicts=ignore_conflicts)
 
     if ontology_ids is None and len(records) > 0:
-        current_source = records[0].source
-        current_source.in_db = True
-        current_source.save()
+        source_record.in_db = True
+        source_record.save()
 
 
 def add_ontology(
