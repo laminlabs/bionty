@@ -131,11 +131,11 @@ class BioRecord(Record, HasParents, CanValidate):
         return Source.filter(entity=cls.__name__, **filters)
 
     @classmethod
-    def save_from_df(
+    def import_from_source(
         cls,
+        source: Source | None = None,
         ontology_ids: list[str] | None = None,
         organism: str | Record | None = None,
-        source: Source | None = None,
         ignore_conflicts: bool = True,
     ):
         """Bulk save records from a dataframe.
@@ -149,7 +149,7 @@ class BioRecord(Record, HasParents, CanValidate):
             ignore_conflicts: Ignore conflicts during bulk create
 
         Examples:
-            >>> bionty.CellType.save_from_df()
+            >>> bionty.CellType.import_from_source()
         """
         if hasattr(cls, "ontology_id"):
             from .core._add_ontology import add_ontology_from_df
@@ -173,7 +173,9 @@ class BioRecord(Record, HasParents, CanValidate):
             elif cls.__name__ == "Protein":
                 field = "uniprotkb_id"
             else:
-                raise NotImplementedError(f"save_from_df not implemented for {cls}")
+                raise NotImplementedError(
+                    f"import_from_source not implemented for {cls}"
+                )
             records = cls.from_values(
                 ontology_ids or df[field], field=field, organism=organism, source=source
             )
