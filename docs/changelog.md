@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Version
 --- | --- | --- | --- | ---
+🚚 Rename save_from_df to import_from_source | [23](https://github.com/laminlabs/bionty/pull/23) | [sunnyosun](https://github.com/sunnyosun) | 2024-07-31 |
 🎨 Make `CellMarker.name` unique together with `organism` | [22](https://github.com/laminlabs/bionty/pull/22) | [sunnyosun](https://github.com/sunnyosun) | 2024-07-31 |
 🐛 Fix add_ontology | [20](https://github.com/laminlabs/bionty/pull/20) | [sunnyosun](https://github.com/sunnyosun) | 2024-07-31 |
 🐛 Fix core import and parents save | [18](https://github.com/laminlabs/bionty/pull/18) | [sunnyosun](https://github.com/sunnyosun) | 2024-07-30 |
