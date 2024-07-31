@@ -131,11 +131,11 @@ class BioRecord(Record, HasParents, CanValidate):
         return Source.filter(entity=cls.__name__, **filters)
 
     @classmethod
-    def save_from_df(
+    def import_from_source(
         cls,
+        source: Source | None = None,
         ontology_ids: list[str] | None = None,
         organism: str | Record | None = None,
-        source: Source | None = None,
         ignore_conflicts: bool = True,
     ):
         """Bulk save records from a dataframe.
@@ -149,7 +149,7 @@ class BioRecord(Record, HasParents, CanValidate):
             ignore_conflicts: Ignore conflicts during bulk create
 
         Examples:
-            >>> bionty.CellType.save_from_df()
+            >>> bionty.CellType.import_from_source()
         """
         if hasattr(cls, "ontology_id"):
             from .core._add_ontology import add_ontology_from_df
@@ -164,25 +164,29 @@ class BioRecord(Record, HasParents, CanValidate):
         else:
             import lamindb as ln
 
-            df = cls.public(organism=organism, source=source).df().reset_index()
-            # TODO: simplify after migration to use _ontology_id_field
-            if cls.__name__ == "CellMarker":
-                field = "name"
-            elif cls.__name__ == "Gene":
-                field = "ensembl_gene_id"
-            elif cls.__name__ == "Protein":
-                field = "uniprotkb_id"
+            from ._bionty import get_source_record
+
+            public = cls.public(organism=organism, source=source)
+            # TODO: consider StaticReference
+            source_record = get_source_record(public)  # type:ignore
+            df = public.df().reset_index()
+            if hasattr(cls, "_ontology_id_field"):
+                field = cls._ontology_id_field
             else:
-                raise NotImplementedError(f"save_from_df not implemented for {cls}")
+                raise NotImplementedError(
+                    f"import_from_source is not implemented for {cls.__name__}"
+                )
             records = cls.from_values(
-                ontology_ids or df[field], field=field, organism=organism, source=source
+                ontology_ids or df[field],
+                field=field,
+                organism=organism,
+                source=source_record,
             )
             ln.save(records, ignore_conflicts=ignore_conflicts)
 
             if ontology_ids is None and len(records) > 0:
-                current_source = records[0].source
-                current_source.in_db = True
-                current_source.save()
+                source_record.in_db = True
+                source_record.save()
 
     @classmethod
     def public(
@@ -313,6 +317,7 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
     id = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid = models.CharField(unique=True, max_length=8, default=ids.ontology)
+    """A universal id (hash of selected field)."""
     name = models.CharField(max_length=64, db_index=True, default=None, unique=True)
     """Name of a organism, required field."""
     ontology_id = models.CharField(
@@ -544,6 +549,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        unique_together = (("name", "organism"),)
 
     _name_field: str = "name"
     _ontology_id_field: str = "name"
@@ -552,7 +558,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
     """Internal id, valid only in one DB instance."""
     uid = models.CharField(unique=True, max_length=12, default=ids.cellmarker)
     """A universal id (hash of selected field)."""
-    name = models.CharField(max_length=64, db_index=True, default=None, unique=True)
+    name = models.CharField(max_length=64, db_index=True)
     """Unique name of the cell marker."""
     synonyms = models.TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this cell marker."""
