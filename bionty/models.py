@@ -164,27 +164,29 @@ class BioRecord(Record, HasParents, CanValidate):
         else:
             import lamindb as ln
 
-            df = cls.public(organism=organism, source=source).df().reset_index()
-            # TODO: simplify after migration to use _ontology_id_field
-            if cls.__name__ == "CellMarker":
-                field = "name"
-            elif cls.__name__ == "Gene":
-                field = "ensembl_gene_id"
-            elif cls.__name__ == "Protein":
-                field = "uniprotkb_id"
+            from ._bionty import get_source_record
+
+            public = cls.public(organism=organism, source=source)
+            # TODO: consider StaticReference
+            source_record = get_source_record(public)  # type:ignore
+            df = public.df().reset_index()
+            if hasattr(cls, "_ontology_id_field"):
+                field = cls._ontology_id_field
             else:
                 raise NotImplementedError(
-                    f"import_from_source not implemented for {cls}"
+                    f"import_from_source is not implemented for {cls.__name__}"
                 )
             records = cls.from_values(
-                ontology_ids or df[field], field=field, organism=organism, source=source
+                ontology_ids or df[field],
+                field=field,
+                organism=organism,
+                source=source_record,
             )
             ln.save(records, ignore_conflicts=ignore_conflicts)
 
             if ontology_ids is None and len(records) > 0:
-                current_source = records[0].source
-                current_source.in_db = True
-                current_source.save()
+                source_record.in_db = True
+                source_record.save()
 
     @classmethod
     def public(
