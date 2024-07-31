@@ -18,7 +18,7 @@ def display_available_sources() -> pd.DataFrame:
     return parse_sources_yaml(settings.local_sources).set_index("entity")  # type: ignore
 
 
-# This function naming is consistent with the `currently_used` field in PublicSource SQL table
+# This function naming is consistent with the `currently_used` field in Source SQL table
 # Do not rename!
 def display_currently_used_sources() -> pd.DataFrame:
     """Displays all currently used sources.

@@ -75,7 +75,7 @@ class PublicOntology:
                     f"please consider:\n"
                     f"    close your instance via `lamin close` and use Bionty stand alone\n"
                     f"    OR\n"
-                    f"    modify currently_used {self.__class__.__name__} source in `bionty.PublicSource`"
+                    f"    modify currently_used {self.__class__.__name__} source in `bionty.Source`"
                 )
                 # fmt: on
 
