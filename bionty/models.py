@@ -313,6 +313,7 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
     id = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid = models.CharField(unique=True, max_length=8, default=ids.ontology)
+    """A universal id (hash of selected field)."""
     name = models.CharField(max_length=64, db_index=True, default=None, unique=True)
     """Name of a organism, required field."""
     ontology_id = models.CharField(
@@ -544,6 +545,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        unique_together = (("name", "organism"),)
 
     _name_field: str = "name"
     _ontology_id_field: str = "name"
@@ -552,7 +554,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
     """Internal id, valid only in one DB instance."""
     uid = models.CharField(unique=True, max_length=12, default=ids.cellmarker)
     """A universal id (hash of selected field)."""
-    name = models.CharField(max_length=64, db_index=True, default=None, unique=True)
+    name = models.CharField(max_length=64, db_index=True)
     """Unique name of the cell marker."""
     synonyms = models.TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this cell marker."""
