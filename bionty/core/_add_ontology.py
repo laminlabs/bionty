@@ -26,7 +26,8 @@ def get_all_ancestors(df: pd.DataFrame, ontology_ids: Iterable[str]) -> Set[str]
 
 
 def prepare_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    if df.index.name != "ontology_id" and "ontology_id" in df.columns:
+    df = df.reset_index()
+    if "ontology_id" in df.columns:
         return df.set_index("ontology_id")
     return df
 
@@ -136,14 +137,14 @@ def add_ontology_from_df(
     ]
     registry.objects.bulk_create(records, ignore_conflicts=ignore_conflicts)
 
-    all_records = registry.filter().all()
+    # all records of the source in the database
+    all_records = registry.filter(source=source_record).all()
     link_records = create_link_records(registry, df_all, all_records)
     ln.save(link_records, ignore_conflicts=ignore_conflicts)
 
     if ontology_ids is None and len(records) > 0:
-        current_source = records[0].source
-        current_source.in_db = True
-        current_source.save()
+        source_record.in_db = True
+        source_record.save()
 
 
 def add_ontology(
@@ -155,7 +156,7 @@ def add_ontology(
     registry = records[0]._meta.model
     source = source or records[0].source
     if hasattr(registry, "organism_id"):
-        organism = organism or records[0].organism_id
+        organism = organism or records[0].organism
     ontology_ids = [r.ontology_id for r in records]
     add_ontology_from_df(
         registry=registry,
