@@ -3,7 +3,7 @@
 Overview
 ========
 
-- Create records from entries in public ontologies using `.from_public()`.
+- Create records from entries in public ontologies using `.from_source()`.
 - Access full underlying public ontologies via `.public()` to search & bulk-create records.
 - Create in-house ontologies by using hierarchical relationships among records (`.parents`).
 - Use `.synonyms` and `.abbr` to manage synonyms.
@@ -45,7 +45,7 @@ Access public ontologies:
 
 Create records from public ontologies:
 
->>> cell_type = bt.CellType.from_public(ontology_id="CL:0000037")
+>>> cell_type = bt.CellType.from_source(ontology_id="CL:0000037")
 >>> cell_type.save()
 
 View ontological hierarchy:

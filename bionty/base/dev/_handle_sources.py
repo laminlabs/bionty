@@ -76,7 +76,7 @@ def create_or_update_sources_local_yaml(overwrite: bool = True) -> None:
         versions_header.update(versions)
         write_yaml(versions_header, settings.local_sources)
     else:
-        update_local_from_public_sources_yaml()
+        update_local_sources_yaml()
 
 
 def parse_sources_yaml(
@@ -168,7 +168,7 @@ def records_diff_btw_yamls(
     return additional_records
 
 
-def update_local_from_public_sources_yaml() -> None:
+def update_local_sources_yaml() -> None:
     """Update settings.local_sources to add additional entries from settings.public_sources."""
     additional_records = records_diff_btw_yamls(
         settings.public_sources, settings.local_sources

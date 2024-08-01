@@ -33,7 +33,7 @@ def create_or_get_organism_record(
             except ObjectDoesNotExist:
                 try:
                     # create a organism record from bionty reference
-                    organism_record = Organism.from_public(name=organism)
+                    organism_record = Organism.from_source(name=organism)
                     # link the organism record to the default bionty source
                     organism_record.source = get_source_record(bionty_base.Organism())  # type:ignore
                     organism_record.save()  # type:ignore
