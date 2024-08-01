@@ -3,7 +3,29 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
+import bionty
 import bionty.ids
+from bionty._bionty import encode_uid, list_biorecord_models
+
+
+def prepend_bionty_to_entity(apps, schema_editor):
+    bionty_models = list_biorecord_models(bionty)
+    Source = apps.get_model("bionty", "Source")
+    for source in Source.objects.all():
+        if source.entity in bionty_models and not source.entity.startswith("bionty."):
+            # append bionty to entity
+            source.entity = f"bionty.{source.entity}"
+            # re-encode uid
+            source.uid = encode_uid(
+                Source,
+                {
+                    "entity": source.entity,
+                    "name": source.name,
+                    "organism": source.organism,
+                    "version": source.version,
+                },
+            )
+            source.save()
 
 
 class Migration(migrations.Migration):
@@ -61,4 +83,5 @@ class Migration(migrations.Migration):
                 default=bionty.ids.source, max_length=4, unique=True
             ),
         ),
+        migrations.RunPython(prepend_bionty_to_entity),
     ]
