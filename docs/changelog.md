@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Version
 --- | --- | --- | --- | ---
+♻️ Refactor Source model | [25](https://github.com/laminlabs/bionty/pull/25) | [sunnyosun](https://github.com/sunnyosun) | 2024-08-01 |
 🚚 Rename from_public to from_source | [24](https://github.com/laminlabs/bionty/pull/24) | [sunnyosun](https://github.com/sunnyosun) | 2024-08-01 |
 🚚 Rename save_from_df to import_from_source | [23](https://github.com/laminlabs/bionty/pull/23) | [sunnyosun](https://github.com/sunnyosun) | 2024-07-31 |
 🎨 Make `CellMarker.name` unique together with `organism` | [22](https://github.com/laminlabs/bionty/pull/22) | [sunnyosun](https://github.com/sunnyosun) | 2024-07-31 |
