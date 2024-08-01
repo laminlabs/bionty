@@ -193,7 +193,7 @@ class BioRecord(Record, HasParents, CanValidate):
         cls,
         organism: str | Record | None = None,
         source: Source | None = None,
-    ) -> StaticReference | PublicOntology:
+    ) -> PublicOntology | StaticReference:
         """The corresponding PublicOntology object.
 
         Note that the source is auto-configured and tracked via :meth:`bionty.Source`.
@@ -237,7 +237,7 @@ class BioRecord(Record, HasParents, CanValidate):
     def from_source(
         cls, *, mute: bool = False, **kwargs
     ) -> BioRecord | list[BioRecord] | None:
-        """Create a record or records from public reference based on a single field value.
+        """Create a record or records from source based on a single field value.
 
         Notes:
             For more info, see tutorial :doc:`docs:bionty`
@@ -277,6 +277,25 @@ class BioRecord(Record, HasParents, CanValidate):
                 return None
             else:
                 return results
+
+    # deprecated
+    @classmethod
+    def from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
+        """Create a record or records from public reference based on a single field value.
+
+        Notes:
+            For more info, see tutorial :doc:`docs:bionty`
+
+            Bulk create protein records via :meth:`~docs:lamindb.core.Record.from_values`.
+
+        Examples:
+            Create a record by passing a field value:
+
+            >>> record = bionty.Gene.from_public(symbol="TCF7", organism="human")
+
+        """
+        logger.warning("`.from_public()` is deprecated, use `.from_source()`!'")
+        return cls.from_source(*args, **kwargs)
 
     def save(self, *args, **kwargs) -> BioRecord:
         """Save the record and its parents recursively."""
