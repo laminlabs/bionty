@@ -215,7 +215,7 @@ class BioRecord(Record, HasParents, CanValidate):
 
         if source is not None:
             organism = source.organism
-            source_name = source.source
+            source_name = source.name
             version = source.version
         else:
             from .core._settings import settings
