@@ -128,7 +128,7 @@ class BioRecord(Record, HasParents, CanValidate):
         filters = {}
         if currently_used is not None:
             filters["currently_used"] = currently_used
-        return Source.filter(entity=cls.__name__, **filters)
+        return Source.filter(name=cls.__get_name_with_schema__(), **filters)
 
     @classmethod
     def import_from_source(
