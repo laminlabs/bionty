@@ -76,12 +76,5 @@ class Migration(migrations.Migration):
             name="entity",
             field=models.CharField(db_index=True, max_length=256),
         ),
-        migrations.AlterField(
-            model_name="source",
-            name="uid",
-            field=models.CharField(
-                default=bionty.ids.source, max_length=4, unique=True
-            ),
-        ),
         migrations.RunPython(prepend_bionty_to_entity),
     ]
