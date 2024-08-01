@@ -10,7 +10,7 @@ from bionty.base.dev._handle_sources import (
     parse_sources_yaml,
     records_diff_btw_yamls,
     reset_sources,
-    update_local_from_public_sources_yaml,
+    update_local_sources_yaml,
 )
 from bionty.base.dev._io import load_yaml, write_yaml
 
@@ -209,11 +209,11 @@ def test_add_records_to_existing_dict(new_versions_yaml_replica, versions_yaml_r
     }
 
 
-def test_update_local_from_public_sources_yaml():
+def test_update_local_sources_yaml():
     local_dict = load_yaml(settings.local_sources)
     local_dict.pop("Organism")
     write_yaml(local_dict, settings.local_sources)
-    update_local_from_public_sources_yaml()
+    update_local_sources_yaml()
 
 
 def test_reset_sources(monkeypatch):

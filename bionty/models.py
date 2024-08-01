@@ -41,7 +41,7 @@ class BioRecord(Record, HasParents, CanValidate):
     """Base Record of bionty.
 
     BioRecord inherits all methods from :class:`~lamindb.core.Record` and provides additional methods
-    including :meth:`~bionty.core.BioRecord.public` and :meth:`~bionty.core.BioRecord.from_public`.
+    including :meth:`~bionty.core.BioRecord.public` and :meth:`~bionty.core.BioRecord.from_source`.
 
     Notes:
         For more info, see tutorials:
@@ -193,7 +193,7 @@ class BioRecord(Record, HasParents, CanValidate):
         cls,
         organism: str | Record | None = None,
         source: Source | None = None,
-    ) -> StaticReference | PublicOntology:
+    ) -> PublicOntology | StaticReference:
         """The corresponding PublicOntology object.
 
         Note that the source is auto-configured and tracked via :meth:`bionty.Source`.
@@ -234,10 +234,10 @@ class BioRecord(Record, HasParents, CanValidate):
             return StaticReference(source)
 
     @classmethod
-    def from_public(
+    def from_source(
         cls, *, mute: bool = False, **kwargs
     ) -> BioRecord | list[BioRecord] | None:
-        """Create a record or records from public reference based on a single field value.
+        """Create a record or records from source based on a single field value.
 
         Notes:
             For more info, see tutorial :doc:`docs:bionty`
@@ -247,12 +247,12 @@ class BioRecord(Record, HasParents, CanValidate):
         Examples:
             Create a record by passing a field value:
 
-            >>> record = bionty.Gene.from_public(symbol="TCF7", organism="human")
+            >>> record = bionty.Gene.from_source(symbol="TCF7", organism="human")
 
             Create a record from non-default source:
 
             >>> source = bionty.Source.filter(entity="CellType", source="cl", version="2022-08-16").one()  # noqa
-            >>> record = bionty.CellType.from_public(name="T cell", source=source)
+            >>> record = bionty.CellType.from_source(name="T cell", source=source)
 
         """
         # non-relationship kwargs
@@ -277,6 +277,25 @@ class BioRecord(Record, HasParents, CanValidate):
                 return None
             else:
                 return results
+
+    # deprecated
+    @classmethod
+    def from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
+        """Create a record or records from public reference based on a single field value.
+
+        Notes:
+            For more info, see tutorial :doc:`docs:bionty`
+
+            Bulk create protein records via :meth:`~docs:lamindb.core.Record.from_values`.
+
+        Examples:
+            Create a record by passing a field value:
+
+            >>> record = bionty.Gene.from_public(symbol="TCF7", organism="human")
+
+        """
+        logger.warning("`.from_public()` is deprecated, use `.from_source()`!'")
+        return cls.from_source(*args, **kwargs)
 
     def save(self, *args, **kwargs) -> BioRecord:
         """Save the record and its parents recursively."""
@@ -305,7 +324,7 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
 
 
     Examples:
-        >>> record = bionty.Organism.from_public(name="rabbit")
+        >>> record = bionty.Organism.from_source(name="rabbit")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -374,7 +393,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         Bulk create Gene records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
-        >>> record = bionty.Gene.from_public(symbol="TCF7", organism="human")
+        >>> record = bionty.Gene.from_source(symbol="TCF7", organism="human")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -459,8 +478,8 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
         Bulk create Protein records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
-        >>> record = bionty.Protein.from_public(name="Synaptotagmin-15B", organism="human")
-        >>> record = bionty.Protein.from_public(gene_symbol="SYT15B", organism="human")
+        >>> record = bionty.Protein.from_source(name="Synaptotagmin-15B", organism="human")
+        >>> record = bionty.Protein.from_source(gene_symbol="SYT15B", organism="human")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -544,7 +563,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         Bulk create CellMarker records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
-        >>> record = bionty.CellMarker.from_public(name="PD1", organism="human")
+        >>> record = bionty.CellMarker.from_source(name="PD1", organism="human")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -632,7 +651,7 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
         Bulk create Tissue records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
-        >>> record = bionty.Tissue.from_public(name="brain")
+        >>> record = bionty.Tissue.from_source(name="brain")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -706,7 +725,7 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
         Bulk create CellType records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
-        >>> record = bionty.CellType.from_public(name="T cell")
+        >>> record = bionty.CellType.from_source(name="T cell")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -780,7 +799,7 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
         For more info, see tutorials: :doc:`docs:disease`.
 
     Examples:
-        >>> record = bionty.Disease.from_public(name="Alzheimer disease")
+        >>> record = bionty.Disease.from_source(name="Alzheimer disease")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -855,7 +874,7 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
 
     Examples:
         >>> standard_name = bionty.CellLine.public().standardize(["K562"])[0]
-        >>> record = bionty.CellLine.from_public(name=standard_name)
+        >>> record = bionty.CellLine.from_source(name=standard_name)
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -932,7 +951,7 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
         Bulk create Phenotype records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
-        >>> record = bionty.Phenotype.from_public(name="Arachnodactyly")
+        >>> record = bionty.Phenotype.from_source(name="Arachnodactyly")
         >>> record.save()
     """
 
@@ -1008,7 +1027,7 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
         Bulk create Pathway records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
-        >>> record = bionty.Pathway.from_public(ontology_id="GO:1903353")
+        >>> record = bionty.Pathway.from_source(ontology_id="GO:1903353")
         >>> record.save()
     """
 
@@ -1090,7 +1109,7 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
 
     Examples:
         >>> standard_name = bionty.ExperimentalFactor.public().standardize(["scRNA-seq"])
-        >>> record = bionty.ExperimentalFactor.from_public(name=standard_name)
+        >>> record = bionty.ExperimentalFactor.from_source(name=standard_name)
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -1175,7 +1194,7 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
         Bulk create DevelopmentalStage records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
-        >>> record = bionty.DevelopmentalStage.from_public(name="neurula stage")
+        >>> record = bionty.DevelopmentalStage.from_source(name="neurula stage")
         >>> record.save()
     """
 
@@ -1254,7 +1273,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         Bulk create Ethnicity records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
-        >>> record = bionty.Ethnicity.from_public(name="European")
+        >>> record = bionty.Ethnicity.from_source(name="European")
         >>> record.save()
     """
 
