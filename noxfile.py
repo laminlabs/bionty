@@ -12,7 +12,9 @@ def lint(session: nox.Session) -> None:
 @nox.session
 @nox.parametrize("group", ["bionty-unit", "bionty-docs"])
 def build(session: nox.Session, group: str):
-    session.run(*"pip install git+https://github.com/laminlabs/lamindb@main".split())
+    session.run(
+        *"pip install git+https://github.com/laminlabs/lamindb@refactor_source".split()
+    )
     session.run(
         *"pip install git+https://github.com/laminlabs/lamindb-setup@refactor_source".split()
     )
