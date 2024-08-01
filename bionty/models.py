@@ -34,7 +34,7 @@ class StaticReference:
         self._source = source_record
 
     def df(self) -> DataFrame:
-        return self._source.df.load()
+        return self._source.dataframe_artifact.load()
 
 
 class BioRecord(Record, HasParents, CanValidate):
@@ -115,15 +115,15 @@ class BioRecord(Record, HasParents, CanValidate):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def sources(cls, currently_used: bool = None) -> Source:
+    def list_source(cls, currently_used: bool = None) -> Source:
         """Default source for the registry.
 
         Args:
             currently_used: Only returns currently used sources
 
         Examples:
-            >>> bionty.Gene.sources()
-            >>> bionty.Gene.sources(currently_used=True)
+            >>> bionty.Gene.list_source()
+            >>> bionty.Gene.list_source(currently_used=True)
         """
         filters = {}
         if currently_used is not None:
