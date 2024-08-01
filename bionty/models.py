@@ -1349,7 +1349,7 @@ class Source(Record, TracksRun, TracksUpdates):
         Do not modify the records unless you know what you are doing!
     """
 
-    _name_field: str = "source"
+    _name_field: str = "name"
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
@@ -1357,13 +1357,13 @@ class Source(Record, TracksRun, TracksUpdates):
 
     id = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid = models.CharField(unique=True, max_length=8, default=ids.source)
+    uid = models.CharField(unique=True, max_length=4, default=ids.source)
     """A universal id (hash of selected field)."""
-    entity = models.CharField(max_length=64, db_index=True)
+    entity = models.CharField(max_length=256, db_index=True)
     """Entity class name."""
     organism = models.CharField(max_length=64, db_index=True)
     """Organism name, use 'all' if unknown or none applied."""
-    source = models.CharField(max_length=64, db_index=True)
+    name = models.CharField(max_length=64, db_index=True)
     """Source name, short form, CURIE prefix for ontologies."""
     version = models.CharField(max_length=64, db_index=True)
     """Version of the source."""
@@ -1371,7 +1371,7 @@ class Source(Record, TracksRun, TracksUpdates):
     """Whether this ontology has be added to the database."""
     currently_used = models.BooleanField(default=False, db_index=True)
     """Whether this record is currently used."""
-    source_name = models.TextField(blank=True, db_index=True)
+    description = models.TextField(blank=True, db_index=True)
     """Source full name, long form."""
     url = models.TextField(null=True, default=None)
     """URL of the source file."""
@@ -1379,11 +1379,11 @@ class Source(Record, TracksRun, TracksUpdates):
     """Hash md5 of the source file."""
     source_website = models.TextField(null=True, default=None)
     """Website of the source."""
-    df = models.ForeignKey(
-        Artifact, PROTECT, null=True, default=None, related_name="reference_of_source"
+    dataframe_artifact = models.ForeignKey(
+        Artifact, PROTECT, null=True, default=None, related_name="source_dataframe_of"
     )
     """Dataframe artifact that corresponds to this source."""
-    artifacts = models.ManyToManyField(Artifact, related_name="reference_of_sources")
+    artifacts = models.ManyToManyField(Artifact, related_name="source_artifact_of")
     """Additional files that correspond to this source."""
 
     @overload
