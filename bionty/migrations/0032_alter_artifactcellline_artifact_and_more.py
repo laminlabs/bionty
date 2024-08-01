@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("bionty", "0030_rename_publicsource_source_and_more"),
+        ("bionty", "0031_alter_cellmarker_name_and_more"),
     ]
 
     operations = [
