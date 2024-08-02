@@ -61,13 +61,13 @@ def get_source_record(public_ontology: bionty_base.PublicOntology):
     from .models import Source
 
     bionty_models = list_biorecord_models(bionty)
-    name = public_ontology.source
-    if name in bionty_models:
-        name = f"bionty.{name}"
+    entity_name = public_ontology.__class__.__name__
+    if entity_name in bionty_models:
+        entity_name = f"bionty.{entity_name}"
     kwargs = {
-        "entity": f"bionty.{public_ontology.__class__.__name__}",
+        "entity": entity_name,
         "organism": public_ontology.organism,
-        "name": name,
+        "name": public_ontology.source,
         "version": public_ontology.version,
     }
 
