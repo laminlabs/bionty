@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Tuple, overload
+from typing import TYPE_CHECKING, List, Optional, Tuple, overload
 
 import numpy as np
 from django.db import models
@@ -34,7 +34,7 @@ class StaticReference:
         self._source = source_record
 
     def df(self) -> DataFrame:
-        return self._source.df.load()
+        return self._source.dataframe_artifact.load()
 
 
 class BioRecord(Record, HasParents, CanValidate):
@@ -115,20 +115,29 @@ class BioRecord(Record, HasParents, CanValidate):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def sources(cls, currently_used: bool = None) -> Source:
+    def list_source(
+        cls,
+        currently_used: bool | None = None,
+        in_db: bool | None = None,
+        organism: str | None = None,
+    ) -> Source:
         """Default source for the registry.
 
         Args:
             currently_used: Only returns currently used sources
 
         Examples:
-            >>> bionty.Gene.sources()
-            >>> bionty.Gene.sources(currently_used=True)
+            >>> bionty.Gene.list_source()
+            >>> bionty.Gene.list_source(currently_used=True)
         """
         filters = {}
         if currently_used is not None:
             filters["currently_used"] = currently_used
-        return Source.filter(entity=cls.__name__, **filters)
+        if in_db is not None:
+            filters["in_db"] = in_db
+        if organism is not None:
+            filters["organism"] = organism  # type:ignore
+        return Source.filter(entity=cls.__get_name_with_schema__(), **filters)
 
     @classmethod
     def import_from_source(
@@ -215,7 +224,7 @@ class BioRecord(Record, HasParents, CanValidate):
 
         if source is not None:
             organism = source.organism
-            source_name = source.source
+            source_name = source.name
             version = source.version
         else:
             from .core._settings import settings
@@ -1349,7 +1358,7 @@ class Source(Record, TracksRun, TracksUpdates):
         Do not modify the records unless you know what you are doing!
     """
 
-    _name_field: str = "source"
+    _name_field: str = "name"
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
@@ -1359,11 +1368,11 @@ class Source(Record, TracksRun, TracksUpdates):
     """Internal id, valid only in one DB instance."""
     uid = models.CharField(unique=True, max_length=8, default=ids.source)
     """A universal id (hash of selected field)."""
-    entity = models.CharField(max_length=64, db_index=True)
+    entity = models.CharField(max_length=256, db_index=True)
     """Entity class name."""
     organism = models.CharField(max_length=64, db_index=True)
     """Organism name, use 'all' if unknown or none applied."""
-    source = models.CharField(max_length=64, db_index=True)
+    name = models.CharField(max_length=64, db_index=True)
     """Source name, short form, CURIE prefix for ontologies."""
     version = models.CharField(max_length=64, db_index=True)
     """Version of the source."""
@@ -1371,7 +1380,7 @@ class Source(Record, TracksRun, TracksUpdates):
     """Whether this ontology has be added to the database."""
     currently_used = models.BooleanField(default=False, db_index=True)
     """Whether this record is currently used."""
-    source_name = models.TextField(blank=True, db_index=True)
+    description = models.TextField(blank=True, db_index=True)
     """Source full name, long form."""
     url = models.TextField(null=True, default=None)
     """URL of the source file."""
@@ -1379,11 +1388,11 @@ class Source(Record, TracksRun, TracksUpdates):
     """Hash md5 of the source file."""
     source_website = models.TextField(null=True, default=None)
     """Website of the source."""
-    df = models.ForeignKey(
-        Artifact, PROTECT, null=True, default=None, related_name="reference_of_source"
+    dataframe_artifact = models.ForeignKey(
+        Artifact, PROTECT, null=True, default=None, related_name="source_dataframe_of"
     )
     """Dataframe artifact that corresponds to this source."""
-    artifacts = models.ManyToManyField(Artifact, related_name="reference_of_sources")
+    artifacts = models.ManyToManyField(Artifact, related_name="source_artifact_of")
     """Additional files that correspond to this source."""
 
     @overload

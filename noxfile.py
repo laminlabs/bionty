@@ -12,12 +12,13 @@ def lint(session: nox.Session) -> None:
 @nox.session
 @nox.parametrize("group", ["bionty-unit", "bionty-docs"])
 def build(session: nox.Session, group: str):
-    session.run(*"uv pip install --system -e .[dev]".split())
-    session.run(*"pip install git+https://github.com/laminlabs/lamindb@main".split())
     session.run(
         *"pip install git+https://github.com/laminlabs/lamindb-setup@main".split()
     )
+    session.run(*"pip install git+https://github.com/laminlabs/lamindb@main".split())
     # session.run(*"pip install git+https://github.com/laminlabs/lnschema-core".split())
+    session.run(*"uv pip install --system -e .[dev]".split())
+
     coverage_args = "--cov=bionty --cov-append --cov-report=term-missing"
     if group == "bionty-unit":
         session.run(*f"pytest {coverage_args} ./tests".split())
