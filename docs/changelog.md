@@ -3,6 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Version
 --- | --- | --- | --- | ---
+🚚 Let all link model fields start with `links_` | [19](https://github.com/laminlabs/bionty/pull/19) | [falexwolf](https://github.com/falexwolf) | 2024-08-02 |
 🚚 Rename `.sources()` to `.list_source()` | [27](https://github.com/laminlabs/bionty/pull/27) | [sunnyosun](https://github.com/sunnyosun) | 2024-08-01 |
 ♻️ Refactor Source model | [25](https://github.com/laminlabs/bionty/pull/25) | [sunnyosun](https://github.com/sunnyosun) | 2024-08-01 |
 🚚 Rename from_public to from_source | [24](https://github.com/laminlabs/bionty/pull/24) | [sunnyosun](https://github.com/sunnyosun) | 2024-08-01 |
