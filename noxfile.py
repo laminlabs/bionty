@@ -15,10 +15,10 @@ def build(session: nox.Session, group: str):
     session.run(
         *"pip install git+https://github.com/laminlabs/lamindb-setup@main".split()
     )
-    session.run(*"pip install git+https://github.com/laminlabs/lamindb@main".split())
     session.run(
         *"pip install git+https://github.com/laminlabs/lnschema-core@main".split()
     )
+    session.run(*"pip install git+https://github.com/laminlabs/lamindb@main".split())
     session.run(*"uv pip install --system -e .[dev]".split())
 
     coverage_args = "--cov=bionty --cov-append --cov-report=term-missing"
