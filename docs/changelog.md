@@ -3,7 +3,7 @@
 <!-- prettier-ignore -->
 Name | PR | Developer | Date | Version
 --- | --- | --- | --- | ---
-🎨 Fix get_source | [29](https://github.com/laminlabs/bionty/pull/29) | [sunnyosun](https://github.com/sunnyosun) | 2024-08-02 |
+🎨 Fix get_source | [29](https://github.com/laminlabs/bionty/pull/29) | [sunnyosun](https://github.com/sunnyosun) | 2024-08-02 | 0.47.1
 🐛 Fix source unique together | [28](https://github.com/laminlabs/bionty/pull/28) | [sunnyosun](https://github.com/sunnyosun) | 2024-08-02 |
 🚚 Let all link model fields start with `links_` | [19](https://github.com/laminlabs/bionty/pull/19) | [falexwolf](https://github.com/falexwolf) | 2024-08-02 |
 🚚 Rename `.sources()` to `.list_source()` | [27](https://github.com/laminlabs/bionty/pull/27) | [sunnyosun](https://github.com/sunnyosun) | 2024-08-01 |
