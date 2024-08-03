@@ -11,7 +11,7 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     env:
       GITHUB_EVENT_NAME: ${{ github.event_name }}
     strategy:
@@ -22,37 +22,26 @@ jobs:
     timeout-minutes: 25
 
     steps:
-      - name: Checkout main
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          fetch-depth: 0
-      - name: Checkout lndocs
+      - uses: actions/checkout@v4
+      - name: checkout lndocs
         uses: actions/checkout@v4
         with:
           repository: laminlabs/lndocs
           ssh-key: ${{ secrets.READ_LNDOCS }}
           path: lndocs
           ref: main
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Cache pre-commit
-        uses: actions/cache@v3
+      - uses: actions/cache@v3
         with:
           path: ~/.cache/pre-commit
           key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install -U pip uv
-          python -m uv pip install --system -U laminci
-          python -m uv pip install --system rich
-          python -m uv pip install --system ipywidgets
-
-      - name: Configure AWS
-        uses: aws-actions/configure-aws-credentials@v1
+      - run: pip install "laminci@git+https://x-access-token:${{ secrets.LAMIN_BUILD_DOCS }}@github.com/laminlabs/laminci"
+      - run: |
+          uv pip install --system rich
+          uv pip install --system ipywidgets
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -60,21 +49,20 @@ jobs:
       - run: nox -s lint
         if: matrix.python-version == '3.10' && matrix.group == 'bionty-unit'
       - run: nox -s "build(group='${{ matrix.group }}')"
-      - name: upload coverage
-        uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v2
         with:
           name: coverage--${{ matrix.group }}
           path: .coverage
-      - uses: cloudflare/pages-action@v1
+      - uses: nwtgck/actions-netlify@v1.2
         if: ${{ matrix.python-version == '3.10' && matrix.group == 'bionty-docs' }}
-        id: cloudflare
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: 472bdad691b4483dea759eadb37110bd
-          projectName: bionty-base
-          directory: "_build/html"
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          wranglerVersion: "3"
+          publish-dir: "_build/html"
+          production-deploy: ${{ github.event_name == 'push' }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          enable-commit-comment: false
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
   coverage:
     needs: test
@@ -85,7 +73,7 @@ jobs:
         with:
           python-version: "3.10"
       - run: |
-          python -m pip install -U pip uv
+          pip install -U pip uv
           uv pip install --system coverage[toml]
           uv pip install --system --no-deps .
       - uses: actions/download-artifact@v2
