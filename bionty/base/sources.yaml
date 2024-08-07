@@ -305,6 +305,9 @@ Phenotype:
     website: https://phewascatalog.org/phecodes_icd10
   pato:
     all:
+      2024-03-28:
+        url: http://purl.obolibrary.org/obo/pato/releases/2024-03-28/pato.owl
+        md5: 6b1eaacd3d453b34375ce2e31c16328a
       2023-05-18:
         url: http://purl.obolibrary.org/obo/pato/releases/2023-05-18/pato.owl
         md5: bd472f4971492109493d4ad8a779a8dd
