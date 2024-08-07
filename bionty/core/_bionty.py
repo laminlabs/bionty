@@ -2,6 +2,7 @@ from typing import Type
 
 import pandas as pd
 from lamin_utils import logger
+from lamindb_setup.core._setup_bionty_sources import RENAME
 from lnschema_core.models import Record
 
 import bionty.base as bionty_base
@@ -14,29 +15,41 @@ def sync_all_sources_to_latest():
         >>> from bionty.core import sync_all_sources_to_latest
         >>> sync_all_sources_to_latest()
     """
+    import lamindb as ln
+
     from bionty.models import Source
 
-    records = Source.filter().all()
-    df_sources = bionty_base.display_available_sources().reset_index()
-    for _, row in df_sources.iterrows():
-        record = records.filter(
-            source=row.source,
-            version=row.version,
-            entity=row.entity,
-            organism=row.organism,
-        ).all()
-        if len(record) == 0:
-            record = Source(**row.to_dict())
-            record.save()
-            logger.success(f"added {record}")
-        else:
-            # update metadata fields
-            record.update(**row.to_dict())
-            logger.success(f"updated {record.one()}")
-    logger.info("setting the latest version as currently_used...")
-    set_latest_sources_as_currently_used()
-    logger.success("synced up Source registry with the latest available sources")
-    logger.warning("please reload your instance to reflect the updates!")
+    try:
+        ln.settings.creation.search_names = False
+        records = Source.filter().all()
+        df_sources = bionty_base.display_available_sources().reset_index()
+        for _, row in df_sources.iterrows():
+            kwargs = row.to_dict()
+            for db_name, base_name in RENAME.items():
+                if base_name in kwargs:
+                    kwargs[db_name] = kwargs.pop(base_name)
+            if not kwargs["entity"].startswith("bionty."):
+                kwargs["entity"] = "bionty." + kwargs["entity"]
+            record = records.filter(
+                name=kwargs["name"],
+                version=kwargs["version"],
+                entity=kwargs["entity"],
+                organism=kwargs["organism"],
+            ).all()
+            if len(record) == 0:
+                record = Source(**kwargs)
+                record.save()
+                logger.success(f"added {record}")
+            else:
+                # update metadata fields
+                record.update(**kwargs)
+                logger.success(f"updated {record.one()}")
+        logger.info("setting the latest version as currently_used...")
+        set_latest_sources_as_currently_used()
+        logger.success("synced up Source registry with the latest available sources")
+        logger.warning("please reload your instance to reflect the updates!")
+    finally:
+        ln.settings.creation.search_names = True
 
 
 def set_latest_sources_as_currently_used():

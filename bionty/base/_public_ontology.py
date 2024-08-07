@@ -69,15 +69,16 @@ class PublicOntology:
             organism = current.get("organism")
         except ValueError:
             if LAMINDB_INSTANCE_LOADED():
-                logger.warning("loading non-default source inside a LaminDB instance")
-                # fmt: off
-                logger.hint(
-                    f"please consider:\n"
-                    f"    close your instance via `lamin close` and use Bionty stand alone\n"
-                    f"    OR\n"
-                    f"    modify currently_used {self.__class__.__name__} source in `bionty.PublicSource`"
-                )
-                # fmt: on
+                pass
+                # logger.warning("loading non-default source inside a LaminDB instance")
+                # # fmt: off
+                # logger.hint(
+                #     f"please consider:\n"
+                #     f"    close your instance via `lamin close` and use Bionty stand alone\n"
+                #     f"    OR\n"
+                #     f"    modify currently_used {self.__class__.__name__} source in `bionty.Source`"
+                # )
+                # # fmt: on
 
         # search in all available sources to get url and md5
         self._source_record = self._match_sources(

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from django.core.exceptions import ObjectDoesNotExist
 from lamin_utils import logger
 from lnschema_core.models import Record
@@ -7,6 +9,9 @@ from lnschema_core.models import Record
 import bionty.base as bionty_base
 
 from . import ids
+
+if TYPE_CHECKING:
+    from types import ModuleType
 
 
 def create_or_get_organism_record(
@@ -33,7 +38,7 @@ def create_or_get_organism_record(
             except ObjectDoesNotExist:
                 try:
                     # create a organism record from bionty reference
-                    organism_record = Organism.from_public(name=organism)
+                    organism_record = Organism.from_source(name=organism)
                     # link the organism record to the default bionty source
                     organism_record.source = get_source_record(bionty_base.Organism())  # type:ignore
                     organism_record.save()  # type:ignore
@@ -49,17 +54,39 @@ def create_or_get_organism_record(
     return organism_record
 
 
+# TODO: consider private sources
 def get_source_record(public_ontology: bionty_base.PublicOntology):
+    import bionty
+
+    from .models import Source
+
+    bionty_models = list_biorecord_models(bionty)
+    entity_name = public_ontology.__class__.__name__
+    if entity_name in bionty_models:
+        entity_name = f"bionty.{entity_name}"
     kwargs = {
-        "entity": public_ontology.__class__.__name__,
+        "entity": entity_name,
         "organism": public_ontology.organism,
-        "source": public_ontology.source,
+        "name": public_ontology.source,
         "version": public_ontology.version,
     }
-    from .models import Source
 
     source_record = Source.objects.filter(**kwargs).get()
     return source_record
+
+
+def list_biorecord_models(schema_module: ModuleType):
+    """List all BioRecord models in a given schema module."""
+    import inspect
+
+    from .models import BioRecord
+
+    return [
+        attr
+        for attr in dir(schema_module.models)
+        if inspect.isclass(getattr(schema_module.models, attr))
+        and issubclass(getattr(schema_module.models, attr), BioRecord)
+    ]
 
 
 def encode_uid(orm: Record, kwargs: dict):

@@ -38,7 +38,7 @@ class Settings:
             # do not show the validated message for organism
             verbosity = ln.settings.verbosity
             ln.settings.verbosity = 1
-            organism = Organism.from_public(name=name)
+            organism = Organism.from_source(name=name)
             ln.settings.verbosity = verbosity
             if organism is None:
                 raise ValueError(
