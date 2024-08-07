@@ -253,6 +253,9 @@ ExperimentalFactor:
 Phenotype:
   hp:
     human:
+      2024-04-26:
+        url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2024-04-26/hp.owl
+        md5: e0f2e534eb2ad44a4d45573ef27b508f
       2024-03-06:
         url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2024-03-06/hp.owl
         md5: 36b0d00c24a68edb9131707bc146a4c7
