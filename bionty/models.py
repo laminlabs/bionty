@@ -381,15 +381,13 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
         name: str,
         taxon_id: str | None,
         scientific_name: str | None,
-    ):
-        ...
+    ): ...
 
     @overload
     def __init__(
         self,
         *db_args,
-    ):
-        ...
+    ): ...
 
     def __init__(
         self,
@@ -474,15 +472,13 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         synonyms: str | None,
         organism: Organism | None,
         source: Source | None,
-    ):
-        ...
+    ): ...
 
     @overload
     def __init__(
         self,
         *db_args,
-    ):
-        ...
+    ): ...
 
     def __init__(
         self,
@@ -563,15 +559,13 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
         ensembl_gene_ids: str | None,
         organism: Organism | None,
         source: Source | None,
-    ):
-        ...
+    ): ...
 
     @overload
     def __init__(
         self,
         *db_args,
-    ):
-        ...
+    ): ...
 
     def __init__(
         self,
@@ -651,15 +645,13 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         uniprotkb_id: str | None,
         organism: Organism | None,
         source: Source | None,
-    ):
-        ...
+    ): ...
 
     @overload
     def __init__(
         self,
         *db_args,
-    ):
-        ...
+    ): ...
 
     def __init__(
         self,
@@ -729,15 +721,13 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[Tissue],
         source: Source | None,
-    ):
-        ...
+    ): ...
 
     @overload
     def __init__(
         self,
         *db_args,
-    ):
-        ...
+    ): ...
 
     def __init__(
         self,
@@ -807,15 +797,13 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[CellType],
         source: Source | None,
-    ):
-        ...
+    ): ...
 
     @overload
     def __init__(
         self,
         *db_args,
-    ):
-        ...
+    ): ...
 
     def __init__(
         self,
@@ -885,15 +873,13 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[Disease],
         source: Source | None,
-    ):
-        ...
+    ): ...
 
     @overload
     def __init__(
         self,
         *db_args,
-    ):
-        ...
+    ): ...
 
     def __init__(
         self,
@@ -964,15 +950,13 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[CellLine],
         source: Source | None,
-    ):
-        ...
+    ): ...
 
     @overload
     def __init__(
         self,
         *db_args,
-    ):
-        ...
+    ): ...
 
     def __init__(
         self,
@@ -1046,15 +1030,13 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[Phenotype],
         source: Source | None,
-    ):
-        ...
+    ): ...
 
     @overload
     def __init__(
         self,
         *db_args,
-    ):
-        ...
+    ): ...
 
     def __init__(
         self,
@@ -1132,15 +1114,13 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[Pathway],
         source: Source | None,
-    ):
-        ...
+    ): ...
 
     @overload
     def __init__(
         self,
         *db_args,
-    ):
-        ...
+    ): ...
 
     def __init__(
         self,
@@ -1219,15 +1199,13 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[ExperimentalFactor],
         source: Source | None,
-    ):
-        ...
+    ): ...
 
     @overload
     def __init__(
         self,
         *db_args,
-    ):
-        ...
+    ): ...
 
     def __init__(
         self,
@@ -1301,15 +1279,13 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[DevelopmentalStage],
         source: Source | None,
-    ):
-        ...
+    ): ...
 
     @overload
     def __init__(
         self,
         *db_args,
-    ):
-        ...
+    ): ...
 
     def __init__(
         self,
@@ -1382,15 +1358,13 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[Ethnicity],
         source: Source | None,
-    ):
-        ...
+    ): ...
 
     @overload
     def __init__(
         self,
         *db_args,
-    ):
-        ...
+    ): ...
 
     def __init__(
         self,
@@ -1459,15 +1433,13 @@ class Source(Record, TracksRun, TracksUpdates):
         url: str | None,
         md5: str | None,
         source_website: str | None,
-    ):
-        ...
+    ): ...
 
     @overload
     def __init__(
         self,
         *db_args,
-    ):
-        ...
+    ): ...
 
     def __init__(
         self,

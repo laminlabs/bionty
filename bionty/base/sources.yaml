@@ -155,6 +155,9 @@ CellType:
 Tissue:
   uberon:
     all:
+      2024-05-13:
+        url: http://purl.obolibrary.org/obo/uberon/releases/2024-05-13/uberon.owl
+        md5: dc473b764acfe765be31250c853ef23d
       2024-02-20:
         url: http://purl.obolibrary.org/obo/uberon/releases/2024-02-20/uberon.owl
         md5: 2048667b5fdf93192384bdf53cafba18
@@ -288,6 +291,9 @@ Phenotype:
     website: https://github.com/mgijax/mammalian-phenotype-ontology
   zp:
     zebrafish:
+      2024-04-18:
+        url: https://github.com/obophenotype/zebrafish-phenotype-ontology/releases/download/v2024-04-18/zp.owl
+        md5: 2231ebaa95becf8ff34a33c95a8d4350
       2024-01-22:
         url: https://github.com/obophenotype/zebrafish-phenotype-ontology/releases/download/v2024-01-22/zp.owl
         md5: 01600a5d392419b27fc567362d4cfff8
