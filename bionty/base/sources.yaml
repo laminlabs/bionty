@@ -304,6 +304,9 @@ Phenotype:
 Pathway:
   go:
     all:
+      2024-06-17:
+        url: https://data.bioontology.org/ontologies/GO/submissions/1824/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
+        md5: 7fa7ade5e3e26eab3959a7e4bc89ad4f
       2023-05-10:
         url: https://data.bioontology.org/ontologies/GO/submissions/1814/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
         md5: e9845499eadaef2418f464cd7e9ac92e
