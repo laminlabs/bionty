@@ -6,7 +6,7 @@ from bionty.base.entities._experimentalfactor import _parse_efo_term
 def test_efo_experimental_factor_inspect_ontology_id():
     df = pd.DataFrame(
         index=[
-            "EFO:0011021",
+            "EFO:1002048",
             "EFO:1002050",
             "EFO:1002047",
             "EFO:1002049",
