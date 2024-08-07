@@ -200,6 +200,9 @@ Disease:
     website: https://mondo.monarchinitiative.org
   doid:
     human:
+      2024-05-29:
+        url: http://purl.obolibrary.org/obo/doid/releases/2024-05-29/doid.obo
+        md5: bbefd72247d638edfcd31ec699947407
       2024-01-31:
         url: http://purl.obolibrary.org/obo/doid/releases/2024-01-31/doid.obo
         md5: b36c15a4610757094f8db64b78ae2693
