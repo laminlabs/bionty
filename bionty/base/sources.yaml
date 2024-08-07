@@ -131,7 +131,7 @@ CellType:
     all:
       2024-02-13:
         url: http://purl.obolibrary.org/obo/cl/releases/2024-02-13/cl.owl
-        mod5: d6d962b58c48f372c2c98b71e0833242
+        md5: d6d962b58c48f372c2c98b71e0833242
       2024-01-04:
         url: http://purl.obolibrary.org/obo/cl/releases/2024-01-04/cl.owl
         md5: 46203f72ef94479f69ea9f03982b3c94
