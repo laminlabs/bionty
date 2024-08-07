@@ -24,7 +24,7 @@ repos:
               docs/notes/
           )
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.7
+    rev: v0.5.5
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix, --unsafe-fixes]
@@ -49,5 +49,4 @@ repos:
     hooks:
       - id: mypy
         args: [--no-strict-optional, --ignore-missing-imports]
-        additional_dependencies:
-          ["types-pkg-resources", "types-requests", "types-attrs"]
+        additional_dependencies: ["types-requests", "types-attrs"]
