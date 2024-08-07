@@ -155,6 +155,9 @@ Tissue:
       2024-02-20:
         url: http://purl.obolibrary.org/obo/uberon/releases/2024-02-20/uberon.owl
         md5: 2048667b5fdf93192384bdf53cafba18
+      2024-01-18:
+        url: http://purl.obolibrary.org/obo/uberon/releases/2024-01-18/uberon.owl
+        md5: 9cff222ef07a1f622a6d12775ada650d
       2023-09-05:
         url: http://purl.obolibrary.org/obo/uberon/releases/2023-09-05/uberon.owl
         md5: abcee3ede566d1311d758b853ccdf5aa
