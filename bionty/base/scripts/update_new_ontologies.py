@@ -1,7 +1,7 @@
 from typing import Dict
 
 import bioregistry
-from bionty_base.dev._handle_sources import parse_sources_yaml
+from bionty.base.dev._handle_sources import parse_sources_yaml
 from rich import print
 
 sources = parse_sources_yaml()
