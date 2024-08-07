@@ -175,6 +175,9 @@ Disease:
       2024-02-06:
         url: http://purl.obolibrary.org/obo/mondo/releases/2024-02-06/mondo.owl
         md5: 78914fa236773c5ea6605f7570df6245
+      2024-01-03:
+        url: http://purl.obolibrary.org/obo/mondo/releases/2024-01-03/mondo.owl
+        md5: 73787d81b885cfa1a255ee293e38303d
       2023-08-02:
         url: http://purl.obolibrary.org/obo/mondo/releases/2023-08-02/mondo.owl
         md5: 7f33767422042eec29f08b501fc851db
