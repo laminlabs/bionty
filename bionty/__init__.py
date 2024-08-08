@@ -128,7 +128,7 @@ Bionty base:
    base
 """
 
-__version__ = "0.47.1"
+__version__ = "0.48.0"
 
 from . import base, ids
 
