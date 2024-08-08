@@ -158,6 +158,7 @@ if _check_instance_setup():
         CellLine,
         CellMarker,
         CellType,
+        Compound,
         DevelopmentalStage,
         Disease,
         Ethnicity,

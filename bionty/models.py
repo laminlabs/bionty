@@ -1374,6 +1374,84 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
 
+class Compound(BioRecord, TracksRun, TracksUpdates):
+    """Compound - `Drug Ontology <https://bioportal.bioontology.org/ontologies/DRON>`__.
+
+    Notes:
+        For more info, see tutorials :doc:`bio-registries` and :doc:`docs:compound`.
+        Bulk create Compound records via :class:`~lamindb.core.Record.from_values`.
+
+    Examples:
+        >>> record = bionty.Compound.from_public(name="Aspirin")
+        >>> record.save()
+    """
+
+    class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
+        abstract = False
+        unique_together = (("name", "ontology_id"),)
+
+    _name_field: str = "name"
+    _ontology_id_field: str = "ontology_id"
+
+    id: int = models.AutoField(primary_key=True)
+    """Internal id, valid only in one DB instance."""
+    uid: str = models.CharField(unique=True, max_length=8, default=ids.ontology)
+    """A universal id (hash of selected field)."""
+    name: str = models.CharField(max_length=256, db_index=True)
+    """Name of the compound."""
+    ontology_id: str | None = models.CharField(
+        max_length=32, db_index=True, null=True, default=None
+    )
+    """Ontology ID of the compound."""
+    abbr: str | None = models.CharField(
+        max_length=32, db_index=True, unique=True, null=True, default=None
+    )
+    """A unique abbreviation of compound."""
+    synonyms: str | None = models.TextField(null=True, default=None)
+    """Bar-separated (|) synonyms that correspond to this compound."""
+    description: str | None = models.TextField(null=True, default=None)
+    """Description of the ethnicity."""
+    parents: Compound = models.ManyToManyField(
+        "self", symmetrical=False, related_name="children"
+    )
+    """Parent ethnicity records."""
+    source: Source = models.ForeignKey(
+        "Source", PROTECT, null=True, related_name="compounds"
+    )
+    """:class:`~bionty.Source` this compound associates with."""
+    artifacts: Artifact = models.ManyToManyField(
+        Artifact,
+        through="ArtifactEthnicity",
+        related_name="compounds",
+    )
+    """Artifacts linked to the compound."""
+
+    @overload
+    def __init__(
+        self,
+        name: str,
+        ontology_id: str | None,
+        abbr: str | None,
+        synonyms: str | None,
+        description: str | None,
+        parents: list[Compound],
+        source: Source | None,
+    ): ...
+
+    @overload
+    def __init__(
+        self,
+        *db_args,
+    ): ...
+
+    def __init__(
+        self,
+        *args,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+
+
 class Source(Record, TracksRun, TracksUpdates):
     """Versions of ontology sources.
 
@@ -1710,6 +1788,25 @@ class ArtifactEthnicity(Record, LinkORM, TracksRun):
         null=True,
         default=None,
         related_name="links_artifactethnicity",
+    )
+    label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+
+
+class ArtifactCompound(Record, LinkORM, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    artifact: Artifact = models.ForeignKey(
+        Artifact, CASCADE, related_name="links_compound"
+    )
+    compound: Compound = models.ForeignKey(
+        "Compound", PROTECT, related_name="links_artifact"
+    )
+    feature: Feature = models.ForeignKey(
+        Feature,
+        PROTECT,
+        null=True,
+        default=None,
+        related_name="links_artifactcompound",
     )
     label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
     feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
