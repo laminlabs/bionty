@@ -16,13 +16,6 @@ def lint(session: nox.Session) -> None:
 @nox.session
 @nox.parametrize("group", ["bionty-unit", "bionty-docs"])
 def build(session: nox.Session, group: str):
-    session.run(
-        *"pip install git+https://github.com/laminlabs/lamindb-setup@main".split()
-    )
-    session.run(
-        *"pip install git+https://github.com/laminlabs/lnschema-core@main".split()
-    )
-    session.run(*"pip install git+https://github.com/laminlabs/lamindb@main".split())
     session.run(*"uv pip install --system -e .[dev]".split())
     branch = "main" if IS_PR else "release"  # point back to "release"
     install_lamindb(session, branch=branch)
