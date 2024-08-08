@@ -1410,18 +1410,18 @@ class Compound(BioRecord, TracksRun, TracksUpdates):
     synonyms: str | None = models.TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this compound."""
     description: str | None = models.TextField(null=True, default=None)
-    """Description of the ethnicity."""
+    """Description of the compound."""
     parents: Compound = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
     )
-    """Parent ethnicity records."""
+    """Parent compound records."""
     source: Source = models.ForeignKey(
         "Source", PROTECT, null=True, related_name="compounds"
     )
     """:class:`~bionty.Source` this compound associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact,
-        through="ArtifactEthnicity",
+        through="ArtifactCompound",
         related_name="compounds",
     )
     """Artifacts linked to the compound."""
