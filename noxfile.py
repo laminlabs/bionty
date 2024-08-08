@@ -1,7 +1,11 @@
+import os
+
 import nox
-from laminci.nox import build_docs, run, run_pre_commit
+from laminci.nox import build_docs, install_lamindb, run, run_pre_commit
 
 nox.options.default_venv_backend = "none"
+
+IS_PR = os.getenv("GITHUB_EVENT_NAME") != "push"
 
 
 @nox.session
@@ -20,6 +24,8 @@ def build(session: nox.Session, group: str):
     )
     session.run(*"pip install git+https://github.com/laminlabs/lamindb@main".split())
     session.run(*"uv pip install --system -e .[dev]".split())
+    branch = "main" if IS_PR else "release"  # point back to "release"
+    install_lamindb(session, branch=branch)
 
     coverage_args = "--cov=bionty --cov-append --cov-report=term-missing"
     if group == "bionty-unit":
