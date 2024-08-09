@@ -146,6 +146,7 @@ class BioRecord(Record, HasParents, CanValidate):
         ontology_ids: list[str] | None = None,
         organism: str | Record | None = None,
         ignore_conflicts: bool = True,
+        update: bool = False,
     ):
         """Bulk save records from a dataframe.
 
@@ -169,6 +170,7 @@ class BioRecord(Record, HasParents, CanValidate):
                 organism=organism,
                 source=source,
                 ignore_conflicts=ignore_conflicts,
+                update=update,
             )
         else:
             import lamindb as ln

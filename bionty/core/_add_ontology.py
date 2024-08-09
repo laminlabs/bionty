@@ -109,13 +109,18 @@ def add_ontology_from_df(
     organism: Union[str, Record, None] = None,
     source: Optional[Source] = None,
     ignore_conflicts: bool = True,
+    update: bool = False,
 ):
     import lamindb as ln
+    from lamin_utils import logger
 
     from bionty._bionty import get_source_record
 
     public = registry.public(organism=organism, source=source)
     df = prepare_dataframe(public.df())
+
+    # TODO: consider StaticReference
+    source_record = get_source_record(public)  # type:ignore
 
     if ontology_ids is None:
         df_new = df
@@ -127,14 +132,22 @@ def add_ontology_from_df(
         df_new = df[df.index.isin(new_ontology_ids)]
         df_all = df[df.index.isin(all_ontology_ids)]
 
-    # TODO: consider StaticReference
-    source_record = get_source_record(public)  # type:ignore
     # do not create records from obsolete terms
-    records = [
-        r
-        for r in create_records(registry, df_new, source_record)
-        if not r.name.startswith("obsolete")
-    ]
+    df_all = df_all[df_all["name"].str.startswith("obsolete")]
+
+    n_all = df_all.shape[0]
+    n_in_db = registry.filter(source=source_record).count()
+    if n_all >= n_in_db:
+        # make sure in_db is set to True if all records are in the database
+        source_record.in_db = True
+        source_record.save()
+        if not update:
+            logger.warning(
+                f"records from Source ({source_record.name}, {source_record.version}) are already in the database!\n   → pass `update=True` to update the records"
+            )
+
+    # do not create records from obsolete terms
+    records = create_records(registry, df_new, source_record)
     registry.objects.bulk_create(records, ignore_conflicts=ignore_conflicts)
 
     # all records of the source in the database
@@ -152,6 +165,7 @@ def add_ontology(
     organism: Union[str, Record, None] = None,
     source: Optional[Source] = None,
     ignore_conflicts: bool = True,
+    update: bool = False,
 ):
     registry = records[0]._meta.model
     source = source or records[0].source
@@ -164,4 +178,5 @@ def add_ontology(
         organism=organism,
         source=source,
         ignore_conflicts=ignore_conflicts,
+        update=update,
     )
