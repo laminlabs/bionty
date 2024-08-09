@@ -146,6 +146,7 @@ class BioRecord(Record, HasParents, CanValidate):
         ontology_ids: list[str] | None = None,
         organism: str | Record | None = None,
         ignore_conflicts: bool = True,
+        update: bool = False,
     ):
         """Bulk save records from a dataframe.
 
@@ -169,6 +170,7 @@ class BioRecord(Record, HasParents, CanValidate):
                 organism=organism,
                 source=source,
                 ignore_conflicts=ignore_conflicts,
+                update=update,
             )
         else:
             import lamindb as ln
@@ -1413,11 +1415,11 @@ class Source(Record, TracksRun, TracksUpdates):
     source_website: str | None = models.TextField(null=True, default=None)
     """Website of the source."""
     dataframe_artifact: Artifact = models.ForeignKey(
-        Artifact, PROTECT, null=True, default=None, related_name="source_dataframe_of"
+        Artifact, PROTECT, null=True, default=None, related_name="_source_dataframe_of"
     )
     """Dataframe artifact that corresponds to this source."""
     artifacts: Artifact = models.ManyToManyField(
-        Artifact, related_name="source_artifact_of"
+        Artifact, related_name="_source_artifact_of"
     )
     """Additional files that correspond to this source."""
 
