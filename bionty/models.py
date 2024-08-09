@@ -1456,10 +1456,12 @@ class Source(Record, TracksRun, TracksUpdates):
             >>> record = bionty.Source.filter(uid="...").one()
             >>> record.set_as_currently_used()
         """
+        # set this record as currently used
         self.currently_used = True
         self.save()
+        # set all other records as not currently used
         Source.filter(
-            entity=self.entity, organism=self.organism, source=self.source
+            entity=self.entity, organism=self.organism, name=self.name
         ).exclude(uid=self.uid).update(currently_used=False)
         logger.success(f"set {self} as currently used")
         logger.warning("please reload your instance to reflect the updates!")
