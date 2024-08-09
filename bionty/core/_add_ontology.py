@@ -133,9 +133,11 @@ def add_ontology_from_df(
         df_all = df[df.index.isin(all_ontology_ids)]
 
     # do not create records from obsolete terms
-    df_all = df_all[df_all["name"].str.startswith("obsolete")]
+    df_all = df_all[~df_all["name"].str.startswith("obsolete")]
 
     n_all = df_all.shape[0]
+    if n_all == 0:
+        raise ValueError("No valid records to add!")
     n_in_db = registry.filter(source=source_record).count()
     if n_in_db >= n_all:
         # make sure in_db is set to True if all records are in the database
@@ -146,6 +148,9 @@ def add_ontology_from_df(
                 f"{registry.__name__} records from source ({source_record.name}, {source_record.version}) are already in the database!\n   → pass `update=True` to update the records"
             )
             return
+    else:
+        source_record.in_db = False
+        source_record.save()
 
     # do not create records from obsolete terms
     records = create_records(registry, df_new, source_record)
