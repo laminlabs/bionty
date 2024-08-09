@@ -1,6 +1,7 @@
 from typing import Iterable, List, Optional, Set, Tuple, Type, Union
 
 import pandas as pd
+from lamin_utils import logger
 from lnschema_core.models import Record
 
 from bionty.models import BioRecord, Source
@@ -17,7 +18,7 @@ def get_all_ancestors(df: pd.DataFrame, ontology_ids: Iterable[str]) -> Set[str]
                     ancestors.add(parent)
                     get_parents(parent)
         except KeyError:
-            print(f"Warning: Ontology ID {onto_id} not found in DataFrame")
+            logger.warning(f"Warning: Ontology ID {onto_id} not found in DataFrame")
 
     for onto_id in ontology_ids:
         get_parents(onto_id)
@@ -80,30 +81,25 @@ def create_link_records(
     source = records[0].source
     linkorm = registry.parents.through
     link_records = []
+    registry_name_lower = registry.__name__.lower()
+
+    # Create a dictionary for quick lookups
+    record_dict = {r.ontology_id: r for r in records if r.source_id == source.id}
+
     for child_id, parents_ids in df["parents"].items():
         if len(parents_ids) == 0:
             continue
-        child_record = next(
-            (r for r in records if r.ontology_id == child_id and r.source == source),
-            None,
-        )
+        child_record = record_dict.get(child_id)
         if not child_record:
             continue
         for parent_id in parents_ids:
-            parent_record = next(
-                (
-                    r
-                    for r in records
-                    if r.ontology_id == parent_id and r.source == source
-                ),
-                None,
-            )
+            parent_record = record_dict.get(parent_id)
             if parent_record:
                 link_records.append(
                     linkorm(
                         **{
-                            f"from_{registry.__name__.lower()}": child_record,
-                            f"to_{registry.__name__.lower()}": parent_record,
+                            f"from_{registry_name_lower}": child_record,
+                            f"to_{registry_name_lower}": parent_record,
                         }
                     )
                 )
@@ -119,7 +115,6 @@ def add_ontology_from_df(
     update: bool = False,
 ):
     import lamindb as ln
-    from lamin_utils import logger
 
     from bionty._bionty import get_source_record
 
@@ -145,6 +140,7 @@ def add_ontology_from_df(
     n_all = df_all.shape[0]
     if n_all == 0:
         raise ValueError("No valid records to add!")
+
     # all records of the source in the database
     all_records = registry.filter(source=source_record).all()
     n_in_db = all_records.count()
@@ -165,9 +161,7 @@ def add_ontology_from_df(
     records = create_records(registry, df_new, source_record)
     registry.objects.bulk_create(records, ignore_conflicts=ignore_conflicts)
 
-    print("create_link_records")
     link_records = create_link_records(registry, df_all, all_records)
-    print("save2")
     ln.save(link_records, ignore_conflicts=ignore_conflicts)
 
     if ontology_ids is None and len(records) > 0:
