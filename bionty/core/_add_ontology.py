@@ -137,14 +137,15 @@ def add_ontology_from_df(
 
     n_all = df_all.shape[0]
     n_in_db = registry.filter(source=source_record).count()
-    if n_all >= n_in_db:
+    if n_in_db >= n_all:
         # make sure in_db is set to True if all records are in the database
         source_record.in_db = True
         source_record.save()
         if not update:
             logger.warning(
-                f"records from Source ({source_record.name}, {source_record.version}) are already in the database!\n   → pass `update=True` to update the records"
+                f"{registry.__name__} records from source ({source_record.name}, {source_record.version}) are already in the database!\n   → pass `update=True` to update the records"
             )
+            return
 
     # do not create records from obsolete terms
     records = create_records(registry, df_new, source_record)
