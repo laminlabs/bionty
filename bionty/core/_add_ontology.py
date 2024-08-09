@@ -9,20 +9,17 @@ from bionty.models import BioRecord, Source
 
 def get_all_ancestors(df: pd.DataFrame, ontology_ids: Iterable[str]) -> Set[str]:
     ancestors = set()
-
-    def get_parents(onto_id: str) -> None:
+    stack = list(ontology_ids)
+    while stack:
+        onto_id = stack.pop()
         try:
             parents = df.at[onto_id, "parents"]
             for parent in parents:
                 if parent not in ancestors:
                     ancestors.add(parent)
-                    get_parents(parent)
+                    stack.append(parent)
         except KeyError:
-            logger.warning(f"Warning: Ontology ID {onto_id} not found in DataFrame")
-
-    for onto_id in ontology_ids:
-        get_parents(onto_id)
-
+            logger.warning(f"ontology ID {onto_id} not found in DataFrame")
     return ancestors
 
 
@@ -34,16 +31,15 @@ def prepare_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def get_new_ontology_ids(
-    registry: Type[BioRecord], ontology_ids: Iterable[str], df_all: pd.DataFrame
+    registry: Type[BioRecord], ontology_ids: Iterable[str], df: pd.DataFrame
 ) -> Tuple[Set[str], Set[str]]:
-    parents_ids = get_all_ancestors(df_all, ontology_ids)
-    ontology_ids = set(ontology_ids) | parents_ids
+    all_ontology_ids = set(ontology_ids) | get_all_ancestors(df, ontology_ids)
     existing_ontology_ids = set(
-        registry.filter(ontology_id__in=ontology_ids).values_list(
+        registry.filter(ontology_id__in=all_ontology_ids).values_list(
             "ontology_id", flat=True
         )
     )
-    return (ontology_ids - existing_ontology_ids), ontology_ids
+    return (all_ontology_ids - existing_ontology_ids), all_ontology_ids
 
 
 def create_records(
@@ -125,8 +121,7 @@ def add_ontology_from_df(
     source_record = get_source_record(public)  # type:ignore
 
     if ontology_ids is None:
-        df_new = df
-        df_all = df
+        df_new = df_all = df
     else:
         new_ontology_ids, all_ontology_ids = get_new_ontology_ids(
             registry, ontology_ids, df
