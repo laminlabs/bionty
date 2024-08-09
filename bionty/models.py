@@ -1426,10 +1426,10 @@ class Source(Record, TracksRun, TracksUpdates):
         self,
         entity: str,
         organism: str,
-        currently_used: bool,
-        source: str,
+        name: str,
         version: str,
-        source_name: str | None,
+        currently_used: bool,
+        description: str | None,
         url: str | None,
         md5: str | None,
         source_website: str | None,
@@ -1450,7 +1450,7 @@ class Source(Record, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     def set_as_currently_used(self):
-        """Set this record as the currently used public source.
+        """Set this record as the currently used source.
 
         Examples:
             >>> record = bionty.Source.filter(uid="...").one()
