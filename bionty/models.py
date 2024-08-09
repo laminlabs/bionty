@@ -526,7 +526,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
     length: int | None = models.BigIntegerField(db_index=True, null=True)
     """Length of the protein sequence."""
     gene_symbol: str | None = models.CharField(
-        max_length=64, db_index=True, null=True, default=None
+        max_length=256, db_index=True, null=True, default=None
     )
     """The primary gene symbol corresponds to this protein."""
     ensembl_gene_ids: str | None = models.TextField(null=True, default=None)
