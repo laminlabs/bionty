@@ -70,6 +70,13 @@ def create_records(
 def create_link_records(
     registry: Type[BioRecord], df: pd.DataFrame, records: List[Record]
 ) -> List[Record]:
+    """Create link records.
+
+    Args:
+        registry: The model class of the records.
+        df: The DataFrame with all ontology IDs and their parents.
+        records: All records of the ontology.
+    """
     source = records[0].source
     linkorm = registry.parents.through
     link_records = []
@@ -138,7 +145,9 @@ def add_ontology_from_df(
     n_all = df_all.shape[0]
     if n_all == 0:
         raise ValueError("No valid records to add!")
-    n_in_db = registry.filter(source=source_record).count()
+    # all records of the source in the database
+    all_records = registry.filter(source=source_record).all()
+    n_in_db = all_records.count()
     if n_in_db >= n_all:
         # make sure in_db is set to True if all records are in the database
         source_record.in_db = True
@@ -156,9 +165,9 @@ def add_ontology_from_df(
     records = create_records(registry, df_new, source_record)
     registry.objects.bulk_create(records, ignore_conflicts=ignore_conflicts)
 
-    # all records of the source in the database
-    all_records = registry.filter(source=source_record).all()
+    print("create_link_records")
     link_records = create_link_records(registry, df_all, all_records)
+    print("save2")
     ln.save(link_records, ignore_conflicts=ignore_conflicts)
 
     if ontology_ids is None and len(records) > 0:
