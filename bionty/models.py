@@ -1413,11 +1413,11 @@ class Source(Record, TracksRun, TracksUpdates):
     source_website: str | None = models.TextField(null=True, default=None)
     """Website of the source."""
     dataframe_artifact: Artifact = models.ForeignKey(
-        Artifact, PROTECT, null=True, default=None, related_name="source_dataframe_of"
+        Artifact, PROTECT, null=True, default=None, related_name="_source_dataframe_of"
     )
     """Dataframe artifact that corresponds to this source."""
     artifacts: Artifact = models.ManyToManyField(
-        Artifact, related_name="source_artifact_of"
+        Artifact, related_name="_source_artifact_of"
     )
     """Additional files that correspond to this source."""
 
