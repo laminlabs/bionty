@@ -146,6 +146,7 @@ class BioRecord(Record, HasParents, CanValidate):
         ontology_ids: list[str] | None = None,
         organism: str | Record | None = None,
         ignore_conflicts: bool = True,
+        update: bool = False,
     ):
         """Bulk save records from a dataframe.
 
@@ -160,15 +161,16 @@ class BioRecord(Record, HasParents, CanValidate):
         Examples:
             >>> bionty.CellType.import_from_source()
         """
-        if hasattr(cls, "ontology_id"):
-            from .core._add_ontology import add_ontology_from_df
+        from .core._add_ontology import add_ontology_from_df, check_source_in_db
 
+        if hasattr(cls, "ontology_id"):
             add_ontology_from_df(
                 registry=cls,
                 ontology_ids=ontology_ids,
                 organism=organism,
                 source=source,
                 ignore_conflicts=ignore_conflicts,
+                update=update,
             )
         else:
             import lamindb as ln
@@ -193,9 +195,8 @@ class BioRecord(Record, HasParents, CanValidate):
             )
             ln.save(records, ignore_conflicts=ignore_conflicts)
 
-            if ontology_ids is None and len(records) > 0:
-                source_record.in_db = True
-                source_record.save()
+            # make sure source.in_db is correctly set based on the DB content
+            check_source_in_db(registry=cls, source=source_record, update=update)
 
     @classmethod
     def public(
@@ -1413,11 +1414,11 @@ class Source(Record, TracksRun, TracksUpdates):
     source_website: str | None = models.TextField(null=True, default=None)
     """Website of the source."""
     dataframe_artifact: Artifact = models.ForeignKey(
-        Artifact, PROTECT, null=True, default=None, related_name="source_dataframe_of"
+        Artifact, PROTECT, null=True, default=None, related_name="_source_dataframe_of"
     )
     """Dataframe artifact that corresponds to this source."""
     artifacts: Artifact = models.ManyToManyField(
-        Artifact, related_name="source_artifact_of"
+        Artifact, related_name="_source_artifact_of"
     )
     """Additional files that correspond to this source."""
 
