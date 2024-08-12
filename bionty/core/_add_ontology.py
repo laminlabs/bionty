@@ -175,12 +175,19 @@ def add_ontology_from_df(
         n_in_db=n_in_db,
     )
 
+    if source_record.in_db and not update:
+        return
+
     # do not create records from obsolete terms
     records = create_records(registry, df_new, source_record)
     registry.objects.bulk_create(records, ignore_conflicts=ignore_conflicts)
 
     link_records = create_link_records(registry, df_all, all_records)
     ln.save(link_records, ignore_conflicts=ignore_conflicts)
+
+    if ontology_ids is None:
+        source_record.in_db = True
+        source_record.save()
 
 
 def add_ontology(
