@@ -106,8 +106,8 @@ def check_source_in_db(
     registry: Type[BioRecord],
     source: Source,
     update: bool = False,
-    n_all: int | None = None,
-    n_in_db: int | None = None,
+    n_all: int = None,
+    n_in_db: int = None,
 ) -> None:
     if n_all is None:
         n_all = registry.public(source=source).df().shape[0]
