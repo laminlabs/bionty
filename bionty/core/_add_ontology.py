@@ -102,6 +102,33 @@ def create_link_records(
     return link_records
 
 
+def check_source_in_db(
+    registry: Type[BioRecord],
+    source: Source,
+    update: bool = False,
+    n_all: int | None = None,
+    n_in_db: int | None = None,
+) -> None:
+    if n_all is None:
+        n_all = registry.public(source=source).df().shape[0]
+
+    if n_in_db is None:
+        # all records of the source in the database
+        n_in_db = registry.filter(source=source).count()
+    if n_in_db >= n_all:
+        # make sure in_db is set to True if all records are in the database
+        source.in_db = True
+        source.save()
+        if not update:
+            logger.warning(
+                f"{registry.__name__} records from source ({source.name}, {source.version}) are already in the database!\n   → pass `update=True` to update the records"
+            )
+            return
+    else:
+        source.in_db = False
+        source.save()
+
+
 def add_ontology_from_df(
     registry: Type[BioRecord],
     ontology_ids: Optional[List[str]] = None,
@@ -139,18 +166,14 @@ def add_ontology_from_df(
     # all records of the source in the database
     all_records = registry.filter(source=source_record).all()
     n_in_db = all_records.count()
-    if n_in_db >= n_all:
-        # make sure in_db is set to True if all records are in the database
-        source_record.in_db = True
-        source_record.save()
-        if not update:
-            logger.warning(
-                f"{registry.__name__} records from source ({source_record.name}, {source_record.version}) are already in the database!\n   → pass `update=True` to update the records"
-            )
-            return
-    else:
-        source_record.in_db = False
-        source_record.save()
+
+    check_source_in_db(
+        registry=registry,
+        source=source_record,
+        update=update,
+        n_all=n_all,
+        n_in_db=n_in_db,
+    )
 
     # do not create records from obsolete terms
     records = create_records(registry, df_new, source_record)
@@ -158,10 +181,6 @@ def add_ontology_from_df(
 
     link_records = create_link_records(registry, df_all, all_records)
     ln.save(link_records, ignore_conflicts=ignore_conflicts)
-
-    if ontology_ids is None and len(records) > 0:
-        source_record.in_db = True
-        source_record.save()
 
 
 def add_ontology(
