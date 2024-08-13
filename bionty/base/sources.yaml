@@ -354,6 +354,9 @@ BFXPipeline:
 Drug:
   dron:
     all:
+      2024-08-05:
+        url: https://data.bioontology.org/ontologies/DRON/submissions/24/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
+        md5: ""
       2024-03-02:
         url: https://data.bioontology.org/ontologies/DRON/submissions/22/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
         md5: 84138459de4f65034e979f4e46783747
