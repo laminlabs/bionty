@@ -110,8 +110,7 @@ def s3_bionty_assets(
 
     try:
         s3_object = s3_client.get_object(Bucket=bucket, Key=filename)
-    except s3_client.exceptions.ClientError as e:
-        print(e)
+    except s3_client.exceptions.ClientError:
         return localpath
 
     cloud_mts = s3_object["LastModified"].timestamp()
