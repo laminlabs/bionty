@@ -28,28 +28,8 @@ class BFXPipeline(PublicOntology):
         super().__init__(source=source, version=version, organism=organism, **kwargs)
 
     def _load_df(self) -> pd.DataFrame:
-        localpath = self._local_parquet_path.as_posix().replace(  # type:ignore
-            ".parquet", ".json"
-        )
-        s3_bionty_assets("bfxpipelines.json", Path(localpath))
-        with open(localpath) as f:
-            data = json.load(f)
-
-        df = pd.DataFrame(data).transpose()
-        df.drop("versions", inplace=True, axis=1)
-        df.rename(columns={"id": "ontology_id"}, inplace=True)
-        df.set_index("ontology_id", inplace=True, drop=True)
+        localpath = self._local_parquet_path.as_posix()
+        s3_bionty_assets("bfxpipelines.parquet", Path(localpath))
+        df = pd.read_parquet(localpath)
 
         return df
-
-    def df(self) -> pd.DataFrame:
-        """Pandas DataFrame of the ontology.
-
-        Returns:
-            A Pandas DataFrame of the ontology.
-
-        Examples:
-            >>> import bionty.base as bionty_base
-            >>> bt.BFXPipeline().df()
-        """
-        return self._df.set_index("ontology_id")

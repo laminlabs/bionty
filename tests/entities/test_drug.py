@@ -5,9 +5,9 @@ import pandas as pd
 def test_dron_drug_inspect_name():
     df = pd.DataFrame(
         index=[
-            "LILIUM LONGIFLORIUM",
+            "triflusal",
             "citrus bioflavonoids",
-            "Ornithine, (L)-Isomer",
+            "Candida albicans",
             "Hyoscyamus extract",
             "This drug does not exist",
         ]
