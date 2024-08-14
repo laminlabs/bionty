@@ -26,10 +26,3 @@ class BFXPipeline(PublicOntology):
         **kwargs,
     ) -> None:
         super().__init__(source=source, version=version, organism=organism, **kwargs)
-
-    def _load_df(self) -> pd.DataFrame:
-        localpath = self._local_parquet_path.as_posix()
-        s3_bionty_assets("bfxpipelines.parquet", Path(localpath))
-        df = pd.read_parquet(localpath)
-
-        return df
