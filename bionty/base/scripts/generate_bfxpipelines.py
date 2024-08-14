@@ -7,6 +7,7 @@ import string
 from pathlib import Path
 from typing import Dict, Optional, Union
 
+import pandas as pd
 from github import Github
 from rich.progress import track
 
@@ -66,7 +67,7 @@ def generate_nf_core_pipelines_info() -> None:
                     "id": hash_id(pipeline_name, n_char=12),
                     "name": f"nf-core {pipeline_name}",
                     "versions": actual_version,
-                    "reference": repo.url,
+                    "reference": repo.html_url,
                 }
 
     with open(f"{BASE_BFX_PIPELINES_PATH}/nf_core_pipelines.json", "w") as f:
@@ -96,8 +97,24 @@ def merge_json_files(pipelines_folder_path: Union[str, Path], output_path: str) 
         json.dump(pipeline_json, f, indent=4)
 
 
+def write_parquet_file(bfxpipelines_json: str, output_path: str) -> None:
+    """Takes a bfxpipelines.json file as generated from merge_json_files and writes a corresponding parquet file."""
+    with open(bfxpipelines_json) as f:
+        data = json.load(f)
+
+    df = pd.DataFrame(data).transpose()
+    df.drop("versions", inplace=True, axis=1)
+    df.rename(columns={"id": "ontology_id"}, inplace=True)
+    df.set_index("ontology_id", inplace=True, drop=True)
+    df.to_parquet(output_path)
+
+
 generate_nf_core_pipelines_info()
 merge_json_files(
     pipelines_folder_path=BASE_BFX_PIPELINES_PATH,
     output_path=f"{BASE_BFX_PIPELINES_PATH}/bfxpipelines.json",
+)
+write_parquet_file(
+    bfxpipelines_json=f"{BASE_BFX_PIPELINES_PATH}/bfxpipelines.json",
+    output_path=f"{BASE_BFX_PIPELINES_PATH}/bfxpipelines.parquet",
 )

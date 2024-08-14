@@ -1,0 +1,2906 @@
+{
+  "methylseq_v2_6_0": {
+    "id": "SVUxzotIo1Uf",
+    "name": "nf-core methylseq v2.6.0",
+    "versions": "2.6.0",
+    "reference": "https://github.com/nf-core/methylseq"
+  },
+  "methylseq_v2_5_0": {
+    "id": "bvaJ5bSKn0ly",
+    "name": "nf-core methylseq v2.5.0",
+    "versions": "2.5.0",
+    "reference": "https://github.com/nf-core/methylseq"
+  },
+  "methylseq_v2_4_0": {
+    "id": "QQrRCmzyWU0s",
+    "name": "nf-core methylseq v2.4.0",
+    "versions": "2.4.0",
+    "reference": "https://github.com/nf-core/methylseq"
+  },
+  "methylseq_v2_3_0": {
+    "id": "gs1X6jaeEMCg",
+    "name": "nf-core methylseq v2.3.0",
+    "versions": "2.3.0",
+    "reference": "https://github.com/nf-core/methylseq"
+  },
+  "methylseq_v2_2_0": {
+    "id": "VYQZoS3O8930",
+    "name": "nf-core methylseq v2.2.0",
+    "versions": "2.2.0",
+    "reference": "https://github.com/nf-core/methylseq"
+  },
+  "methylseq_v2_1_0": {
+    "id": "dH1VFhR8l8CS",
+    "name": "nf-core methylseq v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/methylseq"
+  },
+  "methylseq_v2_0_0": {
+    "id": "G0FYHMzBRjTc",
+    "name": "nf-core methylseq v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/methylseq"
+  },
+  "methylseq_v1_6_1": {
+    "id": "efysJkWxxuNy",
+    "name": "nf-core methylseq v1.6.1",
+    "versions": "1.6.1",
+    "reference": "https://github.com/nf-core/methylseq"
+  },
+  "methylseq_v1_6": {
+    "id": "5yuxk8REcLWi",
+    "name": "nf-core methylseq v1.6",
+    "versions": "1.6",
+    "reference": "https://github.com/nf-core/methylseq"
+  },
+  "methylseq_v1_5": {
+    "id": "M7HWlDD2fi5I",
+    "name": "nf-core methylseq v1.5",
+    "versions": "1.5",
+    "reference": "https://github.com/nf-core/methylseq"
+  },
+  "methylseq_v1_4": {
+    "id": "enjq4ogMhbg3",
+    "name": "nf-core methylseq v1.4",
+    "versions": "1.4",
+    "reference": "https://github.com/nf-core/methylseq"
+  },
+  "methylseq_v1_3": {
+    "id": "MB2lOjTFUsF6",
+    "name": "nf-core methylseq v1.3",
+    "versions": "1.3",
+    "reference": "https://github.com/nf-core/methylseq"
+  },
+  "methylseq_v1_2": {
+    "id": "YDXZAZ3KlF2K",
+    "name": "nf-core methylseq v1.2",
+    "versions": "1.2",
+    "reference": "https://github.com/nf-core/methylseq"
+  },
+  "methylseq_v1_1": {
+    "id": "mA4ekNaf11Qu",
+    "name": "nf-core methylseq v1.1",
+    "versions": "1.1",
+    "reference": "https://github.com/nf-core/methylseq"
+  },
+  "methylseq_v1_0": {
+    "id": "fzjvIbIe30YK",
+    "name": "nf-core methylseq v1.0",
+    "versions": "1.0",
+    "reference": "https://github.com/nf-core/methylseq"
+  },
+  "rnaseq_v3_14_0": {
+    "id": "im0b1lG9lqwd",
+    "name": "nf-core rnaseq v3.14.0",
+    "versions": "3.14.0",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_13_2": {
+    "id": "CJEK7ZBT2YVn",
+    "name": "nf-core rnaseq v3.13.2",
+    "versions": "3.13.2",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_13_1": {
+    "id": "QBfsr6p8ET6J",
+    "name": "nf-core rnaseq v3.13.1",
+    "versions": "3.13.1",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_13_0": {
+    "id": "kEF1yapnLqSJ",
+    "name": "nf-core rnaseq v3.13.0",
+    "versions": "3.13.0",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_12_0": {
+    "id": "DVciJT3cN6S7",
+    "name": "nf-core rnaseq v3.12.0",
+    "versions": "3.12.0",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_11_2": {
+    "id": "79Ka5qqey0lp",
+    "name": "nf-core rnaseq v3.11.2",
+    "versions": "3.11.2",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_11_1": {
+    "id": "LZjma81puu5a",
+    "name": "nf-core rnaseq v3.11.1",
+    "versions": "3.11.1",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_11_0": {
+    "id": "W1gSfV09B5Y0",
+    "name": "nf-core rnaseq v3.11.0",
+    "versions": "3.11.0",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_10_1": {
+    "id": "qxVzDRAnDqCl",
+    "name": "nf-core rnaseq v3.10.1",
+    "versions": "3.10.1",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_10": {
+    "id": "hUrqno6tNE4j",
+    "name": "nf-core rnaseq v3.10",
+    "versions": "3.10",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_9": {
+    "id": "5Y532wzMe0lD",
+    "name": "nf-core rnaseq v3.9",
+    "versions": "3.9",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_8_1": {
+    "id": "4DSNededz6Xh",
+    "name": "nf-core rnaseq v3.8.1",
+    "versions": "3.8.1",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_8": {
+    "id": "H4ROOTFCwq8O",
+    "name": "nf-core rnaseq v3.8",
+    "versions": "3.8",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_7": {
+    "id": "4jdDLnKFMa5I",
+    "name": "nf-core rnaseq v3.7",
+    "versions": "3.7",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_6": {
+    "id": "wj3NbkfVUWBO",
+    "name": "nf-core rnaseq v3.6",
+    "versions": "3.6",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_5": {
+    "id": "09CreG7fwQtT",
+    "name": "nf-core rnaseq v3.5",
+    "versions": "3.5",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_4": {
+    "id": "RhMjTptc2xZ6",
+    "name": "nf-core rnaseq v3.4",
+    "versions": "3.4",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_3": {
+    "id": "6F40GTs9C5CR",
+    "name": "nf-core rnaseq v3.3",
+    "versions": "3.3",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_2": {
+    "id": "P4OoEnve1lSt",
+    "name": "nf-core rnaseq v3.2",
+    "versions": "3.2",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_1": {
+    "id": "ocuX0zAZmQTf",
+    "name": "nf-core rnaseq v3.1",
+    "versions": "3.1",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v3_0": {
+    "id": "JvFSwiyTYejk",
+    "name": "nf-core rnaseq v3.0",
+    "versions": "3.0",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v2_0": {
+    "id": "vEQZhciK1PKS",
+    "name": "nf-core rnaseq v2.0",
+    "versions": "2.0",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v1_4_2": {
+    "id": "OtUe1T1YxRJP",
+    "name": "nf-core rnaseq v1.4.2",
+    "versions": "1.4.2",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v1_4_1": {
+    "id": "QslEc2R8BTJE",
+    "name": "nf-core rnaseq v1.4.1",
+    "versions": "1.4.1",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v1_4": {
+    "id": "PDJx3qUFw190",
+    "name": "nf-core rnaseq v1.4",
+    "versions": "1.4",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v1_3": {
+    "id": "2zGHyCIsjGxC",
+    "name": "nf-core rnaseq v1.3",
+    "versions": "1.3",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v1_2": {
+    "id": "tSEsOBTlCEnj",
+    "name": "nf-core rnaseq v1.2",
+    "versions": "1.2",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v1_1": {
+    "id": "qor09uSsnJxb",
+    "name": "nf-core rnaseq v1.1",
+    "versions": "1.1",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "rnaseq_v1_0": {
+    "id": "jgGE6tAg80vl",
+    "name": "nf-core rnaseq v1.0",
+    "versions": "1.0",
+    "reference": "https://github.com/nf-core/rnaseq"
+  },
+  "chipseq_v2_0_0": {
+    "id": "Bjj24BtPhaIF",
+    "name": "nf-core chipseq v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/chipseq"
+  },
+  "chipseq_v1_2_2": {
+    "id": "DJNkZ0j5ZP1i",
+    "name": "nf-core chipseq v1.2.2",
+    "versions": "1.2.2",
+    "reference": "https://github.com/nf-core/chipseq"
+  },
+  "chipseq_v1_2_1": {
+    "id": "fpMxpwVTCPua",
+    "name": "nf-core chipseq v1.2.1",
+    "versions": "1.2.1",
+    "reference": "https://github.com/nf-core/chipseq"
+  },
+  "chipseq_v1_2_0": {
+    "id": "05imsDRB8Dsx",
+    "name": "nf-core chipseq v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/chipseq"
+  },
+  "chipseq_v1_1_0": {
+    "id": "bl9tY5ttQXmw",
+    "name": "nf-core chipseq v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/chipseq"
+  },
+  "chipseq_v1_0_0": {
+    "id": "LZH09tdYuMlo",
+    "name": "nf-core chipseq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/chipseq"
+  },
+  "mag_v3_0_2": {
+    "id": "qIKHTBAs65TK",
+    "name": "nf-core mag v3.0.2",
+    "versions": "3.0.2",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v3_0_1": {
+    "id": "uqI90zcEKNK0",
+    "name": "nf-core mag v3.0.1",
+    "versions": "3.0.1",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v3_0_0": {
+    "id": "20pPmwSrrmgD",
+    "name": "nf-core mag v3.0.0",
+    "versions": "3.0.0",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v2_5_4": {
+    "id": "EfqBZANOIMuu",
+    "name": "nf-core mag v2.5.4",
+    "versions": "2.5.4",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v2_5_3": {
+    "id": "IG5A75j6eCxZ",
+    "name": "nf-core mag v2.5.3",
+    "versions": "2.5.3",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v2_5_2": {
+    "id": "NMpipY1NkYh0",
+    "name": "nf-core mag v2.5.2",
+    "versions": "2.5.2",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v2_5_1": {
+    "id": "2nivnJszboZB",
+    "name": "nf-core mag v2.5.1",
+    "versions": "2.5.1",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v2_5_0": {
+    "id": "VTOI1rPUUqVS",
+    "name": "nf-core mag v2.5.0",
+    "versions": "2.5.0",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v2_4_0": {
+    "id": "23HrH8yyn0rG",
+    "name": "nf-core mag v2.4.0",
+    "versions": "2.4.0",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v2_3_2": {
+    "id": "ZqY7WNV7fySn",
+    "name": "nf-core mag v2.3.2",
+    "versions": "2.3.2",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v2_3_1": {
+    "id": "RcKmR0k180Av",
+    "name": "nf-core mag v2.3.1",
+    "versions": "2.3.1",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v2_3_0": {
+    "id": "60HO3U7I0ER8",
+    "name": "nf-core mag v2.3.0",
+    "versions": "2.3.0",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v2_2_1": {
+    "id": "pARUyNOuv6wt",
+    "name": "nf-core mag v2.2.1",
+    "versions": "2.2.1",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v2_2_0": {
+    "id": "jZHBQzJxmnNx",
+    "name": "nf-core mag v2.2.0",
+    "versions": "2.2.0",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v2_1_1": {
+    "id": "qBoHMrMyXsfM",
+    "name": "nf-core mag v2.1.1",
+    "versions": "2.1.1",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v2_1_0": {
+    "id": "YFDFzgtwi9mJ",
+    "name": "nf-core mag v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v2_0_0": {
+    "id": "Z9vOGFpNbOZo",
+    "name": "nf-core mag v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v1_2_0": {
+    "id": "VmEWlL838LBt",
+    "name": "nf-core mag v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v1_1_2": {
+    "id": "9dNs0EDHcWlt",
+    "name": "nf-core mag v1.1.2",
+    "versions": "1.1.2",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v1_1_1": {
+    "id": "yUlP2aUSTARt",
+    "name": "nf-core mag v1.1.1",
+    "versions": "1.1.1",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v1_1_0": {
+    "id": "JroB97ev252v",
+    "name": "nf-core mag v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "mag_v1_0_0": {
+    "id": "py1U0GlUBYqC",
+    "name": "nf-core mag v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/mag"
+  },
+  "eager_v2_5_2": {
+    "id": "9l4yJB8yUmZY",
+    "name": "nf-core eager v2.5.2",
+    "versions": "2.5.2",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_5_1": {
+    "id": "s5q85j0dYpzm",
+    "name": "nf-core eager v2.5.1",
+    "versions": "2.5.1",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_5_0": {
+    "id": "sioOfnkqnshN",
+    "name": "nf-core eager v2.5.0",
+    "versions": "2.5.0",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_4_7": {
+    "id": "8VUTr7y0hreG",
+    "name": "nf-core eager v2.4.7",
+    "versions": "2.4.7",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_4_6": {
+    "id": "piv0xZApj65S",
+    "name": "nf-core eager v2.4.6",
+    "versions": "2.4.6",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_4_5": {
+    "id": "aw3qSxz5mEmf",
+    "name": "nf-core eager v2.4.5",
+    "versions": "2.4.5",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_4_4": {
+    "id": "P9EEgWeLnIKf",
+    "name": "nf-core eager v2.4.4",
+    "versions": "2.4.4",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_4_3": {
+    "id": "YYAcIgqQiCIq",
+    "name": "nf-core eager v2.4.3",
+    "versions": "2.4.3",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_4_2": {
+    "id": "wkgHAXipyfzQ",
+    "name": "nf-core eager v2.4.2",
+    "versions": "2.4.2",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_4_1": {
+    "id": "oDH9shxhPS0J",
+    "name": "nf-core eager v2.4.1",
+    "versions": "2.4.1",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_4_0": {
+    "id": "8HQcaGI0KXbe",
+    "name": "nf-core eager v2.4.0",
+    "versions": "2.4.0",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_3_5": {
+    "id": "k1bUhqIfg5ID",
+    "name": "nf-core eager v2.3.5",
+    "versions": "2.3.5",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_3_4": {
+    "id": "zf58sw8Wwbq8",
+    "name": "nf-core eager v2.3.4",
+    "versions": "2.3.4",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_3_3": {
+    "id": "YnJVpzVIzXxu",
+    "name": "nf-core eager v2.3.3",
+    "versions": "2.3.3",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_3_2": {
+    "id": "0K9M770v6gR0",
+    "name": "nf-core eager v2.3.2",
+    "versions": "2.3.2",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_3_1": {
+    "id": "UHeJ5uDjCXRt",
+    "name": "nf-core eager v2.3.1",
+    "versions": "2.3.1",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_3_0": {
+    "id": "TZBRiWUI0JgQ",
+    "name": "nf-core eager v2.3.0",
+    "versions": "2.3.0",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_2_2": {
+    "id": "nb0JDO9LUc8Y",
+    "name": "nf-core eager v2.2.2",
+    "versions": "2.2.2",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_2_1": {
+    "id": "7k1pMeueqWc5",
+    "name": "nf-core eager v2.2.1",
+    "versions": "2.2.1",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_2_0": {
+    "id": "qXJhuYQSWsfS",
+    "name": "nf-core eager v2.2.0",
+    "versions": "2.2.0",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_1_0": {
+    "id": "0qh1uBirD88P",
+    "name": "nf-core eager v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_0_7": {
+    "id": "DmuHZQNifKYN",
+    "name": "nf-core eager v2.0.7",
+    "versions": "2.0.7",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_0_6": {
+    "id": "ENb1uH18ixgj",
+    "name": "nf-core eager v2.0.6",
+    "versions": "2.0.6",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_0_5": {
+    "id": "8yt5QVz1w9kl",
+    "name": "nf-core eager v2.0.5",
+    "versions": "2.0.5",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_0_4": {
+    "id": "7SWSIMG4WGAn",
+    "name": "nf-core eager v2.0.4",
+    "versions": "2.0.4",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_0_3": {
+    "id": "9IE9ElVQhecJ",
+    "name": "nf-core eager v2.0.3",
+    "versions": "2.0.3",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_0_2": {
+    "id": "jfcFXOhEx6Yj",
+    "name": "nf-core eager v2.0.2",
+    "versions": "2.0.2",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_0_1": {
+    "id": "6pP6UI4EKiTJ",
+    "name": "nf-core eager v2.0.1",
+    "versions": "2.0.1",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "eager_v2_0_0": {
+    "id": "jC3gcwBSf1XZ",
+    "name": "nf-core eager v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/eager"
+  },
+  "hlatyping_v2_0_0": {
+    "id": "YKPNVN63FBDj",
+    "name": "nf-core hlatyping v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/hlatyping"
+  },
+  "hlatyping_v1_2_0": {
+    "id": "lB3qqmcIfsl5",
+    "name": "nf-core hlatyping v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/hlatyping"
+  },
+  "hlatyping_v1_1_5": {
+    "id": "TYq15FHTdGtO",
+    "name": "nf-core hlatyping v1.1.5",
+    "versions": "1.1.5",
+    "reference": "https://github.com/nf-core/hlatyping"
+  },
+  "hlatyping_v1_1_4": {
+    "id": "Plm94L0z45LH",
+    "name": "nf-core hlatyping v1.1.4",
+    "versions": "1.1.4",
+    "reference": "https://github.com/nf-core/hlatyping"
+  },
+  "hlatyping_v1_1_3": {
+    "id": "ltYt0vklVODd",
+    "name": "nf-core hlatyping v1.1.3",
+    "versions": "1.1.3",
+    "reference": "https://github.com/nf-core/hlatyping"
+  },
+  "hlatyping_v1_1_2": {
+    "id": "yDtPTMb9VajI",
+    "name": "nf-core hlatyping v1.1.2",
+    "versions": "1.1.2",
+    "reference": "https://github.com/nf-core/hlatyping"
+  },
+  "hlatyping_v1_1_1": {
+    "id": "fPN2FT2pZGXT",
+    "name": "nf-core hlatyping v1.1.1",
+    "versions": "1.1.1",
+    "reference": "https://github.com/nf-core/hlatyping"
+  },
+  "hlatyping_v1_1_0": {
+    "id": "0KXy53PBm0Fo",
+    "name": "nf-core hlatyping v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/hlatyping"
+  },
+  "hlatyping_v1_0_0": {
+    "id": "q55glKjRLTSO",
+    "name": "nf-core hlatyping v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/hlatyping"
+  },
+  "hlatyping_v1_0_0_rc1": {
+    "id": "5W08Mema6EfQ",
+    "name": "nf-core hlatyping v1.0.0-rc1",
+    "versions": "1.0.0-rc1",
+    "reference": "https://github.com/nf-core/hlatyping"
+  },
+  "smrnaseq_v2_3_1": {
+    "id": "2DF2htpeJF8a",
+    "name": "nf-core smrnaseq v2.3.1",
+    "versions": "2.3.1",
+    "reference": "https://github.com/nf-core/smrnaseq"
+  },
+  "smrnaseq_v2_3_0": {
+    "id": "NF4R5ucOOcRt",
+    "name": "nf-core smrnaseq v2.3.0",
+    "versions": "2.3.0",
+    "reference": "https://github.com/nf-core/smrnaseq"
+  },
+  "smrnaseq_v2_2_4": {
+    "id": "zuXIe8YPM03Q",
+    "name": "nf-core smrnaseq v2.2.4",
+    "versions": "2.2.4",
+    "reference": "https://github.com/nf-core/smrnaseq"
+  },
+  "smrnaseq_v2_2_3": {
+    "id": "lG2VZd5atw5x",
+    "name": "nf-core smrnaseq v2.2.3",
+    "versions": "2.2.3",
+    "reference": "https://github.com/nf-core/smrnaseq"
+  },
+  "smrnaseq_v2_2_2": {
+    "id": "YH9Gq00StNlx",
+    "name": "nf-core smrnaseq v2.2.2",
+    "versions": "2.2.2",
+    "reference": "https://github.com/nf-core/smrnaseq"
+  },
+  "smrnaseq_v2_2_1": {
+    "id": "xA9h0RpE3Imz",
+    "name": "nf-core smrnaseq v2.2.1",
+    "versions": "2.2.1",
+    "reference": "https://github.com/nf-core/smrnaseq"
+  },
+  "smrnaseq_v2_2_0": {
+    "id": "YGw6AVuy7TBp",
+    "name": "nf-core smrnaseq v2.2.0",
+    "versions": "2.2.0",
+    "reference": "https://github.com/nf-core/smrnaseq"
+  },
+  "smrnaseq_v2_1_0": {
+    "id": "OUzsql8jiGKC",
+    "name": "nf-core smrnaseq v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/smrnaseq"
+  },
+  "smrnaseq_v2_0_0": {
+    "id": "3N08ZEhySt3f",
+    "name": "nf-core smrnaseq v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/smrnaseq"
+  },
+  "smrnaseq_v1_1_0": {
+    "id": "49En60Gnn164",
+    "name": "nf-core smrnaseq v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/smrnaseq"
+  },
+  "smrnaseq_v1_0_0": {
+    "id": "FeKHcwXm5TtG",
+    "name": "nf-core smrnaseq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/smrnaseq"
+  },
+  "ampliseq_v2_11_0": {
+    "id": "DT70lk38u63D",
+    "name": "nf-core ampliseq v2.11.0",
+    "versions": "2.11.0",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_10_0": {
+    "id": "3dhqMYhPsQNR",
+    "name": "nf-core ampliseq v2.10.0",
+    "versions": "2.10.0",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_9_0": {
+    "id": "5wZ39nwiX0xI",
+    "name": "nf-core ampliseq v2.9.0",
+    "versions": "2.9.0",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_8_0": {
+    "id": "Crea600gCxZ9",
+    "name": "nf-core ampliseq v2.8.0",
+    "versions": "2.8.0",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_7_1": {
+    "id": "100RuMtG3YXJ",
+    "name": "nf-core ampliseq v2.7.1",
+    "versions": "2.7.1",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_7_0": {
+    "id": "orj9mc0a0eQH",
+    "name": "nf-core ampliseq v2.7.0",
+    "versions": "2.7.0",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_6_1": {
+    "id": "BBIpJFelV0GV",
+    "name": "nf-core ampliseq v2.6.1",
+    "versions": "2.6.1",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_6_0": {
+    "id": "KHcBBpSajyhS",
+    "name": "nf-core ampliseq v2.6.0",
+    "versions": "2.6.0",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_5_0": {
+    "id": "4I6luBqCrRLN",
+    "name": "nf-core ampliseq v2.5.0",
+    "versions": "2.5.0",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_4_1": {
+    "id": "XYp59E02Km30",
+    "name": "nf-core ampliseq v2.4.1",
+    "versions": "2.4.1",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_4_0": {
+    "id": "jTefh2p0aM35",
+    "name": "nf-core ampliseq v2.4.0",
+    "versions": "2.4.0",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_3_2": {
+    "id": "R1Jb7AtJCxPs",
+    "name": "nf-core ampliseq v2.3.2",
+    "versions": "2.3.2",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_3_1": {
+    "id": "Rgi0BPnJwOC5",
+    "name": "nf-core ampliseq v2.3.1",
+    "versions": "2.3.1",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_3_0": {
+    "id": "cnSK0j3IowyZ",
+    "name": "nf-core ampliseq v2.3.0",
+    "versions": "2.3.0",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_2_0": {
+    "id": "aupqQMcWaK0X",
+    "name": "nf-core ampliseq v2.2.0",
+    "versions": "2.2.0",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_1_1": {
+    "id": "0gKQ66tcOjMi",
+    "name": "nf-core ampliseq v2.1.1",
+    "versions": "2.1.1",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_1_0": {
+    "id": "JnFErxGeGZNB",
+    "name": "nf-core ampliseq v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v2_0_0": {
+    "id": "0x7IjjIxeJVY",
+    "name": "nf-core ampliseq v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v1_2_0": {
+    "id": "kKwLNtzDdnzL",
+    "name": "nf-core ampliseq v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v1_1_3": {
+    "id": "7rfQVvEvqPIp",
+    "name": "nf-core ampliseq v1.1.3",
+    "versions": "1.1.3",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v1_1_2": {
+    "id": "biERHne0wCzw",
+    "name": "nf-core ampliseq v1.1.2",
+    "versions": "1.1.2",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v1_1_1": {
+    "id": "nXS6fTc7xmCJ",
+    "name": "nf-core ampliseq v1.1.1",
+    "versions": "1.1.1",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v1_1_0": {
+    "id": "58f0aOftmfvQ",
+    "name": "nf-core ampliseq v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "ampliseq_v1_0_0": {
+    "id": "LZCVrJJyyVS0",
+    "name": "nf-core ampliseq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/ampliseq"
+  },
+  "neutronstar_v1_0_0": {
+    "id": "HE62qiDKKeCw",
+    "name": "nf-core neutronstar v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/neutronstar"
+  },
+  "deepvariant_v1_0": {
+    "id": "80OdCYLpMAWE",
+    "name": "nf-core deepvariant v1.0",
+    "versions": "1.0",
+    "reference": "https://github.com/nf-core/deepvariant"
+  },
+  "rnafusion_v3_0_2": {
+    "id": "Rw0LyHTthlGh",
+    "name": "nf-core rnafusion v3.0.2",
+    "versions": "3.0.2",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v3_0_1": {
+    "id": "rBpaiDswRkLR",
+    "name": "nf-core rnafusion v3.0.1",
+    "versions": "3.0.1",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v3_0_0": {
+    "id": "zMC9CiK9GrIy",
+    "name": "nf-core rnafusion v3.0.0",
+    "versions": "3.0.0",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v2_4_0": {
+    "id": "2JmzPaY64UMg",
+    "name": "nf-core rnafusion v2.4.0",
+    "versions": "2.4.0",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v2_3_4": {
+    "id": "6oiw01hujCwW",
+    "name": "nf-core rnafusion v2.3.4",
+    "versions": "2.3.4",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v2_3_3": {
+    "id": "aQRTCZmEMxsy",
+    "name": "nf-core rnafusion v2.3.3",
+    "versions": "2.3.3",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v2_3_2": {
+    "id": "5mtvALvs4t1M",
+    "name": "nf-core rnafusion v2.3.2",
+    "versions": "2.3.2",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v2_3_1": {
+    "id": "AMaG1tujqmTr",
+    "name": "nf-core rnafusion v2.3.1",
+    "versions": "2.3.1",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v2_3_0": {
+    "id": "uxn5rRDnoE7I",
+    "name": "nf-core rnafusion v2.3.0",
+    "versions": "2.3.0",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v2_2_0": {
+    "id": "z2MC0kUrLdC6",
+    "name": "nf-core rnafusion v2.2.0",
+    "versions": "2.2.0",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v2_1_0": {
+    "id": "xjggYik0IuQT",
+    "name": "nf-core rnafusion v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v2_0_0": {
+    "id": "crCTEnXFu8eO",
+    "name": "nf-core rnafusion v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v1_2_0": {
+    "id": "BNq3YQpMd0yc",
+    "name": "nf-core rnafusion v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v1_1_0": {
+    "id": "eEMcFFUqJhVO",
+    "name": "nf-core rnafusion v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v1_0_2": {
+    "id": "wTmdUHLiZDfz",
+    "name": "nf-core rnafusion v1.0.2",
+    "versions": "1.0.2",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v1_0_1": {
+    "id": "twXIBPXkYAw9",
+    "name": "nf-core rnafusion v1.0.1",
+    "versions": "1.0.1",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "rnafusion_v1_0": {
+    "id": "hcBf3rWXj0m1",
+    "name": "nf-core rnafusion v1.0",
+    "versions": "1.0",
+    "reference": "https://github.com/nf-core/rnafusion"
+  },
+  "mhcquant_v2_6_0": {
+    "id": "kZgmohlflDiP",
+    "name": "nf-core mhcquant v2.6.0",
+    "versions": "2.6.0",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v2_5_0": {
+    "id": "Nb0ydk3ZE0DY",
+    "name": "nf-core mhcquant v2.5.0",
+    "versions": "2.5.0",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v2_4_1": {
+    "id": "UzOiDI0880bn",
+    "name": "nf-core mhcquant v2.4.1",
+    "versions": "2.4.1",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v2_4_0": {
+    "id": "Rk0VcZyIbS04",
+    "name": "nf-core mhcquant v2.4.0",
+    "versions": "2.4.0",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v2_3_1": {
+    "id": "u29McHH20DOG",
+    "name": "nf-core mhcquant v2.3.1",
+    "versions": "2.3.1",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v2_3_0": {
+    "id": "3k0Erju2X0y2",
+    "name": "nf-core mhcquant v2.3.0",
+    "versions": "2.3.0",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v2_2_0": {
+    "id": "DU1iAfmmcVVu",
+    "name": "nf-core mhcquant v2.2.0",
+    "versions": "2.2.0",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v2_1_0": {
+    "id": "lh52DZbqM0Ji",
+    "name": "nf-core mhcquant v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v2_0_0": {
+    "id": "LyFG32Y8XqJr",
+    "name": "nf-core mhcquant v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v1_6_0": {
+    "id": "zLUgOC7BxgUN",
+    "name": "nf-core mhcquant v1.6.0",
+    "versions": "1.6.0",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v1_5_1": {
+    "id": "iMjzYQ9sCHsQ",
+    "name": "nf-core mhcquant v1.5.1",
+    "versions": "1.5.1",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v1_5": {
+    "id": "53QXP0it2cyX",
+    "name": "nf-core mhcquant v1.5",
+    "versions": "1.5",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v1_4": {
+    "id": "NNr54r08bCX0",
+    "name": "nf-core mhcquant v1.4",
+    "versions": "1.4",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v1_3": {
+    "id": "AHwTaMvJyK80",
+    "name": "nf-core mhcquant v1.3",
+    "versions": "1.3",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v1_2_6": {
+    "id": "xjdlxxs06fgB",
+    "name": "nf-core mhcquant v1.2.6",
+    "versions": "1.2.6",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v1_2_5": {
+    "id": "qpPXpaQeUOAA",
+    "name": "nf-core mhcquant v1.2.5",
+    "versions": "1.2.5",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v1_2_4": {
+    "id": "WLE56SXgtOIa",
+    "name": "nf-core mhcquant v1.2.4",
+    "versions": "1.2.4",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v1_2_3": {
+    "id": "RdBBaKprHlS4",
+    "name": "nf-core mhcquant v1.2.3",
+    "versions": "1.2.3",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v1_2_2": {
+    "id": "efUcXR41t0OQ",
+    "name": "nf-core mhcquant v1.2.2",
+    "versions": "1.2.2",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v1_2_1": {
+    "id": "AwHb0IUPF0ue",
+    "name": "nf-core mhcquant v1.2.1",
+    "versions": "1.2.1",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v1_2_0": {
+    "id": "ZzeC9GueOpr8",
+    "name": "nf-core mhcquant v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v1_1_0": {
+    "id": "E1WIvEUYd2R6",
+    "name": "nf-core mhcquant v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "mhcquant_v1_0_0": {
+    "id": "q0n2IIJJHHqv",
+    "name": "nf-core mhcquant v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/mhcquant"
+  },
+  "atacseq_v2_1_2": {
+    "id": "zdKsn9yqtQMx",
+    "name": "nf-core atacseq v2.1.2",
+    "versions": "2.1.2",
+    "reference": "https://github.com/nf-core/atacseq"
+  },
+  "atacseq_v2_1_1": {
+    "id": "dal0VBfB1kJv",
+    "name": "nf-core atacseq v2.1.1",
+    "versions": "2.1.1",
+    "reference": "https://github.com/nf-core/atacseq"
+  },
+  "atacseq_v2_1_0": {
+    "id": "P7IZzD0IweTY",
+    "name": "nf-core atacseq v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/atacseq"
+  },
+  "atacseq_v2_0": {
+    "id": "QCdabNCtKy04",
+    "name": "nf-core atacseq v2.0",
+    "versions": "2.0",
+    "reference": "https://github.com/nf-core/atacseq"
+  },
+  "atacseq_v1_2_2": {
+    "id": "bPXv7he0vA5m",
+    "name": "nf-core atacseq v1.2.2",
+    "versions": "1.2.2",
+    "reference": "https://github.com/nf-core/atacseq"
+  },
+  "atacseq_v1_2_1": {
+    "id": "v0vhZb79Ex9C",
+    "name": "nf-core atacseq v1.2.1",
+    "versions": "1.2.1",
+    "reference": "https://github.com/nf-core/atacseq"
+  },
+  "atacseq_v1_2_0": {
+    "id": "0QNcX7FH0cQF",
+    "name": "nf-core atacseq v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/atacseq"
+  },
+  "atacseq_v1_1_0": {
+    "id": "YLeZXKE1p0u6",
+    "name": "nf-core atacseq v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/atacseq"
+  },
+  "atacseq_v1_0_0": {
+    "id": "e10FWFt9U1DR",
+    "name": "nf-core atacseq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/atacseq"
+  },
+  "nascent_v2_2_0": {
+    "id": "D2V3NuafpO9Y",
+    "name": "nf-core nascent v2.2.0",
+    "versions": "2.2.0",
+    "reference": "https://github.com/nf-core/nascent"
+  },
+  "nascent_v2_1_1": {
+    "id": "CZOrYV9LBRjQ",
+    "name": "nf-core nascent v2.1.1",
+    "versions": "2.1.1",
+    "reference": "https://github.com/nf-core/nascent"
+  },
+  "nascent_v2_1_0": {
+    "id": "RYe4J1HVwWbF",
+    "name": "nf-core nascent v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/nascent"
+  },
+  "nascent_v2_0_0": {
+    "id": "wg1A87yKtKrq",
+    "name": "nf-core nascent v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/nascent"
+  },
+  "nascent_v1_0": {
+    "id": "jpg2JUrxqKYZ",
+    "name": "nf-core nascent v1.0",
+    "versions": "1.0",
+    "reference": "https://github.com/nf-core/nascent"
+  },
+  "epitopeprediction_v2_3_1": {
+    "id": "RMTOoapnSJUx",
+    "name": "nf-core epitopeprediction v2.3.1",
+    "versions": "2.3.1",
+    "reference": "https://github.com/nf-core/epitopeprediction"
+  },
+  "epitopeprediction_v2_3_0": {
+    "id": "eA9tiWwlV9pj",
+    "name": "nf-core epitopeprediction v2.3.0",
+    "versions": "2.3.0",
+    "reference": "https://github.com/nf-core/epitopeprediction"
+  },
+  "epitopeprediction_v2_2_1": {
+    "id": "b40PsUlXZZkF",
+    "name": "nf-core epitopeprediction v2.2.1",
+    "versions": "2.2.1",
+    "reference": "https://github.com/nf-core/epitopeprediction"
+  },
+  "epitopeprediction_v2_2_0": {
+    "id": "Kqq9Hh60bPFX",
+    "name": "nf-core epitopeprediction v2.2.0",
+    "versions": "2.2.0",
+    "reference": "https://github.com/nf-core/epitopeprediction"
+  },
+  "epitopeprediction_v2_1_0": {
+    "id": "JidJQD2Reuxf",
+    "name": "nf-core epitopeprediction v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/epitopeprediction"
+  },
+  "epitopeprediction_v2_0_0": {
+    "id": "FxYZoLw0vaUm",
+    "name": "nf-core epitopeprediction v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/epitopeprediction"
+  },
+  "epitopeprediction_v1_1_0": {
+    "id": "f9S92nqLy7l8",
+    "name": "nf-core epitopeprediction v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/epitopeprediction"
+  },
+  "epitopeprediction_v1_0_0": {
+    "id": "KNUDZhVhSj0C",
+    "name": "nf-core epitopeprediction v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/epitopeprediction"
+  },
+  "airrflow_v4_1_0": {
+    "id": "TY61amkrEHOL",
+    "name": "nf-core airrflow v4.1.0",
+    "versions": "4.1.0",
+    "reference": "https://github.com/nf-core/airrflow"
+  },
+  "airrflow_v4_0": {
+    "id": "ct4zuUjx0rfO",
+    "name": "nf-core airrflow v4.0",
+    "versions": "4.0",
+    "reference": "https://github.com/nf-core/airrflow"
+  },
+  "airrflow_v3_3_0": {
+    "id": "stiWzuBZlmC3",
+    "name": "nf-core airrflow v3.3.0",
+    "versions": "3.3.0",
+    "reference": "https://github.com/nf-core/airrflow"
+  },
+  "airrflow_v3_2_0": {
+    "id": "xQdbxaFe0QzW",
+    "name": "nf-core airrflow v3.2.0",
+    "versions": "3.2.0",
+    "reference": "https://github.com/nf-core/airrflow"
+  },
+  "airrflow_v3_1_0": {
+    "id": "Aol7BAKN81ml",
+    "name": "nf-core airrflow v3.1.0",
+    "versions": "3.1.0",
+    "reference": "https://github.com/nf-core/airrflow"
+  },
+  "airrflow_v3_0": {
+    "id": "fMCf19o5YS0K",
+    "name": "nf-core airrflow v3.0",
+    "versions": "3.0",
+    "reference": "https://github.com/nf-core/airrflow"
+  },
+  "airrflow_v2_4_0": {
+    "id": "K9GxqTAsEodf",
+    "name": "nf-core airrflow v2.4.0",
+    "versions": "2.4.0",
+    "reference": "https://github.com/nf-core/airrflow"
+  },
+  "airrflow_v2_3_0": {
+    "id": "ba2XoeigYpeL",
+    "name": "nf-core airrflow v2.3.0",
+    "versions": "2.3.0",
+    "reference": "https://github.com/nf-core/airrflow"
+  },
+  "airrflow_v2_2_0": {
+    "id": "0JLe7N5dJi2c",
+    "name": "nf-core airrflow v2.2.0",
+    "versions": "2.2.0",
+    "reference": "https://github.com/nf-core/airrflow"
+  },
+  "airrflow_v2_1_0": {
+    "id": "eG9FctlYC1pE",
+    "name": "nf-core airrflow v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/airrflow"
+  },
+  "airrflow_v2_0_0": {
+    "id": "uO1E7k8z56z0",
+    "name": "nf-core airrflow v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/airrflow"
+  },
+  "airrflow_v1_2_0": {
+    "id": "40sdYrflgWH8",
+    "name": "nf-core airrflow v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/airrflow"
+  },
+  "airrflow_v1_1_0": {
+    "id": "elHe4iWifFEW",
+    "name": "nf-core airrflow v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/airrflow"
+  },
+  "airrflow_v1_0_0": {
+    "id": "lJIDZCRmk0lK",
+    "name": "nf-core airrflow v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/airrflow"
+  },
+  "bacass_v2_3_1": {
+    "id": "s6hTeIeE9xR7",
+    "name": "nf-core bacass v2.3.1",
+    "versions": "2.3.1",
+    "reference": "https://github.com/nf-core/bacass"
+  },
+  "bacass_v2_3_0": {
+    "id": "xrzw8nmN40lU",
+    "name": "nf-core bacass v2.3.0",
+    "versions": "2.3.0",
+    "reference": "https://github.com/nf-core/bacass"
+  },
+  "bacass_v2_2_0": {
+    "id": "8x0sLXUWQBk2",
+    "name": "nf-core bacass v2.2.0",
+    "versions": "2.2.0",
+    "reference": "https://github.com/nf-core/bacass"
+  },
+  "bacass_v2_1_0": {
+    "id": "Bj0ho6Q4M0Uy",
+    "name": "nf-core bacass v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/bacass"
+  },
+  "bacass_v2_0_0": {
+    "id": "Ow0FYVF0iwpJ",
+    "name": "nf-core bacass v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/bacass"
+  },
+  "bacass_v1_1_1": {
+    "id": "KO9NIKrwBt7K",
+    "name": "nf-core bacass v1.1.1",
+    "versions": "1.1.1",
+    "reference": "https://github.com/nf-core/bacass"
+  },
+  "bacass_v1_1_0": {
+    "id": "HA1uvPU0rjyb",
+    "name": "nf-core bacass v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/bacass"
+  },
+  "bacass_v1_0_0": {
+    "id": "VHaPVzNQ08ry",
+    "name": "nf-core bacass v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/bacass"
+  },
+  "scrnaseq_v2_7_0": {
+    "id": "DvdsSfZqxSz0",
+    "name": "nf-core scrnaseq v2.7.0",
+    "versions": "2.7.0",
+    "reference": "https://github.com/nf-core/scrnaseq"
+  },
+  "scrnaseq_v2_6_0": {
+    "id": "vV0jYCwDF8xW",
+    "name": "nf-core scrnaseq v2.6.0",
+    "versions": "2.6.0",
+    "reference": "https://github.com/nf-core/scrnaseq"
+  },
+  "scrnaseq_v2_5_1": {
+    "id": "P8jpPmljuG4B",
+    "name": "nf-core scrnaseq v2.5.1",
+    "versions": "2.5.1",
+    "reference": "https://github.com/nf-core/scrnaseq"
+  },
+  "scrnaseq_v2_5_0": {
+    "id": "kBTJ0SBOjIVN",
+    "name": "nf-core scrnaseq v2.5.0",
+    "versions": "2.5.0",
+    "reference": "https://github.com/nf-core/scrnaseq"
+  },
+  "scrnaseq_v2_4_1": {
+    "id": "t8CCDQh4ooS0",
+    "name": "nf-core scrnaseq v2.4.1",
+    "versions": "2.4.1",
+    "reference": "https://github.com/nf-core/scrnaseq"
+  },
+  "scrnaseq_v2_4_0": {
+    "id": "urZ0BpXA06A4",
+    "name": "nf-core scrnaseq v2.4.0",
+    "versions": "2.4.0",
+    "reference": "https://github.com/nf-core/scrnaseq"
+  },
+  "scrnaseq_v2_3_2": {
+    "id": "P4E88IeuDmcQ",
+    "name": "nf-core scrnaseq v2.3.2",
+    "versions": "2.3.2",
+    "reference": "https://github.com/nf-core/scrnaseq"
+  },
+  "scrnaseq_v2_3_1": {
+    "id": "0LGhr04g2Pkp",
+    "name": "nf-core scrnaseq v2.3.1",
+    "versions": "2.3.1",
+    "reference": "https://github.com/nf-core/scrnaseq"
+  },
+  "scrnaseq_v2_3_0": {
+    "id": "RT4nxzVDCyz2",
+    "name": "nf-core scrnaseq v2.3.0",
+    "versions": "2.3.0",
+    "reference": "https://github.com/nf-core/scrnaseq"
+  },
+  "scrnaseq_v2_2_0": {
+    "id": "EAlKvyQBq2eu",
+    "name": "nf-core scrnaseq v2.2.0",
+    "versions": "2.2.0",
+    "reference": "https://github.com/nf-core/scrnaseq"
+  },
+  "scrnaseq_v2_1_0": {
+    "id": "o53Lho3KwPe6",
+    "name": "nf-core scrnaseq v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/scrnaseq"
+  },
+  "scrnaseq_v2_0_0": {
+    "id": "0RUniCKoMj0M",
+    "name": "nf-core scrnaseq v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/scrnaseq"
+  },
+  "scrnaseq_v1_1_0": {
+    "id": "X1xFOeIm7uT0",
+    "name": "nf-core scrnaseq v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/scrnaseq"
+  },
+  "scrnaseq_v1_0_0": {
+    "id": "nc1zw4ytj7yT",
+    "name": "nf-core scrnaseq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/scrnaseq"
+  },
+  "hic_v2_1_0": {
+    "id": "GeAUsAklcInM",
+    "name": "nf-core hic v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/hic"
+  },
+  "hic_v2_0_0": {
+    "id": "GRQ6ViD0pNLN",
+    "name": "nf-core hic v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/hic"
+  },
+  "hic_v1_3_0": {
+    "id": "Ek0DY4mDIqwL",
+    "name": "nf-core hic v1.3.0",
+    "versions": "1.3.0",
+    "reference": "https://github.com/nf-core/hic"
+  },
+  "hic_v1_2_2": {
+    "id": "KZ51qvWb7c0H",
+    "name": "nf-core hic v1.2.2",
+    "versions": "1.2.2",
+    "reference": "https://github.com/nf-core/hic"
+  },
+  "hic_v1_2_1": {
+    "id": "XmUt0Xs7v8rC",
+    "name": "nf-core hic v1.2.1",
+    "versions": "1.2.1",
+    "reference": "https://github.com/nf-core/hic"
+  },
+  "hic_v1_2_0": {
+    "id": "dIMSbg3bHmSA",
+    "name": "nf-core hic v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/hic"
+  },
+  "hic_v1_1_0": {
+    "id": "mvh4JtEOrABD",
+    "name": "nf-core hic v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/hic"
+  },
+  "hic_v1_0_0": {
+    "id": "GBfyG0hKoxwk",
+    "name": "nf-core hic v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/hic"
+  },
+  "proteomicslfq_v1_0_0": {
+    "id": "MfSo1KxWYuKl",
+    "name": "nf-core proteomicslfq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/proteomicslfq"
+  },
+  "coproid_v1_1_1": {
+    "id": "EqqT50sb5lUr",
+    "name": "nf-core coproid v1.1.1",
+    "versions": "1.1.1",
+    "reference": "https://github.com/nf-core/coproid"
+  },
+  "coproid_v1_1": {
+    "id": "VH2dNcLHwVJh",
+    "name": "nf-core coproid v1.1",
+    "versions": "1.1",
+    "reference": "https://github.com/nf-core/coproid"
+  },
+  "coproid_v1_0": {
+    "id": "SL9ib0mMr0HL",
+    "name": "nf-core coproid v1.0",
+    "versions": "1.0",
+    "reference": "https://github.com/nf-core/coproid"
+  },
+  "sarek_v3_4_3": {
+    "id": "rHg0lsQgLR0R",
+    "name": "nf-core sarek v3.4.3",
+    "versions": "3.4.3",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_4_2": {
+    "id": "Ppz7DRg6I1p9",
+    "name": "nf-core sarek v3.4.2",
+    "versions": "3.4.2",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_4_1": {
+    "id": "gOdmG6tt9J6o",
+    "name": "nf-core sarek v3.4.1",
+    "versions": "3.4.1",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_4_0": {
+    "id": "h70OT0M6jEpN",
+    "name": "nf-core sarek v3.4.0",
+    "versions": "3.4.0",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_3_2": {
+    "id": "h00uurJxBPzx",
+    "name": "nf-core sarek v3.3.2",
+    "versions": "3.3.2",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_3_1": {
+    "id": "mmePgkkc6uO3",
+    "name": "nf-core sarek v3.3.1",
+    "versions": "3.3.1",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_3_0": {
+    "id": "MT0okA0YZGm0",
+    "name": "nf-core sarek v3.3.0",
+    "versions": "3.3.0",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_2_3": {
+    "id": "Ks2lpXzQwr0n",
+    "name": "nf-core sarek v3.2.3",
+    "versions": "3.2.3",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_2_2": {
+    "id": "kpsAkw5HYZlF",
+    "name": "nf-core sarek v3.2.2",
+    "versions": "3.2.2",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_2_1": {
+    "id": "FKcX7HVm7t0q",
+    "name": "nf-core sarek v3.2.1",
+    "versions": "3.2.1",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_2_0": {
+    "id": "fLR41027t04T",
+    "name": "nf-core sarek v3.2.0",
+    "versions": "3.2.0",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_1_2": {
+    "id": "BfJtB1Lhescu",
+    "name": "nf-core sarek v3.1.2",
+    "versions": "3.1.2",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_1_1": {
+    "id": "0D0xeuWaF56j",
+    "name": "nf-core sarek v3.1.1",
+    "versions": "3.1.1",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_1": {
+    "id": "Hk2nn9BD0uG0",
+    "name": "nf-core sarek v3.1",
+    "versions": "3.1",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_0_2": {
+    "id": "CuaIHRexTyVk",
+    "name": "nf-core sarek v3.0.2",
+    "versions": "3.0.2",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_0_1": {
+    "id": "JbWZS7W3OdMg",
+    "name": "nf-core sarek v3.0.1",
+    "versions": "3.0.1",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v3_0": {
+    "id": "shyhAfKwuzJw",
+    "name": "nf-core sarek v3.0",
+    "versions": "3.0",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v2_7_2": {
+    "id": "A3rSKZD0AKsP",
+    "name": "nf-core sarek v2.7.2",
+    "versions": "2.7.2",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v2_7_1": {
+    "id": "Poe3zx0WhBZ0",
+    "name": "nf-core sarek v2.7.1",
+    "versions": "2.7.1",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v2_7": {
+    "id": "UzXZsKlh10a4",
+    "name": "nf-core sarek v2.7",
+    "versions": "2.7",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v2_6_1": {
+    "id": "f2S0OEklk0k9",
+    "name": "nf-core sarek v2.6.1",
+    "versions": "2.6.1",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v2_6": {
+    "id": "O5LLaMA90rjC",
+    "name": "nf-core sarek v2.6",
+    "versions": "2.6",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v2_5_2": {
+    "id": "VrQC8F62vEsv",
+    "name": "nf-core sarek v2.5.2",
+    "versions": "2.5.2",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v2_5_1": {
+    "id": "tEPMWQ9MaiYv",
+    "name": "nf-core sarek v2.5.1",
+    "versions": "2.5.1",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "sarek_v2_5": {
+    "id": "jwt2IFS43CEo",
+    "name": "nf-core sarek v2.5",
+    "versions": "2.5",
+    "reference": "https://github.com/nf-core/sarek"
+  },
+  "cageseq_v1_0_2": {
+    "id": "GoFLgB7IwEmX",
+    "name": "nf-core cageseq v1.0.2",
+    "versions": "1.0.2",
+    "reference": "https://github.com/nf-core/cageseq"
+  },
+  "cageseq_v1_0_1": {
+    "id": "HwPn00yXCVVy",
+    "name": "nf-core cageseq v1.0.1",
+    "versions": "1.0.1",
+    "reference": "https://github.com/nf-core/cageseq"
+  },
+  "cageseq_v1_0_0": {
+    "id": "OZPgHONT0BuP",
+    "name": "nf-core cageseq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/cageseq"
+  },
+  "bactmap_v1_0_0": {
+    "id": "wf0X3YY1W00Y",
+    "name": "nf-core bactmap v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/bactmap"
+  },
+  "bactmap_v0_9_1": {
+    "id": "2iT0WAngv2z2",
+    "name": "nf-core bactmap v0.9.1",
+    "versions": "0.9.1",
+    "reference": "https://github.com/nf-core/bactmap"
+  },
+  "bactmap_vv0_9": {
+    "id": "IPJXiQnC45j0",
+    "name": "nf-core bactmap vv0.9",
+    "versions": "v0.9",
+    "reference": "https://github.com/nf-core/bactmap"
+  },
+  "mnaseseq_v1_0_0": {
+    "id": "JBVLvAYQNrpN",
+    "name": "nf-core mnaseseq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/mnaseseq"
+  },
+  "kmermaid_v0_1_0_alpha": {
+    "id": "x7h2bl6MnuS4",
+    "name": "nf-core kmermaid v0.1.0-alpha",
+    "versions": "0.1.0-alpha",
+    "reference": "https://github.com/nf-core/kmermaid"
+  },
+  "imcyto_v1_0_0": {
+    "id": "3Qd8s55o0Sps",
+    "name": "nf-core imcyto v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/imcyto"
+  },
+  "nanoseq_v3_1_0": {
+    "id": "iRS14PyZJaeU",
+    "name": "nf-core nanoseq v3.1.0",
+    "versions": "3.1.0",
+    "reference": "https://github.com/nf-core/nanoseq"
+  },
+  "nanoseq_v3_0_0": {
+    "id": "isIoOOamlXCC",
+    "name": "nf-core nanoseq v3.0.0",
+    "versions": "3.0.0",
+    "reference": "https://github.com/nf-core/nanoseq"
+  },
+  "nanoseq_v2_0_1": {
+    "id": "hNq2x8lRcZnJ",
+    "name": "nf-core nanoseq v2.0.1",
+    "versions": "2.0.1",
+    "reference": "https://github.com/nf-core/nanoseq"
+  },
+  "nanoseq_v2_0_0": {
+    "id": "QR1gRrIcb7wJ",
+    "name": "nf-core nanoseq v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/nanoseq"
+  },
+  "nanoseq_v1_1_0": {
+    "id": "znELBxthMOKH",
+    "name": "nf-core nanoseq v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/nanoseq"
+  },
+  "nanoseq_v1_0_0": {
+    "id": "8pNbSgz9t0Gf",
+    "name": "nf-core nanoseq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/nanoseq"
+  },
+  "diaproteomics_v1_2_4": {
+    "id": "vQjn18egS019",
+    "name": "nf-core diaproteomics v1.2.4",
+    "versions": "1.2.4",
+    "reference": "https://github.com/nf-core/diaproteomics"
+  },
+  "diaproteomics_v1_2_3": {
+    "id": "RRlgMRrHK6el",
+    "name": "nf-core diaproteomics v1.2.3",
+    "versions": "1.2.3",
+    "reference": "https://github.com/nf-core/diaproteomics"
+  },
+  "diaproteomics_v1_2_2": {
+    "id": "JNqaF78AK9sp",
+    "name": "nf-core diaproteomics v1.2.2",
+    "versions": "1.2.2",
+    "reference": "https://github.com/nf-core/diaproteomics"
+  },
+  "diaproteomics_v1_2_1": {
+    "id": "tVMZgOaHKExA",
+    "name": "nf-core diaproteomics v1.2.1",
+    "versions": "1.2.1",
+    "reference": "https://github.com/nf-core/diaproteomics"
+  },
+  "diaproteomics_v1_2_0": {
+    "id": "v6xTfYTVxDoW",
+    "name": "nf-core diaproteomics v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/diaproteomics"
+  },
+  "diaproteomics_v1_1_0": {
+    "id": "6bbvg1NQaj7y",
+    "name": "nf-core diaproteomics v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/diaproteomics"
+  },
+  "diaproteomics_v1_0_0": {
+    "id": "658Emeoy6QO0",
+    "name": "nf-core diaproteomics v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/diaproteomics"
+  },
+  "slamseq_v1_0_0": {
+    "id": "vp8tI1qoxKvZ",
+    "name": "nf-core slamseq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/slamseq"
+  },
+  "demultiplex_v1_5_0": {
+    "id": "pERprYsznYaR",
+    "name": "nf-core demultiplex v1.5.0",
+    "versions": "1.5.0",
+    "reference": "https://github.com/nf-core/demultiplex"
+  },
+  "demultiplex_v1_4_1": {
+    "id": "6fyvNP9U5tCH",
+    "name": "nf-core demultiplex v1.4.1",
+    "versions": "1.4.1",
+    "reference": "https://github.com/nf-core/demultiplex"
+  },
+  "demultiplex_v1_4_0": {
+    "id": "giSd9JnbLyi4",
+    "name": "nf-core demultiplex v1.4.0",
+    "versions": "1.4.0",
+    "reference": "https://github.com/nf-core/demultiplex"
+  },
+  "demultiplex_v1_3_2": {
+    "id": "nPACdDuN0WsE",
+    "name": "nf-core demultiplex v1.3.2",
+    "versions": "1.3.2",
+    "reference": "https://github.com/nf-core/demultiplex"
+  },
+  "demultiplex_v1_3_1": {
+    "id": "gVC5flycoptI",
+    "name": "nf-core demultiplex v1.3.1",
+    "versions": "1.3.1",
+    "reference": "https://github.com/nf-core/demultiplex"
+  },
+  "demultiplex_v1_3_0": {
+    "id": "vcJBvCP94xL9",
+    "name": "nf-core demultiplex v1.3.0",
+    "versions": "1.3.0",
+    "reference": "https://github.com/nf-core/demultiplex"
+  },
+  "demultiplex_v1_2_0": {
+    "id": "fB94lnyfd5w8",
+    "name": "nf-core demultiplex v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/demultiplex"
+  },
+  "demultiplex_v1_1_0": {
+    "id": "pMdTRl2s5nyA",
+    "name": "nf-core demultiplex v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/demultiplex"
+  },
+  "demultiplex_v1_0_0": {
+    "id": "VXW2WQu4u95M",
+    "name": "nf-core demultiplex v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/demultiplex"
+  },
+  "metaboigniter_v2_0_1": {
+    "id": "bFjlJdXdmcAs",
+    "name": "nf-core metaboigniter v2.0.1",
+    "versions": "2.0.1",
+    "reference": "https://github.com/nf-core/metaboigniter"
+  },
+  "metaboigniter_v2_0_0": {
+    "id": "xfznaUvNvBw4",
+    "name": "nf-core metaboigniter v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/metaboigniter"
+  },
+  "metaboigniter_v1_0_1": {
+    "id": "e2g1Q51kYH1p",
+    "name": "nf-core metaboigniter v1.0.1",
+    "versions": "1.0.1",
+    "reference": "https://github.com/nf-core/metaboigniter"
+  },
+  "metaboigniter_v1_0_0": {
+    "id": "Zy148nsZYO7P",
+    "name": "nf-core metaboigniter v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/metaboigniter"
+  },
+  "viralrecon_v2_6_0": {
+    "id": "CVBholF76t3V",
+    "name": "nf-core viralrecon v2.6.0",
+    "versions": "2.6.0",
+    "reference": "https://github.com/nf-core/viralrecon"
+  },
+  "viralrecon_v2_5": {
+    "id": "VhtHRlDas1hl",
+    "name": "nf-core viralrecon v2.5",
+    "versions": "2.5",
+    "reference": "https://github.com/nf-core/viralrecon"
+  },
+  "viralrecon_v2_4_1": {
+    "id": "JSNElMVZmwMl",
+    "name": "nf-core viralrecon v2.4.1",
+    "versions": "2.4.1",
+    "reference": "https://github.com/nf-core/viralrecon"
+  },
+  "viralrecon_v2_4": {
+    "id": "0FL5AMIQydQJ",
+    "name": "nf-core viralrecon v2.4",
+    "versions": "2.4",
+    "reference": "https://github.com/nf-core/viralrecon"
+  },
+  "viralrecon_v2_3_1": {
+    "id": "ekwyUNmWSjS8",
+    "name": "nf-core viralrecon v2.3.1",
+    "versions": "2.3.1",
+    "reference": "https://github.com/nf-core/viralrecon"
+  },
+  "viralrecon_v2_3": {
+    "id": "dQce0RsUU9LW",
+    "name": "nf-core viralrecon v2.3",
+    "versions": "2.3",
+    "reference": "https://github.com/nf-core/viralrecon"
+  },
+  "viralrecon_v2_2": {
+    "id": "aRKhVKXW7ibq",
+    "name": "nf-core viralrecon v2.2",
+    "versions": "2.2",
+    "reference": "https://github.com/nf-core/viralrecon"
+  },
+  "viralrecon_v2_1": {
+    "id": "woPvz92527z4",
+    "name": "nf-core viralrecon v2.1",
+    "versions": "2.1",
+    "reference": "https://github.com/nf-core/viralrecon"
+  },
+  "viralrecon_v2_0": {
+    "id": "CRoFTzYVkaJm",
+    "name": "nf-core viralrecon v2.0",
+    "versions": "2.0",
+    "reference": "https://github.com/nf-core/viralrecon"
+  },
+  "viralrecon_v1_1_0": {
+    "id": "x2ZCfc8Fu3ub",
+    "name": "nf-core viralrecon v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/viralrecon"
+  },
+  "viralrecon_v1_0_0": {
+    "id": "h9ykOOGReE0g",
+    "name": "nf-core viralrecon v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/viralrecon"
+  },
+  "bamtofastq_v2_1_1": {
+    "id": "il43YAAlYNjn",
+    "name": "nf-core bamtofastq v2.1.1",
+    "versions": "2.1.1",
+    "reference": "https://github.com/nf-core/bamtofastq"
+  },
+  "bamtofastq_v2_1_0": {
+    "id": "DBqUyggRWPre",
+    "name": "nf-core bamtofastq v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/bamtofastq"
+  },
+  "bamtofastq_v2_0_0": {
+    "id": "PtESpPaIdfrf",
+    "name": "nf-core bamtofastq v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/bamtofastq"
+  },
+  "bamtofastq_v1_2_0": {
+    "id": "UPgVQ84NwGri",
+    "name": "nf-core bamtofastq v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/bamtofastq"
+  },
+  "bamtofastq_v1_1_0": {
+    "id": "gaUL0eAbneQT",
+    "name": "nf-core bamtofastq v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/bamtofastq"
+  },
+  "bamtofastq_v1_0_0": {
+    "id": "BjLw5IKgOrZs",
+    "name": "nf-core bamtofastq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/bamtofastq"
+  },
+  "dualrnaseq_v1_0_0": {
+    "id": "k3CnAv0pC2UC",
+    "name": "nf-core dualrnaseq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/dualrnaseq"
+  },
+  "pangenome_v1_1_2": {
+    "id": "GSPmTrZ0G1pT",
+    "name": "nf-core pangenome v1.1.2",
+    "versions": "1.1.2",
+    "reference": "https://github.com/nf-core/pangenome"
+  },
+  "pangenome_v1_1_1": {
+    "id": "pUS0UStRI0r5",
+    "name": "nf-core pangenome v1.1.1",
+    "versions": "1.1.1",
+    "reference": "https://github.com/nf-core/pangenome"
+  },
+  "pangenome_v1_1_0": {
+    "id": "fAjBqed6iLug",
+    "name": "nf-core pangenome v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/pangenome"
+  },
+  "pangenome_v1_0_0": {
+    "id": "vOyeIpHHlMu7",
+    "name": "nf-core pangenome v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/pangenome"
+  },
+  "clipseq_v1_0_0": {
+    "id": "qLUEax0CgvJZ",
+    "name": "nf-core clipseq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/clipseq"
+  },
+  "cutandrun_v3_2_2": {
+    "id": "rUagVGKtB0oZ",
+    "name": "nf-core cutandrun v3.2.2",
+    "versions": "3.2.2",
+    "reference": "https://github.com/nf-core/cutandrun"
+  },
+  "cutandrun_v3_2_1": {
+    "id": "05pEq0cNSdwe",
+    "name": "nf-core cutandrun v3.2.1",
+    "versions": "3.2.1",
+    "reference": "https://github.com/nf-core/cutandrun"
+  },
+  "cutandrun_v3_2": {
+    "id": "OJ0odYy003PA",
+    "name": "nf-core cutandrun v3.2",
+    "versions": "3.2",
+    "reference": "https://github.com/nf-core/cutandrun"
+  },
+  "cutandrun_v3_1": {
+    "id": "wliPm05Vwb9E",
+    "name": "nf-core cutandrun v3.1",
+    "versions": "3.1",
+    "reference": "https://github.com/nf-core/cutandrun"
+  },
+  "cutandrun_v3_0": {
+    "id": "dnGrKeQB6YiH",
+    "name": "nf-core cutandrun v3.0",
+    "versions": "3.0",
+    "reference": "https://github.com/nf-core/cutandrun"
+  },
+  "cutandrun_v2_0": {
+    "id": "EQMWB8oLoxeP",
+    "name": "nf-core cutandrun v2.0",
+    "versions": "2.0",
+    "reference": "https://github.com/nf-core/cutandrun"
+  },
+  "cutandrun_v1_1": {
+    "id": "n7bAlKqzRGri",
+    "name": "nf-core cutandrun v1.1",
+    "versions": "1.1",
+    "reference": "https://github.com/nf-core/cutandrun"
+  },
+  "cutandrun_v1_0_0": {
+    "id": "YN5jhxfsugMC",
+    "name": "nf-core cutandrun v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/cutandrun"
+  },
+  "pgdb_v1_0_0": {
+    "id": "fU1H0PBI6zoz",
+    "name": "nf-core pgdb v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/pgdb"
+  },
+  "rnavar_v1_0_0": {
+    "id": "lukuPpeQ9DN3",
+    "name": "nf-core rnavar v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/rnavar"
+  },
+  "fetchngs_v1_12_0": {
+    "id": "blqKTHX90kl0",
+    "name": "nf-core fetchngs v1.12.0",
+    "versions": "1.12.0",
+    "reference": "https://github.com/nf-core/fetchngs"
+  },
+  "fetchngs_v1_11_0": {
+    "id": "uZmWnJUIisSQ",
+    "name": "nf-core fetchngs v1.11.0",
+    "versions": "1.11.0",
+    "reference": "https://github.com/nf-core/fetchngs"
+  },
+  "fetchngs_v1_10_1": {
+    "id": "ANABTs0ZeinQ",
+    "name": "nf-core fetchngs v1.10.1",
+    "versions": "1.10.1",
+    "reference": "https://github.com/nf-core/fetchngs"
+  },
+  "fetchngs_v1_10_0": {
+    "id": "PkM3LO024y3O",
+    "name": "nf-core fetchngs v1.10.0",
+    "versions": "1.10.0",
+    "reference": "https://github.com/nf-core/fetchngs"
+  },
+  "fetchngs_v1_9": {
+    "id": "V50qa3pZ350E",
+    "name": "nf-core fetchngs v1.9",
+    "versions": "1.9",
+    "reference": "https://github.com/nf-core/fetchngs"
+  },
+  "fetchngs_v1_8": {
+    "id": "D0oc30kRdbpt",
+    "name": "nf-core fetchngs v1.8",
+    "versions": "1.8",
+    "reference": "https://github.com/nf-core/fetchngs"
+  },
+  "fetchngs_v1_7": {
+    "id": "gPAQ2StYbMTZ",
+    "name": "nf-core fetchngs v1.7",
+    "versions": "1.7",
+    "reference": "https://github.com/nf-core/fetchngs"
+  },
+  "fetchngs_v1_6": {
+    "id": "iUJE7SuTL02P",
+    "name": "nf-core fetchngs v1.6",
+    "versions": "1.6",
+    "reference": "https://github.com/nf-core/fetchngs"
+  },
+  "fetchngs_v1_5": {
+    "id": "nYfLO87i7bK8",
+    "name": "nf-core fetchngs v1.5",
+    "versions": "1.5",
+    "reference": "https://github.com/nf-core/fetchngs"
+  },
+  "fetchngs_v1_4": {
+    "id": "fVQf0355LlvH",
+    "name": "nf-core fetchngs v1.4",
+    "versions": "1.4",
+    "reference": "https://github.com/nf-core/fetchngs"
+  },
+  "fetchngs_v1_3": {
+    "id": "JQRSnNC9xxo1",
+    "name": "nf-core fetchngs v1.3",
+    "versions": "1.3",
+    "reference": "https://github.com/nf-core/fetchngs"
+  },
+  "fetchngs_v1_2": {
+    "id": "dCXPFj210nVA",
+    "name": "nf-core fetchngs v1.2",
+    "versions": "1.2",
+    "reference": "https://github.com/nf-core/fetchngs"
+  },
+  "fetchngs_v1_1": {
+    "id": "sVWN4PgdIj2y",
+    "name": "nf-core fetchngs v1.1",
+    "versions": "1.1",
+    "reference": "https://github.com/nf-core/fetchngs"
+  },
+  "fetchngs_v1_0": {
+    "id": "Zb6swrmhJWHO",
+    "name": "nf-core fetchngs v1.0",
+    "versions": "1.0",
+    "reference": "https://github.com/nf-core/fetchngs"
+  },
+  "raredisease_v2_1_0": {
+    "id": "jsU0CpD6uBnI",
+    "name": "nf-core raredisease v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/raredisease"
+  },
+  "raredisease_v2_0_1": {
+    "id": "B62S9cVytqin",
+    "name": "nf-core raredisease v2.0.1",
+    "versions": "2.0.1",
+    "reference": "https://github.com/nf-core/raredisease"
+  },
+  "raredisease_v2_0_0": {
+    "id": "73S4HjmX8R2z",
+    "name": "nf-core raredisease v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/raredisease"
+  },
+  "raredisease_v1_1_1": {
+    "id": "ZTE7k5wX95iM",
+    "name": "nf-core raredisease v1.1.1",
+    "versions": "1.1.1",
+    "reference": "https://github.com/nf-core/raredisease"
+  },
+  "raredisease_v1_1_0": {
+    "id": "ez41QR4AvSie",
+    "name": "nf-core raredisease v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/raredisease"
+  },
+  "raredisease_v1_0_0": {
+    "id": "SXcQbXv6WFo1",
+    "name": "nf-core raredisease v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/raredisease"
+  },
+  "marsseq_v1_0_3": {
+    "id": "0Qp02xvjQFh6",
+    "name": "nf-core marsseq v1.0.3",
+    "versions": "1.0.3",
+    "reference": "https://github.com/nf-core/marsseq"
+  },
+  "marsseq_v1_0_2": {
+    "id": "TEXVeGJ22qAR",
+    "name": "nf-core marsseq v1.0.2",
+    "versions": "1.0.2",
+    "reference": "https://github.com/nf-core/marsseq"
+  },
+  "marsseq_v1_0_1": {
+    "id": "EKOOSYaJlcen",
+    "name": "nf-core marsseq v1.0.1",
+    "versions": "1.0.1",
+    "reference": "https://github.com/nf-core/marsseq"
+  },
+  "marsseq_v1_0_0": {
+    "id": "M0YNjXy2BjYa",
+    "name": "nf-core marsseq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/marsseq"
+  },
+  "marsseq_vv0_1": {
+    "id": "Hj9th93IDU1Z",
+    "name": "nf-core marsseq vv0.1",
+    "versions": "v0.1",
+    "reference": "https://github.com/nf-core/marsseq"
+  },
+  "hicar_v1_0_0": {
+    "id": "DPH8g4QgDN9V",
+    "name": "nf-core hicar v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/hicar"
+  },
+  "metatdenovo_v1_0_1": {
+    "id": "lSebMFunOrLK",
+    "name": "nf-core metatdenovo v1.0.1",
+    "versions": "1.0.1",
+    "reference": "https://github.com/nf-core/metatdenovo"
+  },
+  "metatdenovo_v1_0_0": {
+    "id": "0YUknIBQJ7iM",
+    "name": "nf-core metatdenovo v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/metatdenovo"
+  },
+  "circdna_v1_1_0": {
+    "id": "qnrJ69FC2bh0",
+    "name": "nf-core circdna v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/circdna"
+  },
+  "circdna_v1_0_4": {
+    "id": "wOychL2Kcutd",
+    "name": "nf-core circdna v1.0.4",
+    "versions": "1.0.4",
+    "reference": "https://github.com/nf-core/circdna"
+  },
+  "circdna_v1_0_3": {
+    "id": "m06sZi0JnhzM",
+    "name": "nf-core circdna v1.0.3",
+    "versions": "1.0.3",
+    "reference": "https://github.com/nf-core/circdna"
+  },
+  "circdna_v1_0_3dev_alpha": {
+    "id": "SiTN5I9r0pSE",
+    "name": "nf-core circdna v1.0.3dev-alpha",
+    "versions": "1.0.3dev-alpha",
+    "reference": "https://github.com/nf-core/circdna"
+  },
+  "circdna_v1_0_3dev": {
+    "id": "40mHcmsnMiQb",
+    "name": "nf-core circdna v1.0.3dev",
+    "versions": "1.0.3dev",
+    "reference": "https://github.com/nf-core/circdna"
+  },
+  "circdna_v1_0_2": {
+    "id": "YR7Sqc1yt4Fp",
+    "name": "nf-core circdna v1.0.2",
+    "versions": "1.0.2",
+    "reference": "https://github.com/nf-core/circdna"
+  },
+  "circdna_v1_0_1": {
+    "id": "3izNWbuEeNft",
+    "name": "nf-core circdna v1.0.1",
+    "versions": "1.0.1",
+    "reference": "https://github.com/nf-core/circdna"
+  },
+  "circdna_v1_0_0": {
+    "id": "knqkNAJf1z1G",
+    "name": "nf-core circdna v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/circdna"
+  },
+  "quantms_v1_2_0": {
+    "id": "W4QSagg0ekrb",
+    "name": "nf-core quantms v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/quantms"
+  },
+  "quantms_v1_1_1": {
+    "id": "VYJyw3rMcpll",
+    "name": "nf-core quantms v1.1.1",
+    "versions": "1.1.1",
+    "reference": "https://github.com/nf-core/quantms"
+  },
+  "quantms_v1_1_0": {
+    "id": "855xj5nYRinu",
+    "name": "nf-core quantms v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/quantms"
+  },
+  "quantms_v1_0": {
+    "id": "7dhYJera0v9Q",
+    "name": "nf-core quantms v1.0",
+    "versions": "1.0",
+    "reference": "https://github.com/nf-core/quantms"
+  },
+  "funcscan_v1_1_6": {
+    "id": "IPkIwQmDNvSJ",
+    "name": "nf-core funcscan v1.1.6",
+    "versions": "1.1.6",
+    "reference": "https://github.com/nf-core/funcscan"
+  },
+  "funcscan_v1_1_5": {
+    "id": "86MYev6EBssj",
+    "name": "nf-core funcscan v1.1.5",
+    "versions": "1.1.5",
+    "reference": "https://github.com/nf-core/funcscan"
+  },
+  "funcscan_v1_1_4": {
+    "id": "Pv5lkib6DE4R",
+    "name": "nf-core funcscan v1.1.4",
+    "versions": "1.1.4",
+    "reference": "https://github.com/nf-core/funcscan"
+  },
+  "funcscan_v1_1_3": {
+    "id": "g17sYq4V0p08",
+    "name": "nf-core funcscan v1.1.3",
+    "versions": "1.1.3",
+    "reference": "https://github.com/nf-core/funcscan"
+  },
+  "funcscan_v1_1_2": {
+    "id": "vUu6RbbAkrKH",
+    "name": "nf-core funcscan v1.1.2",
+    "versions": "1.1.2",
+    "reference": "https://github.com/nf-core/funcscan"
+  },
+  "funcscan_v1_1_1": {
+    "id": "9qvqKi5n0iNq",
+    "name": "nf-core funcscan v1.1.1",
+    "versions": "1.1.1",
+    "reference": "https://github.com/nf-core/funcscan"
+  },
+  "funcscan_v1_1_0": {
+    "id": "JtOtedNSfL0o",
+    "name": "nf-core funcscan v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/funcscan"
+  },
+  "funcscan_v1_0_1": {
+    "id": "SS7Cwsiu1DTH",
+    "name": "nf-core funcscan v1.0.1",
+    "versions": "1.0.1",
+    "reference": "https://github.com/nf-core/funcscan"
+  },
+  "funcscan_v1_0_0": {
+    "id": "WPwaUTJ8vZXK",
+    "name": "nf-core funcscan v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/funcscan"
+  },
+  "nanostring_v1_2_1": {
+    "id": "9E609pdV4TWx",
+    "name": "nf-core nanostring v1.2.1",
+    "versions": "1.2.1",
+    "reference": "https://github.com/nf-core/nanostring"
+  },
+  "nanostring_v1_2_0": {
+    "id": "CeuRefkYuuaO",
+    "name": "nf-core nanostring v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/nanostring"
+  },
+  "nanostring_v1_1_1": {
+    "id": "bOrHV1AhLwPG",
+    "name": "nf-core nanostring v1.1.1",
+    "versions": "1.1.1",
+    "reference": "https://github.com/nf-core/nanostring"
+  },
+  "nanostring_v1_1_0": {
+    "id": "Ty7YodouCkGK",
+    "name": "nf-core nanostring v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/nanostring"
+  },
+  "nanostring_v1_0_0": {
+    "id": "UVqFuA9sLbZW",
+    "name": "nf-core nanostring v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/nanostring"
+  },
+  "taxprofiler_v1_1_8": {
+    "id": "fcvWziHUUTtj",
+    "name": "nf-core taxprofiler v1.1.8",
+    "versions": "1.1.8",
+    "reference": "https://github.com/nf-core/taxprofiler"
+  },
+  "taxprofiler_v1_1_7": {
+    "id": "FF1vL50HcSk0",
+    "name": "nf-core taxprofiler v1.1.7",
+    "versions": "1.1.7",
+    "reference": "https://github.com/nf-core/taxprofiler"
+  },
+  "taxprofiler_v1_1_6": {
+    "id": "0HNXSUTS0I1T",
+    "name": "nf-core taxprofiler v1.1.6",
+    "versions": "1.1.6",
+    "reference": "https://github.com/nf-core/taxprofiler"
+  },
+  "taxprofiler_v1_1_5": {
+    "id": "k5Y59LKQbQSJ",
+    "name": "nf-core taxprofiler v1.1.5",
+    "versions": "1.1.5",
+    "reference": "https://github.com/nf-core/taxprofiler"
+  },
+  "taxprofiler_v1_1_4": {
+    "id": "w5YUZlR41vxy",
+    "name": "nf-core taxprofiler v1.1.4",
+    "versions": "1.1.4",
+    "reference": "https://github.com/nf-core/taxprofiler"
+  },
+  "taxprofiler_v1_1_3": {
+    "id": "O4Qn3oJiiwgp",
+    "name": "nf-core taxprofiler v1.1.3",
+    "versions": "1.1.3",
+    "reference": "https://github.com/nf-core/taxprofiler"
+  },
+  "taxprofiler_v1_1_2": {
+    "id": "t10gMYB4wQ59",
+    "name": "nf-core taxprofiler v1.1.2",
+    "versions": "1.1.2",
+    "reference": "https://github.com/nf-core/taxprofiler"
+  },
+  "taxprofiler_v1_1_1": {
+    "id": "ae3nT8iZgykV",
+    "name": "nf-core taxprofiler v1.1.1",
+    "versions": "1.1.1",
+    "reference": "https://github.com/nf-core/taxprofiler"
+  },
+  "taxprofiler_v1_1_0": {
+    "id": "RQbhc00ybJ7j",
+    "name": "nf-core taxprofiler v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/taxprofiler"
+  },
+  "taxprofiler_v1_0_1": {
+    "id": "sZMUfPHgm82x",
+    "name": "nf-core taxprofiler v1.0.1",
+    "versions": "1.0.1",
+    "reference": "https://github.com/nf-core/taxprofiler"
+  },
+  "taxprofiler_v1_0_0": {
+    "id": "HZx0xTkh5pKy",
+    "name": "nf-core taxprofiler v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/taxprofiler"
+  },
+  "proteinfold_v1_1_1": {
+    "id": "Ryt6JraltG5h",
+    "name": "nf-core proteinfold v1.1.1",
+    "versions": "1.1.1",
+    "reference": "https://github.com/nf-core/proteinfold"
+  },
+  "proteinfold_v1_1_0": {
+    "id": "Q4Vzp4MtyiHM",
+    "name": "nf-core proteinfold v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/proteinfold"
+  },
+  "proteinfold_v1_0_0": {
+    "id": "43goSydGl26h",
+    "name": "nf-core proteinfold v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/proteinfold"
+  },
+  "viralintegration_v0_1_1": {
+    "id": "kVNRCguhVeUJ",
+    "name": "nf-core viralintegration v0.1.1",
+    "versions": "0.1.1",
+    "reference": "https://github.com/nf-core/viralintegration"
+  },
+  "viralintegration_v0_1_0": {
+    "id": "w6TVJk9HgGFW",
+    "name": "nf-core viralintegration v0.1.0",
+    "versions": "0.1.0",
+    "reference": "https://github.com/nf-core/viralintegration"
+  },
+  "hgtseq_v1_1_0": {
+    "id": "C41apN6Kw3uI",
+    "name": "nf-core hgtseq v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/hgtseq"
+  },
+  "hgtseq_v1_0_0": {
+    "id": "mYDLwBf1qP0k",
+    "name": "nf-core hgtseq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/hgtseq"
+  },
+  "isoseq_v1_1_5": {
+    "id": "lhzQCgWKgQ0N",
+    "name": "nf-core isoseq v1.1.5",
+    "versions": "1.1.5",
+    "reference": "https://github.com/nf-core/isoseq"
+  },
+  "isoseq_v1_1_4": {
+    "id": "VaDa18wUMfLl",
+    "name": "nf-core isoseq v1.1.4",
+    "versions": "1.1.4",
+    "reference": "https://github.com/nf-core/isoseq"
+  },
+  "isoseq_v1_1_3": {
+    "id": "V3mpIwx8j5j9",
+    "name": "nf-core isoseq v1.1.3",
+    "versions": "1.1.3",
+    "reference": "https://github.com/nf-core/isoseq"
+  },
+  "isoseq_v1_1_2": {
+    "id": "gvkXaN4TFE1u",
+    "name": "nf-core isoseq v1.1.2",
+    "versions": "1.1.2",
+    "reference": "https://github.com/nf-core/isoseq"
+  },
+  "isoseq_v1_1_1": {
+    "id": "NheddQs05V7o",
+    "name": "nf-core isoseq v1.1.1",
+    "versions": "1.1.1",
+    "reference": "https://github.com/nf-core/isoseq"
+  },
+  "isoseq_v1_1_0": {
+    "id": "q9Pe2TakU9U3",
+    "name": "nf-core isoseq v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/isoseq"
+  },
+  "isoseq_v1_0_0": {
+    "id": "3Sa1Y02Y1H8t",
+    "name": "nf-core isoseq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/isoseq"
+  },
+  "crisprseq_v2_2_1": {
+    "id": "G8NT5KzTgyBK",
+    "name": "nf-core crisprseq v2.2.1",
+    "versions": "2.2.1",
+    "reference": "https://github.com/nf-core/crisprseq"
+  },
+  "crisprseq_v2_2_0": {
+    "id": "zG0ro9yjW4h0",
+    "name": "nf-core crisprseq v2.2.0",
+    "versions": "2.2.0",
+    "reference": "https://github.com/nf-core/crisprseq"
+  },
+  "crisprseq_v2_1_1": {
+    "id": "05Z9FAgPLjbg",
+    "name": "nf-core crisprseq v2.1.1",
+    "versions": "2.1.1",
+    "reference": "https://github.com/nf-core/crisprseq"
+  },
+  "crisprseq_v2_1_0": {
+    "id": "QPSaT0acENuT",
+    "name": "nf-core crisprseq v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://github.com/nf-core/crisprseq"
+  },
+  "crisprseq_v2_0_0": {
+    "id": "nDeFnR1srgoc",
+    "name": "nf-core crisprseq v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://github.com/nf-core/crisprseq"
+  },
+  "crisprseq_v1_0": {
+    "id": "Xdc9QIm9yWGW",
+    "name": "nf-core crisprseq v1.0",
+    "versions": "1.0",
+    "reference": "https://github.com/nf-core/crisprseq"
+  },
+  "phyloplace_v1_0_0": {
+    "id": "0021IKJ680lz",
+    "name": "nf-core phyloplace v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/phyloplace"
+  },
+  "rnasplice_v1_0_4": {
+    "id": "4anAxGzrbZLW",
+    "name": "nf-core rnasplice v1.0.4",
+    "versions": "1.0.4",
+    "reference": "https://github.com/nf-core/rnasplice"
+  },
+  "rnasplice_v1_0_3": {
+    "id": "ClC0GaBAah01",
+    "name": "nf-core rnasplice v1.0.3",
+    "versions": "1.0.3",
+    "reference": "https://github.com/nf-core/rnasplice"
+  },
+  "rnasplice_v1_0_2": {
+    "id": "02P7XRtNO7e0",
+    "name": "nf-core rnasplice v1.0.2",
+    "versions": "1.0.2",
+    "reference": "https://github.com/nf-core/rnasplice"
+  },
+  "rnasplice_v1_0_1": {
+    "id": "dc0CGCbz0Brt",
+    "name": "nf-core rnasplice v1.0.1",
+    "versions": "1.0.1",
+    "reference": "https://github.com/nf-core/rnasplice"
+  },
+  "rnasplice_v1_0_0": {
+    "id": "0PhMyrWbeEuV",
+    "name": "nf-core rnasplice v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/rnasplice"
+  },
+  "fastquorum_v1_0_0": {
+    "id": "lTttB78RNjVi",
+    "name": "nf-core fastquorum v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/fastquorum"
+  },
+  "pixelator_v1_3_1": {
+    "id": "5ku9gftdYbKN",
+    "name": "nf-core pixelator v1.3.1",
+    "versions": "1.3.1",
+    "reference": "https://github.com/nf-core/pixelator"
+  },
+  "pixelator_v1_3_0": {
+    "id": "ijoAyQpvMfPo",
+    "name": "nf-core pixelator v1.3.0",
+    "versions": "1.3.0",
+    "reference": "https://github.com/nf-core/pixelator"
+  },
+  "pixelator_v1_2_0": {
+    "id": "HTbpfRohoFaC",
+    "name": "nf-core pixelator v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/pixelator"
+  },
+  "pixelator_v1_1_0": {
+    "id": "Nw5mWQlMQvPW",
+    "name": "nf-core pixelator v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/pixelator"
+  },
+  "pixelator_v1_0_3": {
+    "id": "93he0Tge5Es0",
+    "name": "nf-core pixelator v1.0.3",
+    "versions": "1.0.3",
+    "reference": "https://github.com/nf-core/pixelator"
+  },
+  "pixelator_v1_0_2": {
+    "id": "QXq2b0Q1mi9E",
+    "name": "nf-core pixelator v1.0.2",
+    "versions": "1.0.2",
+    "reference": "https://github.com/nf-core/pixelator"
+  },
+  "pixelator_v1_0_1": {
+    "id": "xkaIT36HZV0W",
+    "name": "nf-core pixelator v1.0.1",
+    "versions": "1.0.1",
+    "reference": "https://github.com/nf-core/pixelator"
+  },
+  "pixelator_v1_0_0": {
+    "id": "PS37j9rxN0hv",
+    "name": "nf-core pixelator v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/pixelator"
+  },
+  "differentialabundance_v1_5_0": {
+    "id": "dZFZNCJJ86g8",
+    "name": "nf-core differentialabundance v1.5.0",
+    "versions": "1.5.0",
+    "reference": "https://github.com/nf-core/differentialabundance"
+  },
+  "differentialabundance_v1_4_0": {
+    "id": "Jm6I9X9N1Z17",
+    "name": "nf-core differentialabundance v1.4.0",
+    "versions": "1.4.0",
+    "reference": "https://github.com/nf-core/differentialabundance"
+  },
+  "differentialabundance_v1_3_1": {
+    "id": "UmbqJw2ieZJV",
+    "name": "nf-core differentialabundance v1.3.1",
+    "versions": "1.3.1",
+    "reference": "https://github.com/nf-core/differentialabundance"
+  },
+  "differentialabundance_v1_3_0": {
+    "id": "9N1l1T6LqJ89",
+    "name": "nf-core differentialabundance v1.3.0",
+    "versions": "1.3.0",
+    "reference": "https://github.com/nf-core/differentialabundance"
+  },
+  "differentialabundance_v1_2_0": {
+    "id": "eEr5DJJJE0Kc",
+    "name": "nf-core differentialabundance v1.2.0",
+    "versions": "1.2.0",
+    "reference": "https://github.com/nf-core/differentialabundance"
+  },
+  "differentialabundance_v1_1_1": {
+    "id": "1FxTht38WYmy",
+    "name": "nf-core differentialabundance v1.1.1",
+    "versions": "1.1.1",
+    "reference": "https://github.com/nf-core/differentialabundance"
+  },
+  "differentialabundance_v1_1_0": {
+    "id": "BO4cy0kJGJDQ",
+    "name": "nf-core differentialabundance v1.1.0",
+    "versions": "1.1.0",
+    "reference": "https://github.com/nf-core/differentialabundance"
+  },
+  "differentialabundance_v1_0_1": {
+    "id": "iLN0mJ961I5X",
+    "name": "nf-core differentialabundance v1.0.1",
+    "versions": "1.0.1",
+    "reference": "https://github.com/nf-core/differentialabundance"
+  },
+  "differentialabundance_v1_0_0": {
+    "id": "xXL1CtbiQdYk",
+    "name": "nf-core differentialabundance v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/differentialabundance"
+  },
+  "callingcards_v1_0_0": {
+    "id": "VmpOvmO7JsTb",
+    "name": "nf-core callingcards v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/callingcards"
+  },
+  "molkart_v1_0_0": {
+    "id": "h1yAsiNBYSl5",
+    "name": "nf-core molkart v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/molkart"
+  },
+  "readsimulator_v1_0_1": {
+    "id": "FDd4fmbR0kaa",
+    "name": "nf-core readsimulator v1.0.1",
+    "versions": "1.0.1",
+    "reference": "https://github.com/nf-core/readsimulator"
+  },
+  "readsimulator_v1_0_0": {
+    "id": "IssY7vUf6PiJ",
+    "name": "nf-core readsimulator v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/readsimulator"
+  },
+  "riboseq_v1_0_1": {
+    "id": "OQ8Vkzq7WwHS",
+    "name": "nf-core riboseq v1.0.1",
+    "versions": "1.0.1",
+    "reference": "https://github.com/nf-core/riboseq"
+  },
+  "riboseq_v1_0_0": {
+    "id": "EhtCHVVCQHVq",
+    "name": "nf-core riboseq v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/riboseq"
+  },
+  "detaxizer_v1_0_0": {
+    "id": "i18U1JtHwNho",
+    "name": "nf-core detaxizer v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/detaxizer"
+  },
+  "demo_v1_0_0": {
+    "id": "0G5t47LC1ITt",
+    "name": "nf-core demo v1.0.0",
+    "versions": "1.0.0",
+    "reference": "https://github.com/nf-core/demo"
+  },
+  "cell_ranger_v8_0_0": {
+    "id": "X3Y4Z5A6B7C8",
+    "name": "Cell Ranger v8.0.0",
+    "versions": "8.0.0",
+    "reference": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
+  },
+  "cell_ranger_v7_2_0": {
+    "id": "N4F5G6H7I8J9",
+    "name": "Cell Ranger v7.2.0",
+    "versions": "7.2.0",
+    "reference": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
+  },
+  "cell_ranger_v7_1_0": {
+    "id": "V2RbClSNDq4H",
+    "name": "Cell Ranger v7.1.0",
+    "versions": "7.1.0",
+    "reference": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
+  },
+  "cell_ranger_v7_0_1": {
+    "id": "T3r0zDQQJ97p",
+    "name": "Cell Ranger v7.0.1",
+    "versions": "7.0.1",
+    "reference": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
+  },
+  "cell_ranger_v7_0_0": {
+    "id": "t28U9XvyjCEw",
+    "name": "Cell Ranger v7.0.0",
+    "versions": "7.0.0",
+    "reference": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/latest"
+  },
+  "cell_ranger_v6_1_2": {
+    "id": "G4R5bC6a9DcX",
+    "name": "Cell Ranger v6.1.2",
+    "versions": "6.1.2",
+    "reference": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/6.1"
+  },
+  "cell_ranger_v6_0_0": {
+    "id": "F6U8dE2tJ3LZ",
+    "name": "Cell Ranger v6.0.0",
+    "versions": "6.0.0",
+    "reference": "https://support.10xgenomics.com/single-cell-gene-expression/software/downloads/6.0"
+  },
+  "spaceranger_v3_0_0": {
+    "id": "A1B2C3D4E5F6",
+    "name": "Spaceranger v3.0.0",
+    "versions": "3.0.0",
+    "reference": "https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest"
+  },
+  "spaceranger_v2_1_1": {
+    "id": "G7H8I9J0K1L2",
+    "name": "Spaceranger v2.1.1",
+    "versions": "2.1.1",
+    "reference": "https://support.10xgenomics.com/spatial-gene-expression/software/downloads/2.1"
+  },
+  "spaceranger_v2_1_0": {
+    "id": "M3N4O5P6Q7R8",
+    "name": "Spaceranger v2.1.0",
+    "versions": "2.1.0",
+    "reference": "https://support.10xgenomics.com/spatial-gene-expression/software/downloads/2.1"
+  },
+  "spaceranger_v2_0_1": {
+    "id": "M9V2bR6aK3eD",
+    "name": "Spaceranger v2.0.1",
+    "versions": "2.0.1",
+    "reference": "https://support.10xgenomics.com/spatial-gene-expression/software/downloads/2.0"
+  },
+  "xenium_v2_0_0": {
+    "id": "S1T2U3V4W5X6",
+    "name": "Xenium v2.0.0",
+    "versions": "2.0.0",
+    "reference": "https://www.10xgenomics.com/products/xenium"
+  },
+  "xenium_v1_7_1": {
+    "id": "Y7Z8A9B0C1D2",
+    "name": "Xenium v1.7.1",
+    "versions": "1.7.1",
+    "reference": "https://www.10xgenomics.com/products/xenium"
+  },
+  "xenium_v1_7_0": {
+    "id": "E3F4G5H6I7J8",
+    "name": "Xenium v1.7.0",
+    "versions": "1.7.0",
+    "reference": "https://www.10xgenomics.com/products/xenium"
+  },
+  "xenium_v1_6_0": {
+    "id": "K9L0M1N2O3P4",
+    "name": "Xenium v1.6.0",
+    "versions": "1.6.0",
+    "reference": "https://www.10xgenomics.com/products/xenium"
+  }
+}
