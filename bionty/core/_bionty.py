@@ -4,7 +4,7 @@ from typing import Type
 import pandas as pd
 from lamin_utils import logger
 from lamindb_setup.core._setup_bionty_sources import RENAME
-from lnschema_core.models import Record
+from lnschema_core.models import Artifact, Record
 
 import bionty.base as bionty_base
 
@@ -129,13 +129,17 @@ def register_source_in_bionty_assets(
     source: Record,
     is_dataframe: bool = True,
     update: bool = False,
-):
+) -> Artifact:
     """Register a new source in the laminlabs/bionty-assets instance.
 
     Args:
-        filepath (Path | str): Path to the source file.
-        is_dataframe (bool, optional): Whether the file is the DataFrame of the source. Defaults to True.
-        update (bool, optional): Whether to update the source if it already exists. Defaults to False.
+        filepath: Path to the source file.
+        source: Source record.
+        is_dataframe: Whether the file is the DataFrame of the source. Defaults to True.
+        update: Whether to update the source if it already exists. Defaults to False.
+
+    Returns:
+        Registered artifact record.
     """
     import lamindb as ln
 
@@ -174,3 +178,5 @@ def register_source_in_bionty_assets(
     else:
         source.artifacts.add(artifact)
         logger.print(f"registered {source} with {artifact}")
+
+    return artifact
