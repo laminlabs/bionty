@@ -135,8 +135,8 @@ def register_source_in_bionty_assets(
     Args:
         filepath: Path to the source file.
         source: Source record.
-        is_dataframe: Whether the file is the DataFrame of the source. Defaults to True.
-        update: Whether to update the source if it already exists. Defaults to False.
+        is_dataframe: Whether the file is the DataFrame of the source.
+        update: Whether to update the source if it already exists.
 
     Returns:
         Registered artifact record.
