@@ -155,6 +155,9 @@ CellType:
 Tissue:
   uberon:
     all:
+      2024-08-07:
+        url: http://purl.obolibrary.org/obo/uberon/releases/2024-08-07/uberon.owl
+        md5: ""
       2024-05-13:
         url: http://purl.obolibrary.org/obo/uberon/releases/2024-05-13/uberon.owl
         md5: dc473b764acfe765be31250c853ef23d
