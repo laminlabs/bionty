@@ -1,9 +1,10 @@
+from pathlib import Path
 from typing import Type
 
 import pandas as pd
 from lamin_utils import logger
 from lamindb_setup.core._setup_bionty_sources import RENAME
-from lnschema_core.models import Record
+from lnschema_core.models import Artifact, Record
 
 import bionty.base as bionty_base
 
@@ -17,18 +18,24 @@ def sync_all_sources_to_latest():
     """
     import lamindb as ln
 
+    import bionty
+    from bionty._bionty import list_biorecord_models
     from bionty.models import Source
 
     try:
         ln.settings.creation.search_names = False
         records = Source.filter().all()
         df_sources = bionty_base.display_available_sources().reset_index()
+        bionty_models = list_biorecord_models(bionty)
         for _, row in df_sources.iterrows():
             kwargs = row.to_dict()
             for db_name, base_name in RENAME.items():
                 if base_name in kwargs:
                     kwargs[db_name] = kwargs.pop(base_name)
-            if not kwargs["entity"].startswith("bionty."):
+            if (
+                not kwargs["entity"].startswith("bionty.")
+                and kwargs["entity"] in bionty_models
+            ):
                 kwargs["entity"] = "bionty." + kwargs["entity"]
             record = records.filter(
                 name=kwargs["name"],
@@ -115,3 +122,61 @@ def _prepare_bionty_df(model: type[Record], bionty_df: pd.DataFrame):
     # rename definition to description for the bionty registry in db
     bionty_df.rename(columns={"definition": "description"}, inplace=True)
     return bionty_df
+
+
+def register_source_in_bionty_assets(
+    filepath: Path,
+    source: Record,
+    is_dataframe: bool = True,
+    update: bool = False,
+) -> Artifact:
+    """Register a new source in the laminlabs/bionty-assets instance.
+
+    Args:
+        filepath: Path to the source file.
+        source: Source record.
+        is_dataframe: Whether the file is the DataFrame of the source.
+        update: Whether to update the source if it already exists.
+
+    Returns:
+        Registered artifact record.
+    """
+    import lamindb as ln
+
+    assert ln.setup.settings.instance.slug == "laminlabs/bionty-assets"
+
+    filepath = ln.UPath(filepath)
+    if is_dataframe:
+        assert filepath.suffix == ".parquet"
+
+    artifact = ln.Artifact.filter(
+        key=filepath.name, _key_is_virtual=False
+    ).one_or_none()
+    if artifact is not None:
+        if not update:
+            raise ValueError(
+                f"artifact already exists: {artifact}\n   → pass `update=True` to update it"
+            )
+        else:
+            artifact.replace(filepath)
+    else:
+        artifact = ln.Artifact(
+            filepath, key=filepath.name, _key_is_virtual=False
+        ).save()
+
+    if is_dataframe:
+        organism, source_name, version, entity = filepath.stem.removeprefix(
+            "df_"
+        ).split("__")
+        assert organism == source.organism
+        assert source_name == source.name
+        assert version == source.version
+        assert entity in source.entity
+        source.dataframe_artifact = artifact
+        source.save()
+        logger.print(f"registered {source} with dataframe {artifact}")
+    else:
+        source.artifacts.add(artifact)
+        logger.print(f"registered {source} with {artifact}")
+
+    return artifact
