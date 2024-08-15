@@ -1,9 +1,13 @@
+from __future__ import annotations
+
 import warnings
-from pathlib import Path
-from typing import BinaryIO, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, BinaryIO
 
 import pandas as pd
 import pronto
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 class Ontology(pronto.Ontology):
@@ -22,10 +26,10 @@ class Ontology(pronto.Ontology):
 
     def __init__(
         self,
-        handle: Union[str, Path, BinaryIO, None] = None,
+        handle: str | Path | BinaryIO | None = None,
         import_depth: int = -1,
         timeout: int = 100,
-        threads: Optional[int] = None,
+        threads: int | None = None,
         prefix: str = "",
     ) -> None:
         self._prefix = prefix
@@ -43,10 +47,27 @@ class Ontology(pronto.Ontology):
 
     def to_df(
         self,
-        source: Optional[str] = None,
-        include_id_prefixes: Optional[Dict[str, List[str]]] = None,
+        source: str | None = None,
+        include_rel: str | None = None,
+        include_id_prefixes: dict[str, list[str]] | None = None,
     ):
-        """Convert pronto.Ontology to a DataFrame with columns id, name, parents."""
+        """Convert pronto.Ontology to a DataFrame with columns id, name, parents, definition, and synonyms.
+
+        Args:
+            source: The source of the ontology terms to include. If None, all terms are included.
+            include_rel: The relationship ID to include when gathering parent relationships.
+                If provided, it extends the superclasses with the specified relationship.
+            include_id_prefixes: A dictionary mapping sources to lists of ID prefixes.
+                Only terms with IDs starting with these prefixes will be included for the specified source.
+
+        Returns:
+            A DataFrame containing the filtered ontology terms with columns:
+            - ontology_id (index): The unique identifier for each term.
+            - name: The name of the term.
+            - definition: The definition of the term (None if not available).
+            - synonyms: A pipe-separated string of exact synonyms (None if no synonyms).
+            - parents: A list of parent term IDs, including superclasses and optionally the specified relationship.
+        """
 
         def filter_include_id_prefixes(terms: pronto.ontology._OntologyTerms):
             if include_id_prefixes and source in list(include_id_prefixes.keys()):
@@ -84,22 +105,29 @@ class Ontology(pronto.Ontology):
 
             # concatenate synonyms into a string
             synonyms = "|".join(
-                [i.description for i in term.synonyms if i.scope == "EXACT"]
+                [
+                    synonym.description
+                    for synonym in term.synonyms
+                    if synonym.scope == "EXACT"
+                ]
             )
             if len(synonyms) == 0:
                 synonyms = None  # type:ignore
 
-            # get 1st degree parents as a list
+            # get 1st degree parents and part of relatonships if specified as a list
+            superclasses = [
+                s.id for s in term.superclasses(distance=1, with_self=False).to_set()
+            ]
+
+            if include_rel is not None:
+                if include_rel in [i.id for i in term.relationships]:
+                    superclasses.extend(
+                        [s.id for s in term.objects(self.get_relationship(include_rel))]
+                    )
+
             if prefix_list is not None:
                 superclasses = [
-                    s.id
-                    for s in term.superclasses(distance=1, with_self=False).to_set()
-                    if s.id.startswith(tuple(prefix_list))
-                ]
-            else:
-                superclasses = [
-                    s.id
-                    for s in term.superclasses(distance=1, with_self=False).to_set()
+                    s for s in superclasses if s.startswith(tuple(prefix_list))
                 ]
 
             df_values.append((term.id, term.name, definition, synonyms, superclasses))

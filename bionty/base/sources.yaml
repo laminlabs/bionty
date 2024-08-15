@@ -368,6 +368,9 @@ Drug:
 DevelopmentalStage:
   hsapdv:
     human:
+      2024-05-28:
+        url: https://github.com/obophenotype/developmental-stage-ontologies/releases/download/v2024-05-28/hsapdv.owl
+        md5: ""
       2020-03-10:
         url: http://aber-owl.net/media/ontologies/HSAPDV/11/hsapdv.owl
         md5: 52181d59df84578ed69214a5cb614036
@@ -375,6 +378,9 @@ DevelopmentalStage:
     website: https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv
   mmusdv:
     mouse:
+      2024-05-28:
+        url: https://github.com/obophenotype/developmental-stage-ontologies/releases/download/v2024-05-28/mmusdv.owl
+        md5: ""
       2020-03-10:
         url: http://aber-owl.net/media/ontologies/MMUSDV/9/mmusdv.owl
         md5: 5bef72395d853c7f65450e6c2a1fc653
