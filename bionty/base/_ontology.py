@@ -114,20 +114,30 @@ class Ontology(pronto.Ontology):
             if len(synonyms) == 0:
                 synonyms = None  # type:ignore
 
-            # get 1st degree parents and part of relatonships if specified as a list
+            # get 1st degree parents and additional relatonships (include_rel such as 'part_of')
             superclasses = [
-                s.id for s in term.superclasses(distance=1, with_self=False).to_set()
+                superclass.id
+                for superclass in term.superclasses(
+                    distance=1, with_self=False
+                ).to_set()
             ]
 
             if include_rel is not None:
                 if include_rel in [i.id for i in term.relationships]:
                     superclasses.extend(
-                        [s.id for s in term.objects(self.get_relationship(include_rel))]
+                        [
+                            superclass.id
+                            for superclass in term.objects(
+                                self.get_relationship(include_rel)
+                            )
+                        ]
                     )
 
             if prefix_list is not None:
                 superclasses = [
-                    s for s in superclasses if s.startswith(tuple(prefix_list))
+                    superclass
+                    for superclass in superclasses
+                    if superclass.startswith(tuple(prefix_list))
                 ]
 
             df_values.append((term.id, term.name, definition, synonyms, superclasses))
