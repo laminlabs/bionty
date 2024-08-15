@@ -29,5 +29,6 @@ class DevelopmentalStage(PublicOntology):
             version=version,
             organism=organism,
             include_id_prefixes={"hsapdv": ["HsapDv"], "mmusdv": ["MmusDv"]},
+            include_rel="part_of",
             **kwargs,
         )

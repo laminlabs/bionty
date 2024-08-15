@@ -50,6 +50,7 @@ class PublicOntology:
         organism: str | None = None,
         *,
         include_id_prefixes: dict[str, list[str]] | None = None,
+        include_rel: str | None = None,
         **kwargs,
     ):
         # backward compat for species -> organism
@@ -94,6 +95,7 @@ class PublicOntology:
 
         self._set_file_paths()
         self.include_id_prefixes = include_id_prefixes
+        self.include_rel = include_rel
 
         # df is only read into memory at the init to improve performance
         df = self._load_df()
@@ -302,7 +304,9 @@ class PublicOntology:
         if not self._url.endswith("parquet"):
             if not self._local_parquet_path.exists():
                 df = self.to_pronto().to_df(
-                    source=self.source, include_id_prefixes=self.include_id_prefixes
+                    source=self.source,
+                    include_id_prefixes=self.include_id_prefixes,
+                    include_rel=self.include_rel,
                 )
                 df.to_parquet(self._local_parquet_path)
 
@@ -333,8 +337,8 @@ class PublicOntology:
             A Pandas DataFrame of the ontology.
 
         Examples:
-            >>> import bionty.base as bionty_base
-            >>> bt.Gene().df()
+            >>> import bionty.base as bt_base
+            >>> bt_base.Gene().df()
         """
         if "ontology_id" in self._df.columns:
             return self._df.set_index("ontology_id")
@@ -363,8 +367,8 @@ class PublicOntology:
             A boolean array indicating compliance validation.
 
         Examples:
-            >>> import bionty.base as bionty_base
-            >>> public = bt.Gene()
+            >>> import bionty.base as bt_base
+            >>> public = bt_base.Gene()
             >>> gene_symbols = ["A1CF", "A1BG", "FANCD1", "FANCD20"]
             >>> public.validate(gene_symbols, field=public.symbol)
         """
@@ -407,8 +411,8 @@ class PublicOntology:
                 `__validated__` column indicating compliance validation.
 
         Examples:
-            >>> import bionty.base as bionty_base
-            >>> public = bt.Gene()
+            >>> import bionty.base as bt_base
+            >>> public = bt_base.Gene()
             >>> gene_symbols = ["A1CF", "A1BG", "FANCD1", "FANCD20"]
             >>> public.inspect(gene_symbols, field=public.symbol)
         """
@@ -451,7 +455,7 @@ class PublicOntology:
                 multiple names, determines which duplicates to mark as
                 `pd.DataFrame.duplicated`
             mute: Whether to mute logging. Defaults to False.
-
+            Keep: Which standardized name to keep.
                     - "first": returns the first mapped standardized name
                     - "last": returns the last mapped standardized name
                     - `False`: returns all mapped standardized name
@@ -463,8 +467,8 @@ class PublicOntology:
             standardized names as values.
 
         Examples:
-            >>> import bionty.base as bionty_base
-            >>> public = bt.Gene()
+            >>> import bionty.base as bt_base
+            >>> public = bt_base.Gene()
             >>> gene_symbols = ["A1CF", "A1BG", "FANCD1", "FANCD20"]
             >>> standardized_symbols = public.standardize(gene_symbols, public.symbol)
         """
@@ -517,8 +521,8 @@ class PublicOntology:
             A NamedTuple of lookup information of the field values.
 
         Examples:
-            >>> import bionty.base as bionty_base
-            >>> lookup = bt.CellType().lookup()
+            >>> import bionty.base as bt_base
+            >>> lookup = bt_base.CellType().lookup()
             >>> lookup.cd103_positive_dendritic_cell
             >>> lookup_dict = lookup.dict()
             >>> lookup['CD103-positive dendritic cell']
@@ -557,8 +561,8 @@ class PublicOntology:
             Ranked search results.
 
         Examples:
-            >>> import bionty.base as bionty_base
-            >>> public = bt.CellType()
+            >>> import bionty.base as bt_base
+            >>> public = bt_base.CellType()
             >>> public.search("gamma delta T cell")
         """
         from lamin_utils._search import search
@@ -587,9 +591,9 @@ class PublicOntology:
             2. A pd.DataFrame.compare result which denotes all changes in `self` and `other`.
 
         Examples:
-            >>> import bionty.base as bionty_base
-            >>> public_1 = bt.Disease(source="mondo", version="2023-04-04")
-            >>> public_2 = bt.Disease(source="mondo", version="2023-04-04")
+            >>> import bionty.base as bt_base
+            >>> public_1 = bt_base.Disease(source="mondo", version="2023-04-04")
+            >>> public_2 = bt_base.Disease(source="mondo", version="2023-04-04")
             >>> new_entries, modified_entries = public_1.diff(public_2)
             >>> print(new_entries.head())
             >>> print(modified_entries.head())
