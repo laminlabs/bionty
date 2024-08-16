@@ -160,9 +160,9 @@ def register_source_in_bionty_assets(
         else:
             artifact.replace(filepath)
     else:
-        artifact = ln.Artifact(
-            filepath, key=filepath.name, _key_is_virtual=False
-        ).save()
+        artifact = ln.Artifact(filepath, key=filepath.name)
+        artifact._key_is_virtual = False
+        artifact.save()
 
     if is_dataframe:
         organism, source_name, version, entity = filepath.stem.removeprefix(
