@@ -16,9 +16,9 @@ def lint(session: nox.Session) -> None:
 @nox.session
 @nox.parametrize("group", ["bionty-unit", "bionty-docs"])
 def build(session: nox.Session, group: str):
-    session.run(*"uv pip install --system -e .[dev]".split())
     branch = "main" if IS_PR else "release"  # point back to "release"
     install_lamindb(session, branch=branch)
+    session.run(*"uv pip install --system -e .[dev]".split())
 
     coverage_args = "--cov=bionty --cov-append --cov-report=term-missing"
     if group == "bionty-unit":
