@@ -1,4 +1,4 @@
-import bionty.base as bt
+import bionty.base as bt_base
 import pandas as pd
 
 
@@ -13,7 +13,7 @@ def test_dron_drug_inspect_name():
         ]
     )
 
-    dt = bt.Drug(source="dron")
+    dt = bt_base.Drug(source="dron")
     inspected_df = dt.inspect(df.index, field=dt.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)

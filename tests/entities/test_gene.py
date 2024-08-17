@@ -1,4 +1,4 @@
-import bionty.base as bt
+import bionty.base as bt_base
 import pandas as pd
 import pytest
 
@@ -17,7 +17,7 @@ def genes():
     }
     df = pd.DataFrame(data).set_index("ensembl_gene_id")
 
-    gn = bt.Gene(source="ensembl")
+    gn = bt_base.Gene(source="ensembl")
 
     return df, gn
 
@@ -34,7 +34,7 @@ def test_gene_ensembl_inspect_hgnc_id(genes):
 
 
 def test_species_backward_compat():
-    bt.Gene(species="human")
+    bt_base.Gene(species="human")
 
 
 def test_ensemblgene_download():
@@ -52,7 +52,7 @@ def test_ensemblgene_download():
 
 
 def test_ensemblgene_map_legacy_ids():
-    gn = bt.Gene(organism="human", version="release-110")
+    gn = bt_base.Gene(organism="human", version="release-110")
     legacy_genes = [
         "ENSG00000280710",
         "ENSG00000261490",
