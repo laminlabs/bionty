@@ -12,7 +12,7 @@ If you'd like to add new terms to an existing ontology: use [LaminDB](https://la
 
 ## New ontologies
 
-The easiest way to add new ontologies to existing entities is to adapt the `sources_local.yaml` file in the `$home/.lamin/bionty/sources` directory.
+The easiest way to add new ontologies to existing entities is to adapt the `sources_local.yaml` file in the `$home/.lamin/bionty/versions` directory.
 For example, to add a new disease ontology (termed "inhouse_diseases") with an associated version and URL, one adds the following lines to the `sources.local.yaml`.
 
 ```yaml

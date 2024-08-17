@@ -68,10 +68,18 @@ Manage synonyms:
 
    Read the guides:
 
-   - `Access public ontologies <https://lamin.ai/docs/public-ontologies>`__
+   - :doc:`docs:public-ontologies`
    - :doc:`docs:bio-registries`
 
-   For more background on how public ontologies are accessed, see `bionty.base`.
+Bionty base
+===========
+
+Bionty also offers a standalone version `bionty-base` that does not require an active lamindb instance.
+Import it by running:
+
+>>> import bionty.base as bt_base
+
+See {doc}`docs:bionty.base` for details.
 
 API
 ===
@@ -126,6 +134,7 @@ Bionty base:
    :toctree: .
 
    base
+
 """
 
 __version__ = "0.48.2"

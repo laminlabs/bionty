@@ -1,10 +1,36 @@
-"""Bionty base.
+"""Bionty base is a standalone version of Bionty without lamindb support.
 
-Import the package::
+Overview
+========
 
-   import bionty.base as bt
+Bionty base is designed for scripts that need to access public ontologies without more advanced lamindb support.
+If any public ontology needs to be extended, use [LaminDB](https://lamin.ai/docs) together with Bionty.
+See {doc}`docs:bionty` for details.
 
-Entities:
+Installation
+============
+
+>>> pip install bionty
+
+Quickstart
+----------
+
+Import the package:
+
+>>> import bionty.base as bt_base
+
+Access public ontologies:
+
+>>> genes = bt_base.Gene()
+
+Get a DataFrame of all available values:
+
+>>> genes.df()
+
+Entities
+========
+
+Bionty base provides access to several entities, most of which are also supported by Bionty.
 
 .. autosummary::
    :toctree: .
@@ -26,7 +52,12 @@ Entities:
    BFXPipeline
    BioSample
 
-Base model of entity classes:
+Base model of entity classes
+----------------------------
+
+[Pronto Ontology objects](https://pronto.readthedocs.io/en/stable/api/pronto.Ontology.html) can be accessed via {entity}.to_pronto():
+
+   bt_base.Gene().to_pronto()
 
 .. autosummary::
    :toctree: .
@@ -34,7 +65,8 @@ Base model of entity classes:
    PublicOntology
    PublicOntologyField
 
-PublicOntology sources:
+PublicOntology sources
+----------------------
 
 .. autosummary::
    :toctree: .
@@ -44,12 +76,19 @@ PublicOntology sources:
    reset_sources
    settings
 
-External API:
+External API
+------------
 
 .. autosummary::
    :toctree: .
 
    Ontology
+
+Extending Bionty base
+=====================
+
+Further documentation on how to extend Bionty base with additional ontologies is
+available in the corresponding [Github repository](https://github.com/laminlabs/bionty/tree/main/docs/guide).
 """
 
 # dynamic classes

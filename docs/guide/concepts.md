@@ -11,9 +11,9 @@ Let's define a biological entity (e.g., `Organism`) to be a variable that takes 
 
 ## PublicOntology object
 
-The central class {class}`~bionty.base.PublicOntology` models 3 of the 4 above-mentioned properties of biological entities:
+The central class {class}`~bionty.bionty_base.PublicOntology` models 3 of the 4 above-mentioned properties of biological entities:
 
 1. Every `PublicOntology` object comes with a table of terms in which each column corresponds to an alternative vocabulary for the entity.
 2. Every table is versioned & has a tracked reference source (typically, a public ontology).
 3. Most tables have a children column that allows mapping hierarchies.
-4. Adding user-defined records amounts to managing bioregistries, and we recommend using Bionty's SQL extension ([lnschema_bionty](https://lamin.ai/docs/lnschema-bionty)).
+4. Adding user-defined records amounts to managing bioregistries through Bionty's SQL models.
