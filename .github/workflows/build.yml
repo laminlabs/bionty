@@ -79,7 +79,7 @@ jobs:
       - uses: actions/download-artifact@v2
       - name: run coverage
         run: |
-          coverage combine coverage--*/.coverage*
+          # coverage combine coverage--*/.coverage*  nothing to combine
           coverage report --fail-under=0
           coverage xml
       - uses: codecov/codecov-action@v2
