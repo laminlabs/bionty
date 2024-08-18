@@ -46,7 +46,11 @@ testpaths = [
 
 [tool.coverage.run]
 omit = [
-    "bionty/*",
+    "bionty/core/*",
+    "bionty/migrations/*",
+    "bionty/models.py",
+    "bionty/_bionty.py",
+    "bionty/ids.py",
 ]
 
 [tool.ruff]

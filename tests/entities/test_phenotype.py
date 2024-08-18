@@ -1,4 +1,4 @@
-import bionty.base as bt
+import bionty.base as bt_base
 import pandas as pd
 
 
@@ -13,7 +13,7 @@ def test_hp_phenotype_inspect_name():
         ]
     )
 
-    pt = bt.Phenotype(source="hp")
+    pt = bt_base.Phenotype(source="hp")
     inspected_df = pt.inspect(df.index, field=pt.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
@@ -33,7 +33,7 @@ def test_mp_phenotype_inspect_name():
         ]
     )
 
-    pt = bt.Phenotype(source="mp")
+    pt = bt_base.Phenotype(source="mp")
     inspected_df = pt.inspect(df.index, field=pt.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
@@ -53,7 +53,7 @@ def test_zp_phenotype_inspect_name():
         ]
     )
 
-    pt = bt.Phenotype(source="zp")
+    pt = bt_base.Phenotype(source="zp")
     inspected_df = pt.inspect(df.index, field=pt.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
@@ -73,7 +73,7 @@ def test_phe_phenotype_inspect_name():
         ]
     )
 
-    pt = bt.Phenotype(source="phe")
+    pt = bt_base.Phenotype(source="phe")
     inspected_df = pt.inspect(df.index, field=pt.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
@@ -93,7 +93,7 @@ def test_path_phenotype():
         ]
     )
 
-    pt = bt.Phenotype(source="pato")
+    pt = bt_base.Phenotype(source="pato")
     inspected_df = pt.inspect(df.index, field=pt.name, return_df=True)
     inspect = inspected_df["__validated__"].reset_index(drop=True)
     expected_series = pd.Series([True, True, True, True, False])

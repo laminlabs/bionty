@@ -1,4 +1,4 @@
-import bionty.base as bt
+import bionty.base as bt_base
 import pandas as pd
 from bionty.base.entities._experimentalfactor import _parse_efo_term
 
@@ -14,7 +14,7 @@ def test_efo_experimental_factor_inspect_ontology_id():
         ]
     )
 
-    ro = bt.ExperimentalFactor(source="efo")
+    ro = bt_base.ExperimentalFactor(source="efo")
     inspected_df = ro.inspect(df.index, ro.ontology_id, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
@@ -24,7 +24,7 @@ def test_efo_experimental_factor_inspect_ontology_id():
 
 
 def test_parse_efo_term():
-    ro = bt.ExperimentalFactor(source="efo")
+    ro = bt_base.ExperimentalFactor(source="efo")
     ontology = ro.to_pronto()
     res = _parse_efo_term(term_id="EFO:0008913", ontology=ontology)
 

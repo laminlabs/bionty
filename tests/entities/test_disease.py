@@ -1,4 +1,4 @@
-import bionty.base as bt
+import bionty.base as bt_base
 import pandas as pd
 
 
@@ -13,7 +13,7 @@ def test_mondo_disease_inspect_name():
         ]
     )
 
-    ds = bt.Disease(source="mondo")
+    ds = bt_base.Disease(source="mondo")
     inspected_df = ds.inspect(df.index, field=ds.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
@@ -33,7 +33,7 @@ def test_doid_disease_inspect_ontology_id():
         ]
     )
 
-    ds = bt.Disease(source="doid")
+    ds = bt_base.Disease(source="doid")
     inspected_df = ds.inspect(df.index, field=ds.ontology_id, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
@@ -53,7 +53,7 @@ def test_icd_9_disease_inspect_name():
         ]
     )
 
-    ds = bt.Disease(source="icd", version="icd-9-2011")
+    ds = bt_base.Disease(source="icd", version="icd-9-2011")
     inspected_df = ds.inspect(df.index, field=ds.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
@@ -73,7 +73,7 @@ def test_icd_10_disease_inspect_name():
         ]
     )
 
-    ds = bt.Disease(source="icd", version="icd-10-2020")
+    ds = bt_base.Disease(source="icd", version="icd-10-2020")
     inspected_df = ds.inspect(df.index, field=ds.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
@@ -93,7 +93,7 @@ def test_icd_11_disease_inspect_name():
         ]
     )
 
-    ds = bt.Disease(source="icd", version="icd-11-2023")
+    ds = bt_base.Disease(source="icd", version="icd-11-2023")
     inspected_df = ds.inspect(df.index, field=ds.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)

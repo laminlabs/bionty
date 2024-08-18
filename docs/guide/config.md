@@ -2,16 +2,13 @@
 
 ## Public bionty sources
 
-Bionty maintains a [sources.yaml](https://raw.githubusercontent.com/laminlabs/bionty/main/bionty/sources/sources.yaml) listing public sources of each entity.
-
-These sources are curated ([biony-assets](https://lamin.ai/docs/bionty-assets)) and stored at s3://bionty-assets to provide fast and reliable access.
-
-Cached sources files are stored at your local `bionty/bionty/_dynamic/` directory.
+Bionty maintains a [sources.yaml](https://raw.githubusercontent.com/laminlabs/bionty/main/bionty/base/sources.yaml) listing public sources of each entity.
+These sources are curated ([biony-assets](https://github.com/laminlabs/bionty-assets)) and stored in a [bionty-assets instance](https://lamin.ai/laminlabs/bionty-assets/) to provide fast and reliable access.
+Cached sources files are stored at your local `bionty/base/_dynamic/` directory.
 
 ## Local bionty sources
 
-File `$home:/.lamin/bionty/sources_local.yaml` stores all locally available ontologies.
-
+File `$home:/.lamin/bionty/versions/sources_local.yaml` stores all locally available ontologies.
 The content of this file is identical to the public `sources.yaml` for a freshly-installed Bionty.
 
 **Users may edit this file in order to configure customized sources.**
@@ -28,16 +25,14 @@ entity: # Bionty entity class name, e.g. CellType
   source: # short name of the source, (CURIE prefix for ontologies) e.g. cl
     organism: # organism common name, (if none applied, use 'all') e.g. human
       version: # version of the source
-        url: "link to the source file"
-        md5: "md5 of the source file"
+        url: # "link to the source file"
+        md5: # "md5 of the source file"
 ```
 
 ## Setting default ontologies and versions
 
-For each entity, the **first source** and its **maximum version** in `sources_local.yaml` is used as default.
-
+For each entity, the **first source** and its **maximum version** defined in `sources_local.yaml` is used as default.
 To set your own default ontology and version, shift the order of entries.
-
 For example, in the following "doid" used when "organism" is specified as "human":
 
 (highlighted sources are considered the default)
@@ -76,8 +71,6 @@ Disease:
 <br>
 
 We may change the default to "inhouse_diseases" when "organism" is specified as "human", by the following:
-
-Note: changing the order of versions won't have an effect, as most recent version is taken as default.
 
 ```{code-block} yaml
 ---

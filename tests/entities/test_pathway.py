@@ -1,4 +1,4 @@
-import bionty.base as bt
+import bionty.base as bt_base
 import pandas as pd
 
 
@@ -13,7 +13,7 @@ def test_pw_go_inspect_ontology_id():
         ]
     )
 
-    pw = bt.Pathway(source="go")
+    pw = bt_base.Pathway(source="go")
     inspected_df = pw.inspect(df.index, pw.ontology_id, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
@@ -33,7 +33,7 @@ def test_pw_pathway_inspect_name():
         ]
     )
 
-    pw = bt.Pathway(source="pw")
+    pw = bt_base.Pathway(source="pw")
     inspected_df = pw.inspect(df.index, field=pw.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)

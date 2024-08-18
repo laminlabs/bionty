@@ -19,8 +19,7 @@ Here, we will describe the similarities and differences between Bionty and other
 
 - Data models are structured frameworks used to represent and organize information systematically for efficient storage, retrieval, and analysis of data.
   In the context of the life sciences, data models provide a common language for describing biological entities and the intricate relationships between them.
-  By standardizing how data is structured and interconnected, these models enable researchers, databases, and applications to communicate and collaborate effectively,
-  leading to more comprehensive insights and discoveries in the field of biology.
+  By standardizing how data is structured and interconnected, these models enable researchers, databases, and applications to communicate and collaborate effectively, leading to more comprehensive insights and discoveries in the field of biology.
 
 - [BioLink](https://biolink.github.io/biolink-model/) is a standardized data model designed to facilitate the integration and querying of biological data from various sources in knowledge graphs.
   It provides a structured way to represent biological entities, their attributes, and the relationships between them, enhancing interoperability in bioinformatics.

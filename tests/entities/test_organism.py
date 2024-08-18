@@ -1,4 +1,4 @@
-import bionty.base as bt
+import bionty.base as bt_base
 import pandas as pd
 
 
@@ -13,7 +13,7 @@ def test_ensembl_organism_inspect_name():
         ]
     )
 
-    sp = bt.Organism(source="ensembl")
+    sp = bt_base.Organism(source="ensembl")
     inspected_df = sp.inspect(df.index, field=sp.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
@@ -24,10 +24,10 @@ def test_ensembl_organism_inspect_name():
 
 def test_ensembl_organism_organism():
     for sp in ["bacteria", "plants", "fungi", "metazoa"]:
-        df = bt.Organism(organism=sp).df()
+        df = bt_base.Organism(organism=sp).df()
         assert df.shape[0] > 10
 
 
 def test_ncbitaxon_organism():
-    df = bt.Organism(source="ncbitaxon").df()
+    df = bt_base.Organism(source="ncbitaxon").df()
     assert df.shape[0] > 10
