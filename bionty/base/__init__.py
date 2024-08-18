@@ -3,9 +3,7 @@
 Overview
 ========
 
-Bionty base is designed for scripts that need to access public ontologies without more advanced lamindb support.
-If any public ontology needs to be extended, use [LaminDB](https://lamin.ai/docs) together with Bionty.
-See {doc}`docs:bionty` for details.
+`bionty.base` is the read-only interface for public ontology that underlies bionty and doesn't require a lamindb instance.
 
 Installation
 ============
@@ -84,11 +82,6 @@ External API
 
    Ontology
 
-Extending Bionty base
-=====================
-
-Further documentation on how to extend Bionty base with additional ontologies is
-available in the corresponding [Github repository](https://github.com/laminlabs/bionty/tree/main/docs/guide).
 """
 
 # dynamic classes

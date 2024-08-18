@@ -3,13 +3,12 @@
 
 # bionty: Basic biological entities
 
-bionty is documented & tested within lamindb: github.com/laminlabs/lamindb.
+- Access >20 public ontologies such as Gene, Protein, CellMarker, ExperimentalFactor, CellType, CellLine, Tissue, …
+- Create records from entries in public ontologies using `.from_source()`.
+- Access full underlying public ontologies via `.public()` to search & bulk-create records.
+- Create in-house ontologies by extending public ontologies using hierarchical relationships among records (`.parents`).
+- Use `.synonyms` and `.abbr` to manage synonyms.
+- Safeguards against typos & duplications
+- Ontology versioning
 
-- Access public ontologies of biological entities
-- Manage synonyms, abbreviations, and hierarchical relationships
-
-## Documentation
-
-See [docs](https://lamin.ai/docs/bionty).
-
-More details on concepts, a comparison to other tools, and extending standalone `Bionty base` can be found in the [docs/guide](docs/guide) folder.
+Read [docs](https://docs.lamin.ai/bionty).

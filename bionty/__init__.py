@@ -21,6 +21,14 @@ All registries inherit from :class:`~lamindb.core.CanValidate` &
    - Versions of ontology sources are auto-tracked in :class:`Source`.
    - Records are indexed by universal ids, created by hashing `ontology_id` for portability across databases.
 
+The readonly {mod}`bionty-base` does not require a lamindb instance, and enables reading from public ontologies.
+
+Import it by running:
+
+>>> import bionty.base as bt_base
+
+See {mod}`bionty.base` for details.
+
 Installation
 ============
 
@@ -70,16 +78,6 @@ Manage synonyms:
 
    - :doc:`docs:public-ontologies`
    - :doc:`docs:bio-registries`
-
-Bionty base
-===========
-
-Bionty also offers a standalone version `bionty-base` that does not require an active lamindb instance.
-Import it by running:
-
->>> import bionty.base as bt_base
-
-See {doc}`docs:bionty.base` for details.
 
 API
 ===
