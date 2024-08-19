@@ -5,7 +5,6 @@
 
 
 ./guide/concepts
-./guide/comparison
 ./guide/config
 ./guide/extend
 ```
