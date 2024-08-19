@@ -355,6 +355,11 @@ BFXPipeline:
     name: Bioinformatics Pipeline
     website: https://lamin.ai
 Drug:
+  chebi:
+    all:
+      2024-07-27:
+        url: http://purl.obolibrary.org/obo/chebi/236/chebi.owl
+        md5: ""
   dron:
     all:
       2024-08-05:

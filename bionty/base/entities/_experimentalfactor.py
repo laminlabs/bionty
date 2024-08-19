@@ -13,13 +13,10 @@ class ExperimentalFactor(PublicOntology):
     """Experimental Factor.
 
     1. Experimental Factor Ontology
-    Edits of terms are coordinated and reviewed on:
     https://www.ebi.ac.uk/ols/ontologies/efo
 
     Args:
         {doc_entities}
-
-    Also see: `bionty.core.PublicOntology <https://docs.lamin.ai/bionty.core.publicontology>`__
     """
 
     def __init__(

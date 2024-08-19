@@ -10,7 +10,6 @@ class CellMarker(PublicOntology):
     """Cell markers.
 
     1. Cell Marker Ontology
-    Edits of terms are coordinated and reviewed on:
     http://bio-bigdata.hrbmu.edu.cn/CellMarker/
 
     Args:

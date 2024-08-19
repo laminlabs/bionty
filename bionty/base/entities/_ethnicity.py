@@ -10,7 +10,6 @@ class Ethnicity(PublicOntology):
     """Ethnicity.
 
     1. Human Ancestry Ontology
-    Edits of terms are coordinated and reviewed on:
     https://github.com/EBISPOT/hancestro
 
     Args:

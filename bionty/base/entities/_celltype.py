@@ -10,7 +10,6 @@ class CellType(PublicOntology):
     """Cell type ontologies.
 
     1. Cell ontology
-    Edits of terms are coordinated and reviewed on:
     https://github.com/obophenotype/cell-ontology
 
     Args:

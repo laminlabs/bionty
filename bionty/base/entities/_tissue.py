@@ -10,7 +10,6 @@ class Tissue(PublicOntology):
     """Tissue.
 
     1. Uberon
-    Edits of terms are coordinated and reviewed on:
     https://github.com/obophenotype/uberon
 
     Args:

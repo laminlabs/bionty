@@ -10,19 +10,15 @@ class Phenotype(PublicOntology):
     """Phenotype.
 
     1. Human Phenotype Ontology
-    Edits of terms are coordinated and reviewed on:
     https://hpo.jax.org/app/
 
     2. Mammalian Phenotype Ontology
-    Edits of terms are coordinated and reviewed on:
     https://github.com/mgijax/mammalian-phenotype-ontology
 
     3. Zebrafish Phenotype Ontology
-    Edits of terms are coordinated and reviewed on:
     https://github.com/obophenotype/zebrafish-phenotype-ontology
 
     4.Phecodes ICD10 map
-    Website:
     https://phewascatalog.org/phecodes_icd10
 
     Args:

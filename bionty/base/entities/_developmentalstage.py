@@ -10,7 +10,6 @@ class DevelopmentalStage(PublicOntology):
     """Developmental Stage.
 
     1. Developmental Stage Ontology
-    Edits of terms are coordinated and reviewed on:
     https://github.com/obophenotype/developmental-stage-ontologies
 
     Args:
