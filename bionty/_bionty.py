@@ -40,7 +40,9 @@ def create_or_get_organism_record(
                     # create a organism record from bionty reference
                     organism_record = Organism.from_source(name=organism)
                     # link the organism record to the default bionty source
-                    organism_record.source = get_source_record(bionty_base.Organism())  # type:ignore
+                    organism_record.source = get_source_record(
+                        bionty_base.Organism(), Organism
+                    )  # type:ignore
                     organism_record.save()  # type:ignore
                 except KeyError:
                     # no such organism is found in bionty reference
