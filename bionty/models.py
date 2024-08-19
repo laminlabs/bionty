@@ -205,7 +205,7 @@ class BioRecord(Record, HasParents, CanValidate):
 
         unique_kwargs = {
             "entity": cls.__get_name_with_schema__(),
-            "name": source,
+            "name": source.name,
             "version": source.version,
             "organism": source.organism,
         }
@@ -218,26 +218,38 @@ class BioRecord(Record, HasParents, CanValidate):
         }
         new_source = Source.filter(**unique_kwargs).one_or_none()
         if new_source is None:
-            new_source = Source(**unique_kwargs, **add_kwargs).save()
+            try:
+                ln.settings.creation.search_names = False
+                new_source = Source(**unique_kwargs, **add_kwargs).save()
+            finally:
+                ln.settings.creation.search_names = True
         else:
             logger.warning("source already exists!")
             return new_source
         # get the dataframe from laminlabs/bionty-assets
         bionty_source = (
             Source.using("laminlabs/bionty-assets")
-            .filter(**unique_kwargs)
+            .filter(
+                **{
+                    "entity": source.entity,
+                    "name": source.name,
+                    "version": source.version,
+                    "organism": source.organism,
+                }
+            )
             .one_or_none()
         )
         if bionty_source is None:
             logger.warning(
-                "please register a DataFrame artifact!   \n→ artifact = ln.Artifact(df, visibility=0).save()   \n→ source.dataframe_artifact = artifact   \n→ source.save()"
+                "please register a DataFrame artifact!   \n→ artifact = ln.Artifact(df, visibility=0, run=False).save()   \n→ source.dataframe_artifact = artifact   \n→ source.save()"
             )
         else:
-            new_source.dataset_artifact = ln.Artifact(
-                bionty_source.path, visibility=0
+            df_artifact = ln.Artifact(
+                bionty_source.dataframe_artifact.path, visibility=0, run=False
             ).save()
+            new_source.dataframe_artifact = df_artifact
             new_source.save()
-            logger.success("source added!")
+            logger.important("source added!")
 
         return new_source
 
@@ -284,6 +296,17 @@ class BioRecord(Record, HasParents, CanValidate):
                 organism=organism, source=source_name, version=version
             )
         except (AttributeError, ValueError):
+            if source is None:
+                kwargs = {
+                    "entity": cls.__get_name_with_schema__(),
+                    "currently_used": True,
+                }
+                if organism is not None:
+                    if isinstance(organism, Record):
+                        kwargs["organism"] = organism.name
+                    else:
+                        kwargs["organism"] = organism
+                source = Source.filter(**kwargs).first()
             return StaticReference(source)
 
     @classmethod
