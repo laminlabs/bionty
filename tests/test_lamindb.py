@@ -1,6 +1,6 @@
 from pathlib import Path
 
-import bionty.base as bt
+import bionty.base as bt_base
 from bionty.base._settings import settings
 from bionty.base.dev._handle_sources import LAMINDB_INSTANCE_LOADED
 
@@ -18,7 +18,7 @@ def test_loaded_lamindb():
 
     assert LAMINDB_INSTANCE_LOADED()
 
-    ct = bt.CellType(version="2022-08-16")
+    ct = bt_base.CellType(version="2022-08-16")
     assert ct.source == "cl"
 
     lnenv.unlink()

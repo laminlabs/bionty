@@ -1,4 +1,4 @@
-import bionty.base as bt
+import bionty.base as bt_base
 import pandas as pd
 
 
@@ -11,7 +11,7 @@ def test_lamin_bfxpipeline_inspect_name():
         ]
     )
 
-    bfxp = bt.BFXPipeline(source="lamin")
+    bfxp = bt_base.BFXPipeline(source="lamin")
     inspected_df = bfxp.inspect(df.index, field=bfxp.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)

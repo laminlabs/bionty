@@ -4,16 +4,12 @@
 :maxdepth: 2
 
 
-./guide/ontology
-./guide/sources
+./guide/concepts
 ./guide/config
 ./guide/extend
-./guide/concepts
 ```
 
 ```{toctree}
 :hidden:
 
-./guide/search
-./guide/validate
 ```

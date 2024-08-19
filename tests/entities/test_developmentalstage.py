@@ -1,4 +1,4 @@
-import bionty.base as bt
+import bionty.base as bt_base
 import pandas as pd
 
 
@@ -13,7 +13,7 @@ def test_hsapdv_developmentalstage_inspect_name():
         ]
     )
 
-    ds = bt.DevelopmentalStage(source="hsapdv")
+    ds = bt_base.DevelopmentalStage(source="hsapdv")
     inspected_df = ds.inspect(df.index, field=ds.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)

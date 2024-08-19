@@ -1,11 +1,11 @@
-import bionty.base as bt
+import bionty.base as bt_base
 import pytest
 from bionty.base._settings import settings
 
 
 def test_unavailable_sources():
     with pytest.raises(ValueError):
-        bt.CellType(source="random")
+        bt_base.CellType(source="random")
 
 
 def test_reset_sources(monkeypatch):
@@ -16,16 +16,16 @@ def test_reset_sources(monkeypatch):
     shutil.copyfile(
         settings.current_sources.as_posix(), settings.lamindb_sources.as_posix()
     )
-    bt.reset_sources()
+    bt_base.reset_sources()
 
     settings.current_sources.unlink()
     settings.local_sources.unlink()
-    bt.reset_sources()
+    bt_base.reset_sources()
 
 
 def test_diff_successful():
-    disease_bt_1 = bt.Disease(source="mondo", version="2023-04-04")
-    disease_bt_2 = bt.Disease(source="mondo", version="2023-02-06")
+    disease_bt_1 = bt_base.Disease(source="mondo", version="2023-04-04")
+    disease_bt_2 = bt_base.Disease(source="mondo", version="2023-02-06")
 
     new_entries, modified_entries = disease_bt_1.diff(disease_bt_2)
     assert len(new_entries) == 819
@@ -34,19 +34,19 @@ def test_diff_successful():
 
 def test_diff_value_errors():
     # Two different PublicOntology object types
-    disease_bt = bt.Disease()
-    phenotype_bt = bt.Phenotype()
+    disease_bt = bt_base.Disease()
+    phenotype_bt = bt_base.Phenotype()
     with pytest.raises(ValueError):
         disease_bt.diff(phenotype_bt)
 
     # Different sources
-    disease_bt_1 = bt.Disease(source="mondo")
-    disease_bt_2 = bt.Disease(source="doid")
+    disease_bt_1 = bt_base.Disease(source="mondo")
+    disease_bt_2 = bt_base.Disease(source="doid")
     with pytest.raises(ValueError):
         disease_bt_1.diff(disease_bt_2)
 
     # Same version
-    disease_bt_3 = bt.Disease(source="mondo", version="2023-04-04")
-    disease_bt_4 = bt.Disease(source="mondo", version="2023-04-04")
+    disease_bt_3 = bt_base.Disease(source="mondo", version="2023-04-04")
+    disease_bt_4 = bt_base.Disease(source="mondo", version="2023-04-04")
     with pytest.raises(ValueError):
         disease_bt_3.diff(disease_bt_4)

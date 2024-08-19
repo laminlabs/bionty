@@ -1,4 +1,4 @@
-import bionty.base as bt
+import bionty.base as bt_base
 import pandas as pd
 
 
@@ -13,10 +13,10 @@ def test_cl_celltype_inspect_name():
         ]
     )
 
-    print(bt.settings.current_sources)
-    assert bt.settings.current_sources.exists()
+    print(bt_base.settings.current_sources)
+    assert bt_base.settings.current_sources.exists()
 
-    ct = bt.CellType(source="cl")
+    ct = bt_base.CellType(source="cl")
     inspected_df = ct.inspect(df.index, field=ct.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)

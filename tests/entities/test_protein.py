@@ -1,4 +1,4 @@
-import bionty.base as bt
+import bionty.base as bt_base
 import pandas as pd
 
 
@@ -13,7 +13,7 @@ def test_uniprot_protein_inspect_uniprotkb_id():
         ]
     )
 
-    pr = bt.Protein(source="uniprot")
+    pr = bt_base.Protein(source="uniprot")
     inspected_df = pr.inspect(df.index, pr.uniprotkb_id, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
