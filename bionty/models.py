@@ -84,7 +84,7 @@ class BioRecord(Record, HasParents, CanValidate):
                 args = ()
         # all other cases require encoding the id
         else:
-            kwargs = encode_uid(orm=self, kwargs=kwargs)
+            kwargs = encode_uid(record=self, kwargs=kwargs)
 
         # raise error if no organism is passed
         if hasattr(self.__class__, "organism_id"):
@@ -179,7 +179,7 @@ class BioRecord(Record, HasParents, CanValidate):
 
             public = cls.public(organism=organism, source=source)
             # TODO: consider StaticReference
-            source_record = get_source_record(public)  # type:ignore
+            source_record = get_source_record(public, cls)  # type:ignore
             df = public.df().reset_index()
             if hasattr(cls, "_ontology_id_field"):
                 field = cls._ontology_id_field
@@ -197,6 +197,49 @@ class BioRecord(Record, HasParents, CanValidate):
 
             # make sure source.in_db is correctly set based on the DB content
             check_source_in_db(registry=cls, source=source_record, update=update)
+
+    @classmethod
+    def add_source(cls, source: Source, currently_used=True) -> Source:
+        """Configure a source of the entity."""
+        import lamindb as ln
+
+        unique_kwargs = {
+            "entity": cls.__get_name_with_schema__(),
+            "name": source,
+            "version": source.version,
+            "organism": source.organism,
+        }
+        add_kwargs = {
+            "currently_used": currently_used,
+            "description": source.description,
+            "url": source.url,
+            "source_website": source.source_website,
+            "dataframe_artifact_id": source.dataframe_artifact_id,
+        }
+        new_source = Source.filter(**unique_kwargs).one_or_none()
+        if new_source is None:
+            new_source = Source(**unique_kwargs, **add_kwargs).save()
+        else:
+            logger.warning("source already exists!")
+            return new_source
+        # get the dataframe from laminlabs/bionty-assets
+        bionty_source = (
+            Source.using("laminlabs/bionty-assets")
+            .filter(**unique_kwargs)
+            .one_or_none()
+        )
+        if bionty_source is None:
+            logger.warning(
+                "please register a DataFrame artifact!   \n→ artifact = ln.Artifact(df, visibility=0).save()   \n→ source.dataframe_artifact = artifact   \n→ source.save()"
+            )
+        else:
+            new_source.dataset_artifact = ln.Artifact(
+                bionty_source.path, visibility=0
+            ).save()
+            new_source.save()
+            logger.success("source added!")
+
+        return new_source
 
     @classmethod
     def public(
@@ -1447,7 +1490,7 @@ class Source(Record, TracksRun, TracksUpdates):
         *args,
         **kwargs,
     ):
-        kwargs = encode_uid(orm=self, kwargs=kwargs)
+        kwargs = encode_uid(record=self, kwargs=kwargs)
         super().__init__(*args, **kwargs)
 
     def set_as_currently_used(self):

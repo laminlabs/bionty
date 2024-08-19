@@ -15,11 +15,11 @@ if TYPE_CHECKING:
 
 
 def create_or_get_organism_record(
-    organism: str | Record | None, orm: Record
+    organism: str | Record | None, registry: type[Record]
 ) -> Record | None:
     # return None if an Record doesn't have organism field
     organism_record = None
-    if hasattr(orm, "organism_id"):
+    if hasattr(registry, "organism_id"):
         # using global setting of organism
         from .core._settings import settings
 
@@ -48,22 +48,21 @@ def create_or_get_organism_record(
 
         if organism_record is None:
             raise AssertionError(
-                f"{orm.__name__} requires to specify a organism name via `organism=` or `bionty.settings.organism=`!"
+                f"{registry.__name__} requires to specify a organism name via `organism=` or `bionty.settings.organism=`!"
             )
 
     return organism_record
 
 
 # TODO: consider private sources
-def get_source_record(public_ontology: bionty_base.PublicOntology):
-    import bionty
-
+def get_source_record(
+    public_ontology: bionty_base.PublicOntology, registry: type[Record]
+) -> Record:
     from .models import Source
 
-    bionty_models = list_biorecord_models(bionty)
-    entity_name = public_ontology.__class__.__name__
-    if entity_name in bionty_models:
-        entity_name = f"bionty.{entity_name}"
+    entity_name = (
+        f"{registry.__get_schema_name__()}.{public_ontology.__class__.__name__}"
+    )
     kwargs = {
         "entity": entity_name,
         "organism": public_ontology.organism,
@@ -89,14 +88,14 @@ def list_biorecord_models(schema_module: ModuleType):
     ]
 
 
-def encode_uid(orm: Record, kwargs: dict):
+def encode_uid(record: Record, kwargs: dict):
     if kwargs.get("uid") is not None:
         # if uid is passed, no encoding is needed
         return kwargs
     try:
-        name = orm.__name__.lower()
+        name = record.__name__.lower()
     except AttributeError:
-        name = orm.__class__.__name__.lower()
+        name = record.__class__.__name__.lower()
     ontology = False
     str_to_encode = None
     if name == "gene":
@@ -139,7 +138,7 @@ def encode_uid(orm: Record, kwargs: dict):
     return kwargs
 
 
-def lookup2kwargs(orm: Record, *args, **kwargs) -> dict:
+def lookup2kwargs(record: Record, *args, **kwargs) -> dict:
     """Pass bionty search/lookup results."""
     arg = args[0]
     if isinstance(arg, tuple):
@@ -152,21 +151,21 @@ def lookup2kwargs(orm: Record, *args, **kwargs) -> dict:
 
         # add organism and source
         organism_record = create_or_get_organism_record(
-            orm=orm.__class__, organism=kwargs.get("organism")
+            registry=record.__class__, organism=kwargs.get("organism")
         )
         if organism_record is not None:
             bionty_kwargs["organism"] = organism_record
-        public_ontology = getattr(bionty_base, orm.__class__.__name__)(
+        public_ontology = getattr(bionty_base, record.__class__.__name__)(
             organism=organism_record.name if organism_record is not None else None
         )
-        bionty_kwargs["source"] = get_source_record(public_ontology)
+        bionty_kwargs["source"] = get_source_record(public_ontology, record.__class__)
 
-        model_field_names = {i.name for i in orm._meta.fields}
+        model_field_names = {i.name for i in record._meta.fields}
         model_field_names.add("parents")
         bionty_kwargs = {
             k: v for k, v in bionty_kwargs.items() if k in model_field_names
         }
-    return encode_uid(orm=orm, kwargs=bionty_kwargs)
+    return encode_uid(record=record, kwargs=bionty_kwargs)
 
 
 # backward compat
