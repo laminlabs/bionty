@@ -24,13 +24,13 @@ def test_dron_drug_inspect_name():
 
 def test_chebi_drug_inspect_name():
     df = pd.DataFrame(
-        index={
+        index=[
             "navitoclax",
             "Vismione D",
             "(+)-Atherospermoline",
             "N-[(2R,3S,6R)-2-(hydroxymethyl)-6-[2-[[oxo-[4-(trifluoromethyl)anilino]methyl]amino]ethyl]-3-oxanyl]-3-pyridinecarboxamide",
             "This drug does not exist",
-        }
+        ]
     )
 
     dt = bt_base.Drug(source="chebi")
