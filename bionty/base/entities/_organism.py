@@ -12,7 +12,6 @@ class Organism(PublicOntology):
     """Organism.
 
     1. Organism ontology
-    Edits of terms are coordinated and reviewed on:
     https://www.ensembl.org/index.html
 
     Args:

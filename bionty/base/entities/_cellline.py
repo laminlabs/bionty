@@ -10,7 +10,6 @@ class CellLine(PublicOntology):
     """Cell line.
 
     1. Cell Line Ontology
-    Edits of terms are coordinated and reviewed on:
     https://github.com/CLO-ontology/CLO
 
     Args:

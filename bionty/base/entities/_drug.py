@@ -13,6 +13,9 @@ class Drug(PublicOntology):
     Edits of terms are coordinated and reviewed on:
     https://bioportal.bioontology.org/ontologies/DRON/
 
+    2. CHEBI
+    https://www.ebi.ac.uk/chebi/
+
     Args:
         {doc_entities}
     """
@@ -20,7 +23,7 @@ class Drug(PublicOntology):
     def __init__(
         self,
         organism: Optional[Literal["all"]] = None,
-        source: Optional[Literal["dron"]] = None,
+        source: Optional[Literal["dron", "chebi"]] = None,
         version: Optional[str] = None,
         **kwargs,
     ) -> None:

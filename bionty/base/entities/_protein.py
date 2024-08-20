@@ -10,7 +10,6 @@ class Protein(PublicOntology):
     """Protein.
 
     1. Uniprot
-    Edits of terms are coordinated and reviewed on:
     https://www.uniprot.org/
 
     Args:

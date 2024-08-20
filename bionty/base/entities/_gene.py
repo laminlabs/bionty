@@ -16,7 +16,6 @@ class Gene(PublicOntology):
     """Gene.
 
     1. Ensembl
-    Edits of terms are coordinated and reviewed on:
     https://www.ensembl.org/
 
     Args:
