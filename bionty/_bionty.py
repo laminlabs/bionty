@@ -90,46 +90,54 @@ def list_biorecord_models(schema_module: ModuleType):
     ]
 
 
-def encode_uid(record: Record, kwargs: dict):
+def encode_uid(registry: type[Record], kwargs: dict):
     if kwargs.get("uid") is not None:
         # if uid is passed, no encoding is needed
         return kwargs
-    try:
-        name = record.__name__.lower()
-    except AttributeError:
-        name = record.__class__.__name__.lower()
-    ontology = False
+    name = registry.__name__.lower()
+    if hasattr(registry, "organism_id"):
+        organism = kwargs.get("organism")
+        if organism is None:
+            if kwargs.get("organism_id") is not None:
+                from .models import Organism
+
+                organism = Organism.get(kwargs.get("organism_id")).name
+        elif isinstance(organism, Record):
+            organism = organism.name
+    else:
+        organism = ""
+
+    if hasattr(registry, "_ontology_id_field"):
+        ontology_id_field = registry._ontology_id_field
+    else:
+        ontology_id_field = "ontology_id"
+    if hasattr(registry, "_name_field"):
+        name_field = registry._name_field
+    else:
+        name_field = "name"
+
     str_to_encode = None
-    if name == "gene":
-        str_to_encode = kwargs.get("ensembl_gene_id")
+    if name == "source":
+        str_to_encode = f'{kwargs.get("entity", "")}{kwargs.get("name", "")}{kwargs.get("organism", "")}{kwargs.get("version", "")}'
+    elif name == "gene":  # gene has multiple id fields
+        str_to_encode = kwargs.get(ontology_id_field)
         if str_to_encode is None or str_to_encode == "":
             str_to_encode = kwargs.get("stable_id")
         if str_to_encode is None or str_to_encode == "":
-            str_to_encode = kwargs.get("symbol")
+            str_to_encode = f"{kwargs.get(name_field)}{organism}"  # name + organism
         if str_to_encode is None or str_to_encode == "":
-            raise AssertionError("must provide ensembl_gene_id, stable_id or symbol")
-    elif name == "protein":
-        str_to_encode = kwargs.get("uniprotkb_id")
-        if str_to_encode is None or str_to_encode == "":
-            str_to_encode = kwargs.get("name")
-        if str_to_encode is None or str_to_encode == "":
-            raise AssertionError("must provide uniprotkb_id or name")
-    elif name == "cellmarker":
-        str_to_encode = kwargs.get("name")
-        if str_to_encode is None or str_to_encode == "":
-            raise AssertionError("must provide name")
-    elif name == "source":
-        str_to_encode = f'{kwargs.get("entity", "")}{kwargs.get("name", "")}{kwargs.get("organism", "")}{kwargs.get("version", "")}'
+            raise AssertionError(
+                f"must provide {ontology_id_field}, stable_id or {name_field}"
+            )
     else:
-        str_to_encode = kwargs.get("ontology_id")
+        str_to_encode = kwargs.get(ontology_id_field)
         if str_to_encode is None or str_to_encode == "":
-            str_to_encode = kwargs.get("name")
+            str_to_encode = f"{kwargs.get(name_field)}{organism}"  # name + organism
         if str_to_encode is None or str_to_encode == "":
-            raise AssertionError("must provide ontology_id or name")
-        ontology = True
+            raise AssertionError(f"must provide {ontology_id_field} or {name_field}")
 
     if str_to_encode is not None and len(str_to_encode) > 0:
-        if ontology:
+        if ontology_id_field == "ontology_id":
             id_encoder = ids.ontology
         else:
             try:
@@ -167,7 +175,7 @@ def lookup2kwargs(record: Record, *args, **kwargs) -> dict:
         bionty_kwargs = {
             k: v for k, v in bionty_kwargs.items() if k in model_field_names
         }
-    return encode_uid(record=record, kwargs=bionty_kwargs)
+    return encode_uid(registry=record.__class__, kwargs=bionty_kwargs)
 
 
 # backward compat

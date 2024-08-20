@@ -82,9 +82,6 @@ class BioRecord(Record, HasParents, CanValidate):
             else:
                 kwargs = result  # result already has encoded id
                 args = ()
-        # all other cases require encoding the id
-        else:
-            kwargs = encode_uid(record=self, kwargs=kwargs)
 
         # raise error if no organism is passed
         if hasattr(self.__class__, "organism_id"):
@@ -98,6 +95,8 @@ class BioRecord(Record, HasParents, CanValidate):
             elif kwargs.get("organism") is not None:
                 if not isinstance(kwargs.get("organism"), Organism):
                     raise TypeError("organism must be a `bionty.Organism` record")
+
+        kwargs = encode_uid(registry=self.__class__, kwargs=kwargs)
 
         # now continue with the user-facing constructor
         # set the direct parents as a private attribute
@@ -659,7 +658,6 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         unique_together = (("name", "organism"),)
 
     _name_field: str = "name"
-    _ontology_id_field: str = "name"
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
@@ -1513,7 +1511,7 @@ class Source(Record, TracksRun, TracksUpdates):
         *args,
         **kwargs,
     ):
-        kwargs = encode_uid(record=self, kwargs=kwargs)
+        kwargs = encode_uid(registry=Source, kwargs=kwargs)
         super().__init__(*args, **kwargs)
 
     def set_as_currently_used(self):
