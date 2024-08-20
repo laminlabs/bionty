@@ -40,3 +40,8 @@ def test_chebi_drug_inspect_name():
     expected_series = pd.Series([True, True, True, True, False])
 
     assert inspect.equals(expected_series)
+
+
+def test_chebi_chembl_id():
+    dt = bt_base.Drug(source="chebi")
+    assert "CHEMBL500609" in dt.df()["chembl_id"].values
