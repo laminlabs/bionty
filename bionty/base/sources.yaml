@@ -119,13 +119,6 @@ CellMarker:
     name: CellMarker
     website: http://bio-bigdata.hrbmu.edu.cn/CellMarker
 CellLine:
-  depmap:
-    all:
-      2024-Q2:
-        url: s3://bionty-assets/df_all__depmap__2024-Q2__CellLine.parquet
-        md5: ""
-    name: Dependency Map
-    website: https://depmap.org/portal/
   clo:
     all:
       2022-03-21:
@@ -133,6 +126,13 @@ CellLine:
         md5: ea58a1010b7e745702a8397a526b3a33
     name: Cell Line Ontology
     website: https://bioportal.bioontology.org/ontologies/CLO
+  depmap:
+    all:
+      2024-Q2:
+        url: s3://bionty-assets/df_all__depmap__2024-Q2__CellLine.parquet
+        md5: ""
+    name: Dependency Map
+    website: https://depmap.org/portal/
 CellType:
   cl:
     all:
@@ -362,13 +362,6 @@ BFXPipeline:
     name: Bioinformatics Pipeline
     website: https://lamin.ai
 Drug:
-  chebi:
-    all:
-      2024-07-27:
-        url: s3://bionty-assets/df_all__chebi__2024-07-27__Drug.parquet
-        md5: ""
-    name: Chemical Entities of Biological Interest
-    website: https://www.ebi.ac.uk/chebi/
   dron:
     all:
       2024-08-05:
@@ -382,6 +375,13 @@ Drug:
         md5: 75e86011158fae76bb46d96662a33ba3
     name: Drug Ontology
     website: https://bioportal.bioontology.org/ontologies/DRON
+  chebi:
+    all:
+      2024-07-27:
+        url: s3://bionty-assets/df_all__chebi__2024-07-27__Drug.parquet
+        md5: ""
+    name: Chemical Entities of Biological Interest
+    website: https://www.ebi.ac.uk/chebi/
 DevelopmentalStage:
   hsapdv:
     human:
