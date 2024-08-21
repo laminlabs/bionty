@@ -137,12 +137,12 @@ def encode_uid(registry: type[Record], kwargs: dict):
             raise AssertionError(f"must provide {ontology_id_field} or {name_field}")
 
     if str_to_encode is not None and len(str_to_encode) > 0:
-        if ontology_id_field == "ontology_id":
-            id_encoder = ids.ontology
-        else:
-            try:
-                id_encoder = getattr(ids, name)
-            except Exception:
+        try:
+            id_encoder = getattr(ids, name)
+        except Exception:
+            if ontology_id_field == "ontology_id":
+                id_encoder = ids.ontology
+            else:
                 return kwargs
         kwargs["uid"] = id_encoder(str_to_encode)
     return kwargs
