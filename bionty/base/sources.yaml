@@ -119,6 +119,13 @@ CellMarker:
     name: CellMarker
     website: http://bio-bigdata.hrbmu.edu.cn/CellMarker
 CellLine:
+  depmap:
+    all:
+      2024-Q2:
+        url: s3://bionty-assets/df_all__depmap__2024-Q2__CellLine.parquet
+        md5: ""
+    name: Dependency Map
+    website: https://depmap.org/portal/
   clo:
     all:
       2022-03-21:
@@ -360,6 +367,8 @@ Drug:
       2024-07-27:
         url: s3://bionty-assets/df_all__chebi__2024-07-27__Drug.parquet
         md5: ""
+    name: Chemical Entities of Biological Interest
+    website: https://www.ebi.ac.uk/chebi/
   dron:
     all:
       2024-08-05:
