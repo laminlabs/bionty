@@ -12,6 +12,9 @@ class CellLine(PublicOntology):
     1. Cell Line Ontology
     https://github.com/CLO-ontology/CLO
 
+    2. DepMap
+    https://depmap.org
+
     Args:
         {doc_entities}
     """
@@ -19,7 +22,7 @@ class CellLine(PublicOntology):
     def __init__(
         self,
         organism: Optional[Literal["all"]] = None,
-        source: Optional[Literal["clo"]] = None,
+        source: Optional[Literal["clo", "depmap"]] = None,
         version: Optional[str] = None,
         **kwargs,
     ) -> None:
