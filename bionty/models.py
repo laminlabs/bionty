@@ -82,9 +82,6 @@ class BioRecord(Record, HasParents, CanValidate):
             else:
                 kwargs = result  # result already has encoded id
                 args = ()
-        # all other cases require encoding the id
-        else:
-            kwargs = encode_uid(orm=self, kwargs=kwargs)
 
         # raise error if no organism is passed
         if hasattr(self.__class__, "organism_id"):
@@ -98,6 +95,8 @@ class BioRecord(Record, HasParents, CanValidate):
             elif kwargs.get("organism") is not None:
                 if not isinstance(kwargs.get("organism"), Organism):
                     raise TypeError("organism must be a `bionty.Organism` record")
+
+        kwargs = encode_uid(registry=self.__class__, kwargs=kwargs)
 
         # now continue with the user-facing constructor
         # set the direct parents as a private attribute
@@ -179,7 +178,7 @@ class BioRecord(Record, HasParents, CanValidate):
 
             public = cls.public(organism=organism, source=source)
             # TODO: consider StaticReference
-            source_record = get_source_record(public)  # type:ignore
+            source_record = get_source_record(public, cls)  # type:ignore
             df = public.df().reset_index()
             if hasattr(cls, "_ontology_id_field"):
                 field = cls._ontology_id_field
@@ -197,6 +196,61 @@ class BioRecord(Record, HasParents, CanValidate):
 
             # make sure source.in_db is correctly set based on the DB content
             check_source_in_db(registry=cls, source=source_record, update=update)
+
+    @classmethod
+    def add_source(cls, source: Source, currently_used=True) -> Source:
+        """Configure a source of the entity."""
+        import lamindb as ln
+
+        unique_kwargs = {
+            "entity": cls.__get_name_with_schema__(),
+            "name": source.name,
+            "version": source.version,
+            "organism": source.organism,
+        }
+        add_kwargs = {
+            "currently_used": currently_used,
+            "description": source.description,
+            "url": source.url,
+            "source_website": source.source_website,
+            "dataframe_artifact_id": source.dataframe_artifact_id,
+        }
+        new_source = Source.filter(**unique_kwargs).one_or_none()
+        if new_source is None:
+            try:
+                ln.settings.creation.search_names = False
+                new_source = Source(**unique_kwargs, **add_kwargs).save()
+            finally:
+                ln.settings.creation.search_names = True
+        else:
+            logger.warning("source already exists!")
+            return new_source
+        # get the dataframe from laminlabs/bionty-assets
+        bionty_source = (
+            Source.using("laminlabs/bionty-assets")
+            .filter(
+                **{
+                    "entity": source.entity,
+                    "name": source.name,
+                    "version": source.version,
+                    "organism": source.organism,
+                }
+            )
+            .one_or_none()
+        )
+        if bionty_source is None:
+            logger.warning(
+                "please register a DataFrame artifact!   \n→ artifact = ln.Artifact(df, visibility=0, run=False).save()   \n→ source.dataframe_artifact = artifact   \n→ source.save()"
+            )
+        else:
+            df_artifact = ln.Artifact(
+                bionty_source.dataframe_artifact.path, visibility=0, run=False
+            ).save()
+            new_source.dataframe_artifact = df_artifact
+            new_source.save()
+            logger.important("source added!")
+
+        return new_source
 
     @classmethod
     def public(
@@ -241,6 +295,17 @@ class BioRecord(Record, HasParents, CanValidate):
                 organism=organism, source=source_name, version=version
             )
         except (AttributeError, ValueError):
+            if source is None:
+                kwargs = {
+                    "entity": cls.__get_name_with_schema__(),
+                    "currently_used": True,
+                }
+                if organism is not None:
+                    if isinstance(organism, Record):
+                        kwargs["organism"] = organism.name
+                    else:
+                        kwargs["organism"] = organism
+                source = Source.filter(**kwargs).first()
             return StaticReference(source)
 
     @classmethod
@@ -593,7 +658,6 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         unique_together = (("name", "organism"),)
 
     _name_field: str = "name"
-    _ontology_id_field: str = "name"
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
@@ -1447,7 +1511,7 @@ class Source(Record, TracksRun, TracksUpdates):
         *args,
         **kwargs,
     ):
-        kwargs = encode_uid(orm=self, kwargs=kwargs)
+        kwargs = encode_uid(registry=Source, kwargs=kwargs)
         super().__init__(*args, **kwargs)
 
     def set_as_currently_used(self):

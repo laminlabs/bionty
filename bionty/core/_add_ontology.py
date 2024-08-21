@@ -145,7 +145,7 @@ def add_ontology_from_df(
     df = prepare_dataframe(public.df())
 
     # TODO: consider StaticReference
-    source_record = get_source_record(public)  # type:ignore
+    source_record = get_source_record(public, registry)  # type:ignore
 
     if ontology_ids is None:
         df_new = df_all = df
