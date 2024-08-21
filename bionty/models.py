@@ -326,7 +326,7 @@ class BioRecord(Record, HasParents, CanValidate):
 
             Create a record from non-default source:
 
-            >>> source = bionty.Source.filter(entity="CellType", source="cl", version="2022-08-16").one()  # noqa
+            >>> source = bionty.Source.get(entity="CellType", source="cl", version="2022-08-16")  # noqa
             >>> record = bionty.CellType.from_source(name="T cell", source=source)
 
         """
@@ -1518,7 +1518,7 @@ class Source(Record, TracksRun, TracksUpdates):
         """Set this record as the currently used source.
 
         Examples:
-            >>> record = bionty.Source.filter(uid="...").one()
+            >>> record = bionty.Source.get(uid="...")
             >>> record.set_as_currently_used()
         """
         # set this record as currently used
