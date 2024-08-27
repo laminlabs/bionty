@@ -51,51 +51,47 @@ class PublicOntology:
         *,
         include_id_prefixes: dict[str, list[str]] | None = None,
         include_rel: str | None = None,
-        **kwargs,
     ):
-        # backward compat for species -> organism
-        if organism is None and kwargs.get("species") is not None:
-            organism = kwargs.get("species")
-        self._fetch_sources()
         try:
-            # match user input organism, source and version with currently used sources
-            current = self._match_sources(
-                self._current_sources,
+            self._fetch_sources()
+            try:
+                # match user input organism, source and version with currently used sources
+                current = self._match_sources(
+                    self._current_sources,
+                    source=source,
+                    version=version,
+                    organism=organism,
+                )
+                source = current.get("source")
+                version = current.get("version")
+                organism = current.get("organism")
+            except ValueError:
+                if LAMINDB_INSTANCE_LOADED():
+                    pass
+
+            # search in all available sources to get url and md5
+            self._source_record = self._match_sources(
+                self._all_sources,
                 source=source,
                 version=version,
                 organism=organism,
             )
-            source = current.get("source")
-            version = current.get("version")
-            organism = current.get("organism")
-        except ValueError:
+
+            self._organism = self._source_record["organism"]
+            self._source = self._source_record["source"]
+            self._version = self._source_record["version"]
+
+            self._set_file_paths()
+            self.include_id_prefixes = include_id_prefixes
+            self.include_rel = include_rel
+        except KeyError:
             if LAMINDB_INSTANCE_LOADED():
+                self._source = source
+                self._version = version
+                self._organism = organism
                 pass
-                # logger.warning("loading non-default source inside a LaminDB instance")
-                # # fmt: off
-                # logger.hint(
-                #     f"please consider:\n"
-                #     f"    close your instance via `lamin close` and use Bionty stand alone\n"
-                #     f"    OR\n"
-                #     f"    modify currently_used {self.__class__.__name__} source in `bionty.Source`"
-                # )
-                # # fmt: on
-
-        # search in all available sources to get url and md5
-        self._source_record = self._match_sources(
-            self._all_sources,
-            source=source,
-            version=version,
-            organism=organism,
-        )
-
-        self._organism = self._source_record["organism"]
-        self._source = self._source_record["source"]
-        self._version = self._source_record["version"]
-
-        self._set_file_paths()
-        self.include_id_prefixes = include_id_prefixes
-        self.include_rel = include_rel
+            else:
+                logger.error("no source is available. please check `source.yaml`.")
 
         # df is only read into memory at the init to improve performance
         df = self._load_df()

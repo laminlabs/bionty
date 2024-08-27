@@ -22,31 +22,23 @@ import bionty.base as bionty_base
 
 from . import ids
 from ._bionty import encode_uid, lookup2kwargs
+from .base import PublicOntology
 
 if TYPE_CHECKING:
     from pandas import DataFrame
 
-    from .base import PublicOntology
 
-
-class StaticReference:
+class StaticReference(PublicOntology):
     def __init__(self, source_record: Source) -> None:
         self._source_record = source_record
+        super().__init__(
+            source=source_record.name,
+            version=source_record.version,
+            organism=source_record.organism,
+        )
 
-    @property
-    def source(self) -> str:
-        return self._source_record.name
-
-    @property
-    def organism(self) -> str:
-        return self._source_record.organism
-
-    @property
-    def version(self) -> str:
-        return self._source_record.version
-
-    def df(self) -> DataFrame:
-        return self._source_record.dataframe_artifact.load()
+    def _load_df(self) -> DataFrame:
+        return self._source_record.dataframe_artifact.load()  # type:ignore
 
 
 class Source(Record, TracksRun, TracksUpdates):
