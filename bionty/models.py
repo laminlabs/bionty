@@ -49,6 +49,99 @@ class StaticReference:
         return self._source_record.dataframe_artifact.load()
 
 
+class Source(Record, TracksRun, TracksUpdates):
+    """Versions of ontology sources.
+
+    .. warning::
+
+        Do not modify the records unless you know what you are doing!
+    """
+
+    _name_field: str = "name"
+
+    class Meta(Record.Meta, TracksRun.Meta, TracksUpdates.Meta):
+        abstract = False
+        unique_together = (("entity", "name", "organism", "version"),)
+
+    id: int = models.AutoField(primary_key=True)
+    """Internal id, valid only in one DB instance."""
+    uid: str = models.CharField(unique=True, max_length=4, default=ids.source)
+    """A universal id (hash of selected field)."""
+    entity: str = models.CharField(max_length=256, db_index=True)
+    """Entity class name."""
+    organism: str = models.CharField(max_length=64, db_index=True)
+    """Organism name, use 'all' if unknown or none applied."""
+    name: str = models.CharField(max_length=64, db_index=True)
+    """Source name, short form, CURIE prefix for ontologies."""
+    version: str = models.CharField(max_length=64, db_index=True)
+    """Version of the source."""
+    in_db: bool = models.BooleanField(default=False, db_index=True)
+    """Whether this ontology has be added to the database."""
+    currently_used: bool = models.BooleanField(default=False, db_index=True)
+    """Whether this record is currently used."""
+    description: str | None = models.TextField(blank=True, db_index=True)
+    """Source full name, long form."""
+    url: str | None = models.TextField(null=True, default=None)
+    """URL of the source file."""
+    md5: str | None = models.TextField(null=True, default=None)
+    """Hash md5 of the source file."""
+    source_website: str | None = models.TextField(null=True, default=None)
+    """Website of the source."""
+    dataframe_artifact: Artifact = models.ForeignKey(
+        Artifact, PROTECT, null=True, default=None, related_name="_source_dataframe_of"
+    )
+    """Dataframe artifact that corresponds to this source."""
+    artifacts: Artifact = models.ManyToManyField(
+        Artifact, related_name="_source_artifact_of"
+    )
+    """Additional files that correspond to this source."""
+
+    @overload
+    def __init__(
+        self,
+        entity: str,
+        organism: str,
+        name: str,
+        version: str,
+        currently_used: bool,
+        description: str | None,
+        url: str | None,
+        md5: str | None,
+        source_website: str | None,
+    ): ...
+
+    @overload
+    def __init__(
+        self,
+        *db_args,
+    ): ...
+
+    def __init__(
+        self,
+        *args,
+        **kwargs,
+    ):
+        kwargs = encode_uid(registry=Source, kwargs=kwargs)
+        super().__init__(*args, **kwargs)
+
+    def set_as_currently_used(self):
+        """Set this record as the currently used source.
+
+        Examples:
+            >>> record = bionty.Source.get(uid="...")
+            >>> record.set_as_currently_used()
+        """
+        # set this record as currently used
+        self.currently_used = True
+        self.save()
+        # set all other records as not currently used
+        Source.filter(
+            entity=self.entity, organism=self.organism, name=self.name
+        ).exclude(uid=self.uid).update(currently_used=False)
+        logger.success(f"set {self} as currently used")
+        logger.warning("please reload your instance to reflect the updates!")
+
+
 class BioRecord(Record, HasParents, CanValidate):
     """Base Record of bionty.
 
@@ -65,7 +158,7 @@ class BioRecord(Record, HasParents, CanValidate):
     class Meta:
         abstract = True
 
-    source = models.ForeignKey("Source", PROTECT, null=True)
+    source = models.ForeignKey(Source, PROTECT, null=True)
     """:class:`~bionty.Source` this record associates with."""
 
     def __init__(self, *args, **kwargs):
@@ -1400,99 +1493,6 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
-
-
-class Source(Record, TracksRun, TracksUpdates):
-    """Versions of ontology sources.
-
-    .. warning::
-
-        Do not modify the records unless you know what you are doing!
-    """
-
-    _name_field: str = "name"
-
-    class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
-        abstract = False
-        unique_together = (("entity", "name", "organism", "version"),)
-
-    id: int = models.AutoField(primary_key=True)
-    """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=4, default=ids.source)
-    """A universal id (hash of selected field)."""
-    entity: str = models.CharField(max_length=256, db_index=True)
-    """Entity class name."""
-    organism: str = models.CharField(max_length=64, db_index=True)
-    """Organism name, use 'all' if unknown or none applied."""
-    name: str = models.CharField(max_length=64, db_index=True)
-    """Source name, short form, CURIE prefix for ontologies."""
-    version: str = models.CharField(max_length=64, db_index=True)
-    """Version of the source."""
-    in_db: bool = models.BooleanField(default=False, db_index=True)
-    """Whether this ontology has be added to the database."""
-    currently_used: bool = models.BooleanField(default=False, db_index=True)
-    """Whether this record is currently used."""
-    description: str | None = models.TextField(blank=True, db_index=True)
-    """Source full name, long form."""
-    url: str | None = models.TextField(null=True, default=None)
-    """URL of the source file."""
-    md5: str | None = models.TextField(null=True, default=None)
-    """Hash md5 of the source file."""
-    source_website: str | None = models.TextField(null=True, default=None)
-    """Website of the source."""
-    dataframe_artifact: Artifact = models.ForeignKey(
-        Artifact, PROTECT, null=True, default=None, related_name="_source_dataframe_of"
-    )
-    """Dataframe artifact that corresponds to this source."""
-    artifacts: Artifact = models.ManyToManyField(
-        Artifact, related_name="_source_artifact_of"
-    )
-    """Additional files that correspond to this source."""
-
-    @overload
-    def __init__(
-        self,
-        entity: str,
-        organism: str,
-        name: str,
-        version: str,
-        currently_used: bool,
-        description: str | None,
-        url: str | None,
-        md5: str | None,
-        source_website: str | None,
-    ): ...
-
-    @overload
-    def __init__(
-        self,
-        *db_args,
-    ): ...
-
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        kwargs = encode_uid(registry=Source, kwargs=kwargs)
-        super().__init__(*args, **kwargs)
-
-    def set_as_currently_used(self):
-        """Set this record as the currently used source.
-
-        Examples:
-            >>> record = bionty.Source.get(uid="...")
-            >>> record.set_as_currently_used()
-        """
-        # set this record as currently used
-        self.currently_used = True
-        self.save()
-        # set all other records as not currently used
-        Source.filter(
-            entity=self.entity, organism=self.organism, name=self.name
-        ).exclude(uid=self.uid).update(currently_used=False)
-        logger.success(f"set {self} as currently used")
-        logger.warning("please reload your instance to reflect the updates!")
 
 
 class FeatureSetGene(Record, LinkORM):
