@@ -109,24 +109,26 @@ def check_source_in_db(
     n_all: int = None,
     n_in_db: int = None,
 ) -> None:
-    if n_all is None:
-        n_all = registry.public(source=source).df().shape[0]
-
-    if n_in_db is None:
-        # all records of the source in the database
-        n_in_db = registry.filter(source=source).count()
-    if n_in_db >= n_all:
-        # make sure in_db is set to True if all records are in the database
-        source.in_db = True
-        source.save()
-        if not update:
-            logger.warning(
-                f"{registry.__name__} records from source ({source.name}, {source.version}) are already in the database!\n   → pass `update=True` to update the records"
-            )
-            return
+    if not hasattr(registry, "source_id"):
+        logger.warning(f"no `source` field in the registry {registry.__name__}!")
     else:
-        source.in_db = False
-        source.save()
+        if n_all is None:
+            n_all = registry.public(source=source).df().shape[0]
+        if n_in_db is None:
+            # all records of the source in the database
+            n_in_db = registry.filter(source=source).count()
+        if n_in_db >= n_all:
+            # make sure in_db is set to True if all records are in the database
+            source.in_db = True
+            source.save()
+            if not update:
+                logger.warning(
+                    f"{registry.__name__} records from source ({source.name}, {source.version}) are already in the database!\n   → pass `update=True` to update the records"
+                )
+                return
+        else:
+            source.in_db = False
+            source.save()
 
 
 def add_ontology_from_df(

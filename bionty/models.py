@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional, Tuple, overload
+from typing import TYPE_CHECKING, List, Tuple, overload
 
 import numpy as np
 from django.db import models
@@ -31,10 +31,22 @@ if TYPE_CHECKING:
 
 class StaticReference:
     def __init__(self, source_record: Source) -> None:
-        self._source = source_record
+        self._source_record = source_record
+
+    @property
+    def source(self) -> str:
+        return self._source_record.name
+
+    @property
+    def organism(self) -> str:
+        return self._source_record.organism
+
+    @property
+    def version(self) -> str:
+        return self._source_record.version
 
     def df(self) -> DataFrame:
-        return self._source.dataframe_artifact.load()
+        return self._source_record.dataframe_artifact.load()
 
 
 class BioRecord(Record, HasParents, CanValidate):
@@ -52,6 +64,9 @@ class BioRecord(Record, HasParents, CanValidate):
 
     class Meta:
         abstract = True
+
+    source = models.ForeignKey("Source", PROTECT, null=True)
+    """:class:`~bionty.Source` this record associates with."""
 
     def __init__(self, *args, **kwargs):
         # DB-facing constructor
@@ -432,10 +447,6 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent organism records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="organisms"
-    )
-    """:class:`~bionty.Source` this record associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactOrganism", related_name="organisms"
     )
@@ -513,10 +524,6 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         Organism, PROTECT, default=None, related_name="genes"
     )
     """:class:`~bionty.Organism` this gene associates with."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="genes"
-    )
-    """:class:`~bionty.Source` this gene associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactGene", related_name="genes"
     )
@@ -601,10 +608,6 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
         Organism, PROTECT, default=None, related_name="proteins"
     )
     """:class:`~bionty.Organism` this protein associates with."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="proteins"
-    )
-    """:class:`~bionty.Source` this protein associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactProtein", related_name="proteins"
     )
@@ -685,10 +688,6 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         Organism, PROTECT, default=None, related_name="cell_markers"
     )
     """:class:`~bionty.Organism` this cell marker associates with."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="cell_markers"
-    )
-    """:class:`~bionty.Source` this cell marker associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact,
         through="ArtifactCellMarker",
@@ -767,10 +766,6 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent tissues records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="tissues"
-    )
-    """:class:`~bionty.Source` this tissue associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactTissue", related_name="tissues"
     )
@@ -843,10 +838,6 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent cell type records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="cell_types"
-    )
-    """:class:`~bionty.Source` this cell type associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactCellType", related_name="cell_types"
     )
@@ -919,10 +910,6 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent disease records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="diseases"
-    )
-    """:class:`~bionty.Source` this disease associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactDisease", related_name="diseases"
     )
@@ -996,10 +983,6 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent cell line records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="cell_lines"
-    )
-    """:class:`~bionty.Source` this cell line associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactCellLine", related_name="cell_lines"
     )
@@ -1076,10 +1059,6 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent phenotype records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="phenotypes"
-    )
-    """:class:`~bionty.Source` this phenotype associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactPhenotype", related_name="phenotypes"
     )
@@ -1154,10 +1133,6 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent pathway records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="pathways"
-    )
-    """:class:`~bionty.Source` this pathway associates with."""
     genes: Gene = models.ManyToManyField("Gene", related_name="pathways")
     """Genes that signifies the pathway."""
     feature_sets: FeatureSet = models.ManyToManyField(
@@ -1243,10 +1218,6 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent experimental factor records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="experimental_factors"
-    )
-    """:class:`~bionty.Source` this experimental_factors associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact,
         through="ArtifactExperimentalFactor",
@@ -1323,10 +1294,6 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent developmental stage records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="developmental_stages"
-    )
-    """:class:`~bionty.Source` this developmental stage associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact,
         through="ArtifactDevelopmentalStage",
@@ -1402,10 +1369,6 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent ethnicity records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="ethnicities"
-    )
-    """:class:`~bionty.Source` this ethnicity associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact,
         through="ArtifactEthnicity",
