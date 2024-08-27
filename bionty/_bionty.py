@@ -56,15 +56,17 @@ def create_or_get_organism_record(
     return organism_record
 
 
-# TODO: consider private sources
 def get_source_record(
     public_ontology: bionty_base.PublicOntology, registry: type[Record]
 ) -> Record:
     from .models import Source
 
-    entity_name = (
-        f"{registry.__get_schema_name__()}.{public_ontology.__class__.__name__}"
-    )
+    if public_ontology.__class__.__name__ == "StaticReference":
+        entity_name = registry.__get_name_with_schema__()
+    else:
+        entity_name = (
+            f"{registry.__get_schema_name__()}.{public_ontology.__class__.__name__}"
+        )
     kwargs = {
         "entity": entity_name,
         "organism": public_ontology.organism,
@@ -72,7 +74,7 @@ def get_source_record(
         "version": public_ontology.version,
     }
 
-    source_record = Source.objects.filter(**kwargs).get()
+    source_record = Source.objects.get(**kwargs)
     return source_record
 
 

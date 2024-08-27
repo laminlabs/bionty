@@ -33,10 +33,6 @@ def test_gene_ensembl_inspect_hgnc_id(genes):
     assert inspect.equals(expected_series)
 
 
-def test_species_backward_compat():
-    bt_base.Gene(species="human")
-
-
 def test_ensemblgene_download():
     from bionty.base.entities._gene import EnsemblGene
 

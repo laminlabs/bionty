@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional, Tuple, overload
+from typing import TYPE_CHECKING, List, Tuple, overload
 
 import numpy as np
 from django.db import models
@@ -22,19 +22,116 @@ import bionty.base as bionty_base
 
 from . import ids
 from ._bionty import encode_uid, lookup2kwargs
+from .base import PublicOntology
 
 if TYPE_CHECKING:
     from pandas import DataFrame
 
-    from .base import PublicOntology
 
-
-class StaticReference:
+class StaticReference(PublicOntology):
     def __init__(self, source_record: Source) -> None:
-        self._source = source_record
+        self._source_record = source_record
+        super().__init__(
+            source=source_record.name,
+            version=source_record.version,
+            organism=source_record.organism,
+        )
 
-    def df(self) -> DataFrame:
-        return self._source.dataframe_artifact.load()
+    def _load_df(self) -> DataFrame:
+        return self._source_record.dataframe_artifact.load()  # type:ignore
+
+
+class Source(Record, TracksRun, TracksUpdates):
+    """Versions of ontology sources.
+
+    .. warning::
+
+        Do not modify the records unless you know what you are doing!
+    """
+
+    _name_field: str = "name"
+
+    class Meta(Record.Meta, TracksRun.Meta, TracksUpdates.Meta):
+        abstract = False
+        unique_together = (("entity", "name", "organism", "version"),)
+
+    id: int = models.AutoField(primary_key=True)
+    """Internal id, valid only in one DB instance."""
+    uid: str = models.CharField(unique=True, max_length=4, default=ids.source)
+    """A universal id (hash of selected field)."""
+    entity: str = models.CharField(max_length=256, db_index=True)
+    """Entity class name."""
+    organism: str = models.CharField(max_length=64, db_index=True)
+    """Organism name, use 'all' if unknown or none applied."""
+    name: str = models.CharField(max_length=64, db_index=True)
+    """Source name, short form, CURIE prefix for ontologies."""
+    version: str = models.CharField(max_length=64, db_index=True)
+    """Version of the source."""
+    in_db: bool = models.BooleanField(default=False, db_index=True)
+    """Whether this ontology has be added to the database."""
+    currently_used: bool = models.BooleanField(default=False, db_index=True)
+    """Whether this record is currently used."""
+    description: str | None = models.TextField(blank=True, db_index=True)
+    """Source full name, long form."""
+    url: str | None = models.TextField(null=True, default=None)
+    """URL of the source file."""
+    md5: str | None = models.TextField(null=True, default=None)
+    """Hash md5 of the source file."""
+    source_website: str | None = models.TextField(null=True, default=None)
+    """Website of the source."""
+    dataframe_artifact: Artifact = models.ForeignKey(
+        Artifact, PROTECT, null=True, default=None, related_name="_source_dataframe_of"
+    )
+    """Dataframe artifact that corresponds to this source."""
+    artifacts: Artifact = models.ManyToManyField(
+        Artifact, related_name="_source_artifact_of"
+    )
+    """Additional files that correspond to this source."""
+
+    @overload
+    def __init__(
+        self,
+        entity: str,
+        organism: str,
+        name: str,
+        version: str,
+        currently_used: bool,
+        description: str | None,
+        url: str | None,
+        md5: str | None,
+        source_website: str | None,
+    ): ...
+
+    @overload
+    def __init__(
+        self,
+        *db_args,
+    ): ...
+
+    def __init__(
+        self,
+        *args,
+        **kwargs,
+    ):
+        kwargs = encode_uid(registry=Source, kwargs=kwargs)
+        super().__init__(*args, **kwargs)
+
+    def set_as_currently_used(self):
+        """Set this record as the currently used source.
+
+        Examples:
+            >>> record = bionty.Source.get(uid="...")
+            >>> record.set_as_currently_used()
+        """
+        # set this record as currently used
+        self.currently_used = True
+        self.save()
+        # set all other records as not currently used
+        Source.filter(
+            entity=self.entity, organism=self.organism, name=self.name
+        ).exclude(uid=self.uid).update(currently_used=False)
+        logger.success(f"set {self} as currently used")
+        logger.warning("please reload your instance to reflect the updates!")
 
 
 class BioRecord(Record, HasParents, CanValidate):
@@ -52,6 +149,9 @@ class BioRecord(Record, HasParents, CanValidate):
 
     class Meta:
         abstract = True
+
+    source = models.ForeignKey(Source, PROTECT, null=True)
+    """:class:`~bionty.Source` this record associates with."""
 
     def __init__(self, *args, **kwargs):
         # DB-facing constructor
@@ -432,10 +532,6 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent organism records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="organisms"
-    )
-    """:class:`~bionty.Source` this record associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactOrganism", related_name="organisms"
     )
@@ -513,10 +609,6 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         Organism, PROTECT, default=None, related_name="genes"
     )
     """:class:`~bionty.Organism` this gene associates with."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="genes"
-    )
-    """:class:`~bionty.Source` this gene associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactGene", related_name="genes"
     )
@@ -601,10 +693,6 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
         Organism, PROTECT, default=None, related_name="proteins"
     )
     """:class:`~bionty.Organism` this protein associates with."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="proteins"
-    )
-    """:class:`~bionty.Source` this protein associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactProtein", related_name="proteins"
     )
@@ -685,10 +773,6 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         Organism, PROTECT, default=None, related_name="cell_markers"
     )
     """:class:`~bionty.Organism` this cell marker associates with."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="cell_markers"
-    )
-    """:class:`~bionty.Source` this cell marker associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact,
         through="ArtifactCellMarker",
@@ -767,10 +851,6 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent tissues records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="tissues"
-    )
-    """:class:`~bionty.Source` this tissue associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactTissue", related_name="tissues"
     )
@@ -843,10 +923,6 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent cell type records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="cell_types"
-    )
-    """:class:`~bionty.Source` this cell type associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactCellType", related_name="cell_types"
     )
@@ -919,10 +995,6 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent disease records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="diseases"
-    )
-    """:class:`~bionty.Source` this disease associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactDisease", related_name="diseases"
     )
@@ -996,10 +1068,6 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent cell line records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="cell_lines"
-    )
-    """:class:`~bionty.Source` this cell line associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactCellLine", related_name="cell_lines"
     )
@@ -1076,10 +1144,6 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent phenotype records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="phenotypes"
-    )
-    """:class:`~bionty.Source` this phenotype associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactPhenotype", related_name="phenotypes"
     )
@@ -1154,10 +1218,6 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent pathway records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="pathways"
-    )
-    """:class:`~bionty.Source` this pathway associates with."""
     genes: Gene = models.ManyToManyField("Gene", related_name="pathways")
     """Genes that signifies the pathway."""
     feature_sets: FeatureSet = models.ManyToManyField(
@@ -1243,10 +1303,6 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent experimental factor records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="experimental_factors"
-    )
-    """:class:`~bionty.Source` this experimental_factors associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact,
         through="ArtifactExperimentalFactor",
@@ -1323,10 +1379,6 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent developmental stage records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="developmental_stages"
-    )
-    """:class:`~bionty.Source` this developmental stage associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact,
         through="ArtifactDevelopmentalStage",
@@ -1402,10 +1454,6 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         "self", symmetrical=False, related_name="children"
     )
     """Parent ethnicity records."""
-    source: Source = models.ForeignKey(
-        "Source", PROTECT, null=True, related_name="ethnicities"
-    )
-    """:class:`~bionty.Source` this ethnicity associates with."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact,
         through="ArtifactEthnicity",
@@ -1437,99 +1485,6 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
-
-
-class Source(Record, TracksRun, TracksUpdates):
-    """Versions of ontology sources.
-
-    .. warning::
-
-        Do not modify the records unless you know what you are doing!
-    """
-
-    _name_field: str = "name"
-
-    class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
-        abstract = False
-        unique_together = (("entity", "name", "organism", "version"),)
-
-    id: int = models.AutoField(primary_key=True)
-    """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=4, default=ids.source)
-    """A universal id (hash of selected field)."""
-    entity: str = models.CharField(max_length=256, db_index=True)
-    """Entity class name."""
-    organism: str = models.CharField(max_length=64, db_index=True)
-    """Organism name, use 'all' if unknown or none applied."""
-    name: str = models.CharField(max_length=64, db_index=True)
-    """Source name, short form, CURIE prefix for ontologies."""
-    version: str = models.CharField(max_length=64, db_index=True)
-    """Version of the source."""
-    in_db: bool = models.BooleanField(default=False, db_index=True)
-    """Whether this ontology has be added to the database."""
-    currently_used: bool = models.BooleanField(default=False, db_index=True)
-    """Whether this record is currently used."""
-    description: str | None = models.TextField(blank=True, db_index=True)
-    """Source full name, long form."""
-    url: str | None = models.TextField(null=True, default=None)
-    """URL of the source file."""
-    md5: str | None = models.TextField(null=True, default=None)
-    """Hash md5 of the source file."""
-    source_website: str | None = models.TextField(null=True, default=None)
-    """Website of the source."""
-    dataframe_artifact: Artifact = models.ForeignKey(
-        Artifact, PROTECT, null=True, default=None, related_name="_source_dataframe_of"
-    )
-    """Dataframe artifact that corresponds to this source."""
-    artifacts: Artifact = models.ManyToManyField(
-        Artifact, related_name="_source_artifact_of"
-    )
-    """Additional files that correspond to this source."""
-
-    @overload
-    def __init__(
-        self,
-        entity: str,
-        organism: str,
-        name: str,
-        version: str,
-        currently_used: bool,
-        description: str | None,
-        url: str | None,
-        md5: str | None,
-        source_website: str | None,
-    ): ...
-
-    @overload
-    def __init__(
-        self,
-        *db_args,
-    ): ...
-
-    def __init__(
-        self,
-        *args,
-        **kwargs,
-    ):
-        kwargs = encode_uid(registry=Source, kwargs=kwargs)
-        super().__init__(*args, **kwargs)
-
-    def set_as_currently_used(self):
-        """Set this record as the currently used source.
-
-        Examples:
-            >>> record = bionty.Source.get(uid="...")
-            >>> record.set_as_currently_used()
-        """
-        # set this record as currently used
-        self.currently_used = True
-        self.save()
-        # set all other records as not currently used
-        Source.filter(
-            entity=self.entity, organism=self.organism, name=self.name
-        ).exclude(uid=self.uid).update(currently_used=False)
-        logger.success(f"set {self} as currently used")
-        logger.warning("please reload your instance to reflect the updates!")
 
 
 class FeatureSetGene(Record, LinkORM):
