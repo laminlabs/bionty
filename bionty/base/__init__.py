@@ -1,17 +1,6 @@
-"""Bionty base is a standalone version of Bionty without lamindb support.
-
-Overview
-========
+"""Access to public ontologies.
 
 `bionty.base` is the read-only interface for public ontology that underlies bionty and doesn't require a lamindb instance.
-
-Installation
-============
-
->>> pip install bionty
-
-Quickstart
-----------
 
 Import the package:
 
@@ -50,12 +39,10 @@ Bionty base provides access to several entities, most of which are also supporte
    BFXPipeline
    BioSample
 
-Base model of entity classes
-----------------------------
+Base class
+----------
 
-[Pronto Ontology objects](https://pronto.readthedocs.io/en/stable/api/pronto.Ontology.html) can be accessed via {entity}.to_pronto():
-
-   bt_base.Gene().to_pronto()
+`Pronto Ontology objects <https://pronto.readthedocs.io/en/stable/api/pronto.Ontology.html>`__ can be accessed via `{entity}.to_pronto()`.
 
 .. autosummary::
    :toctree: .
@@ -63,8 +50,8 @@ Base model of entity classes
    PublicOntology
    PublicOntologyField
 
-PublicOntology sources
-----------------------
+Ontology sources
+----------------
 
 .. autosummary::
    :toctree: .
@@ -74,8 +61,8 @@ PublicOntology sources
    reset_sources
    settings
 
-External API
-------------
+Pronto Ontology
+---------------
 
 .. autosummary::
    :toctree: .
