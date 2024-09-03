@@ -38,7 +38,7 @@ class StaticReference(PublicOntology):
         )
 
     def _load_df(self) -> DataFrame:
-        return self._source_record.dataframe_artifact.load()  # type:ignore
+        return self._source_record.dataframe_artifact.load(is_run_input=False)  # type:ignore
 
 
 class Source(Record, TracksRun, TracksUpdates):
