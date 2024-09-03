@@ -358,12 +358,12 @@ class BioRecord(Record, HasParents, CanValidate):
         organism: str | Record | None = None,
         source: Source | None = None,
     ) -> PublicOntology | StaticReference:
-        """The corresponding PublicOntology object.
+        """The corresponding :class:`docs:bionty.base.PublicOntology` object.
 
-        Note that the source is auto-configured and tracked via :meth:`bionty.Source`.
+        Note that the source is auto-configured and tracked via :class:`docs:bionty.Source`.
 
         See Also:
-            `PublicOntology <https://lamin.ai/docs/public-ontologies>`__
+            :doc:`docs:public-ontologies`
 
         Examples:
             >>> celltype_pub = bionty.CellType.public()
