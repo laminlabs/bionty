@@ -49,7 +49,7 @@ jobs:
       - run: nox -s lint
         if: matrix.python-version == '3.10' && matrix.group == 'bionty-unit'
       - run: nox -s "build(group='${{ matrix.group }}')"
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: coverage--${{ matrix.group }}
           path: .coverage
@@ -76,7 +76,7 @@ jobs:
           pip install -U pip uv
           uv pip install --system coverage[toml]
           uv pip install --system --no-deps .
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
       - name: run coverage
         run: |
           coverage combine coverage--*/.coverage*
