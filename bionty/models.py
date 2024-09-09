@@ -150,7 +150,7 @@ class BioRecord(Record, HasParents, CanValidate):
     class Meta:
         abstract = True
 
-    source = models.ForeignKey(Source, PROTECT, null=True)
+    source = models.ForeignKey(Source, PROTECT, null=True, related_name="+")
     """:class:`~bionty.Source` this record associates with."""
 
     def __init__(self, *args, **kwargs):
