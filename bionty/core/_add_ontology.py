@@ -112,11 +112,9 @@ def check_source_in_db(
     if not hasattr(registry, "source_id"):
         logger.warning(f"no `source` field in the registry {registry.__name__}!")
     else:
-        if n_all is None:
-            n_all = registry.public(source=source).df().shape[0]
-        if n_in_db is None:
-            # all records of the source in the database
-            n_in_db = registry.filter(source=source).count()
+        n_all = n_all or registry.public(source=source).df().shape[0]
+        # all records of the source in the database
+        n_in_db = n_in_db or registry.filter(source=source).count()
         if n_in_db >= n_all:
             # make sure in_db is set to True if all records are in the database
             source.in_db = True
@@ -184,6 +182,9 @@ def add_ontology_from_df(
     records = create_records(registry, df_new, source_record)
     registry.objects.bulk_create(records, ignore_conflicts=ignore_conflicts)
 
+    all_records = registry.filter(
+        source=source_record
+    ).all()  # need to update all_records after bulk_create
     link_records = create_link_records(registry, df_all, all_records)
     ln.save(link_records, ignore_conflicts=ignore_conflicts)
 
