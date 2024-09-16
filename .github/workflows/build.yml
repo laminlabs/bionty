@@ -49,6 +49,7 @@ jobs:
       - run: nox -s lint
         if: matrix.python-version == '3.11' && matrix.group == 'bionty-unit'
       - run: nox -s "build(group='${{ matrix.group }}')"
+      - run: ls -la
       - uses: actions/upload-artifact@v3
         with:
           name: coverage--${{ matrix.group }}
