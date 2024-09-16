@@ -109,7 +109,7 @@ class PublicOntology:
                 pass
 
     def _validate_param(self, param_name: str, value: str | None) -> None:
-        """Validates passed parameters by comparing them against the typehints (Literals)."""
+        """Validates passed parameter values by comparing them against the typehints (Literals)."""
         if value is not None:
             hint = self.__class__.__init__.__annotations__.get(param_name)
             valid_values = ()
