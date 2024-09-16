@@ -20,7 +20,7 @@ class Protein(PublicOntology):
         self,
         organism: Optional[Literal["human", "mouse"]] = None,
         source: Optional[Literal["uniprot"]] = None,
-        version: Optional[str] = None,
+        version: Optional[Literal["2023-02", "2023-03", "2024-03"]] = None,
         **kwargs,
     ) -> None:
         super().__init__(source=source, version=version, organism=organism, **kwargs)

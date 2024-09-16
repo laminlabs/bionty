@@ -1,10 +1,11 @@
 import bionty.base as bt_base
 import pytest
+from bionty.base._public_ontology import InvalidParamError
 from bionty.base._settings import settings
 
 
 def test_unavailable_sources():
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidParamError):
         bt_base.CellType(source="random")
 
 

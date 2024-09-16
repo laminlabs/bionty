@@ -24,7 +24,9 @@ class Drug(PublicOntology):
         self,
         organism: Optional[Literal["all"]] = None,
         source: Optional[Literal["dron", "chebi"]] = None,
-        version: Optional[str] = None,
+        version: Optional[
+            Literal["2024-07-27", "2023-03-10", "2024-03-02", "2024-08-05"]
+        ] = None,
         **kwargs,
     ) -> None:
         super().__init__(

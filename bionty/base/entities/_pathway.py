@@ -23,7 +23,7 @@ class Pathway(PublicOntology):
         self,
         organism: Optional[Literal["all"]] = None,
         source: Optional[Literal["go", "pw"]] = None,
-        version: Optional[str] = None,
+        version: Optional[Literal["2023-05-10", "2024-06-17"]] = None,
         **kwargs,
     ) -> None:
         super().__init__(source=source, version=version, organism=organism, **kwargs)

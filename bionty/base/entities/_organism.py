@@ -24,7 +24,17 @@ class Organism(PublicOntology):
             Literal["vertebrates", "bacteria", "fungi", "metazoa", "plants", "all"]
         ] = None,
         source: Optional[Literal["ensembl", "ncbitaxon"]] = None,
-        version: Optional[str] = None,
+        version: Optional[
+            Literal[
+                "2023-06-20",
+                "release-57",
+                "release-108",
+                "release-109",
+                "release-110",
+                "release-111",
+                "release-112",
+            ]
+        ] = None,
         **kwargs,
     ):
         super().__init__(organism=organism, source=source, version=version, **kwargs)

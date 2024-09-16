@@ -32,7 +32,9 @@ class Gene(PublicOntology):
             Literal["human", "mouse", "saccharomyces cerevisiae"]
         ] = None,
         source: Optional[Literal["ensembl"]] = None,
-        version: Optional[str] = None,
+        version: Optional[
+            Literal["release-109", "release-110", "release-111", "release-112"]
+        ] = None,
         **kwargs,
     ):
         super().__init__(

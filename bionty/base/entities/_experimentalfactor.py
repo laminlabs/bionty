@@ -23,7 +23,9 @@ class ExperimentalFactor(PublicOntology):
         self,
         organism: Optional[Literal["all"]] = None,
         source: Optional[Literal["efo"]] = None,
-        version: Optional[str] = None,
+        version: Optional[
+            Literal["3.48.0", "3.57.0", "3.62.0", "3.63.0", "3.66.0"]
+        ] = None,
         **kwargs,
     ) -> None:
         super().__init__(

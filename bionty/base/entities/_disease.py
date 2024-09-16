@@ -29,7 +29,25 @@ class Disease(PublicOntology):
         self,
         organism: Optional[Literal["all", "human"]] = None,
         source: Optional[Literal["mondo", "doid", "icd"]] = None,
-        version: Optional[str] = None,
+        version: Optional[
+            Literal[
+                "icd-9-2011",
+                "icd-10-2020",
+                "icd-10-2024",
+                "icd-11-2023",
+                "2023-01-30",
+                "2023-03-31",
+                "2024-01-31",
+                "2024-05-29",
+                "2022-10-11",
+                "2023-02-06",
+                "2023-04-04",
+                "2023-08-02",
+                "2024-01-03",
+                "2024-02-06",
+                "2024-06-04",
+            ]
+        ] = None,
         **kwargs,
     ) -> None:
         super().__init__(

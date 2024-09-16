@@ -20,7 +20,18 @@ class Tissue(PublicOntology):
         self,
         organism: Optional[Literal["all"]] = None,
         source: Optional[Literal["uberon"]] = None,
-        version: Optional[str] = None,
+        version: Optional[
+            Literal[
+                "2022-08-19",
+                "2023-02-14",
+                "2023-04-19",
+                "2023-09-05",
+                "2024-01-18",
+                "2024-02-20",
+                "2024-05-13",
+                "2024-08-07",
+            ]
+        ] = None,
         **kwargs,
     ) -> None:
         super().__init__(

@@ -20,7 +20,7 @@ class CellMarker(PublicOntology):
         self,
         organism: Optional[Literal["human", "mouse"]] = None,
         source: Optional[Literal["cellmarker"]] = None,
-        version: Optional[str] = None,
+        version: Optional[Literal["2.0"]] = None,
         **kwargs,
     ) -> None:
         super().__init__(source=source, version=version, organism=organism, **kwargs)

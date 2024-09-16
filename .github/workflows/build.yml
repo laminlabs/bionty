@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10"]
+        python-version: ["3.11"]
         group: ["bionty-unit", "bionty-docs"]
     timeout-minutes: 25
 
@@ -47,14 +47,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
       - run: nox -s lint
-        if: matrix.python-version == '3.10' && matrix.group == 'bionty-unit'
+        if: matrix.python-version == '3.11' && matrix.group == 'bionty-unit'
       - run: nox -s "build(group='${{ matrix.group }}')"
       - uses: actions/upload-artifact@v3
         with:
           name: coverage--${{ matrix.group }}
           path: .coverage
+          include-hidden-files: true
       - uses: nwtgck/actions-netlify@v1.2
-        if: ${{ matrix.python-version == '3.10' && matrix.group == 'bionty-docs' }}
+        if: ${{ matrix.python-version == '3.11' && matrix.group == 'bionty-docs' }}
         with:
           publish-dir: "_build/html"
           production-deploy: ${{ github.event_name == 'push' }}
@@ -71,7 +72,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.11"
       - run: |
           pip install -U pip uv
           uv pip install --system coverage[toml]
