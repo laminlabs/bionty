@@ -20,7 +20,7 @@ class DevelopmentalStage(PublicOntology):
         self,
         organism: Optional[Literal["human", "mouse"]] = None,
         source: Optional[Literal["hsapdv", "mmusdv"]] = None,
-        version: Optional[str] = None,
+        version: Optional[Literal["2020-03-10", "2024-05-28"]] = None,
         **kwargs,
     ) -> None:
         super().__init__(

@@ -20,7 +20,7 @@ class BioSample(PublicOntology):
         self,
         organism: Optional[Literal["all"]] = None,
         source: Optional[Literal["ncbi"]] = None,
-        version: Optional[str] = None,
+        version: Optional[Literal["2023-09"]] = None,
         **kwargs,
     ) -> None:
         super().__init__(source=source, version=version, organism=organism, **kwargs)

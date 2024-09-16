@@ -22,7 +22,7 @@ class BFXPipeline(PublicOntology):
         self,
         organism: Optional[Literal["all"]] = None,
         source: Optional[Literal["lamin"]] = None,
-        version: Optional[str] = None,
+        version: Optional[Literal["1.0.0"]] = None,
         **kwargs,
     ) -> None:
         super().__init__(source=source, version=version, organism=organism, **kwargs)

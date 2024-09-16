@@ -20,7 +20,7 @@ class Ethnicity(PublicOntology):
         self,
         organism: Optional[Literal["human"]] = None,
         source: Optional[Literal["hancestro"]] = None,
-        version: Optional[str] = None,
+        version: Optional[Literal["3.0"]] = None,
         **kwargs,
     ) -> None:
         super().__init__(

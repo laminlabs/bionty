@@ -1,11 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import (
-    TYPE_CHECKING,
-    Iterable,
-    Literal,
-)
+from typing import TYPE_CHECKING, Iterable, Literal, Union, get_args, get_origin
 
 import numpy as np
 import pandas as pd
@@ -52,6 +48,10 @@ class PublicOntology:
         include_id_prefixes: dict[str, list[str]] | None = None,
         include_rel: str | None = None,
     ):
+        self._validate_param("organism", organism)
+        self._validate_param("source", source)
+        self._validate_param("version", version)
+
         try:
             self._fetch_sources()
             try:
@@ -107,6 +107,25 @@ class PublicOntology:
             # Some fields of an ontology (e.g. Gene) are not PublicOntology class attributes and must be skipped.
             except AttributeError:
                 pass
+
+    def _validate_param(self, param_name: str, value: str | None) -> None:
+        """Validates passed parameters by comparing them against the typehints (Literals)."""
+        if value is not None:
+            hint = self.__class__.__init__.__annotations__.get(param_name)
+            valid_values = ()
+
+            if get_origin(hint) is Union:  # This handles Optional
+                for arg in get_args(hint):
+                    if get_origin(arg) is Literal:
+                        valid_values = get_args(arg)
+                        break
+            elif get_origin(hint) is Literal:
+                valid_values = get_args(hint)
+
+            if valid_values and value not in valid_values:
+                raise InvalidParamError(
+                    f"Invalid {param_name}: {value}. Must be one of: {', '.join(valid_values)}"
+                )
 
     def __repr__(self) -> str:
         # fmt: off
@@ -633,6 +652,12 @@ class PublicOntology:
         logging.info(f"{len(modified_entries)} entries were modified.")
 
         return new_entries, modified_entries
+
+
+class InvalidParamError(Exception):
+    """Custom exception for PublicOntology parameter validation errors."""
+
+    pass
 
 
 class PublicOntologyField:

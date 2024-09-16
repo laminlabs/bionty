@@ -23,7 +23,7 @@ class CellLine(PublicOntology):
         self,
         organism: Optional[Literal["all"]] = None,
         source: Optional[Literal["clo", "depmap"]] = None,
-        version: Optional[str] = None,
+        version: Optional[Literal["2022-03-21", "2024-Q2"]] = None,
         **kwargs,
     ) -> None:
         super().__init__(

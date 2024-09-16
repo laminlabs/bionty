@@ -20,7 +20,17 @@ class CellType(PublicOntology):
         self,
         organism: Optional[Literal["all"]] = None,
         source: Optional[Literal["cl"]] = None,
-        version: Optional[str] = None,
+        version: Optional[
+            Literal[
+                "2022-08-16",
+                "2023-02-15",
+                "2023-04-20",
+                "2023-08-24",
+                "2024-01-04",
+                "2024-02-13",
+                "2024-05-15",
+            ]
+        ] = None,
         **kwargs,
     ) -> None:
         super().__init__(

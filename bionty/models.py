@@ -23,6 +23,7 @@ import bionty.base as bionty_base
 from . import ids
 from ._bionty import encode_uid, lookup2kwargs
 from .base import PublicOntology
+from .base._public_ontology import InvalidParamError
 
 if TYPE_CHECKING:
     from pandas import DataFrame
@@ -394,6 +395,8 @@ class BioRecord(Record, HasParents, CanValidate):
             return getattr(bionty_base, cls.__name__)(
                 organism=organism, source=source_name, version=version
             )
+        except InvalidParamError as e:
+            raise ValueError(str(e)) from None
         except (AttributeError, ValueError):
             if source is None:
                 kwargs = {
