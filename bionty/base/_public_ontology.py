@@ -123,8 +123,9 @@ class PublicOntology:
                 valid_values = get_args(hint)
 
             if valid_values and value not in valid_values:
+                quoted_values = [f"'{v}'" for v in valid_values]
                 raise InvalidParamError(
-                    f"Invalid {param_name}: {value}. Must be one of: {', '.join(valid_values)}"
+                    f"Invalid {param_name}: '{value}'. Must be one of: {', '.join(quoted_values)}"
                 )
 
     def __repr__(self) -> str:
