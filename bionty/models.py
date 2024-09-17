@@ -278,6 +278,9 @@ class BioRecord(Record, HasParents, CanValidate):
             from ._bionty import get_source_record
 
             public = cls.public(organism=organism, source=source)
+            logger.info(
+                f"importing {cls.__name__} records from {public.source}, {public.version}"
+            )
             # TODO: consider StaticReference
             source_record = get_source_record(public, cls)  # type:ignore
             df = public.df().reset_index()
@@ -293,7 +296,14 @@ class BioRecord(Record, HasParents, CanValidate):
                 organism=organism,
                 source=source_record,
             )
-            ln.save(records, ignore_conflicts=ignore_conflicts)
+            if update:
+                logger.info(f"updating {len(records)} records...")
+                ln.save(records, ignore_conflicts=ignore_conflicts)
+            else:
+                new_records = [r for r in records if r._state.adding]
+                logger.info(f"saving {len(new_records)} new records...")
+                ln.save(new_records, ignore_conflicts=ignore_conflicts)
+            logger.success("import is completed!")
 
             # make sure source.in_db is correctly set based on the DB content
             check_source_in_db(registry=cls, source=source_record, update=update)

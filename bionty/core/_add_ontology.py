@@ -148,6 +148,9 @@ def add_ontology_from_df(
     source_record = get_source_record(public, registry)  # type:ignore
 
     if ontology_ids is None:
+        logger.info(
+            f"importing {registry.__name__} records from {public.source}, {public.version}"
+        )
         df_new = df_all = df
     else:
         new_ontology_ids, all_ontology_ids = get_new_ontology_ids(
@@ -178,17 +181,23 @@ def add_ontology_from_df(
     if source_record.in_db and not update:
         return
 
-    # do not create records from obsolete terms
     records = create_records(registry, df_new, source_record)
-    registry.objects.bulk_create(records, ignore_conflicts=ignore_conflicts)
+    new_records = [r for r in records if r._state.adding]
+    if ontology_ids is None:
+        logger.info(f"adding {len(new_records)} new records")
+    registry.objects.bulk_create(new_records, ignore_conflicts=ignore_conflicts)
 
     all_records = registry.filter(
         source=source_record
     ).all()  # need to update all_records after bulk_create
     link_records = create_link_records(registry, df_all, all_records)
-    ln.save(link_records, ignore_conflicts=ignore_conflicts)
+    new_link_records = [r for r in link_records if r._state.adding]
+    if ontology_ids is None:
+        logger.info(f"adding {len(new_link_records)} parents/children links")
+    ln.save(new_link_records, ignore_conflicts=ignore_conflicts)
 
     if ontology_ids is None:
+        logger.success("import is completed!")
         source_record.in_db = True
         source_record.save()
 
