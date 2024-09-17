@@ -240,6 +240,23 @@ class BioRecord(Record, HasParents, CanValidate):
         return Source.filter(entity=cls.__get_name_with_schema__(), **filters)
 
     @classmethod
+    def list_sources(
+        cls,
+        currently_used: bool | None = None,
+        in_db: bool | None = None,
+        organism: str | None = None,
+    ) -> QuerySet[Source]:
+        """List all sources of the registry.
+
+        Examples:
+            >>> bionty.Gene.list_sources()
+        """
+        logger.warning("`.list_sources()` is deprecated, use `.sources()`!'")
+        return cls.sources(
+            currently_used=currently_used, in_db=in_db, organism=organism
+        )
+
+    @classmethod
     def import_from_source(
         cls,
         source: Source | None = None,
