@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Dict, Iterable, Literal, Optional
 
 import pandas as pd
@@ -28,13 +30,10 @@ class Gene(PublicOntology):
 
     def __init__(
         self,
-        organism: Optional[
-            Literal["human", "mouse", "saccharomyces cerevisiae"]
-        ] = None,
-        source: Optional[Literal["ensembl"]] = None,
-        version: Optional[
-            Literal["release-109", "release-110", "release-111", "release-112"]
-        ] = None,
+        organism: Literal["human", "mouse", "saccharomyces cerevisiae"] | None = None,
+        source: Literal["ensembl"] | None = None,
+        version: Literal["release-109", "release-110", "release-111", "release-112"]
+        | None = None,
         **kwargs,
     ):
         super().__init__(
@@ -99,7 +98,7 @@ class EnsemblGene:
     def external_dbs(self):
         return pd.read_sql("SELECT * FROM external_db", con=self._engine)
 
-    def download_df(self, external_db_names: Optional[Dict] = None) -> pd.DataFrame:
+    def download_df(self, external_db_names: dict | None = None) -> pd.DataFrame:
         """Fetch gene table from Ensembl mysql database.
 
         Args:
@@ -214,7 +213,7 @@ class EnsemblGene:
 
         return df_res
 
-    def download_legacy_ids_df(self, df: pd.DataFrame, col: Optional[str] = None):
+    def download_legacy_ids_df(self, df: pd.DataFrame, col: str | None = None):
         col = "ensembl_gene_id" if col is None else col
         current_ids = tuple(df[col])
         results = pd.read_sql(

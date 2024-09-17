@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Literal, Optional
 
 from bionty.base._public_ontology import PublicOntology
@@ -18,9 +20,9 @@ class BioSample(PublicOntology):
 
     def __init__(
         self,
-        organism: Optional[Literal["all"]] = None,
-        source: Optional[Literal["ncbi"]] = None,
-        version: Optional[Literal["2023-09"]] = None,
+        organism: Literal["all"] | None = None,
+        source: Literal["ncbi"] | None = None,
+        version: Literal["2023-09"] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(source=source, version=version, organism=organism, **kwargs)

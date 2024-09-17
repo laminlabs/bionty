@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Literal, Optional
 
 from bionty.base._public_ontology import PublicOntology
@@ -27,26 +29,25 @@ class Phenotype(PublicOntology):
 
     def __init__(
         self,
-        organism: Optional[Literal["human", "mammalian", "zebrafish", "all"]] = None,
-        source: Optional[Literal["hp", "phe", "mp", "zp", "pato"]] = None,
-        version: Optional[
-            Literal[
-                "2023-05-18",
-                "2024-03-28",
-                "1.2",
-                "2022-12-17",
-                "2024-01-22",
-                "2024-04-18",
-                "2023-05-31",
-                "2024-02-07",
-                "2024-06-18",
-                "2023-01-27",
-                "2023-04-05",
-                "2023-06-17",
-                "2024-03-06",
-                "2024-04-26",
-            ]
-        ] = None,
+        organism: Literal["human", "mammalian", "zebrafish", "all"] | None = None,
+        source: Literal["hp", "phe", "mp", "zp", "pato"] | None = None,
+        version: Literal[
+            "2023-05-18",
+            "2024-03-28",
+            "1.2",
+            "2022-12-17",
+            "2024-01-22",
+            "2024-04-18",
+            "2023-05-31",
+            "2024-02-07",
+            "2024-06-18",
+            "2023-01-27",
+            "2023-04-05",
+            "2023-06-17",
+            "2024-03-06",
+            "2024-04-26",
+        ]
+        | None = None,
         **kwargs,
     ) -> None:
         super().__init__(

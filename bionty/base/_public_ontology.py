@@ -48,9 +48,9 @@ class PublicOntology:
         include_id_prefixes: dict[str, list[str]] | None = None,
         include_rel: str | None = None,
     ):
-        self._validate_param("organism", organism)
-        self._validate_param("source", source)
-        self._validate_param("version", version)
+        self._validate_args("organism", organism)
+        self._validate_args("source", source)
+        self._validate_args("version", version)
 
         try:
             self._fetch_sources()
@@ -108,13 +108,13 @@ class PublicOntology:
             except AttributeError:
                 pass
 
-    def _validate_param(self, param_name: str, value: str | None) -> None:
-        """Validates passed parameter values by comparing them against the typehints (Literals)."""
+    def _validate_args(self, param_name: str, value: str | None) -> None:
+        """Validates passed arguments by comparing them against the typehints (Literals)."""
         if value is not None:
             hint = self.__class__.__init__.__annotations__.get(param_name)
             valid_values = ()
 
-            if get_origin(hint) is Union:  # This handles Optional
+            if get_origin(hint) is Union:  # Handles | None which returns Union
                 for arg in get_args(hint):
                     if get_origin(arg) is Literal:
                         valid_values = get_args(arg)

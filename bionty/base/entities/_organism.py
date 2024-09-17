@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Literal, Optional
 
 import pandas as pd
@@ -20,21 +22,21 @@ class Organism(PublicOntology):
 
     def __init__(
         self,
-        organism: Optional[
-            Literal["vertebrates", "bacteria", "fungi", "metazoa", "plants", "all"]
-        ] = None,
-        source: Optional[Literal["ensembl", "ncbitaxon"]] = None,
-        version: Optional[
-            Literal[
-                "2023-06-20",
-                "release-57",
-                "release-108",
-                "release-109",
-                "release-110",
-                "release-111",
-                "release-112",
-            ]
-        ] = None,
+        organism: Literal[
+            "vertebrates", "bacteria", "fungi", "metazoa", "plants", "all"
+        ]
+        | None = None,
+        source: Literal["ensembl", "ncbitaxon"] | None = None,
+        version: Literal[
+            "2023-06-20",
+            "release-57",
+            "release-108",
+            "release-109",
+            "release-110",
+            "release-111",
+            "release-112",
+        ]
+        | None = None,
         **kwargs,
     ):
         super().__init__(organism=organism, source=source, version=version, **kwargs)

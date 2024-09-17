@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Literal, Optional
 
 from bionty.base._public_ontology import PublicOntology
@@ -22,11 +24,10 @@ class Drug(PublicOntology):
 
     def __init__(
         self,
-        organism: Optional[Literal["all"]] = None,
-        source: Optional[Literal["dron", "chebi"]] = None,
-        version: Optional[
-            Literal["2024-07-27", "2023-03-10", "2024-03-02", "2024-08-05"]
-        ] = None,
+        organism: Literal["all"] | None = None,
+        source: Literal["dron", "chebi"] | None = None,
+        version: Literal["2024-07-27", "2023-03-10", "2024-03-02", "2024-08-05"]
+        | None = None,
         **kwargs,
     ) -> None:
         super().__init__(
