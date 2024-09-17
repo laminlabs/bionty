@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, List, Tuple, overload
 
 import numpy as np
 from django.db import models
-from django.db.models import CASCADE, PROTECT
+from django.db.models import CASCADE, PROTECT, QuerySet
 from lamin_utils import logger
 from lnschema_core.models import (
     Artifact,
@@ -215,20 +215,20 @@ class BioRecord(Record, HasParents, CanValidate):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def list_source(
+    def sources(
         cls,
         currently_used: bool | None = None,
         in_db: bool | None = None,
         organism: str | None = None,
-    ) -> Source:
+    ) -> QuerySet[Source]:
         """Default source for the registry.
 
         Args:
             currently_used: Only returns currently used sources
 
         Examples:
-            >>> bionty.Gene.list_source()
-            >>> bionty.Gene.list_source(currently_used=True)
+            >>> bionty.Gene.sources()
+            >>> bionty.Gene.sources(currently_used=True)
         """
         filters = {}
         if currently_used is not None:
