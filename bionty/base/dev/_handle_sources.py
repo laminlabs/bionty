@@ -36,7 +36,7 @@ def reset_sources(confirm: bool = False) -> None:
             while answer not in ["y", "n"]:
                 answer = input(
                     "Are you sure that you want to reset your local bionty sources?"
-                    " [Y/N]? "
+                    " (y/n) "
                 ).lower()
         return answer == "y"
 
