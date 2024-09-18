@@ -1,5 +1,5 @@
-import json
-from pathlib import Path
+from __future__ import annotations
+
 from typing import Literal, Optional
 
 import pandas as pd
@@ -20,9 +20,9 @@ class BFXPipeline(PublicOntology):
 
     def __init__(
         self,
-        organism: Optional[Literal["all"]] = None,
-        source: Optional[Literal["lamin"]] = None,
-        version: Optional[str] = None,
+        organism: Literal["all"] | None = None,
+        source: Literal["lamin"] | None = None,
+        version: Literal["1.0.0"] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(source=source, version=version, organism=organism, **kwargs)

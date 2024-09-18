@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Literal, Optional
 
 from bionty.base._public_ontology import PublicOntology
@@ -21,9 +23,9 @@ class CellLine(PublicOntology):
 
     def __init__(
         self,
-        organism: Optional[Literal["all"]] = None,
-        source: Optional[Literal["clo", "depmap"]] = None,
-        version: Optional[str] = None,
+        organism: Literal["all"] | None = None,
+        source: Literal["clo", "depmap"] | None = None,
+        version: Literal["2022-03-21", "2024-Q2"] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(

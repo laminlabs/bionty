@@ -139,6 +139,9 @@ CellType:
       2024-05-15:
         url: http://purl.obolibrary.org/obo/cl/releases/2024-05-15/cl.owl
         md5: 8a8638a9e79567935793e5007704c650
+      2024-04-05:
+        url: http://purl.obolibrary.org/obo/cl/releases/2024-04-05/cl.owl
+        md5: ""
       2024-02-13:
         url: http://purl.obolibrary.org/obo/cl/releases/2024-02-13/cl.owl
         md5: d6d962b58c48f372c2c98b71e0833242
@@ -168,6 +171,9 @@ Tissue:
       2024-05-13:
         url: http://purl.obolibrary.org/obo/uberon/releases/2024-05-13/uberon.owl
         md5: dc473b764acfe765be31250c853ef23d
+      2024-03-22:
+        url: http://purl.obolibrary.org/obo/uberon/releases/2024-03-22/uberon.owl
+        md5: ""
       2024-02-20:
         url: http://purl.obolibrary.org/obo/uberon/releases/2024-02-20/uberon.owl
         md5: 2048667b5fdf93192384bdf53cafba18
@@ -194,6 +200,9 @@ Disease:
       2024-06-04:
         url: http://purl.obolibrary.org/obo/mondo/releases/2024-06-04/mondo.owl
         md5: c47e8edb894c01f2511dfe0751fbc428
+      2024-05-08:
+        url: http://purl.obolibrary.org/obo/mondo/releases/2024-05-08/mondo.owl
+        md5: ""
       2024-02-06:
         url: http://purl.obolibrary.org/obo/mondo/releases/2024-02-06/mondo.owl
         md5: 78914fa236773c5ea6605f7570df6245
@@ -252,6 +261,9 @@ ExperimentalFactor:
       3.66.0:
         url: http://www.ebi.ac.uk/efo/releases/v3.66.0/efo.owl
         md5: 6bd24217c740af7e1e771c1dabc9680b
+      3.65.0:
+        url: http://www.ebi.ac.uk/efo/releases/v3.65.0/efo.owl
+        md5: ""
       3.63.0:
         url: http://www.ebi.ac.uk/efo/releases/v3.63.0/efo.owl
         md5: 603e6f6981d53d501c5921aa3940b095

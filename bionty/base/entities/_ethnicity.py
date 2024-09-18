@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Literal, Optional
 
 from bionty.base._public_ontology import PublicOntology
@@ -18,9 +20,9 @@ class Ethnicity(PublicOntology):
 
     def __init__(
         self,
-        organism: Optional[Literal["human"]] = None,
-        source: Optional[Literal["hancestro"]] = None,
-        version: Optional[str] = None,
+        organism: Literal["human"] | None = None,
+        source: Literal["hancestro"] | None = None,
+        version: Literal["3.0"] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(

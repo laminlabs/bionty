@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Literal, Optional
 
 from bionty.base._public_ontology import PublicOntology
@@ -18,9 +20,20 @@ class Tissue(PublicOntology):
 
     def __init__(
         self,
-        organism: Optional[Literal["all"]] = None,
-        source: Optional[Literal["uberon"]] = None,
-        version: Optional[str] = None,
+        organism: Literal["all"] | None = None,
+        source: Literal["uberon"] | None = None,
+        version: Literal[
+            "2022-08-19",
+            "2023-02-14",
+            "2023-04-19",
+            "2023-09-05",
+            "2024-01-18",
+            "2024-02-20",
+            "2024-03-22",
+            "2024-05-13",
+            "2024-08-07",
+        ]
+        | None = None,
         **kwargs,
     ) -> None:
         super().__init__(

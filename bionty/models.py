@@ -23,6 +23,7 @@ import bionty.base as bionty_base
 from . import ids
 from ._bionty import encode_uid, lookup2kwargs
 from .base import PublicOntology
+from .base._public_ontology import InvalidParamError
 
 if TYPE_CHECKING:
     from pandas import DataFrame
@@ -150,7 +151,7 @@ class BioRecord(Record, HasParents, CanValidate):
     class Meta:
         abstract = True
 
-    source = models.ForeignKey(Source, PROTECT, null=True)
+    source = models.ForeignKey(Source, PROTECT, null=True, related_name="+")
     """:class:`~bionty.Source` this record associates with."""
 
     def __init__(self, *args, **kwargs):
@@ -277,6 +278,9 @@ class BioRecord(Record, HasParents, CanValidate):
             from ._bionty import get_source_record
 
             public = cls.public(organism=organism, source=source)
+            logger.info(
+                f"importing {cls.__name__} records from {public.source}, {public.version}"
+            )
             # TODO: consider StaticReference
             source_record = get_source_record(public, cls)  # type:ignore
             df = public.df().reset_index()
@@ -292,7 +296,14 @@ class BioRecord(Record, HasParents, CanValidate):
                 organism=organism,
                 source=source_record,
             )
-            ln.save(records, ignore_conflicts=ignore_conflicts)
+            if update:
+                logger.info(f"updating {len(records)} records...")
+                ln.save(records, ignore_conflicts=ignore_conflicts)
+            else:
+                new_records = [r for r in records if r._state.adding]
+                logger.info(f"saving {len(new_records)} new records...")
+                ln.save(new_records, ignore_conflicts=ignore_conflicts)
+            logger.success("import is completed!")
 
             # make sure source.in_db is correctly set based on the DB content
             check_source_in_db(registry=cls, source=source_record, update=update)
@@ -394,6 +405,8 @@ class BioRecord(Record, HasParents, CanValidate):
             return getattr(bionty_base, cls.__name__)(
                 organism=organism, source=source_name, version=version
             )
+        except InvalidParamError as e:
+            raise ValueError(str(e)) from None
         except (AttributeError, ValueError):
             if source is None:
                 kwargs = {

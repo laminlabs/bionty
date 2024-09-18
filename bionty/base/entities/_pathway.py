@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Literal, Optional
 
 from bionty.base._public_ontology import PublicOntology
@@ -21,9 +23,9 @@ class Pathway(PublicOntology):
 
     def __init__(
         self,
-        organism: Optional[Literal["all"]] = None,
-        source: Optional[Literal["go", "pw"]] = None,
-        version: Optional[str] = None,
+        organism: Literal["all"] | None = None,
+        source: Literal["go", "pw"] | None = None,
+        version: Literal["2023-05-10", "2024-06-17"] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(source=source, version=version, organism=organism, **kwargs)

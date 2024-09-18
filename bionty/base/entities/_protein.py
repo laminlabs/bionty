@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Literal, Optional
 
 from bionty.base._public_ontology import PublicOntology
@@ -18,9 +20,9 @@ class Protein(PublicOntology):
 
     def __init__(
         self,
-        organism: Optional[Literal["human", "mouse"]] = None,
-        source: Optional[Literal["uniprot"]] = None,
-        version: Optional[str] = None,
+        organism: Literal["human", "mouse"] | None = None,
+        source: Literal["uniprot"] | None = None,
+        version: Literal["2023-02", "2023-03", "2024-03"] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(source=source, version=version, organism=organism, **kwargs)

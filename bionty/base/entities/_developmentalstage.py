@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Literal, Optional
 
 from bionty.base._public_ontology import PublicOntology
@@ -18,9 +20,9 @@ class DevelopmentalStage(PublicOntology):
 
     def __init__(
         self,
-        organism: Optional[Literal["human", "mouse"]] = None,
-        source: Optional[Literal["hsapdv", "mmusdv"]] = None,
-        version: Optional[str] = None,
+        organism: Literal["human", "mouse"] | None = None,
+        source: Literal["hsapdv", "mmusdv"] | None = None,
+        version: Literal["2020-03-10", "2024-05-28"] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(

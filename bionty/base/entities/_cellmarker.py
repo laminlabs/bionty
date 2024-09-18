@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Literal, Optional
 
 from bionty.base._public_ontology import PublicOntology
@@ -18,9 +20,9 @@ class CellMarker(PublicOntology):
 
     def __init__(
         self,
-        organism: Optional[Literal["human", "mouse"]] = None,
-        source: Optional[Literal["cellmarker"]] = None,
-        version: Optional[str] = None,
+        organism: Literal["human", "mouse"] | None = None,
+        source: Literal["cellmarker"] | None = None,
+        version: Literal["2.0"] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(source=source, version=version, organism=organism, **kwargs)

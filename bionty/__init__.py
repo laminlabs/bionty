@@ -1,5 +1,7 @@
 """Registries for basic biological entities, coupled to public ontologies.
 
+.. _bionty-overview:
+
 Overview
 ========
 
@@ -29,15 +31,21 @@ Import it by running:
 
 See {mod}`bionty.base` for details.
 
+.. _bionty-installation:
+
 Installation
 ============
 
 >>> pip install 'lamindb[bionty]'
 
+.. _bionty-setup:
+
 Setup
 =====
 
 >>> lamin init --storage <storage_name> --schema bionty
+
+.. _bionty-quickstart:
 
 Quickstart
 ==========
@@ -78,6 +86,8 @@ Manage synonyms:
 
    - :doc:`docs:public-ontologies`
    - :doc:`docs:bio-registries`
+
+.. _bionty-api:
 
 API
 ===
@@ -135,7 +145,7 @@ Bionty base:
 
 """
 
-__version__ = "0.49.1"
+__version__ = "0.50.1"
 
 from . import base, ids
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Dict, Literal, Optional
 
 import pandas as pd
@@ -21,9 +23,10 @@ class ExperimentalFactor(PublicOntology):
 
     def __init__(
         self,
-        organism: Optional[Literal["all"]] = None,
-        source: Optional[Literal["efo"]] = None,
-        version: Optional[str] = None,
+        organism: Literal["all"] | None = None,
+        source: Literal["efo"] | None = None,
+        version: Literal["3.48.0", "3.57.0", "3.62.0", "3.63.0", "3.65.0", "3.66.0"]
+        | None = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -56,7 +59,7 @@ class ExperimentalFactor(PublicOntology):
 def _parse_efo_term(
     term_id: str,
     ontology: Ontology,
-) -> Dict:
+) -> dict:
     """Parse readout attributes from EFO."""
     readout_terms = {
         "assay": "OBI:0000070",
