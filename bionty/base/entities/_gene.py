@@ -43,8 +43,28 @@ class Gene(PublicOntology):
             **kwargs,
         )
 
-    def map_legacy_ids(self, values: Iterable):
-        """Convert legacy ids to current ids."""
+    def map_legacy_ids(
+        self, values: Iterable
+    ) -> dict[str, dict[str, str] | dict[str, list[str]] | list[str]]:
+        """Convert legacy ids to current IDs.
+
+        This only works if the legacy ensembl ID has a reference to the current ensembl ID.
+        It is possible that the HGNC IDs are identical, and the genomic locations are very close,
+        but a mapping may still be absent.
+
+        Args:
+            values: Legacy ensemble gene IDs of any version
+
+        Returns:
+            A nested dictionary with keys:
+            - mapped: Dictionary of successfully mapped old ensembl IDs to new ensembl IDs
+            - ambiguous: Dictionary of ambigiously mapped old ensembl IDs to new ensembl IDs
+            - unmapped: List of unmapped ensembl IDs
+
+        Examples:
+            >>> gene = bt.base.Gene()
+            >>> gene.map_legacy_genes(["ENSG00000260150", "ENSG00000260587"])
+        """
         if self.source != "ensembl":
             raise NotImplementedError
         if isinstance(values, str):
