@@ -579,6 +579,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:gene`.
 
         Bulk create Gene records via :meth:`~docs:lamindb.core.Record.from_values`.
+        Map legacy ensembl IDs to current ensembl IDs using :meth:`bionty.base.Gene.map_legacy_ids`.
 
     Examples:
         >>> record = bionty.Gene.from_source(symbol="TCF7", organism="human")
