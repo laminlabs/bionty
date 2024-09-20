@@ -430,7 +430,7 @@ class BioRecord(Record, HasParents, CanValidate):
         Notes:
             For more info, see tutorial :doc:`docs:bionty`
 
-            Bulk create protein records via :meth:`~docs:lamindb.core.Record.from_values`.
+            Bulk create records via :meth:`~docs:lamindb.core.Record.from_values`.
 
         Examples:
             Create a record by passing a field value:
@@ -474,7 +474,7 @@ class BioRecord(Record, HasParents, CanValidate):
         Notes:
             For more info, see tutorial :doc:`docs:bionty`
 
-            Bulk create protein records via :meth:`~docs:lamindb.core.Record.from_values`.
+            Bulk create records via :meth:`~docs:lamindb.core.Record.from_values`.
 
         Examples:
             Create a record by passing a field value:
@@ -666,7 +666,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:protein`.
 
-        Bulk create Protein records via :meth:`~docs:lamindb.core.Record.from_values`.
+        Bulk create records via :meth:`~docs:lamindb.core.Record.from_values`.
 
     Examples:
         >>> record = bionty.Protein.from_source(name="Synaptotagmin-15B", organism="human")
