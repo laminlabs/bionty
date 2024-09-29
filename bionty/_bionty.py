@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 def create_or_get_organism_record(
-    organism: str | Record | None, registry: type[Record]
+    organism: str | Record | None, registry: type[Record], field: str | None = None
 ) -> Record | None:
     # return None if an Record doesn't have organism field
     organism_record = None
@@ -49,6 +49,11 @@ def create_or_get_organism_record(
                     organism_record = None
 
         if organism_record is None:
+            if hasattr(registry, "_ontology_id_field") and field in {
+                registry._ontology_id_field,
+                "uid",
+            }:
+                return None
             raise AssertionError(
                 f"{registry.__name__} requires to specify a organism name via `organism=` or `bionty.settings.organism=`!"
             )
