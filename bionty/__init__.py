@@ -147,27 +147,28 @@ Bionty base:
 
 __version__ = "0.50.2"
 
+from lamindb_setup.core._setup_bionty_sources import (
+    load_bionty_sources as _load_bionty_sources,
+)
+
 from . import base, ids
 
 base.sync_sources()
 
-# from lamindb_setup._check_setup import InstanceNotSetupError as _InstanceNotSetupError
 from lamindb_setup._check_setup import _check_instance_setup
 
-# def __getattr__(name):
-#     raise _InstanceNotSetupError()
 
-
-# trigger instance loading if users
-# want to access attributes
 def __getattr__(name):
-    if name not in {"models"}:
-        _check_instance_setup(from_lamindb=True)
+    if name != "models":
+        _check_instance_setup(from_module="bionty")
     return globals()[name]
 
 
 if _check_instance_setup():
-    import lamindb  # this is needed as even the Record base class is defined in lamindb
+    import lamindb as _lamindb  # this is needed as even the Record base class is defined in lamindb
+    from lamindb_setup import settings as _setup_settings
+
+    _load_bionty_sources(_setup_settings.instance)
 
     del __getattr__  # delete so that imports work out
     from .core._settings import settings
