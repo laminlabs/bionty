@@ -151,18 +151,12 @@ from . import base, ids
 
 base.sync_sources()
 
-# from lamindb_setup._check_setup import InstanceNotSetupError as _InstanceNotSetupError
 from lamindb_setup._check_setup import _check_instance_setup
 
-# def __getattr__(name):
-#     raise _InstanceNotSetupError()
 
-
-# trigger instance loading if users
-# want to access attributes
 def __getattr__(name):
     if name not in {"models"}:
-        _check_instance_setup(from_lamindb=True)
+        _check_instance_setup(from_lamindb=True, from_module="bionty")
     return globals()[name]
 
 
