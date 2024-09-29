@@ -49,10 +49,10 @@ def create_or_get_organism_record(
                     organism_record = None
 
         if organism_record is None:
-            if (
-                hasattr(registry, "_ontology_id_field")
-                and field == registry._ontology_id_field
-            ):
+            if hasattr(registry, "_ontology_id_field") and field in {
+                registry._ontology_id_field,
+                "uid",
+            }:
                 return None
             raise AssertionError(
                 f"{registry.__name__} requires to specify a organism name via `organism=` or `bionty.settings.organism=`!"
