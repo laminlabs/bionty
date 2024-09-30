@@ -145,7 +145,7 @@ Bionty base:
 
 """
 
-__version__ = "0.51.0"
+__version__ = "0.51.1"
 
 from lamindb_setup.core._setup_bionty_sources import (
     load_bionty_sources as _load_bionty_sources,
