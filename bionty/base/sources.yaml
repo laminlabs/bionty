@@ -258,6 +258,9 @@ Disease:
 ExperimentalFactor:
   efo:
     all:
+      3.70.0:
+        url: http://www.ebi.ac.uk/efo/releases/v3.70.0/efo.owl
+        md5: ""
       3.66.0:
         url: http://www.ebi.ac.uk/efo/releases/v3.66.0/efo.owl
         md5: 6bd24217c740af7e1e771c1dabc9680b
