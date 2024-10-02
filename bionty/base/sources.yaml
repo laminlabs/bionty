@@ -259,7 +259,7 @@ ExperimentalFactor:
   efo:
     all:
       3.70.0:
-        url: s3://bionty-assets/efo_3.70.0.owl
+        url: http://www.ebi.ac.uk/efo/releases/v3.70.0/efo.owl # Manually fixed following https://github.com/EBISPOT/efo/issues/2264#issuecomment-2357942127
         md5: ""
       3.66.0:
         url: http://www.ebi.ac.uk/efo/releases/v3.66.0/efo.owl
