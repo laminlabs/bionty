@@ -1,54 +1,21 @@
-"""Registries for basic biological entities, coupled to public ontologies.
+"""Basic biological entities, coupled to public ontologies [`source <https://github.com/laminlabs/bionty/blob/main/bionty/models.py>`__].
 
-.. _bionty-overview:
-
-Overview
-========
-
-- Create records from entries in public ontologies using `.from_source()`.
-- Access full underlying public ontologies via `.public()` to search & bulk-create records.
-- Create in-house ontologies by using hierarchical relationships among records (`.parents`).
+- Create records from public ontologies using `.from_source()`.
+- Access public ontologies via `.public()` to search & bulk-create records.
+- Use hierarchical relationships among records (`.parents`).
 - Use `.synonyms` and `.abbr` to manage synonyms.
-
-All registries inherit from :class:`~lamindb.core.CanValidate` &
-:class:`~lamindb.core.HasParents` to standardize, validate & annotate data, and from
-:class:`~lamindb.core.Record` for query & search.
 
 .. dropdown:: How to ensure reproducibility across different versions of public ontologies?
 
-   It's important to track versions of external data dependencies.
-
-   `bionty` manages it under the hood:
+   `bionty` manages versions of external data dependencies.
 
    - Versions of ontology sources are auto-tracked in :class:`Source`.
    - Records are indexed by universal ids, created by hashing `ontology_id` for portability across databases.
 
-`bionty.base` is the read-only interface for public ontology that underlies bionty and doesn't require a lamindb instance.
+Install and mount `bionty` in a new instance:
 
-Import it by running:
-
->>> import bionty.base as bt_base
-
-See {mod}`bionty.base` for details.
-
-.. _bionty-installation:
-
-Installation
-============
-
->>> pip install 'lamindb[bionty]'
-
-.. _bionty-setup:
-
-Setup
-=====
-
+>>> pip install 'bionty'
 >>> lamin init --storage <storage_name> --schema bionty
-
-.. _bionty-quickstart:
-
-Quickstart
-==========
 
 Import bionty:
 
@@ -87,16 +54,7 @@ Manage synonyms:
    - :doc:`docs:public-ontologies`
    - :doc:`docs:bio-registries`
 
-.. _bionty-api:
-
-API
-===
-
-Import the package::
-
-   import bionty as bt
-
-Basic biological registries:
+Registries:
 
 .. autosummary::
    :toctree: .
@@ -129,18 +87,12 @@ Ontology versions:
 
    Source
 
-Developer API:
+Submodules:
 
 .. autosummary::
    :toctree: .
 
    core
-
-Bionty base:
-
-.. autosummary::
-   :toctree: .
-
    base
 
 """
