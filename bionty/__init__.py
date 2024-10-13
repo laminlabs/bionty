@@ -41,12 +41,10 @@ Manage synonyms:
 >>> cell_type_new.add_synonyms(["my cell type", "my cell"])
 >>> cell_type_new.set_abbr("MCT")
 
-.. note::
+Detailed guides:
 
-   Read the guides:
-
-   - :doc:`docs:public-ontologies`
-   - :doc:`docs:bio-registries`
+- :doc:`docs:public-ontologies`
+- :doc:`docs:bio-registries`
 
 Registries:
 
