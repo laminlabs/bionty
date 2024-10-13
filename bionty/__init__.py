@@ -4,13 +4,7 @@
 - Access public ontologies via `.public()` to search & bulk-create records.
 - Use hierarchical relationships among records (`.parents`).
 - Use `.synonyms` and `.abbr` to manage synonyms.
-
-.. dropdown:: How to ensure reproducibility across different versions of public ontologies?
-
-   `bionty` manages versions of external data dependencies.
-
-   - Versions of ontology sources are auto-tracked in :class:`Source`.
-   - Records are indexed by universal ids, created by hashing `ontology_id` for portability across databases.
+- Manage ontology versions.
 
 Install and mount `bionty` in a new instance:
 
