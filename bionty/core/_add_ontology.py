@@ -105,7 +105,6 @@ def create_link_records(
 def check_source_in_db(
     registry: Type[BioRecord],
     source: Source,
-    update: bool = False,
     n_all: int = None,
     n_in_db: int = None,
 ) -> None:
@@ -119,11 +118,6 @@ def check_source_in_db(
             # make sure in_db is set to True if all records are in the database
             source.in_db = True
             source.save()
-            if not update:
-                logger.warning(
-                    f"{registry.__name__} records from source ({source.name}, {source.version}) are already in the database!\n   → pass `update=True` to update the records"
-                )
-                return
         else:
             source.in_db = False
             source.save()
@@ -135,7 +129,6 @@ def add_ontology_from_df(
     organism: Union[str, Record, None] = None,
     source: Optional[Source] = None,
     ignore_conflicts: bool = True,
-    update: bool = False,
 ):
     import lamindb as ln
 
@@ -173,13 +166,9 @@ def add_ontology_from_df(
     check_source_in_db(
         registry=registry,
         source=source_record,
-        update=update,
         n_all=n_all,
         n_in_db=n_in_db,
     )
-
-    if source_record.in_db and not update:
-        return
 
     records = create_records(registry, df_new, source_record)
     new_records = [r for r in records if r._state.adding]
@@ -207,7 +196,6 @@ def add_ontology(
     organism: Union[str, Record, None] = None,
     source: Optional[Source] = None,
     ignore_conflicts: bool = True,
-    update: bool = False,
 ):
     registry = records[0]._meta.model
     source = source or records[0].source
@@ -220,5 +208,4 @@ def add_ontology(
         organism=organism,
         source=source,
         ignore_conflicts=ignore_conflicts,
-        update=update,
     )
