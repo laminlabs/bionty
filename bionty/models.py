@@ -246,7 +246,6 @@ class BioRecord(Record, HasParents, CanValidate):
         ontology_ids: list[str] | None = None,
         organism: str | Record | None = None,
         ignore_conflicts: bool = True,
-        update: bool = False,
     ):
         """Bulk save records from a dataframe.
 
@@ -270,7 +269,6 @@ class BioRecord(Record, HasParents, CanValidate):
                 organism=organism,
                 source=source,
                 ignore_conflicts=ignore_conflicts,
-                update=update,
             )
         else:
             import lamindb as ln
@@ -296,17 +294,14 @@ class BioRecord(Record, HasParents, CanValidate):
                 organism=organism,
                 source=source_record,
             )
-            if update:
-                logger.info(f"updating {len(records)} records...")
-                ln.save(records, ignore_conflicts=ignore_conflicts)
-            else:
-                new_records = [r for r in records if r._state.adding]
-                logger.info(f"saving {len(new_records)} new records...")
-                ln.save(new_records, ignore_conflicts=ignore_conflicts)
+
+            new_records = [r for r in records if r._state.adding]
+            logger.info(f"saving {len(new_records)} new records...")
+            ln.save(new_records, ignore_conflicts=ignore_conflicts)
             logger.success("import is completed!")
 
             # make sure source.in_db is correctly set based on the DB content
-            check_source_in_db(registry=cls, source=source_record, update=update)
+            check_source_in_db(registry=cls, source=source_record)
 
     @classmethod
     def add_source(cls, source: Source, currently_used=True) -> Source:
