@@ -215,31 +215,6 @@ class BioRecord(Record, HasParents, CanValidate):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def list_source(
-        cls,
-        currently_used: bool | None = None,
-        in_db: bool | None = None,
-        organism: str | None = None,
-    ) -> Source:
-        """Default source for the registry.
-
-        Args:
-            currently_used: Only returns currently used sources
-
-        Examples:
-            >>> bionty.Gene.list_source()
-            >>> bionty.Gene.list_source(currently_used=True)
-        """
-        filters = {}
-        if currently_used is not None:
-            filters["currently_used"] = currently_used
-        if in_db is not None:
-            filters["in_db"] = in_db
-        if organism is not None:
-            filters["organism"] = organism  # type:ignore
-        return Source.filter(entity=cls.__get_name_with_schema__(), **filters)
-
-    @classmethod
     def import_from_source(
         cls,
         source: Source | None = None,
