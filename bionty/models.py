@@ -1479,6 +1479,9 @@ class FeatureSetGene(Record, LinkORM):
     )
     gene: Gene = models.ForeignKey("Gene", PROTECT, related_name="+")
 
+    class Meta:
+        unique_together = ("featureset", "gene")
+
 
 class FeatureSetProtein(Record, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
@@ -1487,6 +1490,9 @@ class FeatureSetProtein(Record, LinkORM):
         "lnschema_core.FeatureSet", CASCADE, related_name="+"
     )
     protein: Protein = models.ForeignKey("Protein", PROTECT, related_name="+")
+
+    class Meta:
+        unique_together = ("featureset", "protein")
 
 
 class FeatureSetCellMarker(Record, LinkORM):
@@ -1498,6 +1504,9 @@ class FeatureSetCellMarker(Record, LinkORM):
     # follow the .lower() convention in link models
     cellmarker: CellMarker = models.ForeignKey("CellMarker", PROTECT, related_name="+")
 
+    class Meta:
+        unique_together = ("featureset", "cellmarker")
+
 
 class FeatureSetPathway(Record, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
@@ -1506,6 +1515,9 @@ class FeatureSetPathway(Record, LinkORM):
         "lnschema_core.FeatureSet", CASCADE, related_name="+"
     )
     pathway: Pathway = models.ForeignKey("Pathway", PROTECT, related_name="+")
+
+    class Meta:
+        unique_together = ("featureset", "pathway")
 
 
 class ArtifactOrganism(Record, LinkORM, TracksRun):
@@ -1522,6 +1534,9 @@ class ArtifactOrganism(Record, LinkORM, TracksRun):
     label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
     feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
 
+    class Meta:
+        unique_together = ("artifact", "organism", "feature")
+
 
 class ArtifactGene(Record, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
@@ -1530,8 +1545,11 @@ class ArtifactGene(Record, LinkORM, TracksRun):
     feature: Feature = models.ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactgene"
     )
-    gene_ref_is_symbol: bool | None = models.BooleanField(null=True, default=None)
+    label_ref_is_symbol: bool | None = models.BooleanField(null=True, default=None)
     feature_ref_is_symbol: bool | None = models.BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "gene", "feature")
 
 
 class ArtifactProtein(Record, LinkORM, TracksRun):
@@ -1547,6 +1565,9 @@ class ArtifactProtein(Record, LinkORM, TracksRun):
     )
     label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
     feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "protein", "feature")
 
 
 class ArtifactCellMarker(Record, LinkORM, TracksRun):
@@ -1568,6 +1589,9 @@ class ArtifactCellMarker(Record, LinkORM, TracksRun):
     label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
     feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
 
+    class Meta:
+        unique_together = ("artifact", "cellmarker", "feature")
+
 
 class ArtifactTissue(Record, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
@@ -1580,6 +1604,9 @@ class ArtifactTissue(Record, LinkORM, TracksRun):
     )
     label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
     feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "tissue", "feature")
 
 
 class ArtifactCellType(Record, LinkORM, TracksRun):
@@ -1597,6 +1624,9 @@ class ArtifactCellType(Record, LinkORM, TracksRun):
     label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
     feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
 
+    class Meta:
+        unique_together = ("artifact", "celltype", "feature")
+
 
 class ArtifactDisease(Record, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
@@ -1611,6 +1641,9 @@ class ArtifactDisease(Record, LinkORM, TracksRun):
     )
     label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
     feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "disease", "feature")
 
 
 class ArtifactCellLine(Record, LinkORM, TracksRun):
@@ -1627,6 +1660,9 @@ class ArtifactCellLine(Record, LinkORM, TracksRun):
     )
     label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
     feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "cellline", "feature")
 
 
 class ArtifactPhenotype(Record, LinkORM, TracksRun):
@@ -1647,6 +1683,9 @@ class ArtifactPhenotype(Record, LinkORM, TracksRun):
     label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
     feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
 
+    class Meta:
+        unique_together = ("artifact", "phenotype", "feature")
+
 
 class ArtifactPathway(Record, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
@@ -1661,6 +1700,9 @@ class ArtifactPathway(Record, LinkORM, TracksRun):
     )
     label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
     feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "pathway", "feature")
 
 
 class ArtifactExperimentalFactor(Record, LinkORM, TracksRun):
@@ -1680,6 +1722,9 @@ class ArtifactExperimentalFactor(Record, LinkORM, TracksRun):
     )
     label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
     feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "experimentalfactor", "feature")
 
 
 class ArtifactDevelopmentalStage(Record, LinkORM, TracksRun):
@@ -1701,6 +1746,9 @@ class ArtifactDevelopmentalStage(Record, LinkORM, TracksRun):
     label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
     feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
 
+    class Meta:
+        unique_together = ("artifact", "developmentalstage", "feature")
+
 
 class ArtifactEthnicity(Record, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
@@ -1719,6 +1767,9 @@ class ArtifactEthnicity(Record, LinkORM, TracksRun):
     )
     label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
     feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "ethnicity", "feature")
 
 
 # backward compat
