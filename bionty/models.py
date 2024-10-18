@@ -1545,8 +1545,8 @@ class ArtifactGene(Record, LinkORM, TracksRun):
     feature: Feature = models.ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactgene"
     )
-    label_ref_is_symbol: bool | None = models.BooleanField(null=True, default=None)
-    feature_ref_is_symbol: bool | None = models.BooleanField(null=True, default=None)
+    label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
 
     class Meta:
         unique_together = ("artifact", "gene", "feature")
