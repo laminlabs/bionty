@@ -436,10 +436,13 @@ class BioRecord(Record, HasParents, CanValidate):
             else:
                 return results
 
-    # deprecated
+    from lamindb_setup.core._deprecated import deprecated
+
+    @deprecated(".from_source()")
     @classmethod
     def from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
-        """Create a record or records from public reference based on a single field value.
+        """:meta private:
+        Create a record or records from public reference based on a single field value.
 
         Notes:
             For more info, see tutorial :doc:`docs:bionty`
@@ -450,9 +453,7 @@ class BioRecord(Record, HasParents, CanValidate):
             Create a record by passing a field value:
 
             >>> record = bionty.Gene.from_public(symbol="TCF7", organism="human")
-
         """
-        logger.warning("`.from_public()` is deprecated, use `.from_source()`!'")
         return cls.from_source(*args, **kwargs)
 
     def save(self, *args, **kwargs) -> BioRecord:
