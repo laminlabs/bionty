@@ -397,7 +397,13 @@ class BioRecord(Record, HasParents, CanValidate):
         logger.warning("`.from_public()` is deprecated, use `.from_source()`!'")
         return cls.from_source(*args, **kwargs)
 
-    from_public = _from_public
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        # Conditionally add from_public to the subclass
+        import sys
+
+        if "sphinx" not in sys.modules:
+            cls.from_public = cls._from_public
 
     @classmethod
     def from_source(
