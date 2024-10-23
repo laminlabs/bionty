@@ -441,7 +441,10 @@ class BioRecord(Record, HasParents, CanValidate):
     @deprecated(".from_source()")
     @classmethod
     def from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
-        """:meta private:
+        """Deprecated.
+
+        :meta private:
+
         Create a record or records from public reference based on a single field value.
 
         Notes:
