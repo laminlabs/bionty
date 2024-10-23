@@ -441,7 +441,7 @@ class BioRecord(Record, HasParents, CanValidate):
     @deprecated(".from_source()")
     @classmethod
     def from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
-        """Deprecated.
+        """:noindex:  # noqa: D415.
 
         :meta private:
 
