@@ -436,26 +436,12 @@ class BioRecord(Record, HasParents, CanValidate):
             else:
                 return results
 
-    from lamindb_setup.core._deprecated import deprecated
-
-    @deprecated(".from_source()")
     @classmethod
     def from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
-        """:noindex:  # noqa: D415.
+        """Test.
 
         :meta private:
 
-        Create a record or records from public reference based on a single field value.
-
-        Notes:
-            For more info, see tutorial :doc:`docs:bionty`
-
-            Bulk create records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
-
-        Examples:
-            Create a record by passing a field value:
-
-            >>> record = bionty.Gene.from_public(symbol="TCF7", organism="human")
         """
         return cls.from_source(*args, **kwargs)
 
