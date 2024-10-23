@@ -214,6 +214,12 @@ class BioRecord(Record, HasParents, CanValidate):
 
         super().__init__(*args, **kwargs)
 
+    def __getattr__(cls, name):
+        """Forwards deprecated methods."""
+        if name == "from_public":
+            return cls.from_source  # Delegate old method calls to the private method
+        raise AttributeError(f"'{cls.__name__}' object has no attribute '{name}'")
+
     @classmethod
     def import_from_source(
         cls,
@@ -435,15 +441,6 @@ class BioRecord(Record, HasParents, CanValidate):
                 return None
             else:
                 return results
-
-    @classmethod
-    def from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
-        """Test.
-
-        :meta private:
-
-        """
-        return cls.from_source(*args, **kwargs)
 
     def save(self, *args, **kwargs) -> BioRecord:
         """Save the record and its parents recursively."""
