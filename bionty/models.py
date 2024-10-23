@@ -215,11 +215,6 @@ class BioRecord(Record, HasParents, CanValidate):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def __dir__(cls):
-        """Customize the attributes listed by dir() and hide from_public from docs."""
-        return [item for item in super().__dir__() if item != "from_public"]
-
-    @classmethod
     def import_from_source(
         cls,
         source: Source | None = None,
@@ -396,21 +391,13 @@ class BioRecord(Record, HasParents, CanValidate):
                 source = Source.filter(**kwargs).first()
             return StaticReference(source)
 
-    # deprecated
+    # deprecated in favor of from_source
     @classmethod
-    def from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
-        """Create a record or records from public reference based on a single field value.
-
-        Notes:
-            For more info, see tutorial :doc:`docs:bionty`
-            Bulk create records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
-
-        Examples:
-            Create a record by passing a field value:
-            >>> record = bionty.Gene.from_public(symbol="TCF7", organism="human").
-        """
+    def _from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
         logger.warning("`.from_public()` is deprecated, use `.from_source()`!'")
         return cls.from_source(*args, **kwargs)
+
+    from_public = _from_public
 
     @classmethod
     def from_source(
