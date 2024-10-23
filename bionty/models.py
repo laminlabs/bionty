@@ -217,7 +217,10 @@ class BioRecord(Record, HasParents, CanValidate):
     def __getattr__(cls, name):
         """Forwards deprecated methods."""
         if name == "from_public":
-            return cls.from_source  # Delegate old method calls to the private method
+            logger.warning(
+                "`.from_public()` is deprecated and will be removed in a future version. Use `.from_source()` instead!'"
+            )
+            return cls.from_source
         raise AttributeError(f"'{cls.__name__}' object has no attribute '{name}'")
 
     @classmethod
