@@ -391,17 +391,19 @@ class BioRecord(Record, HasParents, CanValidate):
                 source = Source.filter(**kwargs).first()
             return StaticReference(source)
 
-    # deprecated in favor of from_source
     @classmethod
     def _from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
-        logger.warning("`.from_public()` is deprecated, use `.from_source()`!'")
+        """Deprecated in favor of `from_source`."""
+        logger.warning(
+            "`.from_public()` is deprecated and will be removed in a future version. Use `.from_source()` instead!"
+        )
         return cls.from_source(*args, **kwargs)
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
-        # Conditionally add from_public to the subclass
         import sys
 
+        # Deprecated methods
         if "sphinx" not in sys.modules:
             cls.from_public = cls._from_public
 
