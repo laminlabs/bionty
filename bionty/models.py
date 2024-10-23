@@ -392,6 +392,22 @@ class BioRecord(Record, HasParents, CanValidate):
             return StaticReference(source)
 
     @classmethod
+    def _from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
+        """Deprecated in favor of `from_source`."""
+        logger.warning(
+            "`.from_public()` is deprecated and will be removed in a future version. Use `.from_source()` instead!"
+        )
+        return cls.from_source(*args, **kwargs)
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        import sys
+
+        # Deprecated methods
+        if "sphinx" not in sys.modules:
+            cls.from_public = cls._from_public
+
+    @classmethod
     def from_source(
         cls, *, mute: bool = False, **kwargs
     ) -> BioRecord | list[BioRecord] | None:
@@ -435,25 +451,6 @@ class BioRecord(Record, HasParents, CanValidate):
                 return None
             else:
                 return results
-
-    # deprecated
-    @classmethod
-    def from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
-        """Create a record or records from public reference based on a single field value.
-
-        Notes:
-            For more info, see tutorial :doc:`docs:bionty`
-
-            Bulk create records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
-
-        Examples:
-            Create a record by passing a field value:
-
-            >>> record = bionty.Gene.from_public(symbol="TCF7", organism="human")
-
-        """
-        logger.warning("`.from_public()` is deprecated, use `.from_source()`!'")
-        return cls.from_source(*args, **kwargs)
 
     def save(self, *args, **kwargs) -> BioRecord:
         """Save the record and its parents recursively."""
