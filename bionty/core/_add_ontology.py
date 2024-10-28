@@ -1,13 +1,17 @@
-from typing import Iterable, List, Optional, Set, Tuple, Type, Union
+from __future__ import annotations
 
-import pandas as pd
+from typing import TYPE_CHECKING, Iterable, List, Optional, Set, Tuple, Type, Union
+
 from lamin_utils import logger
-from lnschema_core.models import Record
 
-from bionty.models import BioRecord, Source
+if TYPE_CHECKING:
+    import pandas as pd
+    from lnschema_core.models import Record
+
+    from bionty.models import BioRecord, Source
 
 
-def get_all_ancestors(df: pd.DataFrame, ontology_ids: Iterable[str]) -> Set[str]:
+def get_all_ancestors(df: pd.DataFrame, ontology_ids: Iterable[str]) -> set[str]:
     ancestors = set()
     stack = list(ontology_ids)
     while stack:
@@ -31,8 +35,8 @@ def prepare_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def get_new_ontology_ids(
-    registry: Type[BioRecord], ontology_ids: Iterable[str], df: pd.DataFrame
-) -> Tuple[Set[str], Set[str]]:
+    registry: type[BioRecord], ontology_ids: Iterable[str], df: pd.DataFrame
+) -> tuple[set[str], set[str]]:
     all_ontology_ids = set(ontology_ids) | get_all_ancestors(df, ontology_ids)
     existing_ontology_ids = set(
         registry.filter(ontology_id__in=all_ontology_ids).values_list(
@@ -43,8 +47,8 @@ def get_new_ontology_ids(
 
 
 def create_records(
-    registry: Type[BioRecord], df: pd.DataFrame, source_record: Source
-) -> List[Record]:
+    registry: type[BioRecord], df: pd.DataFrame, source_record: Source
+) -> list[Record]:
     import lamindb as ln
 
     df_records = (
@@ -65,8 +69,8 @@ def create_records(
 
 
 def create_link_records(
-    registry: Type[BioRecord], df: pd.DataFrame, records: List[Record]
-) -> List[Record]:
+    registry: type[BioRecord], df: pd.DataFrame, records: list[Record]
+) -> list[Record]:
     """Create link records.
 
     Args:
@@ -103,7 +107,7 @@ def create_link_records(
 
 
 def check_source_in_db(
-    registry: Type[BioRecord],
+    registry: type[BioRecord],
     source: Source,
     n_all: int = None,
     n_in_db: int = None,
@@ -124,10 +128,10 @@ def check_source_in_db(
 
 
 def add_ontology_from_df(
-    registry: Type[BioRecord],
-    ontology_ids: Optional[List[str]] = None,
-    organism: Union[str, Record, None] = None,
-    source: Optional[Source] = None,
+    registry: type[BioRecord],
+    ontology_ids: list[str] | None = None,
+    organism: str | Record | None = None,
+    source: Source | None = None,
     ignore_conflicts: bool = True,
 ):
     import lamindb as ln
@@ -192,9 +196,9 @@ def add_ontology_from_df(
 
 
 def add_ontology(
-    records: List[BioRecord],
-    organism: Union[str, Record, None] = None,
-    source: Optional[Source] = None,
+    records: list[BioRecord],
+    organism: str | Record | None = None,
+    source: Source | None = None,
     ignore_conflicts: bool = True,
 ):
     registry = records[0]._meta.model

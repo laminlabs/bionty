@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from lamin_utils import logger
 from lnschema_core.models import Record
 
-import bionty.base as bionty_base
+import bionty.base as bt_base
 
 from . import ids
 
@@ -41,7 +41,7 @@ def create_or_get_organism_record(
                     organism_record = Organism.from_source(name=organism)
                     # link the organism record to the default bionty source
                     organism_record.source = get_source_record(
-                        bionty_base.Organism(), Organism
+                        bt_base.Organism(), Organism
                     )  # type:ignore
                     organism_record.save()  # type:ignore
                 except KeyError:
@@ -62,7 +62,7 @@ def create_or_get_organism_record(
 
 
 def get_source_record(
-    public_ontology: bionty_base.PublicOntology, registry: type[Record]
+    public_ontology: bt_base.PublicOntology, registry: type[Record]
 ) -> Record:
     from .models import Source
 
@@ -164,7 +164,7 @@ def lookup2kwargs(record: Record, *args, **kwargs) -> dict:
         bionty_kwargs = arg[0]._asdict()
 
     if len(bionty_kwargs) > 0:
-        import bionty.base as bionty_base
+        import bionty.base as bt_base
 
         # add organism and source
         organism_record = create_or_get_organism_record(
@@ -172,7 +172,7 @@ def lookup2kwargs(record: Record, *args, **kwargs) -> dict:
         )
         if organism_record is not None:
             bionty_kwargs["organism"] = organism_record
-        public_ontology = getattr(bionty_base, record.__class__.__name__)(
+        public_ontology = getattr(bt_base, record.__class__.__name__)(
             organism=organism_record.name if organism_record is not None else None
         )
         bionty_kwargs["source"] = get_source_record(public_ontology, record.__class__)

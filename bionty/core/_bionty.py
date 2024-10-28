@@ -6,7 +6,7 @@ from lamin_utils import logger
 from lamindb_setup.core._setup_bionty_sources import RENAME
 from lnschema_core.models import Artifact, Record
 
-import bionty.base as bionty_base
+import bionty.base as bt_base
 
 
 def sync_all_sources_to_latest():
@@ -25,7 +25,7 @@ def sync_all_sources_to_latest():
     try:
         ln.settings.creation.search_names = False
         records = Source.filter().all()
-        df_sources = bionty_base.display_available_sources().reset_index()
+        df_sources = bt_base.display_available_sources().reset_index()
         bionty_models = list_biorecord_models(bionty)
         for _, row in df_sources.iterrows():
             kwargs = row.to_dict()
@@ -79,7 +79,7 @@ def set_latest_sources_as_currently_used():
 
 
 def filter_bionty_df_columns(
-    model: Type[Record], public_ontology: bionty_base.PublicOntology
+    model: Type[Record], public_ontology: bt_base.PublicOntology
 ) -> pd.DataFrame:
     """Filter columns of public ontology to match the model fields."""
     bionty_df = pd.DataFrame()
