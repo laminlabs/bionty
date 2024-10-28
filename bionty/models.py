@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Tuple, overload
+import warnings
+from typing import TYPE_CHECKING, Tuple, overload
 
 import numpy as np
 from django.db import models
@@ -18,7 +19,7 @@ from lnschema_core.models import (
     TracksUpdates,
 )
 
-import bionty.base as bionty_base
+import bionty.base as bt_base
 
 from . import ids
 from ._bionty import encode_uid, lookup2kwargs
@@ -131,7 +132,7 @@ class Source(Record, TracksRun, TracksUpdates):
         Source.filter(
             entity=self.entity, organism=self.organism, name=self.name
         ).exclude(uid=self.uid).update(currently_used=False)
-        logger.success(f"set {self} as currently used")
+        logger.success(f"set {self} as currently used.")
         logger.warning("please reload your instance to reflect the updates!")
 
 
@@ -164,12 +165,12 @@ class BioRecord(Record, HasParents, CanValidate):
         if (
             args
             and len(args) == 1
-            and isinstance(args[0], (Tuple, List))
+            and isinstance(args[0], (Tuple, list))
             and len(args[0]) > 0
         ):
-            if isinstance(args[0], List) and len(args[0]) > 1:
+            if isinstance(args[0], list) and len(args[0]) > 1:
                 logger.warning(
-                    "multiple lookup/search results are passed, only returning record from the first entry"
+                    "multiple lookup/search results were passed. Only returning record from the first entry."
                 )
             result = lookup2kwargs(self, *args, **kwargs)  # type:ignore
             # exclude "parents" from query arguments
@@ -195,7 +196,7 @@ class BioRecord(Record, HasParents, CanValidate):
                     raise RuntimeError("please pass a organism!")
             elif kwargs.get("organism") is not None:
                 if not isinstance(kwargs.get("organism"), Organism):
-                    raise TypeError("organism must be a `bionty.Organism` record")
+                    raise TypeError("organism must be a `bionty.Organism` record.")
 
         kwargs = encode_uid(registry=self.__class__, kwargs=kwargs)
 
@@ -208,7 +209,7 @@ class BioRecord(Record, HasParents, CanValidate):
             if isinstance(parents, (list, np.ndarray)) and len(parents) > 0:
                 if not isinstance(parents[0], str):
                     raise ValueError(
-                        "not a valid parents kwarg, got to be list of ontology ids"
+                        "Invalid parents kwarg passed. Provide a list of ontology ids."
                     )
                 self._parents = parents
 
@@ -222,15 +223,15 @@ class BioRecord(Record, HasParents, CanValidate):
         organism: str | Record | None = None,
         ignore_conflicts: bool = True,
     ):
-        """Bulk save records from a dataframe.
+        """Bulk save records from a Pandas DataFrame.
 
         Use this method to initialize your registry with public ontology.
 
         Args:
-            ontology_ids: List of ontology ids to save
-            organism: Organism record or name
-            source: Source record
-            ignore_conflicts: Ignore conflicts during bulk create
+            ontology_ids: List of ontology ids to save.
+            organism: Organism name or record.
+            source: Source record to import records from.
+            ignore_conflicts: Whether to ignore conflicts during bulk record creation.
 
         Examples:
             >>> bionty.CellType.import_from_source()
@@ -321,7 +322,10 @@ class BioRecord(Record, HasParents, CanValidate):
         )
         if bionty_source is None:
             logger.warning(
-                "please register a DataFrame artifact!   \n→ artifact = ln.Artifact(df, visibility=0, run=False).save()   \n→ source.dataframe_artifact = artifact   \n→ source.save()"
+                "please register a DataFrame artifact!   \n"
+                "→ artifact = ln.Artifact(df, visibility=0, run=False).save()   \n"
+                "→ source.dataframe_artifact = artifact   \n"
+                "→ source.save()"
             )
         else:
             df_artifact = ln.Artifact(
@@ -372,7 +376,7 @@ class BioRecord(Record, HasParents, CanValidate):
             version = None
 
         try:
-            return getattr(bionty_base, cls.__name__)(
+            return getattr(bt_base, cls.__name__)(
                 organism=organism, source=source_name, version=version
             )
         except InvalidParamError as e:
@@ -394,8 +398,10 @@ class BioRecord(Record, HasParents, CanValidate):
     @classmethod
     def _from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
         """Deprecated in favor of `from_source`."""
-        logger.warning(
-            "`.from_public()` is deprecated and will be removed in a future version. Use `.from_source()` instead!"
+        warnings.warn(
+            "`.from_public()` is deprecated and will be removed in a future version. Use `.from_source()` instead!",
+            DeprecationWarning,
+            stacklevel=2,
         )
         return cls.from_source(*args, **kwargs)
 
