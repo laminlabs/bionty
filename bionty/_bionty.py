@@ -7,12 +7,17 @@ from lamin_utils import logger
 from lnschema_core.models import Record
 
 import bionty.base as bt_base
-from bionty.core.exceptions import OrganismNotSet
 
 from . import ids
 
 if TYPE_CHECKING:
     from types import ModuleType
+
+
+class OrganismNotSet(SystemExit):
+    """The `organism` parameter was not passed or is not globally set."""
+
+    pass
 
 
 def create_or_get_organism_record(
