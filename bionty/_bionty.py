@@ -7,6 +7,7 @@ from lamin_utils import logger
 from lnschema_core.models import Record
 
 import bionty.base as bt_base
+from bionty.core.exceptions import OrganismNotSet
 
 from . import ids
 
@@ -54,7 +55,7 @@ def create_or_get_organism_record(
                 "uid",
             }:
                 return None
-            raise ValueError(
+            raise OrganismNotSet(
                 f"{registry.__name__} requires to specify a organism name via `organism=` or `bionty.settings.organism=`!"
             )
 
