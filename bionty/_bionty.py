@@ -54,7 +54,7 @@ def create_or_get_organism_record(
                 "uid",
             }:
                 return None
-            raise AssertionError(
+            raise ValueError(
                 f"{registry.__name__} requires to specify a organism name via `organism=` or `bionty.settings.organism=`!"
             )
 
