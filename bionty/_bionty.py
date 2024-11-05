@@ -14,6 +14,12 @@ if TYPE_CHECKING:
     from types import ModuleType
 
 
+class OrganismNotSet(SystemExit):
+    """The `organism` parameter was not passed or is not globally set."""
+
+    pass
+
+
 def create_or_get_organism_record(
     organism: str | Record | None, registry: type[Record], field: str | None = None
 ) -> Record | None:
@@ -54,7 +60,7 @@ def create_or_get_organism_record(
                 "uid",
             }:
                 return None
-            raise AssertionError(
+            raise OrganismNotSet(
                 f"{registry.__name__} requires to specify a organism name via `organism=` or `bionty.settings.organism=`!"
             )
 
