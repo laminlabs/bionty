@@ -110,4 +110,5 @@ _dynamic/
 
 # Convenience
 test.ipynb
+run-tests
 registration_template.ipynb
