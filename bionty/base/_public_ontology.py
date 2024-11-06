@@ -473,14 +473,13 @@ class PublicOntology:
             return_mapper: `bool = False` If `True`, returns `{input_synonym1:
                 standardized_name1}`.
             case_sensitive: `bool = False` Whether the mapping is case sensitive.
-            keep: `Literal["first", "last", False] = "first"` When a synonym maps to
-                multiple names, determines which duplicates to mark as
-                `pd.DataFrame.duplicated`
+            keep: {'first', 'last', False}, default 'first'.
+                When a synonym maps to multiple standardized values, determines
+                which duplicates to mark as `pandas.DataFrame.duplicated`.
+                - "first": returns the first mapped standardized value
+                - "last": returns the last mapped standardized value
+                - False: returns all mapped standardized value
             mute: Whether to mute logging. Defaults to False.
-            Keep: Which standardized name to keep.
-                    - "first": returns the first mapped standardized name
-                    - "last": returns the last mapped standardized name
-                    - `False`: returns all mapped standardized name
             synonyms_field: `str = "synonyms"` A field containing the concatenated synonyms.
 
         Returns:
