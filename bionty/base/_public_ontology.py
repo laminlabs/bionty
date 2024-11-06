@@ -393,7 +393,13 @@ class PublicOntology:
         if isinstance(values, str):
             values = [values]
 
-        field_values = self._df[str(field)]
+        # in bionty-base passed django fields do not resolve properly to a string
+        if str(field).startswith("FieldAttr"):
+            field_str = str(field).split(".")[-1][:-1]
+        else:
+            field_str = str(field)
+        field_values = self._df[str(field_str)]
+
         return validate(
             identifiers=values,
             field_values=field_values,
