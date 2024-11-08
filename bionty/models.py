@@ -404,7 +404,7 @@ class BioRecord(Record, HasParents, CanValidate):
             stacklevel=2,
         )
         return cls.from_source(*args, **kwargs)
-    
+
     @classmethod
     def _import_from_source(
         cls,
@@ -419,8 +419,12 @@ class BioRecord(Record, HasParents, CanValidate):
             DeprecationWarning,
             stacklevel=2,
         )
-        return cls.import_source(source=source, ontology_ids=ontology_ids, organism=organism, ignore_conflicts=ignore_conflicts)
-    
+        return cls.import_source(
+            source=source,
+            ontology_ids=ontology_ids,
+            organism=organism,
+            ignore_conflicts=ignore_conflicts,
+        )
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
