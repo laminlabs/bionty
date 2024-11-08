@@ -223,7 +223,7 @@ class BioRecord(Record, HasParents, CanValidate):
         organism: str | Record | None = None,
         ignore_conflicts: bool = True,
     ):
-        """Bulk save records from a Pandas DataFrame.
+        """Bulk save records from a Bionty ontology.
 
         Use this method to initialize your registry with public ontology.
 
