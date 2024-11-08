@@ -216,14 +216,14 @@ class BioRecord(Record, HasParents, CanValidate):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def import_from_source(
+    def import_source(
         cls,
         source: Source | None = None,
         ontology_ids: list[str] | None = None,
         organism: str | Record | None = None,
         ignore_conflicts: bool = True,
     ):
-        """Bulk save records from a Pandas DataFrame.
+        """Bulk save records from a Bionty ontology.
 
         Use this method to initialize your registry with public ontology.
 
@@ -234,7 +234,7 @@ class BioRecord(Record, HasParents, CanValidate):
             ignore_conflicts: Whether to ignore conflicts during bulk record creation.
 
         Examples:
-            >>> bionty.CellType.import_from_source()
+            >>> bionty.CellType.import_source()
         """
         from .core._add_ontology import add_ontology_from_df, check_source_in_db
 
@@ -262,7 +262,7 @@ class BioRecord(Record, HasParents, CanValidate):
                 field = cls._ontology_id_field
             else:
                 raise NotImplementedError(
-                    f"import_from_source is not implemented for {cls.__name__}"
+                    f"import_source is not implemented for {cls.__name__}"
                 )
             records = cls.from_values(
                 ontology_ids or df[field],
@@ -405,6 +405,27 @@ class BioRecord(Record, HasParents, CanValidate):
         )
         return cls.from_source(*args, **kwargs)
 
+    @classmethod
+    def _import_from_source(
+        cls,
+        source: Source | None = None,
+        ontology_ids: list[str] | None = None,
+        organism: str | Record | None = None,
+        ignore_conflicts: bool = True,
+    ):
+        """Deprecated in favor of `import_source`."""
+        warnings.warn(
+            "`.import_from_source()` is deprecated and will be removed in a future version. Use `.import_source()` instead!",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.import_source(
+            source=source,
+            ontology_ids=ontology_ids,
+            organism=organism,
+            ignore_conflicts=ignore_conflicts,
+        )
+
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
         import sys
@@ -412,6 +433,7 @@ class BioRecord(Record, HasParents, CanValidate):
         # Deprecated methods
         if "sphinx" not in sys.modules:
             cls.from_public = cls._from_public
+            cls.import_from_source = cls._import_from_source
 
     @classmethod
     def from_source(
