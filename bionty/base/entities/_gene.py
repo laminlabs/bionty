@@ -86,7 +86,7 @@ class Gene(PublicOntology):
 
 
 class EnsemblGene:
-    def __init__(self, organism: str, version: str) -> None:
+    def __init__(self, organism: str, version: str, kingdom: Literal['vertibrates', 'plants']=None) -> None:
         """Ensembl Gene mysql.
 
         Args:
@@ -98,7 +98,7 @@ class EnsemblGene:
         from sqlalchemy import create_engine
 
         self._organism = (
-            Organism(version=version).lookup().dict().get(organism)  # type:ignore
+            Organism(version=version, organism=kingdom).lookup().dict().get(organism)  # type:ignore
         )
         self._url = (
             f"mysql+mysqldb://anonymous:@ensembldb.ensembl.org/{self._organism.core_db}"
