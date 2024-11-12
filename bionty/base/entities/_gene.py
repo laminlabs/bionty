@@ -100,8 +100,11 @@ class EnsemblGene:
         self._organism = (
             Organism(version=version, organism=kingdom).lookup().dict().get(organism)  # type:ignore
         )
+        port = 3306
+        if kingdom == "plants":
+            port = 4157
         self._url = (
-            f"mysql+mysqldb://anonymous:@ensembldb.ensembl.org/{self._organism.core_db}"
+            f"mysql+mysqldb://anonymous:@ensembldb.ensembl.org:{port}/{self._organism.core_db}"
         )
         self._engine = create_engine(url=self._url)
 
