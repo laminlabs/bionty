@@ -24,7 +24,7 @@ def test_ensembl_organism_inspect_name():
 
 def test_ensembl_organism_organism():
     for sp in ["bacteria", "plants", "fungi", "metazoa"]:
-        df = bt_base.Organism(organism=sp).df()
+        df = bt_base.Organism(kingdom=sp).df()
         assert df.shape[0] > 10
 
 

@@ -22,9 +22,7 @@ class Organism(PublicOntology):
 
     def __init__(
         self,
-        organism: Literal[
-            "vertebrates", "bacteria", "fungi", "metazoa", "plants", "all"
-        ]
+        kingdom: Literal["vertebrates", "bacteria", "fungi", "metazoa", "plants", "all"]
         | None = None,
         source: Literal["ensembl", "ncbitaxon"] | None = None,
         version: Literal[
@@ -39,7 +37,7 @@ class Organism(PublicOntology):
         | None = None,
         **kwargs,
     ):
-        super().__init__(organism=organism, source=source, version=version, **kwargs)
+        super().__init__(organism=kingdom, source=source, version=version, **kwargs)
 
     def _load_df(self) -> pd.DataFrame:
         if self.source == "ensembl":

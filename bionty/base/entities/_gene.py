@@ -86,26 +86,30 @@ class Gene(PublicOntology):
 
 
 class EnsemblGene:
-    def __init__(self, organism: str, version: str, kingdom: Literal['vertibrates', 'plants']=None) -> None:
+    def __init__(
+        self,
+        organism: str,
+        version: str,
+        kingdom: Literal["vertibrates", "plants"] = None,
+    ) -> None:
         """Ensembl Gene mysql.
 
         Args:
-            organism: a bionty.Organism object
-            version: name of the ensembl DB version, e.g. "release-110"
+            organism: A `bionty.Organism` object
+            version: Name of the ensembl DB version, e.g. "release-110"
+            kingdom: Kingdom of the organism to fetch the genes for
         """
         self._import()
         import mysql.connector as sql
         from sqlalchemy import create_engine
 
         self._organism = (
-            Organism(version=version, organism=kingdom).lookup().dict().get(organism)  # type:ignore
+            Organism(version=version, kingdom=kingdom).lookup().dict().get(organism)  # type:ignore
         )
         port = 3306
         if kingdom == "plants":
             port = 4157
-        self._url = (
-            f"mysql+mysqldb://anonymous:@ensembldb.ensembl.org:{port}/{self._organism.core_db}"
-        )
+        self._url = f"mysql+mysqldb://anonymous:@ensembldb.ensembl.org:{port}/{self._organism.core_db}"
         self._engine = create_engine(url=self._url)
 
     def _import(self):
