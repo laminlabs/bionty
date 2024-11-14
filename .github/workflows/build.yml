@@ -19,9 +19,6 @@ jobs:
       matrix:
         python-version: ["3.12"]
         group: ["bionty-unit", "bionty-docs"]
-        exclude:
-          - group: bionty-docs
-            if: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
@@ -58,6 +55,7 @@ jobs:
         run: nox -s lint
 
       - name: Run build
+        if: ${{ matrix.group != 'bionty-docs' || github.event.pull_request.head.repo.full_name == github.repository }}
         run: nox -s "build(group='${{ matrix.group }}')"
 
       - uses: actions/upload-artifact@v3
@@ -67,9 +65,7 @@ jobs:
           include-hidden-files: true
 
       - uses: nwtgck/actions-netlify@v1.2
-        if: |
-          github.event.pull_request.head.repo.full_name == github.repository &&
-          matrix.group == 'bionty-docs'
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository && matrix.group == 'bionty-docs' }}
         with:
           publish-dir: "_build/html"
           production-deploy: ${{ github.event_name == 'push' }}
