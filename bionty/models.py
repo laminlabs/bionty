@@ -7,7 +7,13 @@ import numpy as np
 from django.db import models
 from django.db.models import CASCADE, PROTECT
 from lamin_utils import logger
-from lnschema_core.fields import BooleanField, CharField, ForeignKey, TextField
+from lnschema_core.fields import (
+    BigIntegerField,
+    BooleanField,
+    CharField,
+    ForeignKey,
+    TextField,
+)
 from lnschema_core.models import (
     Artifact,
     CanValidate,
@@ -687,7 +693,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
     """Bar-separated (|) synonyms that correspond to this protein."""
     description: str | None = TextField(null=True, default=None)
     """Description of the protein."""
-    length: int | None = models.BigIntegerField(db_index=True, null=True)
+    length: int | None = BigIntegerField(db_index=True, null=True)
     """Length of the protein sequence."""
     gene_symbol: str | None = CharField(
         max_length=256, db_index=True, null=True, default=None
