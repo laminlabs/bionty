@@ -97,7 +97,7 @@ class EnsemblGene:
         """Ensembl Gene mysql.
 
         Args:
-            organism: A
+            organism: Name of the organism
             version: Name of the ensembl DB version, e.g. "release-110"
         """
         self._import()
