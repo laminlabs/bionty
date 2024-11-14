@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Iterable, Literal, Optional
+from typing import Iterable, Literal
 
 import pandas as pd
 from lamin_utils import logger
@@ -90,25 +90,28 @@ class EnsemblGene:
         self,
         organism: str,
         version: str,
-        kingdom: Literal["vertibrates", "plants"] = None,
+        taxa: Literal[
+            "vertebrates", "bacteria", "fungi", "metazoa", "plants", "all"
+        ] = "vertebrates",
     ) -> None:
         """Ensembl Gene mysql.
 
         Args:
-            organism: A `bionty.Organism` object
+            organism: A
             version: Name of the ensembl DB version, e.g. "release-110"
-            kingdom: Kingdom of the organism to fetch the genes for
         """
         self._import()
         import mysql.connector as sql
         from sqlalchemy import create_engine
 
         self._organism = (
-            Organism(version=version, kingdom=kingdom).lookup().dict().get(organism)  # type:ignore
+            Organism(version=version, taxa=taxa).lookup().dict().get(organism)  # type:ignore
         )
-        port = 3306
-        if kingdom == "plants":
+        # vertebrates and plants use different ports
+        if taxa == "plants":
             port = 4157
+        else:
+            port = 3306
         self._url = f"mysql+mysqldb://anonymous:@ensembldb.ensembl.org:{port}/{self._organism.core_db}"
         self._engine = create_engine(url=self._url)
 
@@ -157,23 +160,15 @@ class EnsemblGene:
         WHERE object_xref.ensembl_object_type = 'Gene' AND external_db.db_name IN ({external_db_names_str}) # noqa
         """
 
-        # Query for the basic gene annotations:
-        results_core = pd.read_sql(query_core, con=self._engine)
-        logger.info("fetching records from the core DB...")
+        from sqlalchemy.sql import text
 
-        # aggregate metadata based on ensembl stable_id
-        results_core_group = results_core.groupby("stable_id").agg(
-            {
-                "display_label": "first",
-                "biotype": "first",
-                "description": "first",
-                "synonym": lambda x: "|".join([i for i in set(x) if i is not None]),
-            }
-        )
+        with self._engine.connect() as conn:
+            # Execute queries using SQLAlchemy text construct
+            results_core_group = pd.DataFrame(conn.execute(text(query_core)))
+            logger.info("fetching records from the core DB...")
 
-        # Query for external ids:
-        results_external = pd.read_sql(query_external, con=self._engine)
-        logger.info("fetching records from the external DBs...")
+            results_external = pd.DataFrame(conn.execute(text(query_external)))
+            logger.info("fetching records from the external DBs...")
 
         def add_external_db_column(df: pd.DataFrame, ext_db: str, df_col: str):
             # ncbi_gene_id
@@ -240,15 +235,29 @@ class EnsemblGene:
 
         return df_res
 
-    def download_legacy_ids_df(self, df: pd.DataFrame, col: str | None = None):
-        col = "ensembl_gene_id" if col is None else col
+    def download_legacy_ids_df(self, df: pd.DataFrame, col: str = "ensembl_gene_id"):
+        """Download legacy IDs for given gene IDs.
+
+        Args:
+            df: DataFrame containing gene IDs
+            col: Column name containing gene IDs, defaults to "ensembl_gene_id"
+        """
+        from sqlalchemy.sql import text
+
         current_ids = tuple(df[col])
-        results = pd.read_sql(
-            "SELECT * FROM stable_id_event JOIN mapping_session USING"
-            " (mapping_session_id) WHERE type = 'gene' AND new_stable_id IN"
-            f" {current_ids} AND score > 0 AND old_stable_id != new_stable_id",
-            con=self._engine,
-        )
+
+        query = text("""
+            SELECT * FROM stable_id_event
+            JOIN mapping_session USING (mapping_session_id)
+            WHERE type = 'gene'
+            AND new_stable_id IN :current_ids
+            AND score > 0
+            AND old_stable_id != new_stable_id
+        """)
+
+        with self._engine.connect() as conn:
+            results = pd.DataFrame(conn.execute(query, {"current_ids": current_ids}))
+
         return results
 
     def _process_convert_result(
