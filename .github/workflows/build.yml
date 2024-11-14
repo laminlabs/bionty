@@ -22,6 +22,14 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+      - name: checkout lndocs
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        uses: actions/checkout@v4
+        with:
+          repository: laminlabs/lndocs
+          ssh-key: ${{ secrets.READ_LNDOCS }}
+          path: lndocs
+          ref: main
 
       - uses: actions/setup-python@v5
         with:
@@ -34,10 +42,6 @@ jobs:
 
       - name: Install laminci
         run: pip install "laminci@git+https://x-access-token:${{ secrets.LAMIN_BUILD_DOCS }}@github.com/laminlabs/laminci"
-
-      - name: Install lndocs if not on fork
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
-        run: uv pip install --system "lndocs@git+https://x-access-token:${{ secrets.LAMIN_BUILD_DOCS }}@github.com/laminlabs/lndocs"
 
       - name: Install dependencies
         run: |
