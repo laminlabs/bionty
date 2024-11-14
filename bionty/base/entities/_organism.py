@@ -37,6 +37,9 @@ class Organism(PublicOntology):
         | None = None,
         **kwargs,
     ):
+        # To support the organism kwarg being passed in getattr access in other parts of the code
+        if kwargs.get("organism") is not None:
+            taxa = kwargs.pop("organism")
         super().__init__(organism=taxa, source=source, version=version, **kwargs)
 
     def _load_df(self) -> pd.DataFrame:

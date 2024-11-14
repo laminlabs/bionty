@@ -160,15 +160,23 @@ class EnsemblGene:
         WHERE object_xref.ensembl_object_type = 'Gene' AND external_db.db_name IN ({external_db_names_str}) # noqa
         """
 
-        from sqlalchemy.sql import text
+        # Query for the basic gene annotations:
+        results_core = pd.read_sql(query_core, con=self._engine)
+        logger.info("fetching records from the core DB...")
 
-        with self._engine.connect() as conn:
-            # Execute queries using SQLAlchemy text construct
-            results_core_group = pd.DataFrame(conn.execute(text(query_core)))
-            logger.info("fetching records from the core DB...")
+        # aggregate metadata based on ensembl stable_id
+        results_core_group = results_core.groupby("stable_id").agg(
+            {
+                "display_label": "first",
+                "biotype": "first",
+                "description": "first",
+                "synonym": lambda x: "|".join([i for i in set(x) if i is not None]),
+            }
+        )
 
-            results_external = pd.DataFrame(conn.execute(text(query_external)))
-            logger.info("fetching records from the external DBs...")
+        # Query for external ids:
+        results_external = pd.read_sql(query_external, con=self._engine)
+        logger.info("fetching records from the external DBs...")
 
         def add_external_db_column(df: pd.DataFrame, ext_db: str, df_col: str):
             # ncbi_gene_id
@@ -235,29 +243,15 @@ class EnsemblGene:
 
         return df_res
 
-    def download_legacy_ids_df(self, df: pd.DataFrame, col: str = "ensembl_gene_id"):
-        """Download legacy IDs for given gene IDs.
-
-        Args:
-            df: DataFrame containing gene IDs
-            col: Column name containing gene IDs, defaults to "ensembl_gene_id"
-        """
-        from sqlalchemy.sql import text
-
+    def download_legacy_ids_df(self, df: pd.DataFrame, col: str | None = None):
+        col = "ensembl_gene_id" if col is None else col
         current_ids = tuple(df[col])
-
-        query = text("""
-            SELECT * FROM stable_id_event
-            JOIN mapping_session USING (mapping_session_id)
-            WHERE type = 'gene'
-            AND new_stable_id IN :current_ids
-            AND score > 0
-            AND old_stable_id != new_stable_id
-        """)
-
-        with self._engine.connect() as conn:
-            results = pd.DataFrame(conn.execute(query, {"current_ids": current_ids}))
-
+        results = pd.read_sql(
+            "SELECT * FROM stable_id_event JOIN mapping_session USING"
+            " (mapping_session_id) WHERE type = 'gene' AND new_stable_id IN"
+            f" {current_ids} AND score > 0 AND old_stable_id != new_stable_id",
+            con=self._engine,
+        )
         return results
 
     def _process_convert_result(
