@@ -1,11 +1,11 @@
 name: build
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main, staging]
   workflow_dispatch:
+
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 
@@ -17,45 +17,59 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.12"]
         group: ["bionty-unit", "bionty-docs"]
     timeout-minutes: 25
-
     steps:
       - uses: actions/checkout@v4
       - name: checkout lndocs
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         uses: actions/checkout@v4
         with:
           repository: laminlabs/lndocs
           ssh-key: ${{ secrets.READ_LNDOCS }}
           path: lndocs
           ref: main
+
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+
       - uses: actions/cache@v3
         with:
           path: ~/.cache/pre-commit
           key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
-      - run: pip install "laminci@git+https://x-access-token:${{ secrets.LAMIN_BUILD_DOCS }}@github.com/laminlabs/laminci"
-      - run: |
+
+      - name: Install laminci
+        run: pip install "laminci@git+https://x-access-token:${{ secrets.LAMIN_BUILD_DOCS }}@github.com/laminlabs/laminci"
+
+      - name: Install dependencies
+        run: |
           uv pip install --system rich
           uv pip install --system ipywidgets
+
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
-      - run: nox -s lint
-        if: matrix.python-version == '3.11' && matrix.group == 'bionty-unit'
-      - run: nox -s "build(group='${{ matrix.group }}')"
+
+      - name: Run lint
+        if: matrix.group == 'bionty-unit'
+        run: nox -s lint
+
+      - name: Run build
+        if: ${{ (matrix.group == 'bionty-docs' && github.event.pull_request.head.repo.full_name == github.repository) }}
+        run: nox -s "build(group='${{ matrix.group }}')"
+
       - uses: actions/upload-artifact@v3
         with:
           name: coverage--${{ matrix.group }}
           path: .coverage
           include-hidden-files: true
+
       - uses: nwtgck/actions-netlify@v1.2
-        if: ${{ matrix.python-version == '3.11' && matrix.group == 'bionty-docs' }}
+        if: ${{ (matrix.group == 'bionty-docs' && github.event.pull_request.head.repo.full_name == github.repository) }}
         with:
           publish-dir: "_build/html"
           production-deploy: ${{ github.event_name == 'push' }}
@@ -70,19 +84,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - run: |
+          python-version: "3.12"
+
+      - name: Install coverage dependencies
+        run: |
           pip install -U pip uv
           uv pip install --system coverage[toml]
           uv pip install --system --no-deps .
+
       - uses: actions/download-artifact@v3
-      - name: run coverage
+
+      - name: Run coverage
         run: |
           coverage combine coverage--*/.coverage*
           coverage report --fail-under=0
           coverage xml
+
       - uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
