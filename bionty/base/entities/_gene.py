@@ -232,7 +232,9 @@ class EnsemblGene:
 
         # if stable_id is not ensembl_gene_id, keep a stable_id column
         if not all(df_res["ensembl_gene_id"].str.startswith("ENS")):
-            logger.warning("ensembl_gene_id column not all ENS-prefixed, writing to stable_id column.")
+            logger.warning(
+                "ensembl_gene_id column not all ENS-prefixed, writing to stable_id column."
+            )
             df_res.insert(0, "stable_id", df_res.pop("ensembl_gene_id"))
             df_res = df_res.sort_values("stable_id").reset_index(drop=True)
         else:
