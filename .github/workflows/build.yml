@@ -60,7 +60,7 @@ jobs:
         run: nox -s lint
 
       - name: Run build
-        if: ${{ (matrix.group == 'bionty-docs' && github.event.pull_request.head.repo.full_name == github.repository) }}
+        if: ${{ (matrix.group == 'bionty-docs' && github.event.pull_request.head.repo.full_name != github.repository) }}
         run: nox -s "build(group='${{ matrix.group }}')"
 
       - uses: actions/upload-artifact@v3
@@ -70,7 +70,7 @@ jobs:
           include-hidden-files: true
 
       - uses: nwtgck/actions-netlify@v1.2
-        if: ${{ (matrix.group == 'bionty-docs' && github.event.pull_request.head.repo.full_name == github.repository) }}
+        if: ${{ (matrix.group == 'bionty-docs' && github.event.pull_request.head.repo.full_name != github.repository) }}
         with:
           publish-dir: "_build/html"
           production-deploy: ${{ github.event_name == 'push' }}
