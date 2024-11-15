@@ -9,14 +9,7 @@ import bionty.ids
 
 
 class Migration(migrations.Migration):
-    replaces = [
-        ("bionty", "0023_rename_publicsource_encode_uid"),
-        ("bionty", "0024_remove_cellline_collections_and_more"),
-        ("bionty", "0025_artifactcellline_alter_cellline_artifacts_and_more"),
-        ("bionty", "0026_artifactcellline_cell_line_ref_is_name_and_more"),
-        ("bionty", "0027_remove_artifactcellline_created_at_and_more"),
-        ("bionty", "0028_artifactcellline_created_at_and_more"),
-    ]
+    initial = True
 
     dependencies = [
         ("lnschema_core", "0052_squashed"),
