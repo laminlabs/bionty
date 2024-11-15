@@ -69,7 +69,7 @@ jobs:
           include-hidden-files: true
 
       - uses: nwtgck/actions-netlify@v1.2
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository && matrix.group == 'bionty-docs' }}
+        if: ${{ !(matrix.group == 'bionty-docs' && github.event.pull_request.head.repo.full_name != github.repository) }}
         with:
           publish-dir: "_build/html"
           production-deploy: ${{ github.event_name == 'push' }}
