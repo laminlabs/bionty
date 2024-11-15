@@ -88,7 +88,7 @@ class Migration(migrations.Migration):
             bases=(
                 models.Model,
                 lnschema_core.models.HasParents,
-                lnschema_core.models.CanValidate,
+                lnschema_core.models.CanCurate,
             ),
         ),
         migrations.CreateModel(
@@ -217,7 +217,7 @@ class Migration(migrations.Migration):
             bases=(
                 models.Model,
                 lnschema_core.models.HasParents,
-                lnschema_core.models.CanValidate,
+                lnschema_core.models.CanCurate,
             ),
         ),
         migrations.AddField(
@@ -329,7 +329,7 @@ class Migration(migrations.Migration):
             bases=(
                 models.Model,
                 lnschema_core.models.HasParents,
-                lnschema_core.models.CanValidate,
+                lnschema_core.models.CanCurate,
             ),
         ),
         migrations.CreateModel(
@@ -423,7 +423,7 @@ class Migration(migrations.Migration):
             bases=(
                 models.Model,
                 lnschema_core.models.HasParents,
-                lnschema_core.models.CanValidate,
+                lnschema_core.models.CanCurate,
             ),
         ),
         migrations.CreateModel(
@@ -500,7 +500,7 @@ class Migration(migrations.Migration):
             bases=(
                 models.Model,
                 lnschema_core.models.HasParents,
-                lnschema_core.models.CanValidate,
+                lnschema_core.models.CanCurate,
             ),
         ),
         migrations.CreateModel(
@@ -587,7 +587,7 @@ class Migration(migrations.Migration):
             bases=(
                 models.Model,
                 lnschema_core.models.HasParents,
-                lnschema_core.models.CanValidate,
+                lnschema_core.models.CanCurate,
             ),
         ),
         migrations.CreateModel(
@@ -674,7 +674,7 @@ class Migration(migrations.Migration):
             bases=(
                 models.Model,
                 lnschema_core.models.HasParents,
-                lnschema_core.models.CanValidate,
+                lnschema_core.models.CanCurate,
             ),
         ),
         migrations.CreateModel(
@@ -751,7 +751,7 @@ class Migration(migrations.Migration):
             bases=(
                 models.Model,
                 lnschema_core.models.HasParents,
-                lnschema_core.models.CanValidate,
+                lnschema_core.models.CanCurate,
             ),
         ),
         migrations.CreateModel(
@@ -828,7 +828,7 @@ class Migration(migrations.Migration):
             bases=(
                 models.Model,
                 lnschema_core.models.HasParents,
-                lnschema_core.models.CanValidate,
+                lnschema_core.models.CanCurate,
             ),
         ),
         migrations.CreateModel(
@@ -906,7 +906,7 @@ class Migration(migrations.Migration):
             bases=(
                 models.Model,
                 lnschema_core.models.HasParents,
-                lnschema_core.models.CanValidate,
+                lnschema_core.models.CanCurate,
             ),
         ),
         migrations.CreateModel(
@@ -983,7 +983,7 @@ class Migration(migrations.Migration):
             bases=(
                 models.Model,
                 lnschema_core.models.HasParents,
-                lnschema_core.models.CanValidate,
+                lnschema_core.models.CanCurate,
             ),
         ),
         migrations.CreateModel(
@@ -1060,7 +1060,7 @@ class Migration(migrations.Migration):
             bases=(
                 models.Model,
                 lnschema_core.models.HasParents,
-                lnschema_core.models.CanValidate,
+                lnschema_core.models.CanCurate,
             ),
         ),
         migrations.CreateModel(
@@ -1135,7 +1135,7 @@ class Migration(migrations.Migration):
             bases=(
                 models.Model,
                 lnschema_core.models.HasParents,
-                lnschema_core.models.CanValidate,
+                lnschema_core.models.CanCurate,
             ),
         ),
     ]

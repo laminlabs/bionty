@@ -16,7 +16,7 @@ from lnschema_core.fields import (
 )
 from lnschema_core.models import (
     Artifact,
-    CanValidate,
+    CanCurate,
     Feature,
     FeatureSet,
     HasParents,
@@ -143,7 +143,7 @@ class Source(Record, TracksRun, TracksUpdates):
         logger.warning("please reload your instance to reflect the updates!")
 
 
-class BioRecord(Record, HasParents, CanValidate):
+class BioRecord(Record, HasParents, CanCurate):
     """Base Record of bionty.
 
     BioRecord inherits all methods from :class:`~lamindb.core.Record` and provides additional methods
@@ -451,7 +451,7 @@ class BioRecord(Record, HasParents, CanValidate):
         Notes:
             For more info, see tutorial :doc:`docs:bionty`
 
-            Bulk create records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
+            Bulk create records via :meth:`~docs:lamindb.core.CanCurate.from_values`.
 
         Examples:
             Create a record by passing a field value:
@@ -578,7 +578,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:gene`.
 
-        Bulk create Gene records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
+        Bulk create Gene records via :meth:`~docs:lamindb.core.CanCurate.from_values`.
         Map legacy ensembl IDs to current ensembl IDs using :meth:`bionty.base.Gene.map_legacy_ids`.
 
     Examples:
@@ -666,7 +666,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:protein`.
 
-        Bulk create records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
+        Bulk create records via :meth:`~docs:lamindb.core.CanCurate.from_values`.
 
     Examples:
         >>> record = bionty.Protein.from_source(name="Synaptotagmin-15B", organism="human")
@@ -747,7 +747,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:cell_marker`.
 
-        Bulk create CellMarker records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
+        Bulk create CellMarker records via :meth:`~docs:lamindb.core.CanCurate.from_values`.
 
     Examples:
         >>> record = bionty.CellMarker.from_source(name="PD1", organism="human")
@@ -828,7 +828,7 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` :doc:`docs:tissue`.
 
-        Bulk create Tissue records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
+        Bulk create Tissue records via :meth:`~docs:lamindb.core.CanCurate.from_values`.
 
     Examples:
         >>> record = bionty.Tissue.from_source(name="brain")
@@ -900,7 +900,7 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:cell_type`.
 
-        Bulk create CellType records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
+        Bulk create CellType records via :meth:`~docs:lamindb.core.CanCurate.from_values`.
 
     Examples:
         >>> record = bionty.CellType.from_source(name="T cell")
@@ -970,7 +970,7 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
     """Diseases - `Mondo <https://mondo.monarchinitiative.org/>`__, `Human Disease <https://disease-ontology.org/>`__.
 
     Notes:
-        Bulk create Disease records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
+        Bulk create Disease records via :meth:`~docs:lamindb.core.CanCurate.from_values`.
 
         For more info, see tutorials: :doc:`docs:disease`.
 
@@ -1044,7 +1044,7 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:cell_line`.
 
-        Bulk create CellLine records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
+        Bulk create CellLine records via :meth:`~docs:lamindb.core.CanCurate.from_values`.
 
     Examples:
         >>> standard_name = bionty.CellLine.public().standardize(["K562"])[0]
@@ -1120,7 +1120,7 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:phenotype`.
 
-        Bulk create Phenotype records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
+        Bulk create Phenotype records via :meth:`~docs:lamindb.core.CanCurate.from_values`.
 
     Examples:
         >>> record = bionty.Phenotype.from_source(name="Arachnodactyly")
@@ -1194,7 +1194,7 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:pathway`.
 
-        Bulk create Pathway records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
+        Bulk create Pathway records via :meth:`~docs:lamindb.core.CanCurate.from_values`.
 
     Examples:
         >>> record = bionty.Pathway.from_source(ontology_id="GO:1903353")
@@ -1273,7 +1273,7 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:experimental_factor`.
 
-        Bulk create ExperimentalFactor records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
+        Bulk create ExperimentalFactor records via :meth:`~docs:lamindb.core.CanCurate.from_values`.
 
     Examples:
         >>> standard_name = bionty.ExperimentalFactor.public().standardize(["scRNA-seq"])
@@ -1355,7 +1355,7 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:developmental_stage`.
 
-        Bulk create DevelopmentalStage records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
+        Bulk create DevelopmentalStage records via :meth:`~docs:lamindb.core.CanCurate.from_values`.
 
     Examples:
         >>> record = bionty.DevelopmentalStage.from_source(name="neurula stage")
@@ -1430,7 +1430,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:ethnicity`.
 
-        Bulk create Ethnicity records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
+        Bulk create Ethnicity records via :meth:`~docs:lamindb.core.CanCurate.from_values`.
 
     Examples:
         >>> record = bionty.Ethnicity.from_source(name="European")
