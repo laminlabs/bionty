@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: checkout lndocs
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
         uses: actions/checkout@v4
         with:
           repository: laminlabs/lndocs
@@ -49,7 +49,7 @@ jobs:
           uv pip install --system ipywidgets
 
       - uses: aws-actions/configure-aws-credentials@v4
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -60,7 +60,7 @@ jobs:
         run: nox -s lint
 
       - name: Run build
-        if: ${{ !(matrix.group == 'bionty-docs' && github.event.pull_request.head.repo.full_name != github.repository) }}
+        if: ${{ !(matrix.group == 'bionty-docs' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository) }}
         run: nox -s "build(group='${{ matrix.group }}')"
 
       - uses: actions/upload-artifact@v3
@@ -70,7 +70,7 @@ jobs:
           include-hidden-files: true
 
       - uses: nwtgck/actions-netlify@v1.2
-        if: ${{ !(matrix.group == 'bionty-docs' && github.event.pull_request.head.repo.full_name != github.repository) }}
+        if: ${{ matrix.group == 'bionty-docs' && !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository) }}
         with:
           publish-dir: "_build/html"
           production-deploy: ${{ github.event_name == 'push' }}
