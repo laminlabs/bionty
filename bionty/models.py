@@ -576,6 +576,9 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         Bulk create Gene records via :meth:`~docs:lamindb.core.CanValidate.from_values`.
         Map legacy ensembl IDs to current ensembl IDs using :meth:`bionty.base.Gene.map_legacy_ids`.
 
+        We discourage validating gene symbols and to work with unique identifiers such as ENSEMBL IDs instead.
+        For more details, see :doc:`docs:faq/symbol-mapping`.
+
     Examples:
         >>> record = bionty.Gene.from_source(symbol="TCF7", organism="human")
     """
