@@ -59,7 +59,7 @@ jobs:
         run: nox -s lint
 
       - name: Run build
-        if: ${{ matrix.group == 'bionty-docs' && github.event.pull_request.head.repo.full_name != github.repository }}
+        if: ${{ !(matrix.group == 'bionty-docs' && github.event.pull_request.head.repo.full_name != github.repository) }}
         run: nox -s "build(group='${{ matrix.group }}')"
 
       - uses: actions/upload-artifact@v3
