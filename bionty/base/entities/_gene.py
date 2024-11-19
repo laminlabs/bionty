@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
 from typing import TYPE_CHECKING, Literal, NamedTuple
 
 import pandas as pd
@@ -97,23 +96,34 @@ class Gene(PublicOntology):
 
 
 class EnsemblGene:
-    def __init__(self, organism: str, version: str) -> None:
+    def __init__(
+        self,
+        organism: str,
+        version: str,
+        taxa: Literal[
+            "vertebrates", "bacteria", "fungi", "metazoa", "plants", "all"
+        ] = "vertebrates",
+    ) -> None:
         """Ensembl Gene mysql.
 
         Args:
-            organism: a bionty.Organism object
-            version: name of the ensembl DB version, e.g. "release-110"
+            organism: Name of the organism
+            version: Name of the ensembl DB version, e.g. "release-110"
+            taxa: The taxa of the organism to fetch genes for.
         """
         self._import()
         import mysql.connector as sql
         from sqlalchemy import create_engine
 
         self._organism = (
-            Organism(version=version).lookup().dict().get(organism)  # type:ignore
+            Organism(version=version, taxa=taxa).lookup().dict().get(organism)  # type:ignore
         )
-        self._url = (
-            f"mysql+mysqldb://anonymous:@ensembldb.ensembl.org/{self._organism.core_db}"
-        )
+        # vertebrates and plants use different ports
+        if taxa == "plants":
+            port = 4157
+        else:
+            port = 3306
+        self._url = f"mysql+mysqldb://anonymous:@ensembldb.ensembl.org:{port}/{self._organism.core_db}"
         self._engine = create_engine(url=self._url)
 
     def _import(self):
@@ -232,8 +242,10 @@ class EnsemblGene:
         df_res = df_res[~df_res["ensembl_gene_id"].isna()]
 
         # if stable_id is not ensembl_gene_id, keep a stable_id column
-        if not any(df_res["ensembl_gene_id"].str.startswith("ENS")):
-            logger.warning("no ensembl_gene_id found, writing to table_id column.")
+        if not all(df_res["ensembl_gene_id"].str.startswith("ENS")):
+            logger.warning(
+                "ensembl_gene_id column not all ENS-prefixed, writing to stable_id column."
+            )
             df_res.insert(0, "stable_id", df_res.pop("ensembl_gene_id"))
             df_res = df_res.sort_values("stable_id").reset_index(drop=True)
         else:
