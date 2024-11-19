@@ -31,6 +31,6 @@ def test_local_file(local):
 
     downloaded_path = Path(url_download(url=f"file://{local_file}", localpath=local[0]))
 
-    with open(downloaded_path, "r") as f:
+    with open(downloaded_path) as f:
         assert f.read() == "temporary file"
     local_file.unlink()
