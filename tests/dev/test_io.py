@@ -20,3 +20,17 @@ def test_url_download(local):
 
     downloaded_path = Path(url_download(url=url, localpath=localpath))
     assert downloaded_path.exists()
+
+
+def test_local_file(local):
+    # Create a temporary file in a temporary directory
+    local_file = Path("/tmp/test.txt")
+    with open(local_file, "w") as f:
+        f.write("temporary file")
+    assert local_file.exists()
+
+    downloaded_path = Path(url_download(url=f"file://{local_file}", localpath=local[0]))
+
+    with open(downloaded_path, "r") as f:
+        assert f.read() == "temporary file"
+    local_file.unlink()

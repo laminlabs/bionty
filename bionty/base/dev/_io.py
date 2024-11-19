@@ -50,7 +50,7 @@ def url_download(
         HttpError: If the request response is not 200 and OK.
     """
     if url.startswith("file://"):
-        localpath = url.split("file://")[-1]
+        url = url.split("file://")[-1]
         shutil.copy(url, localpath)
         return localpath
     try:
