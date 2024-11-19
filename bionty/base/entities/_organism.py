@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, Optional
+from typing import Literal
 
 import pandas as pd
 
@@ -38,6 +38,7 @@ class Organism(PublicOntology):
         **kwargs,
     ):
         # To support the organism kwarg being passed in getattr access in other parts of the code
+        # https://github.com/laminlabs/bionty/issues/163
         if kwargs.get("organism") is not None:
             taxa = kwargs.pop("organism")
         super().__init__(organism=taxa, source=source, version=version, **kwargs)

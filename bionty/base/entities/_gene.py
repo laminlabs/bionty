@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, Literal
+from typing import TYPE_CHECKING, Literal, NamedTuple
 
 import pandas as pd
 from lamin_utils import logger
@@ -11,6 +11,15 @@ from bionty.base.dev._io import s3_bionty_assets
 
 from ._organism import Organism
 from ._shared_docstrings import _doc_params, doc_entites
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+
+class MappingResult(NamedTuple):
+    mapped: dict[str, str]
+    ambiguous: dict[str, list[str]]
+    unmapped: list[str]
 
 
 @_doc_params(doc_entities=doc_entites)
@@ -43,9 +52,7 @@ class Gene(PublicOntology):
             **kwargs,
         )
 
-    def map_legacy_ids(
-        self, values: Iterable
-    ) -> dict[str, dict[str, str] | dict[str, list[str]] | list[str]]:
+    def map_legacy_ids(self, values: Iterable) -> MappingResult:
         """Convert legacy ids to current IDs.
 
         This only works if the legacy ensembl ID has a reference to the current ensembl ID.
@@ -99,6 +106,7 @@ class EnsemblGene:
         Args:
             organism: Name of the organism
             version: Name of the ensembl DB version, e.g. "release-110"
+            taxa: The taxa of the organism to fetch genes for.
         """
         self._import()
         import mysql.connector as sql
@@ -260,7 +268,7 @@ class EnsemblGene:
         self,
         results: pd.DataFrame,
         values: Iterable,
-    ):
+    ) -> MappingResult:
         # unique mappings
         mapper = (
             results.drop_duplicates(["old_stable_id"], keep=False)
@@ -278,9 +286,34 @@ class EnsemblGene:
         )
         # unmappables
         unmapped = set(values).difference(results["old_stable_id"])
-        return {"mapped": mapper, "ambiguous": ambiguous, "unmapped": list(unmapped)}
+        return MappingResult(
+            mapped=mapper, ambiguous=ambiguous, unmapped=list(unmapped)
+        )
 
-    def map_legacy_ids(self, values: Iterable, df: pd.DataFrame):
+    def map_legacy_ids(self, values: Iterable, df: pd.DataFrame) -> MappingResult:
+        """Maps legacy gene IDs to current Ensembl gene IDs.
+
+        Takes legacy gene IDs and maps them to current Ensembl IDs by querying the Ensembl MySQL database.
+        Returns mapping results categorized as unique mappings,
+        ambiguous mappings (one legacy ID maps to multiple current IDs), and unmapped IDs.
+
+        Args:
+            values: Single gene ID string or iterable of gene ID strings to map
+            df: DataFrame containing current Ensembl gene IDs in 'ensembl_gene_id' column
+
+        Returns:
+            MappingResult containing:
+                mapped: Dictionary of unique legacy ID to current ID mappings
+                ambiguous: Dictionary of legacy IDs to lists of possible current IDs
+                unmapped: List of legacy IDs that couldn't be mapped
+
+        Example:
+            >>> map_legacy_ids(['ENSG00000139618'], df)
+            MappingResult(mapped={'ENSG00000139618': 'ENSG00000012048'},
+                          ambiguous={},
+                          unmapped=[]
+                          )
+        """
         if isinstance(values, str):
             legacy_genes = f"('{values}')"
             values = [values]

@@ -14,14 +14,6 @@ def _doc_params(**kwds):  # pragma: no cover
     return dec
 
 
-def remove_prefix(
-    text, prefix
-):  # pragma: no cover  # TODO replace with removeprefix Python 3.9+
-    if text.startswith(prefix):
-        return text[len(prefix) :]
-    return text
-
-
 doc_entites = """\
 organism: `name` of `Organism` entity.
         source: The key of the source in the local.yml versions file.
@@ -30,7 +22,7 @@ organism: `name` of `Organism` entity.
                   Get available versions with `.display_available_sources()`.
 """
 organism_removed_tmp = "\n".join(doc_entites.split("\n")[1:]).split("\n")
-organism_removed_tmp[0] = remove_prefix(organism_removed_tmp[0], "        ")
+organism_removed_tmp[0] = organism_removed_tmp[0].removeprefix("        ")
 organism_removed = "\n".join(organism_removed_tmp)
 
 

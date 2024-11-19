@@ -1,6 +1,7 @@
 import bionty.base as bt_base
 import pandas as pd
 import pytest
+from bionty.base.entities._gene import MappingResult
 
 
 @pytest.fixture(scope="module")
@@ -57,27 +58,27 @@ def test_ensemblgene_map_legacy_ids():
         "ENSG00000215271",
     ]
     result = gn.map_legacy_ids(legacy_genes)
-    assert result == {
-        "mapped": {
+    assert result == MappingResult(
+        mapped={
             "ENSG00000204092": "ENSG00000226070",
             "ENSG00000215271": "ENSG00000290292",
             "ENSG00000261490": "ENSG00000071127",
             "ENSG00000280710": "ENSG00000125304",
         },
-        "ambiguous": {"ENSG00000203812": ["ENSG00000288859", "ENSG00000288825"]},
-        "unmapped": [],
-    }
+        ambiguous={"ENSG00000203812": ["ENSG00000288859", "ENSG00000288825"]},
+        unmapped=[],
+    )
 
     result = gn.map_legacy_ids("ENSG00000280710")
-    assert result == {
-        "mapped": {"ENSG00000280710": "ENSG00000125304"},
-        "ambiguous": {},
-        "unmapped": [],
-    }
+    assert result == MappingResult(
+        mapped={"ENSG00000280710": "ENSG00000125304"},
+        ambiguous={},
+        unmapped=[],
+    )
 
     result = gn.map_legacy_ids(["ENSG00000280710"])
-    assert result == {
-        "mapped": {"ENSG00000280710": "ENSG00000125304"},
-        "ambiguous": {},
-        "unmapped": [],
-    }
+    assert result == MappingResult(
+        mapped={"ENSG00000280710": "ENSG00000125304"},
+        ambiguous={},
+        unmapped=[],
+    )
