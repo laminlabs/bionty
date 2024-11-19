@@ -22,7 +22,9 @@ class Organism(PublicOntology):
 
     def __init__(
         self,
-        taxa: Literal["vertebrates", "bacteria", "fungi", "metazoa", "plants", "all"]
+        organism: Literal[
+            "vertebrates", "bacteria", "fungi", "metazoa", "plants", "all"
+        ]
         | None = None,
         source: Literal["ensembl", "ncbitaxon"] | None = None,
         version: Literal[
@@ -37,11 +39,7 @@ class Organism(PublicOntology):
         | None = None,
         **kwargs,
     ):
-        # To support the organism kwarg being passed in getattr access in other parts of the code
-        # https://github.com/laminlabs/bionty/issues/163
-        if kwargs.get("organism") is not None:
-            taxa = kwargs.pop("organism")
-        super().__init__(organism=taxa, source=source, version=version, **kwargs)
+        super().__init__(organism=organism, source=source, version=version, **kwargs)
 
     def _load_df(self) -> pd.DataFrame:
         if self.source == "ensembl":
