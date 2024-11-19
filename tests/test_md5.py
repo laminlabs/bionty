@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Tuple
 
 import pytest
 from bionty.base.dev._md5 import calculate_md5, verify_md5
@@ -8,7 +7,7 @@ CURRENT_DIR = Path(__file__).parent
 
 
 @pytest.fixture(scope="module")
-def file_fixture() -> Tuple[str, str]:  # type: ignore
+def file_fixture() -> tuple[str, str]:  # type: ignore
     file_path = "test_file.txt"
     with open(file_path, "w") as f:
         f.write("Hello, world!")
