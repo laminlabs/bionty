@@ -17,6 +17,15 @@ if TYPE_CHECKING:
 
 
 class MappingResult(NamedTuple):
+    """Result of mapping legacy Ensembl gene IDs to current IDs.
+
+    Attributes:
+        mapped: Dictionary of successfully mapped old ensembl IDs to new ensembl IDs
+        ambiguous: Dictionary of ambiguously mapped old ensembl IDs to new ensembl IDs - when
+            a legacy ID maps to multiple current IDs
+        unmapped: List of old ensembl IDs that couldn't be found in the current version
+    """
+
     mapped: dict[str, str]
     ambiguous: dict[str, list[str]]
     unmapped: list[str]
@@ -61,12 +70,6 @@ class Gene(PublicOntology):
 
         Args:
             values: Legacy ensemble gene IDs of any version
-
-        Returns:
-            :class:`~bionty.base.entities._gene.MappingResult` containing:
-            - mapped: Dictionary of successfully mapped old ensembl IDs to new ensembl IDs
-            - ambiguous: Dictionary of ambigiously mapped old ensembl IDs to new ensembl IDs
-            - unmapped: List of unmapped ensembl IDs
 
         Examples:
             >>> gene = bt.base.Gene()
@@ -300,12 +303,6 @@ class EnsemblGene:
         Args:
             values: Single gene ID string or iterable of gene ID strings to map
             df: DataFrame containing current Ensembl gene IDs in 'ensembl_gene_id' column
-
-        Returns:
-            :class:`~bionty.base.entities._gene.MappingResult` containing:
-                mapped: Dictionary of unique legacy ID to current ID mappings
-                ambiguous: Dictionary of legacy IDs to lists of possible current IDs
-                unmapped: List of legacy IDs that couldn't be mapped
 
         Example:
             >>> map_legacy_ids(['ENSG00000139618'], df)
