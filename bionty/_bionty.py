@@ -45,6 +45,10 @@ def create_or_get_organism_record(
                 try:
                     # create a organism record from bionty reference
                     organism_record = Organism.from_source(name=organism)
+                    if organism_record is None:
+                        raise ValueError(
+                            f"Organism {organism} can't be created from the bionty reference, check your spelling or create it manually."
+                        )
                     # link the organism record to the default bionty source
                     organism_record.source = get_source_record(
                         bt_base.Organism(), Organism
