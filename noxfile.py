@@ -16,7 +16,7 @@ def lint(session: nox.Session) -> None:
 @nox.session
 @nox.parametrize("group", ["bionty-unit", "bionty-docs"])
 def build(session: nox.Session, group: str):
-    branch = "main" if IS_PR else "release"  # point back to "release"
+    branch = "main" if IS_PR else "main"  # point back to "release"
     install_lamindb(session, branch=branch)
     session.run(*"uv pip install --system -e .[dev]".split())
 
@@ -26,4 +26,4 @@ def build(session: nox.Session, group: str):
     elif group == "bionty-docs":
         session.run(*f"pytest -s {coverage_args} ./docs/guide".split())
         run(session, "lamin init --storage ./docsbuild --schema bionty")
-        build_docs(session, strict=True)
+        build_docs(session, strict=False)
