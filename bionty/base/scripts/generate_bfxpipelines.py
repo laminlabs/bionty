@@ -5,7 +5,6 @@ import os
 import secrets
 import string
 from pathlib import Path
-from typing import Dict, Optional, Union
 
 import pandas as pd
 from github import Github
@@ -32,7 +31,7 @@ def hash_str(s: str) -> str:
     return to_b64_str(hashlib.md5(bstr).digest())
 
 
-def hash_id(input_id: Optional[str] = None, *, n_char: int) -> str:
+def hash_id(input_id: str | None = None, *, n_char: int) -> str:
     if input_id is None:
         return base62(n_char=n_char)
     else:
@@ -75,7 +74,7 @@ def generate_nf_core_pipelines_info() -> None:
         f.write(json_data)
 
 
-def merge_json_files(pipelines_folder_path: Union[str, Path], output_path: str) -> None:
+def merge_json_files(pipelines_folder_path: str | Path, output_path: str) -> None:
     """Merge all JSON files in a folder and write the merged data to a new JSON file.
 
     Args:
@@ -85,7 +84,7 @@ def merge_json_files(pipelines_folder_path: Union[str, Path], output_path: str) 
     pipelines_folder_path = Path(pipelines_folder_path)
     file_paths = list(pipelines_folder_path.glob("*.json"))
 
-    pipeline_json: Dict = {}
+    pipeline_json: dict = {}
 
     for file_path in file_paths:
         with open(file_path) as f:
