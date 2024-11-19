@@ -1,12 +1,17 @@
-from pathlib import Path
-from typing import Type
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import pandas as pd
 from lamin_utils import logger
 from lamindb_setup.core._setup_bionty_sources import RENAME
-from lnschema_core.models import Artifact, Record
 
 import bionty.base as bt_base
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from lnschema_core.models import Artifact, Record
 
 
 def sync_all_sources_to_latest():
@@ -79,7 +84,7 @@ def set_latest_sources_as_currently_used():
 
 
 def filter_bionty_df_columns(
-    model: Type[Record], public_ontology: bt_base.PublicOntology
+    model: type[Record], public_ontology: bt_base.PublicOntology
 ) -> pd.DataFrame:
     """Filter columns of public ontology to match the model fields."""
     bionty_df = pd.DataFrame()

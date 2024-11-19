@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from typing import TYPE_CHECKING, Tuple, overload
+from typing import TYPE_CHECKING, overload
 
 import numpy as np
 from django.db import models
@@ -172,7 +172,7 @@ class BioRecord(Record, HasParents, CanCurate):
         if (
             args
             and len(args) == 1
-            and isinstance(args[0], (Tuple, list))
+            and isinstance(args[0], (tuple, list))
             and len(args[0]) > 0
         ):
             if isinstance(args[0], list) and len(args[0]) > 1:

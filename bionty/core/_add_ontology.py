@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable
+from typing import TYPE_CHECKING
 
 from lamin_utils import logger
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     import pandas as pd
     from lnschema_core.models import Record
 

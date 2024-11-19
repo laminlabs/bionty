@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Dict, List, Literal, Union
+from typing import Literal
 
 import pandas as pd
 from lamin_utils import logger
@@ -80,7 +82,7 @@ def create_or_update_sources_local_yaml(overwrite: bool = True) -> None:
 
 
 def parse_sources_yaml(
-    filepath: Union[str, Path] = settings.public_sources,
+    filepath: str | Path = settings.public_sources,
 ) -> pd.DataFrame:
     """Parse values from sources yaml file into a DataFrame.
 
@@ -155,9 +157,7 @@ def create_currently_used_sources_yaml(
         write_yaml(parse_currently_used_sources(source_path), settings.current_sources)
 
 
-def records_diff_btw_yamls(
-    yamlpath1: Union[str, Path], yamlpath2: Union[str, Path]
-) -> List:
+def records_diff_btw_yamls(yamlpath1: str | Path, yamlpath2: str | Path) -> list:
     """Records in yaml1 but not yaml2."""
     public_df_records = parse_sources_yaml(yamlpath1).to_dict(orient="records")
     local_df_records = parse_sources_yaml(yamlpath2).to_dict(orient="records")
@@ -184,7 +184,7 @@ def update_local_sources_yaml() -> None:
         )
 
 
-def parse_currently_used_sources(yaml: Union[str, Path, List[Dict]]) -> Dict:
+def parse_currently_used_sources(yaml: str | Path | list[dict]) -> dict:
     """Parse out the most recent versions from yaml."""
 
     def _parse(key: str):
@@ -200,7 +200,7 @@ def parse_currently_used_sources(yaml: Union[str, Path, List[Dict]]) -> Dict:
         else:
             records = yaml
 
-        current_dict: Dict = {}
+        current_dict: dict = {}
         for kwargs in records:
             entity, organism, source, version = (
                 kwargs["entity"],
@@ -220,7 +220,7 @@ def parse_currently_used_sources(yaml: Union[str, Path, List[Dict]]) -> Dict:
         return _parse("species")
 
 
-def add_records_to_existing_dict(records: List[Dict], target_dict: Dict) -> Dict:
+def add_records_to_existing_dict(records: list[dict], target_dict: dict) -> dict:
     """Add records to a versions yaml file."""
     for kwargs in records:
         entity, source, organism, version = (

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Literal, Optional
+from typing import Literal
 
 import pandas as pd
 from lamin_utils import logger

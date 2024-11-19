@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, Optional
-
-import pandas as pd
+from typing import Literal
 
 from bionty.base._public_ontology import PublicOntology
 from bionty.base.dev._io import s3_bionty_assets

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Iterable, Literal, Union, get_args, get_origin
+from typing import TYPE_CHECKING, Literal, Union, get_args, get_origin
 
 import numpy as np
 import pandas as pd
@@ -15,6 +15,7 @@ from .dev._io import s3_bionty_assets, url_download
 from .dev._md5 import verify_md5
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
     from pathlib import Path
 
     from .dev import InspectResult
