@@ -63,7 +63,7 @@ class Gene(PublicOntology):
             values: Legacy ensemble gene IDs of any version
 
         Returns:
-            A nested dictionary with keys:
+            :class:`~bionty.base.entities._gene.MappingResult` containing:
             - mapped: Dictionary of successfully mapped old ensembl IDs to new ensembl IDs
             - ambiguous: Dictionary of ambigiously mapped old ensembl IDs to new ensembl IDs
             - unmapped: List of unmapped ensembl IDs
@@ -302,7 +302,7 @@ class EnsemblGene:
             df: DataFrame containing current Ensembl gene IDs in 'ensembl_gene_id' column
 
         Returns:
-            MappingResult containing:
+            :class:`~bionty.base.entities._gene.MappingResult` containing:
                 mapped: Dictionary of unique legacy ID to current ID mappings
                 ambiguous: Dictionary of legacy IDs to lists of possible current IDs
                 unmapped: List of legacy IDs that couldn't be mapped
