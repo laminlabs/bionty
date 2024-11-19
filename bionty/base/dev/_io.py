@@ -1,4 +1,5 @@
 import os
+import shutil
 from pathlib import Path
 from typing import Union
 
@@ -48,6 +49,10 @@ def url_download(
     Raises:
         HttpError: If the request response is not 200 and OK.
     """
+    if url.startswith("file://"):
+        url = url.split("file://")[-1]
+        shutil.copy(url, localpath)
+        return localpath
     try:
         response = requests.get(url, stream=True, allow_redirects=True, **kwargs)
         response.raise_for_status()
