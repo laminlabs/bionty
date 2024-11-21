@@ -589,13 +589,16 @@ class PublicOntology:
         elif field is not None and not isinstance(field, str):
             field = [f.name if isinstance(f, PublicOntologyField) else f for f in field]
 
-        return search(
+        result = search(
             df=self._df,
             string=string,
             field=field,
             limit=limit,
             case_sensitive=case_sensitive,
         )
+        if "ontology_id" in result.columns:
+            result = result.set_index("ontology_id")
+        return result
 
     def diff(
         self, compare_to: PublicOntology, **kwargs
