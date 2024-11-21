@@ -561,24 +561,18 @@ class PublicOntology:
         self,
         string: str,
         *,
-        field: PublicOntologyField | str | None = None,
+        field: PublicOntologyField | str | list[PublicOntologyField | str] = None,
         limit: int | None = None,
         case_sensitive: bool = False,
-        synonyms_field: PublicOntologyField | str | None = "synonyms",
     ):
-        """Search a given string against a PublicOntology field.
+        """Search a given string against a PublicOntology field or fields.
 
         Args:
             string: The input string to match against the field values.
-            field: The PublicOntologyField of the ontology the input string is matching against.
-            top_hit: Return all entries ranked by matching ratios.
-                If True, only return the top match.
-                Defaults to False.
-            limit: Maximum amount of top results to return.
-                   If None, return all results.
-                   Defaults to None.
+            field: The PublicOntologyField or several fileds of the ontology
+                the input string is matching against. Search all fields containing strings by default.
+            limit: Maximum amount of top results to return. If None, return all results.
             case_sensitive: Whether the match is case sensitive.
-            synonyms_field: By default also search against the synonyms (If None, skips search).
 
         Returns:
             Ranked search results.
@@ -590,13 +584,17 @@ class PublicOntology:
         """
         from lamin_utils._search import search
 
+        if isinstance(field, PublicOntologyField):
+            field = field.name
+        elif field is not None and not isinstance(field, str):
+            field = [f.name if isinstance(f, PublicOntologyField) else f for f in field]
+
         return search(
             df=self._df,
             string=string,
-            field=self._get_default_field(field),
+            field=field,
             limit=limit,
             case_sensitive=case_sensitive,
-            synonyms_field=str(synonyms_field),
         )
 
     def diff(
