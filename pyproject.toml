@@ -17,7 +17,8 @@ classifiers = [
 ]
 dependencies = [
     "lamindb",
-    "lamindb_setup>=0.77.6",
+    "lamindb-setup>=0.77.6",
+    "lamin-utils>=0.13.9",
     "filelock",
     "requests",
     "pyyaml",
