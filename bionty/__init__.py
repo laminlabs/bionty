@@ -110,9 +110,8 @@ def __getattr__(name):
 
 if _check_instance_setup():
     import lamindb as _lamindb  # this is needed as even the Record base class is defined in lamindb
-    from lamindb_setup import settings as _setup_settings
 
-    _load_bionty_sources(_setup_settings.instance)
+    _load_bionty_sources()
 
     del __getattr__  # delete so that imports work out
     from .core._settings import settings
