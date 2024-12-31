@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from django.core.exceptions import ObjectDoesNotExist
 from lamin_utils import logger
-from lnschema_core.models import Record
+from lamindb.models import Record
 
 import bionty.base as bt_base
 

@@ -17,7 +17,7 @@ Entity-related generators:
 import hashlib
 from typing import Optional
 
-from lnschema_core.ids import base62
+from lamindb.ids import base62
 
 
 def hash_str(s: str) -> str:
