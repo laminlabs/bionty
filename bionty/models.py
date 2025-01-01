@@ -7,7 +7,7 @@ import numpy as np
 from django.db import models
 from django.db.models import CASCADE, PROTECT
 from lamin_utils import logger
-from lamindb.fields import (
+from lamindb.base.fields import (
     BigIntegerField,
     BooleanField,
     CharField,
