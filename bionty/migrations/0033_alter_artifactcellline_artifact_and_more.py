@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="links_cell_line",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
         migrations.AlterField(
@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="links_artifactcellline",
-                to="lnschema_core.feature",
+                to="lamindb.feature",
             ),
         ),
         migrations.AlterField(
@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="links_cell_marker",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
         migrations.AlterField(
@@ -65,7 +65,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="links_artifactcellmarker",
-                to="lnschema_core.feature",
+                to="lamindb.feature",
             ),
         ),
         migrations.AlterField(
@@ -74,7 +74,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="links_cell_type",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
         migrations.AlterField(
@@ -94,7 +94,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="links_artifactcelltype",
-                to="lnschema_core.feature",
+                to="lamindb.feature",
             ),
         ),
         migrations.AlterField(
@@ -103,7 +103,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="links_developmental_stage",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
         migrations.AlterField(
@@ -123,7 +123,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="links_artifactdevelopmentalstage",
-                to="lnschema_core.feature",
+                to="lamindb.feature",
             ),
         ),
         migrations.AlterField(
@@ -132,7 +132,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="links_disease",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
         migrations.AlterField(
@@ -152,7 +152,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="links_artifactdisease",
-                to="lnschema_core.feature",
+                to="lamindb.feature",
             ),
         ),
         migrations.AlterField(
@@ -161,7 +161,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="links_ethnicity",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
         migrations.AlterField(
@@ -181,7 +181,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="links_artifactethnicity",
-                to="lnschema_core.feature",
+                to="lamindb.feature",
             ),
         ),
         migrations.AlterField(
@@ -190,7 +190,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="links_experimental_factor",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
         migrations.AlterField(
@@ -210,7 +210,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="links_artifactexperimentalfactor",
-                to="lnschema_core.feature",
+                to="lamindb.feature",
             ),
         ),
         migrations.AlterField(
@@ -219,7 +219,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="links_gene",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
         migrations.AlterField(
@@ -230,7 +230,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="links_artifactgene",
-                to="lnschema_core.feature",
+                to="lamindb.feature",
             ),
         ),
         migrations.AlterField(
@@ -248,7 +248,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="links_organism",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
         migrations.AlterField(
@@ -259,7 +259,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="links_artifactorganism",
-                to="lnschema_core.feature",
+                to="lamindb.feature",
             ),
         ),
         migrations.AlterField(
@@ -277,7 +277,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="links_pathway",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
         migrations.AlterField(
@@ -288,7 +288,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="links_artifactpathway",
-                to="lnschema_core.feature",
+                to="lamindb.feature",
             ),
         ),
         migrations.AlterField(
@@ -306,7 +306,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="links_phenotype",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
         migrations.AlterField(
@@ -317,7 +317,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="links_artifactphenotype",
-                to="lnschema_core.feature",
+                to="lamindb.feature",
             ),
         ),
         migrations.AlterField(
@@ -335,7 +335,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="links_protein",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
         migrations.AlterField(
@@ -346,7 +346,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="links_artifactprotein",
-                to="lnschema_core.feature",
+                to="lamindb.feature",
             ),
         ),
         migrations.AlterField(
@@ -364,7 +364,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="links_tissue",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
         migrations.AlterField(
@@ -375,7 +375,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="links_artifacttissue",
-                to="lnschema_core.feature",
+                to="lamindb.feature",
             ),
         ),
         migrations.AlterField(

@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     import pandas as pd
-    from lnschema_core.models import Record
+    from lamindb.models import Record
 
     from bionty.models import BioRecord, Source
 

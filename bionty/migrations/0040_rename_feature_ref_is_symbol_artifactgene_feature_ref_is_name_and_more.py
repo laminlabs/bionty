@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
     dependencies = [
         ("bionty", "0039_alter_cellline_source_alter_cellmarker_source_and_more"),
-        ("lnschema_core", "0067_alter_featurevalue_unique_together_and_more"),
+        ("lamindb", "0067_alter_featurevalue_unique_together_and_more"),
     ]
 
     operations = [

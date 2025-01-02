@@ -7,14 +7,14 @@ import numpy as np
 from django.db import models
 from django.db.models import CASCADE, PROTECT
 from lamin_utils import logger
-from lnschema_core.fields import (
+from lamindb.base.fields import (
     BigIntegerField,
     BooleanField,
     CharField,
     ForeignKey,
     TextField,
 )
-from lnschema_core.models import (
+from lamindb.models import (
     Artifact,
     CanCurate,
     Feature,
@@ -1505,9 +1505,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
 class FeatureSetGene(Record, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = ForeignKey(
-        "lnschema_core.FeatureSet", CASCADE, related_name="+"
-    )
+    featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
     gene: Gene = ForeignKey("Gene", PROTECT, related_name="+")
 
     class Meta:
@@ -1517,9 +1515,7 @@ class FeatureSetGene(Record, LinkORM):
 class FeatureSetProtein(Record, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = ForeignKey(
-        "lnschema_core.FeatureSet", CASCADE, related_name="+"
-    )
+    featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
     protein: Protein = ForeignKey("Protein", PROTECT, related_name="+")
 
     class Meta:
@@ -1529,9 +1525,7 @@ class FeatureSetProtein(Record, LinkORM):
 class FeatureSetCellMarker(Record, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = ForeignKey(
-        "lnschema_core.FeatureSet", CASCADE, related_name="+"
-    )
+    featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
     # follow the .lower() convention in link models
     cellmarker: CellMarker = ForeignKey("CellMarker", PROTECT, related_name="+")
 
@@ -1542,9 +1536,7 @@ class FeatureSetCellMarker(Record, LinkORM):
 class FeatureSetPathway(Record, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = ForeignKey(
-        "lnschema_core.FeatureSet", CASCADE, related_name="+"
-    )
+    featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
     pathway: Pathway = ForeignKey("Pathway", PROTECT, related_name="+")
 
     class Meta:

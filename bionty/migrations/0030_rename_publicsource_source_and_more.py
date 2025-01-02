@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     dependencies = [
         ("bionty", "0029_alter_cellline_previous_runs_and_more"),
-        ("lnschema_core", "0055_artifact_type_artifactparamvalue_and_more"),
+        ("lamindb", "0055_artifact_type_artifactparamvalue_and_more"),
     ]
 
     operations = [
@@ -89,7 +89,7 @@ class Migration(migrations.Migration):
             model_name="source",
             name="artifacts",
             field=models.ManyToManyField(
-                related_name="reference_of_sources", to="lnschema_core.artifact"
+                related_name="reference_of_sources", to="lamindb.artifact"
             ),
         ),
         migrations.AddField(
@@ -100,7 +100,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="reference_of_source",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
         migrations.AddField(

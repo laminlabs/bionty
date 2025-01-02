@@ -11,7 +11,7 @@ import bionty.base as bt_base
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from lnschema_core.models import Artifact, Record
+    from lamindb.models import Artifact, Record
 
 
 def sync_all_sources_to_latest():

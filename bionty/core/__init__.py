@@ -12,7 +12,7 @@
 
 from lamindb_setup._check_setup import _check_instance_setup
 
-_check_instance_setup(from_lamindb=True)
+_check_instance_setup(from_module="bionty")
 
 from bionty.models import BioRecord, StaticReference
 

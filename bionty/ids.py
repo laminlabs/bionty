@@ -15,9 +15,18 @@ Entity-related generators:
 """
 
 import hashlib
+import secrets
+import string
 from typing import Optional
 
-from lnschema_core.ids import base62
+
+# temporarily duplicated until we figure out the new place for
+# ids in lamindb
+def base62(n_char: int) -> str:
+    """Random Base62 string."""
+    alphabet = string.digits + string.ascii_letters.swapcase()
+    id = "".join(secrets.choice(alphabet) for i in range(n_char))
+    return id
 
 
 def hash_str(s: str) -> str:
