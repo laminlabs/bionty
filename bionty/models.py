@@ -16,6 +16,7 @@ from lamindb.base.fields import (
 )
 from lamindb.models import (
     Artifact,
+    BasicRecord,
     CanCurate,
     Feature,
     FeatureSet,
@@ -1502,7 +1503,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
 
-class FeatureSetGene(Record, LinkORM):
+class FeatureSetGene(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
     featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
@@ -1512,7 +1513,7 @@ class FeatureSetGene(Record, LinkORM):
         unique_together = ("featureset", "gene")
 
 
-class FeatureSetProtein(Record, LinkORM):
+class FeatureSetProtein(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
     featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
@@ -1522,7 +1523,7 @@ class FeatureSetProtein(Record, LinkORM):
         unique_together = ("featureset", "protein")
 
 
-class FeatureSetCellMarker(Record, LinkORM):
+class FeatureSetCellMarker(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
     featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
@@ -1533,7 +1534,7 @@ class FeatureSetCellMarker(Record, LinkORM):
         unique_together = ("featureset", "cellmarker")
 
 
-class FeatureSetPathway(Record, LinkORM):
+class FeatureSetPathway(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
     featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
@@ -1543,7 +1544,7 @@ class FeatureSetPathway(Record, LinkORM):
         unique_together = ("featureset", "pathway")
 
 
-class ArtifactOrganism(Record, LinkORM, TracksRun):
+class ArtifactOrganism(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_organism")
     organism: Organism = ForeignKey("Organism", PROTECT, related_name="links_artifact")
@@ -1557,7 +1558,7 @@ class ArtifactOrganism(Record, LinkORM, TracksRun):
         unique_together = ("artifact", "organism", "feature")
 
 
-class ArtifactGene(Record, LinkORM, TracksRun):
+class ArtifactGene(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_gene")
     gene: Gene = ForeignKey("Gene", PROTECT, related_name="links_artifact")
@@ -1571,7 +1572,7 @@ class ArtifactGene(Record, LinkORM, TracksRun):
         unique_together = ("artifact", "gene", "feature")
 
 
-class ArtifactProtein(Record, LinkORM, TracksRun):
+class ArtifactProtein(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_protein")
     protein: Protein = ForeignKey("Protein", PROTECT, related_name="links_artifact")
@@ -1585,7 +1586,7 @@ class ArtifactProtein(Record, LinkORM, TracksRun):
         unique_together = ("artifact", "protein", "feature")
 
 
-class ArtifactCellMarker(Record, LinkORM, TracksRun):
+class ArtifactCellMarker(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_cell_marker")
     # follow the .lower() convention in link models
@@ -1606,7 +1607,7 @@ class ArtifactCellMarker(Record, LinkORM, TracksRun):
         unique_together = ("artifact", "cellmarker", "feature")
 
 
-class ArtifactTissue(Record, LinkORM, TracksRun):
+class ArtifactTissue(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_tissue")
     tissue: Tissue = ForeignKey("Tissue", PROTECT, related_name="links_artifact")
@@ -1620,7 +1621,7 @@ class ArtifactTissue(Record, LinkORM, TracksRun):
         unique_together = ("artifact", "tissue", "feature")
 
 
-class ArtifactCellType(Record, LinkORM, TracksRun):
+class ArtifactCellType(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_cell_type")
     # follow the .lower() convention in link models
@@ -1635,7 +1636,7 @@ class ArtifactCellType(Record, LinkORM, TracksRun):
         unique_together = ("artifact", "celltype", "feature")
 
 
-class ArtifactDisease(Record, LinkORM, TracksRun):
+class ArtifactDisease(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_disease")
     disease: Disease = ForeignKey("Disease", PROTECT, related_name="links_artifact")
@@ -1649,7 +1650,7 @@ class ArtifactDisease(Record, LinkORM, TracksRun):
         unique_together = ("artifact", "disease", "feature")
 
 
-class ArtifactCellLine(Record, LinkORM, TracksRun):
+class ArtifactCellLine(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_cell_line")
     # follow the .lower() convention in link models
@@ -1664,7 +1665,7 @@ class ArtifactCellLine(Record, LinkORM, TracksRun):
         unique_together = ("artifact", "cellline", "feature")
 
 
-class ArtifactPhenotype(Record, LinkORM, TracksRun):
+class ArtifactPhenotype(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_phenotype")
     phenotype: Phenotype = ForeignKey(
@@ -1684,7 +1685,7 @@ class ArtifactPhenotype(Record, LinkORM, TracksRun):
         unique_together = ("artifact", "phenotype", "feature")
 
 
-class ArtifactPathway(Record, LinkORM, TracksRun):
+class ArtifactPathway(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_pathway")
     pathway: Pathway = ForeignKey("Pathway", PROTECT, related_name="links_artifact")
@@ -1698,7 +1699,7 @@ class ArtifactPathway(Record, LinkORM, TracksRun):
         unique_together = ("artifact", "pathway", "feature")
 
 
-class ArtifactExperimentalFactor(Record, LinkORM, TracksRun):
+class ArtifactExperimentalFactor(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(
         Artifact, CASCADE, related_name="links_experimental_factor"
@@ -1720,7 +1721,7 @@ class ArtifactExperimentalFactor(Record, LinkORM, TracksRun):
         unique_together = ("artifact", "experimentalfactor", "feature")
 
 
-class ArtifactDevelopmentalStage(Record, LinkORM, TracksRun):
+class ArtifactDevelopmentalStage(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(
         Artifact, CASCADE, related_name="links_developmental_stage"
@@ -1743,7 +1744,7 @@ class ArtifactDevelopmentalStage(Record, LinkORM, TracksRun):
         unique_together = ("artifact", "developmentalstage", "feature")
 
 
-class ArtifactEthnicity(Record, LinkORM, TracksRun):
+class ArtifactEthnicity(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_ethnicity")
     ethnicity: Ethnicity = ForeignKey(
