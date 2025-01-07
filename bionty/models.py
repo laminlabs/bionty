@@ -331,13 +331,13 @@ class BioRecord(Record, HasParents, CanCurate):
         if bionty_source is None:
             logger.warning(
                 "please register a DataFrame artifact!   \n"
-                "→ artifact = ln.Artifact(df, visibility=0, run=False).save()   \n"
+                "→ artifact = ln.Artifact(df, _branch_code=0, run=False).save()   \n"
                 "→ source.dataframe_artifact = artifact   \n"
                 "→ source.save()"
             )
         else:
             df_artifact = ln.Artifact(
-                bionty_source.dataframe_artifact.path, visibility=0, run=False
+                bionty_source.dataframe_artifact.path, _branch_code=0, run=False
             ).save()
             new_source.dataframe_artifact = df_artifact
             new_source.save()
