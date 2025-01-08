@@ -1527,7 +1527,6 @@ class FeatureSetCellMarker(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
     featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
-    # follow the .lower() convention in link models
     cellmarker: CellMarker = ForeignKey("CellMarker", PROTECT, related_name="+")
 
     class Meta:
