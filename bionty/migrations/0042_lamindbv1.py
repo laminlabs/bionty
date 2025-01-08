@@ -79,4 +79,74 @@ class Migration(migrations.Migration):
             name="_branch_code",
             field=models.SmallIntegerField(db_index=True, default=1),
         ),
+        migrations.AddField(
+            model_name="cellline",
+            name="aux",
+            field=models.JSONField(default=None, null=True),
+        ),
+        migrations.AddField(
+            model_name="cellmarker",
+            name="aux",
+            field=models.JSONField(default=None, null=True),
+        ),
+        migrations.AddField(
+            model_name="celltype",
+            name="aux",
+            field=models.JSONField(default=None, null=True),
+        ),
+        migrations.AddField(
+            model_name="developmentalstage",
+            name="aux",
+            field=models.JSONField(default=None, null=True),
+        ),
+        migrations.AddField(
+            model_name="disease",
+            name="aux",
+            field=models.JSONField(default=None, null=True),
+        ),
+        migrations.AddField(
+            model_name="ethnicity",
+            name="aux",
+            field=models.JSONField(default=None, null=True),
+        ),
+        migrations.AddField(
+            model_name="experimentalfactor",
+            name="aux",
+            field=models.JSONField(default=None, null=True),
+        ),
+        migrations.AddField(
+            model_name="gene",
+            name="aux",
+            field=models.JSONField(default=None, null=True),
+        ),
+        migrations.AddField(
+            model_name="organism",
+            name="aux",
+            field=models.JSONField(default=None, null=True),
+        ),
+        migrations.AddField(
+            model_name="pathway",
+            name="aux",
+            field=models.JSONField(default=None, null=True),
+        ),
+        migrations.AddField(
+            model_name="phenotype",
+            name="aux",
+            field=models.JSONField(default=None, null=True),
+        ),
+        migrations.AddField(
+            model_name="protein",
+            name="aux",
+            field=models.JSONField(default=None, null=True),
+        ),
+        migrations.AddField(
+            model_name="source",
+            name="aux",
+            field=models.JSONField(default=None, null=True),
+        ),
+        migrations.AddField(
+            model_name="tissue",
+            name="aux",
+            field=models.JSONField(default=None, null=True),
+        ),
     ]
