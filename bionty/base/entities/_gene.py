@@ -63,36 +63,6 @@ class Gene(PublicOntology):
             **kwargs,
         )
 
-    @classmethod
-    def from_source(
-        cls,
-        *,
-        symbol: str | None = None,
-        ensembl_gene_id: str | None = None,
-        stable_id: str | None = None,
-        organism: str | Organism | None = None,
-        source: Source | None = None,
-        mute: bool = False,
-    ) -> Gene | list[Gene] | None:
-        """Create a Gene record from source based on a single identifying field.
-
-        Args:
-            symbol: Gene symbol (e.g. "TCF7")
-            ensembl_gene_id: Ensembl gene ID (e.g. "ENSG00000081059")
-            stable_id: Stable ID for genes without Ensembl IDs (e.g. yeast genes)
-            organism: Organism name or Organism record
-            source: Optional Source record to use
-            mute: Whether to suppress logging
-
-        Returns:
-            A single Gene record, list of Gene records, or None if not found
-
-        Examples:
-            >>> record = Gene.from_source(symbol="TCF7", organism="human")
-            >>> record = Gene.from_source(ensembl_gene_id="ENSG00000081059")
-            >>> record = Gene.from_source(stable_id="YAL001C", organism="yeast")
-        """
-
     def map_legacy_ids(self, values: Iterable) -> MappingResult:
         """Convert legacy ids to current IDs.
 
