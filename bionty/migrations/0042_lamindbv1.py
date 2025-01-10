@@ -158,7 +158,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=1,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="lamindb.space",
+                to="space",
             ),
         ),
         migrations.AddField(
@@ -168,7 +168,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=1,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="lamindb.space",
+                to="space",
             ),
         ),
         migrations.AddField(
@@ -178,7 +178,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=1,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="lamindb.space",
+                to="space",
             ),
         ),
         migrations.AddField(
@@ -188,7 +188,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=1,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="lamindb.space",
+                to="space",
             ),
         ),
         migrations.AddField(
@@ -198,7 +198,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=1,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="lamindb.space",
+                to="space",
             ),
         ),
         migrations.AddField(
@@ -208,7 +208,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=1,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="lamindb.space",
+                to="space",
             ),
         ),
         migrations.AddField(
@@ -218,7 +218,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=1,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="lamindb.space",
+                to="space",
             ),
         ),
         migrations.AddField(
@@ -228,7 +228,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=1,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="lamindb.space",
+                to="space",
             ),
         ),
         migrations.AddField(
@@ -238,7 +238,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=1,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="lamindb.space",
+                to="space",
             ),
         ),
         migrations.AddField(
@@ -248,7 +248,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=1,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="lamindb.space",
+                to="space",
             ),
         ),
         migrations.AddField(
@@ -258,7 +258,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=1,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="lamindb.space",
+                to="space",
             ),
         ),
         migrations.AddField(
@@ -268,7 +268,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=1,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="lamindb.space",
+                to="space",
             ),
         ),
         migrations.AddField(
@@ -278,7 +278,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=1,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="lamindb.space",
+                to="space",
             ),
         ),
         migrations.AddField(
@@ -288,7 +288,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=1,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="lamindb.space",
+                to="space",
             ),
         ),
     ]
