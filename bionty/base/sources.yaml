@@ -197,6 +197,9 @@ Tissue:
 Disease:
   mondo:
     all:
+      2024-08-06:
+        url: http://purl.obolibrary.org/obo/mondo/releases/2024-08-06/mondo.owl
+        md5: ""
       2024-06-04:
         url: http://purl.obolibrary.org/obo/mondo/releases/2024-06-04/mondo.owl
         md5: c47e8edb894c01f2511dfe0751fbc428
