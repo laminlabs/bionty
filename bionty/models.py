@@ -293,7 +293,7 @@ class BioRecord(Record, HasParents, CanCurate):
         import lamindb as ln
 
         unique_kwargs = {
-            "entity": cls.__get_name_with_schema__(),
+            "entity": cls.__get_name_with_module__(),
             "name": source.name,
             "version": source.version,
             "organism": source.organism,
@@ -392,7 +392,7 @@ class BioRecord(Record, HasParents, CanCurate):
         except (AttributeError, ValueError):
             if source is None:
                 kwargs = {
-                    "entity": cls.__get_name_with_schema__(),
+                    "entity": cls.__get_name_with_module__(),
                     "currently_used": True,
                 }
                 if organism is not None:
