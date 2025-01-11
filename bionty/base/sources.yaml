@@ -136,6 +136,9 @@ CellLine:
 CellType:
   cl:
     all:
+      2024-08-16:
+        url: http://purl.obolibrary.org/obo/cl/releases/2024-08-16/cl.owl
+        md5: ""
       2024-05-15:
         url: http://purl.obolibrary.org/obo/cl/releases/2024-05-15/cl.owl
         md5: 8a8638a9e79567935793e5007704c650
