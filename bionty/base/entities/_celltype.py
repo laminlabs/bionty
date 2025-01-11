@@ -31,6 +31,7 @@ class CellType(PublicOntology):
             "2024-02-13",
             "2024-04-05",
             "2024-05-15",
+            "2024-08-16",
         ]
         | None = None,
         **kwargs,
