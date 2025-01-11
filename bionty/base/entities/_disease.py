@@ -48,7 +48,7 @@ class Disease(PublicOntology):
             "2024-02-06",
             "2024-05-08",
             "2024-06-04",
-            "2024-08-06"
+            "2024-08-06",
         ]
         | None = None,
         **kwargs,
