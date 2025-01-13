@@ -575,7 +575,7 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    @_doc_params(doc_entities=doc_from_source)
+    @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
         *,
