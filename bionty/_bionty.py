@@ -77,10 +77,10 @@ def get_source_record(
     from .models import Source
 
     if public_ontology.__class__.__name__ == "StaticReference":
-        entity_name = registry.__get_name_with_schema__()
+        entity_name = registry.__get_name_with_module__()
     else:
         entity_name = (
-            f"{registry.__get_schema_name__()}.{public_ontology.__class__.__name__}"
+            f"{registry.__get_module_name__()}.{public_ontology.__class__.__name__}"
         )
     kwargs = {
         "entity": entity_name,

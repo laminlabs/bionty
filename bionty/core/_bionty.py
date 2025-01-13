@@ -99,7 +99,7 @@ def filter_bionty_df_columns(
 
 def _prepare_bionty_df(model: type[Record], bionty_df: pd.DataFrame):
     """Prepare the bionty DataFrame to match the model fields."""
-    if model.__get_name_with_schema__() == "bionty.Gene":
+    if model.__get_name_with_module__() == "bionty.Gene":
         # groupby ensembl_gene_id and concat ncbi_gene_ids
         groupby_id_col = (
             "ensembl_gene_id" if "ensembl_gene_id" in bionty_df else "stable_id"
