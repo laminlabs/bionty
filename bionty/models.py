@@ -695,6 +695,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
         *,
@@ -713,8 +714,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
             ensembl_gene_id: Ensembl gene ID (e.g. "ENSG00000081059")
             stable_id: Stable ID for genes without Ensembl IDs (e.g. yeast genes)
             organism: Organism name or Organism record
-            source: Optional Source record to use
-            mute: Whether to suppress logging
+            {doc_from_source}
 
         Returns:
             A single Gene record, list of Gene records, or None if not found
@@ -808,6 +808,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
         *,
@@ -826,8 +827,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
             uniprotkb_id: UniProt protein ID (e.g. "Q8N6N3")
             gene_symbol: Gene symbol (e.g. "SYT15B")
             organism: Organism name or Organism record
-            source: Optional Source record to use
-            mute: Whether to suppress logging
+            {doc_from_source}
 
         Returns:
             A single Protein record, list of Protein records, or None if not found
@@ -921,6 +921,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
         *,
@@ -941,8 +942,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
             ncbi_gene_id: NCBI gene ID that corresponds to this cell marker
             uniprotkb_id: UniProt ID that corresponds to this cell marker
             organism: Organism name or Organism record
-            source: Optional Source record to use
-            mute: Whether to suppress logging
+            {doc_from_source}
 
         Returns:
             A single CellMarker record, list of CellMarker records, or None if not found
@@ -1027,6 +1027,7 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
         *,
@@ -1047,8 +1048,7 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
             ncbi_gene_id: NCBI gene ID that corresponds to this cell marker
             uniprotkb_id: UniProt ID that corresponds to this cell marker
             organism: Organism name or Organism record
-            source: Optional Source record to use
-            mute: Whether to suppress logging
+            {doc_from_source}
 
         Returns:
             A single CellMarker record, list of CellMarker records, or None if not found
@@ -1133,6 +1133,7 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
         *,
@@ -1149,8 +1150,7 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
             name: Name of the cell type (e.g. "T cell", "B cell")
             ontology_id: Cell Ontology ID (e.g. "CL:0000084")
             abbr: Unique abbreviation of cell type
-            source: Optional Source record to use
-            mute: Whether to suppress logging
+            {doc_From_source}
 
         Returns:
             A single CellType record, list of CellType records, or None if not found
@@ -1235,6 +1235,7 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
         *,
@@ -1251,8 +1252,7 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
             name: Name of the disease (e.g. "Alzheimer disease", "type 2 diabetes")
             ontology_id: Disease ontology ID (e.g. "MONDO:0004975")
             abbr: Unique abbreviation of disease
-            source: Optional Source record to use
-            mute: Whether to suppress logging
+            {doc_from_source}
 
         Returns:
             A single Disease record, list of Disease records, or None if not found
@@ -1338,6 +1338,7 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
         *,
@@ -1354,8 +1355,7 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
             name: Name of the cell line (e.g. "K562", "HeLa")
             ontology_id: Cell Line Ontology ID (e.g. "CLO:0009477")
             abbr: Unique abbreviation of cell line
-            source: Optional Source record to use
-            mute: Whether to suppress logging
+            {doc_from_source}
 
         Returns:
             A single CellLine record, list of CellLine records, or None if not found
@@ -1443,6 +1443,7 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
         *,
@@ -1459,8 +1460,7 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
             name: Name of the phenotype (e.g. "Arachnodactyly", "Cardiomegaly")
             ontology_id: Phenotype ontology ID (e.g. "HP:0001166")
             abbr: Unique abbreviation of phenotype
-            source: Optional Source record to use
-            mute: Whether to suppress logging
+            {doc_from_source}
 
         Returns:
             A single Phenotype record, list of Phenotype records, or None if not found
@@ -1552,6 +1552,7 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
         *,
@@ -1568,8 +1569,7 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
             name: Name of the pathway (e.g. "mitotic cell cycle", "glycolysis")
             ontology_id: GO or Pathway Ontology ID (e.g. "GO:1903353", "PW:0000004")
             abbr: Unique abbreviation of pathway
-            source: Optional Source record to use
-            mute: Whether to suppress logging
+            {doc_from_source}
 
         Returns:
             A single Pathway record, list of Pathway records, or None if not found
@@ -1662,6 +1662,7 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
         *,
@@ -1678,8 +1679,7 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
             name: Name of the experimental factor (e.g. "scRNA-seq", "ChIP-seq")
             ontology_id: Experimental Factor Ontology ID (e.g. "EFO:0009922")
             abbr: Unique abbreviation of experimental factor
-            source: Optional Source record to use
-            mute: Whether to suppress logging
+            {doc_from_source}
 
         Returns:
             A single ExperimentalFactor record, list of ExperimentalFactor records, or None if not found
@@ -1767,6 +1767,7 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
         *,
@@ -1783,8 +1784,7 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
             name: Name of the developmental stage (e.g. "neurula stage", "gastrula stage")
             ontology_id: Developmental stage ontology ID (e.g. "HsapDv:0000004")
             abbr: Unique abbreviation of developmental stage
-            source: Optional Source record to use
-            mute: Whether to suppress logging
+            {doc_from_source}
 
         Returns:
             A single DevelopmentalStage record, list of DevelopmentalStage records, or None if not found
@@ -1871,6 +1871,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
         *,
@@ -1887,8 +1888,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
             name: Name of the ethnicity (e.g. "European", "East Asian")
             ontology_id: Human Ancestry Ontology ID (e.g. "HANCESTRO:0005")
             abbr: Unique abbreviation of ethnicity
-            source: Optional Source record to use
-            mute: Whether to suppress logging
+            {doc_from_source}
 
         Returns:
             A single Ethnicity record, list of Ethnicity records, or None if not found
