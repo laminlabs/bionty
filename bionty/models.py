@@ -28,9 +28,11 @@ from lamindb.models import (
 )
 
 import bionty.base as bt_base
+from bionty.base.dev._doc_util import _doc_params
 
 from . import ids
 from ._bionty import encode_uid, lookup2kwargs
+from ._shared_docstrings import doc_from_source
 from .base import PublicOntology
 from .base._public_ontology import InvalidParamError
 
@@ -572,6 +574,35 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    @_doc_params(doc_entities=doc_from_source)
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        scientific_name: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> Organism | list[Organism] | None:
+        """Create an Organism record from source based on a single identifying field.
+
+        Args:
+            name: Common name of the organism (e.g. "human", "mouse", "zebrafish")
+            ontology_id: NCBI Taxon ID (e.g. "9606")
+            scientific_name: Scientific name (e.g. "Homo sapiens", "Mus musculus")
+            {doc_from_source}
+
+        Returns:
+            A single Organism record, list of Organism records, or None if not found
+
+        Examples:
+            >>> record = Organism.from_source(name="human")
+            >>> record = Organism.from_source(ontology_id="9606")
+        """
+        return super().from_source(**kwargs)
+
 
 class Gene(BioRecord, TracksRun, TracksUpdates):
     """Genes - `Ensembl <https://ensembl.org/>`__, `NCBI Gene <https://www.ncbi.nlm.nih.gov/gene/>`__.
@@ -670,7 +701,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         symbol: str | None = None,
         ensembl_gene_id: str | None = None,
         stable_id: str | None = None,
-        organism: str | Organism | None = None,
+        organism: str | Organism = None,
         source: Source | None = None,
         mute: bool = False,
         **kwargs,
@@ -690,7 +721,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
 
         Examples:
             >>> record = Gene.from_source(symbol="TCF7", organism="human")
-            >>> record = Gene.from_source(ensembl_gene_id="ENSG00000081059")
+            >>> record = Gene.from_source(ensembl_gene_id="ENSG00000081059", organism="human")
             >>> record = Gene.from_source(stable_id="YAL001C", organism="yeast")
         """
         return super().from_source(**kwargs)
@@ -776,6 +807,38 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        uniprotkb_id: str | None = None,
+        gene_symbol: str | None = None,
+        organism: str | Organism | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> Protein | list[Protein] | None:
+        """Create a Protein record from source based on a single identifying field.
+
+        Args:
+            name: Protein name (e.g. "Synaptotagmin-15B")
+            uniprotkb_id: UniProt protein ID (e.g. "Q8N6N3")
+            gene_symbol: Gene symbol (e.g. "SYT15B")
+            organism: Organism name or Organism record
+            source: Optional Source record to use
+            mute: Whether to suppress logging
+
+        Returns:
+            A single Protein record, list of Protein records, or None if not found
+
+        Examples:
+            >>> record = Protein.from_source(name="Synaptotagmin-15B", organism="human")
+            >>> record = Protein.from_source(uniprotkb_id="Q8N6N3")
+            >>> record = Protein.from_source(gene_symbol="SYT15B", organism="human")
+        """
+        return super().from_source(**kwargs)
+
 
 class CellMarker(BioRecord, TracksRun, TracksUpdates):
     """Cell markers - `CellMarker <http://xteam.xbio.top/CellMarker>`__.
@@ -857,6 +920,40 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        gene_symbol: str | None = None,
+        ncbi_gene_id: str | None = None,
+        uniprotkb_id: str | None = None,
+        organism: str | Organism | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> CellMarker | list[CellMarker] | None:
+        """Create a CellMarker record from source based on a single identifying field.
+
+        Args:
+            name: Cell marker name (e.g. "PD1", "CD19")
+            gene_symbol: Gene symbol (e.g. "PDCD1", "CD19")
+            ncbi_gene_id: NCBI gene ID that corresponds to this cell marker
+            uniprotkb_id: UniProt ID that corresponds to this cell marker
+            organism: Organism name or Organism record
+            source: Optional Source record to use
+            mute: Whether to suppress logging
+
+        Returns:
+            A single CellMarker record, list of CellMarker records, or None if not found
+
+        Examples:
+            >>> record = CellMarker.from_source(name="PD1", organism="human")
+            >>> record = CellMarker.from_source(gene_symbol="PDCD1", organism="human")
+            >>> record = CellMarker.from_source(name="CD19", organism="mouse")
+        """
+        return super().from_source(**kwargs)
+
 
 class Tissue(BioRecord, TracksRun, TracksUpdates):
     """Tissues - `Uberon <http://obophenotype.github.io/uberon/>`__.
@@ -928,6 +1025,40 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
+
+    @classmethod
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        gene_symbol: str | None = None,
+        ncbi_gene_id: str | None = None,
+        uniprotkb_id: str | None = None,
+        organism: str | Organism | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> CellMarker | list[CellMarker] | None:
+        """Create a CellMarker record from source based on a single identifying field.
+
+        Args:
+            name: Cell marker name (e.g. "PD1", "CD19")
+            gene_symbol: Gene symbol (e.g. "PDCD1", "CD19")
+            ncbi_gene_id: NCBI gene ID that corresponds to this cell marker
+            uniprotkb_id: UniProt ID that corresponds to this cell marker
+            organism: Organism name or Organism record
+            source: Optional Source record to use
+            mute: Whether to suppress logging
+
+        Returns:
+            A single CellMarker record, list of CellMarker records, or None if not found
+
+        Examples:
+            >>> record = CellMarker.from_source(name="PD1", organism="human")
+            >>> record = CellMarker.from_source(gene_symbol="PDCD1", organism="human")
+            >>> record = CellMarker.from_source(name="CD19", organism="mouse")
+        """
+        return super().from_source(**kwargs)
 
 
 class CellType(BioRecord, TracksRun, TracksUpdates):
@@ -1001,6 +1132,36 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> CellType | list[CellType] | None:
+        """Create a CellType record from source based on a single identifying field.
+
+        Args:
+            name: Name of the cell type (e.g. "T cell", "B cell")
+            ontology_id: Cell Ontology ID (e.g. "CL:0000084")
+            abbr: Unique abbreviation of cell type
+            source: Optional Source record to use
+            mute: Whether to suppress logging
+
+        Returns:
+            A single CellType record, list of CellType records, or None if not found
+
+        Examples:
+            >>> record = CellType.from_source(name="T cell")
+            >>> record = CellType.from_source(ontology_id="CL:0000084")
+            >>> record = CellType.from_source(name="B cell", source=source)
+        """
+        return super().from_source(**kwargs)
+
 
 class Disease(BioRecord, TracksRun, TracksUpdates):
     """Diseases - `Mondo <https://mondo.monarchinitiative.org/>`__, `Human Disease <https://disease-ontology.org/>`__.
@@ -1072,6 +1233,36 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
+
+    @classmethod
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> Disease | list[Disease] | None:
+        """Create a Disease record from source based on a single identifying field.
+
+        Args:
+            name: Name of the disease (e.g. "Alzheimer disease", "type 2 diabetes")
+            ontology_id: Disease ontology ID (e.g. "MONDO:0004975")
+            abbr: Unique abbreviation of disease
+            source: Optional Source record to use
+            mute: Whether to suppress logging
+
+        Returns:
+            A single Disease record, list of Disease records, or None if not found
+
+        Examples:
+            >>> record = Disease.from_source(name="Alzheimer disease")
+            >>> record = Disease.from_source(ontology_id="MONDO:0004975")
+            >>> record = Disease.from_source(name="type 2 diabetes")
+        """
+        return super().from_source(**kwargs)
 
 
 class CellLine(BioRecord, TracksRun, TracksUpdates):
@@ -1145,6 +1336,35 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
+
+    @classmethod
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> CellLine | list[CellLine] | None:
+        """Create a CellLine record from source based on a single identifying field.
+
+        Args:
+            name: Name of the cell line (e.g. "K562", "HeLa")
+            ontology_id: Cell Line Ontology ID (e.g. "CLO:0009477")
+            abbr: Unique abbreviation of cell line
+            source: Optional Source record to use
+            mute: Whether to suppress logging
+
+        Returns:
+            A single CellLine record, list of CellLine records, or None if not found
+
+        Examples:
+            >>> record = CellLine.from_source(name="K562")
+            >>> record = CellLine.from_source(ontology_id="CLO:0009477")
+        """
+        return super().from_source(**kwargs)
 
 
 class Phenotype(BioRecord, TracksRun, TracksUpdates):
@@ -1221,6 +1441,35 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
+
+    @classmethod
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> Phenotype | list[Phenotype] | None:
+        """Create a Phenotype record from source based on a single identifying field.
+
+        Args:
+            name: Name of the phenotype (e.g. "Arachnodactyly", "Cardiomegaly")
+            ontology_id: Phenotype ontology ID (e.g. "HP:0001166")
+            abbr: Unique abbreviation of phenotype
+            source: Optional Source record to use
+            mute: Whether to suppress logging
+
+        Returns:
+            A single Phenotype record, list of Phenotype records, or None if not found
+
+        Examples:
+            >>> record = Phenotype.from_source(name="Arachnodactyly")
+            >>> record = Phenotype.from_source(ontology_id="HP:0001166")
+        """
+        return super().from_source(**kwargs)
 
 
 class Pathway(BioRecord, TracksRun, TracksUpdates):
@@ -1301,6 +1550,35 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
+
+    @classmethod
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> Pathway | list[Pathway] | None:
+        """Create a Pathway record from source based on a single identifying field.
+
+        Args:
+            name: Name of the pathway (e.g. "mitotic cell cycle", "glycolysis")
+            ontology_id: GO or Pathway Ontology ID (e.g. "GO:1903353", "PW:0000004")
+            abbr: Unique abbreviation of pathway
+            source: Optional Source record to use
+            mute: Whether to suppress logging
+
+        Returns:
+            A single Pathway record, list of Pathway records, or None if not found
+
+        Examples:
+            >>> record = Pathway.from_source(name="mitotic cell cycle")
+            >>> record = Pathway.from_source(ontology_id="GO:1903353")
+        """
+        return super().from_source(**kwargs)
 
 
 class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
@@ -1383,6 +1661,35 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> ExperimentalFactor | list[ExperimentalFactor] | None:
+        """Create an ExperimentalFactor record from source based on a single identifying field.
+
+        Args:
+            name: Name of the experimental factor (e.g. "scRNA-seq", "ChIP-seq")
+            ontology_id: Experimental Factor Ontology ID (e.g. "EFO:0009922")
+            abbr: Unique abbreviation of experimental factor
+            source: Optional Source record to use
+            mute: Whether to suppress logging
+
+        Returns:
+            A single ExperimentalFactor record, list of ExperimentalFactor records, or None if not found
+
+        Examples:
+            >>> record = ExperimentalFactor.from_source(name="scRNA-seq")
+            >>> record = ExperimentalFactor.from_source(ontology_id="EFO:0009922")
+        """
+        return super().from_source(**kwargs)
+
 
 class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
     """Developmental stages - `Human Developmental Stages <https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv>`__,
@@ -1459,6 +1766,35 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> DevelopmentalStage | list[DevelopmentalStage] | None:
+        """Create a DevelopmentalStage record from source based on a single identifying field.
+
+        Args:
+            name: Name of the developmental stage (e.g. "neurula stage", "gastrula stage")
+            ontology_id: Developmental stage ontology ID (e.g. "HsapDv:0000004")
+            abbr: Unique abbreviation of developmental stage
+            source: Optional Source record to use
+            mute: Whether to suppress logging
+
+        Returns:
+            A single DevelopmentalStage record, list of DevelopmentalStage records, or None if not found
+
+        Examples:
+            >>> record = DevelopmentalStage.from_source(name="neurula stage")
+            >>> record = DevelopmentalStage.from_source(ontology_id="HsapDv:0000004")
+        """
+        return super().from_source(**kwargs)
+
 
 class Ethnicity(BioRecord, TracksRun, TracksUpdates):
     """Ethnicity - `Human Ancestry Ontology <https://github.com/EBISPOT/hancestro>`__.
@@ -1533,6 +1869,35 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
+
+    @classmethod
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> Ethnicity | list[Ethnicity] | None:
+        """Create an Ethnicity record from source based on a single identifying field.
+
+        Args:
+            name: Name of the ethnicity (e.g. "European", "East Asian")
+            ontology_id: Human Ancestry Ontology ID (e.g. "HANCESTRO:0005")
+            abbr: Unique abbreviation of ethnicity
+            source: Optional Source record to use
+            mute: Whether to suppress logging
+
+        Returns:
+            A single Ethnicity record, list of Ethnicity records, or None if not found
+
+        Examples:
+            >>> record = Ethnicity.from_source(name="European")
+            >>> record = Ethnicity.from_source(ontology_id="HANCESTRO:0005")
+        """
+        return super().from_source(**kwargs)
 
 
 class FeatureSetGene(BasicRecord, LinkORM):

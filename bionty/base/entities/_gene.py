@@ -7,15 +7,14 @@ from lamin_utils import logger
 
 from bionty.base._public_ontology import PublicOntology
 from bionty.base._settings import settings
+from bionty.base.dev._doc_util import _doc_params
 from bionty.base.dev._io import s3_bionty_assets
 
 from ._organism import Organism
-from ._shared_docstrings import _doc_params, doc_entites
+from ._shared_docstrings import doc_entites
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
-
-    from bionty.models import Source
 
 
 class MappingResult(NamedTuple):
