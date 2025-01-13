@@ -7,7 +7,8 @@ from lamin_utils import logger
 
 from bionty.base._ontology import Ontology
 from bionty.base._public_ontology import PublicOntology
-from bionty.base.entities._shared_docstrings import _doc_params, organism_removed
+from bionty.base.dev._doc_util import _doc_params
+from bionty.base.entities._shared_docstrings import organism_removed
 
 
 @_doc_params(doc_entities=organism_removed)
