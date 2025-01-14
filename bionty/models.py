@@ -19,10 +19,10 @@ from lamindb.models import (
     BasicRecord,
     CanCurate,
     Feature,
-    FeatureSet,
     HasParents,
     LinkORM,
     Record,
+    Schema,
     TracksRun,
     TracksUpdates,
 )
@@ -631,8 +631,8 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         Artifact, through="ArtifactGene", related_name="genes"
     )
     """Artifacts linked to the gene."""
-    feature_sets: FeatureSet = models.ManyToManyField(
-        FeatureSet, through="FeatureSetGene", related_name="genes"
+    schemas: Schema = models.ManyToManyField(
+        Schema, through="SchemaGene", related_name="genes"
     )
     """Featuresets linked to this gene."""
 
@@ -713,8 +713,8 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
         Artifact, through="ArtifactProtein", related_name="proteins"
     )
     """Artifacts linked to the protein."""
-    feature_sets: FeatureSet = models.ManyToManyField(
-        FeatureSet, through="FeatureSetProtein", related_name="proteins"
+    schemas: Schema = models.ManyToManyField(
+        Schema, through="SchemaProtein", related_name="proteins"
     )
     """Featuresets linked to this protein."""
 
@@ -795,8 +795,8 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         related_name="cell_markers",
     )
     """Artifacts linked to the cell marker."""
-    feature_sets: FeatureSet = models.ManyToManyField(
-        FeatureSet, through="FeatureSetCellMarker", related_name="cell_markers"
+    schemas: Schema = models.ManyToManyField(
+        Schema, through="SchemaCellMarker", related_name="cell_markers"
     )
     """Featuresets linked to this cell marker."""
 
@@ -1236,8 +1236,8 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
     """Parent pathway records."""
     genes: Gene = models.ManyToManyField("Gene", related_name="pathways")
     """Genes that signifies the pathway."""
-    feature_sets: FeatureSet = models.ManyToManyField(
-        FeatureSet, through="FeatureSetPathway", related_name="pathways"
+    schemas: Schema = models.ManyToManyField(
+        Schema, through="SchemaPathway", related_name="pathways"
     )
     """Featuresets linked to the pathway."""
     artifacts: Artifact = models.ManyToManyField(
@@ -1503,44 +1503,44 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
 
-class FeatureSetGene(BasicRecord, LinkORM):
+class SchemaGene(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
+    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="+")
     gene: Gene = ForeignKey("Gene", PROTECT, related_name="+")
 
     class Meta:
-        unique_together = ("featureset", "gene")
+        unique_together = ("schema", "gene")
 
 
-class FeatureSetProtein(BasicRecord, LinkORM):
+class SchemaProtein(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
+    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="+")
     protein: Protein = ForeignKey("Protein", PROTECT, related_name="+")
 
     class Meta:
-        unique_together = ("featureset", "protein")
+        unique_together = ("schema", "protein")
 
 
-class FeatureSetCellMarker(BasicRecord, LinkORM):
+class SchemaCellMarker(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
+    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="+")
     cellmarker: CellMarker = ForeignKey("CellMarker", PROTECT, related_name="+")
 
     class Meta:
-        unique_together = ("featureset", "cellmarker")
+        unique_together = ("schema", "cellmarker")
 
 
-class FeatureSetPathway(BasicRecord, LinkORM):
+class SchemaPathway(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
+    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="+")
     pathway: Pathway = ForeignKey("Pathway", PROTECT, related_name="+")
 
     class Meta:
-        unique_together = ("featureset", "pathway")
+        unique_together = ("schema", "pathway")
 
 
 class ArtifactOrganism(BasicRecord, LinkORM, TracksRun):
