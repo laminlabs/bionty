@@ -15,31 +15,7 @@ import bionty.ids
 
 
 class Migration(migrations.Migration):
-    replaces = [
-        ("bionty", "0023_rename_publicsource_encode_uid"),
-        ("bionty", "0024_remove_cellline_collections_and_more"),
-        ("bionty", "0025_artifactcellline_alter_cellline_artifacts_and_more"),
-        ("bionty", "0026_artifactcellline_cell_line_ref_is_name_and_more"),
-        ("bionty", "0027_remove_artifactcellline_created_at_and_more"),
-        ("bionty", "0028_artifactcellline_created_at_and_more"),
-        ("bionty", "0028_squashed"),
-        ("bionty", "0029_alter_cellline_previous_runs_and_more"),
-        ("bionty", "0030_rename_publicsource_source_and_more"),
-        ("bionty", "0031_alter_cellmarker_name_and_more"),
-        ("bionty", "0032_rename_source_name_source_description_and_more"),
-        ("bionty", "0033_alter_artifactcellline_artifact_and_more"),
-        ("bionty", "0034_alter_source_unique_together"),
-        ("bionty", "0035_alter_protein_gene_symbol"),
-        ("bionty", "0036_alter_source_artifacts_and_more"),
-        ("bionty", "0037_alter_cellline_source_alter_cellmarker_source_and_more"),
-        ("bionty", "0038_alter_artifactcellline_created_by_and_more"),
-        ("bionty", "0039_alter_cellline_source_alter_cellmarker_source_and_more"),
-        (
-            "bionty",
-            "0040_rename_feature_ref_is_symbol_artifactgene_feature_ref_is_name_and_more",
-        ),
-        ("bionty", "0041_alter_artifactcellline_artifact_and_more"),
-    ]
+    initial = True
 
     dependencies = [("lamindb", "0069_squashed")]
 
