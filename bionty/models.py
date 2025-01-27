@@ -1506,8 +1506,8 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
 class SchemaGene(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="+")
-    gene: Gene = ForeignKey("Gene", PROTECT, related_name="+")
+    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="links_gene")
+    gene: Gene = ForeignKey("Gene", PROTECT, related_name="links_schema")
 
     class Meta:
         unique_together = ("schema", "gene")
@@ -1516,8 +1516,8 @@ class SchemaGene(BasicRecord, LinkORM):
 class SchemaProtein(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="+")
-    protein: Protein = ForeignKey("Protein", PROTECT, related_name="+")
+    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="links_protein")
+    protein: Protein = ForeignKey("Protein", PROTECT, related_name="links_schema")
 
     class Meta:
         unique_together = ("schema", "protein")
@@ -1526,8 +1526,12 @@ class SchemaProtein(BasicRecord, LinkORM):
 class SchemaCellMarker(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="+")
-    cellmarker: CellMarker = ForeignKey("CellMarker", PROTECT, related_name="+")
+    schema: Schema = ForeignKey(
+        "lamindb.Schema", CASCADE, related_name="links_cellmarker"
+    )
+    cellmarker: CellMarker = ForeignKey(
+        "CellMarker", PROTECT, related_name="links_schema"
+    )
 
     class Meta:
         unique_together = ("schema", "cellmarker")
@@ -1536,8 +1540,8 @@ class SchemaCellMarker(BasicRecord, LinkORM):
 class SchemaPathway(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="+")
-    pathway: Pathway = ForeignKey("Pathway", PROTECT, related_name="+")
+    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="links_pathway")
+    pathway: Pathway = ForeignKey("Pathway", PROTECT, related_name="links_schema")
 
     class Meta:
         unique_together = ("schema", "pathway")
