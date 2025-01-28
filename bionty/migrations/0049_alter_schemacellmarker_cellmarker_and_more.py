@@ -8,7 +8,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
     dependencies = [
         ("bionty", "0048_lamindbv1_part6"),
-        ("lamindb", "0084_alter_schemafeature_feature_and_more"),
+        ("lamindb", "0080_polish_lamindbv1"),
     ]
 
     operations = [
