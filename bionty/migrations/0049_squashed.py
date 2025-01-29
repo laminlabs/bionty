@@ -42,6 +42,7 @@ class Migration(migrations.Migration):
         ("bionty", "0046_alter_cellline__aux_alter_cellmarker__aux_and_more"),
         ("bionty", "0047_lamindbv1_part5"),
         ("bionty", "0048_lamindbv1_part6"),
+        ("bionty", "0049_alter_schemacellmarker_cellmarker_and_more"),
     ]
 
     dependencies = [
