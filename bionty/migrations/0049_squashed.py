@@ -2705,7 +2705,7 @@ class Migration(migrations.Migration):
                     lamindb.base.fields.ForeignKey(
                         blank=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="+",
+                        related_name="links_schema",
                         to="bionty.cellmarker",
                     ),
                 ),
@@ -2714,7 +2714,7 @@ class Migration(migrations.Migration):
                     lamindb.base.fields.ForeignKey(
                         blank=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="+",
+                        related_name="links_cellmarker",
                         to="lamindb.schema",
                     ),
                 ),
@@ -2742,7 +2742,7 @@ class Migration(migrations.Migration):
                     lamindb.base.fields.ForeignKey(
                         blank=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="+",
+                        related_name="links_schema",
                         to="bionty.gene",
                     ),
                 ),
@@ -2751,7 +2751,7 @@ class Migration(migrations.Migration):
                     lamindb.base.fields.ForeignKey(
                         blank=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="+",
+                        related_name="links_gene",
                         to="lamindb.schema",
                     ),
                 ),
@@ -2777,7 +2777,7 @@ class Migration(migrations.Migration):
                     lamindb.base.fields.ForeignKey(
                         blank=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="+",
+                        related_name="links_schema",
                         to="bionty.pathway",
                     ),
                 ),
@@ -2786,7 +2786,7 @@ class Migration(migrations.Migration):
                     lamindb.base.fields.ForeignKey(
                         blank=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="+",
+                        related_name="links_pathway",
                         to="lamindb.schema",
                     ),
                 ),
@@ -2814,7 +2814,7 @@ class Migration(migrations.Migration):
                     lamindb.base.fields.ForeignKey(
                         blank=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="+",
+                        related_name="links_schema",
                         to="bionty.protein",
                     ),
                 ),
@@ -2823,7 +2823,7 @@ class Migration(migrations.Migration):
                     lamindb.base.fields.ForeignKey(
                         blank=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="+",
+                        related_name="links_protein",
                         to="lamindb.schema",
                     ),
                 ),
