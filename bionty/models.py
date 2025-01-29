@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import warnings
 from typing import TYPE_CHECKING, overload
 
 import numpy as np
@@ -26,6 +25,7 @@ from lamindb.models import (
     TracksRun,
     TracksUpdates,
 )
+from lamindb_setup.core import deprecated
 
 import bionty.base as bt_base
 
@@ -403,45 +403,26 @@ class BioRecord(Record, HasParents, CanCurate):
                 source = Source.filter(**kwargs).first()
             return StaticReference(source)
 
+    @deprecated(new_name="from_source")
     @classmethod
-    def _from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
-        """Deprecated in favor of `from_source`."""
-        warnings.warn(
-            "`.from_public()` is deprecated and will be removed in a future version. Use `.from_source()` instead!",
-            DeprecationWarning,
-            stacklevel=2,
-        )
+    def from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
         return cls.from_source(*args, **kwargs)
 
+    @deprecated(new_name="import_source")
     @classmethod
-    def _import_from_source(
+    def import_from_source(
         cls,
         source: Source | None = None,
         ontology_ids: list[str] | None = None,
         organism: str | Record | None = None,
         ignore_conflicts: bool = True,
     ):
-        """Deprecated in favor of `import_source`."""
-        warnings.warn(
-            "`.import_from_source()` is deprecated and will be removed in a future version. Use `.import_source()` instead!",
-            DeprecationWarning,
-            stacklevel=2,
-        )
         return cls.import_source(
             source=source,
             ontology_ids=ontology_ids,
             organism=organism,
             ignore_conflicts=ignore_conflicts,
         )
-
-    def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
-        import sys
-
-        # Deprecated methods
-        if "sphinx" not in sys.modules:
-            cls.from_public = cls._from_public
-            cls.import_from_source = cls._import_from_source
 
     @classmethod
     def from_source(
