@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
     ]
 
     dependencies = [
-        ("lamindb", "0085_squashed"),
+        ("lamindb", "0086_various"),
     ]
 
     operations = [
