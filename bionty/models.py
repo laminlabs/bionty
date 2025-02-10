@@ -1150,7 +1150,7 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
             name: Name of the cell type (e.g. "T cell", "B cell")
             ontology_id: Cell Ontology ID (e.g. "CL:0000084")
             abbr: Unique abbreviation of cell type
-            {doc_From_source}
+            {doc_from_source}
 
         Returns:
             A single CellType record, list of CellType records, or None if not found
