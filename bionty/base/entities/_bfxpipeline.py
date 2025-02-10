@@ -4,7 +4,6 @@ from typing import Literal
 
 from bionty.base._public_ontology import PublicOntology
 from bionty.base.dev._doc_util import _doc_params
-from bionty.base.dev._io import s3_bionty_assets
 
 from ._shared_docstrings import doc_entites
 
