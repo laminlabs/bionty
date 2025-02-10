@@ -96,7 +96,7 @@ jobs:
           uv pip install --system coverage[toml]
           uv pip install --system --no-deps .
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
 
       - name: Run coverage
         run: |
