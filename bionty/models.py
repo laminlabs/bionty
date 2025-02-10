@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import warnings
 from typing import TYPE_CHECKING, overload
 
 import numpy as np
@@ -19,13 +18,14 @@ from lamindb.models import (
     BasicRecord,
     CanCurate,
     Feature,
-    FeatureSet,
     HasParents,
     LinkORM,
     Record,
+    Schema,
     TracksRun,
     TracksUpdates,
 )
+from lamindb_setup.core import deprecated
 
 import bionty.base as bt_base
 from bionty.base.dev._doc_util import _doc_params
@@ -405,45 +405,26 @@ class BioRecord(Record, HasParents, CanCurate):
                 source = Source.filter(**kwargs).first()
             return StaticReference(source)
 
+    @deprecated(new_name="from_source")
     @classmethod
-    def _from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
-        """Deprecated in favor of `from_source`."""
-        warnings.warn(
-            "`.from_public()` is deprecated and will be removed in a future version. Use `.from_source()` instead!",
-            DeprecationWarning,
-            stacklevel=2,
-        )
+    def from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
         return cls.from_source(*args, **kwargs)
 
+    @deprecated(new_name="import_source")
     @classmethod
-    def _import_from_source(
+    def import_from_source(
         cls,
         source: Source | None = None,
         ontology_ids: list[str] | None = None,
         organism: str | Record | None = None,
         ignore_conflicts: bool = True,
     ):
-        """Deprecated in favor of `import_source`."""
-        warnings.warn(
-            "`.import_from_source()` is deprecated and will be removed in a future version. Use `.import_source()` instead!",
-            DeprecationWarning,
-            stacklevel=2,
-        )
         return cls.import_source(
             source=source,
             ontology_ids=ontology_ids,
             organism=organism,
             ignore_conflicts=ignore_conflicts,
         )
-
-    def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
-        import sys
-
-        # Deprecated methods
-        if "sphinx" not in sys.modules:
-            cls.from_public = cls._from_public
-            cls.import_from_source = cls._import_from_source
 
     @classmethod
     def from_source(
@@ -662,8 +643,8 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         Artifact, through="ArtifactGene", related_name="genes"
     )
     """Artifacts linked to the gene."""
-    feature_sets: FeatureSet = models.ManyToManyField(
-        FeatureSet, through="FeatureSetGene", related_name="genes"
+    schemas: Schema = models.ManyToManyField(
+        Schema, through="SchemaGene", related_name="genes"
     )
     """Featuresets linked to this gene."""
 
@@ -776,8 +757,8 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
         Artifact, through="ArtifactProtein", related_name="proteins"
     )
     """Artifacts linked to the protein."""
-    feature_sets: FeatureSet = models.ManyToManyField(
-        FeatureSet, through="FeatureSetProtein", related_name="proteins"
+    schemas: Schema = models.ManyToManyField(
+        Schema, through="SchemaProtein", related_name="proteins"
     )
     """Featuresets linked to this protein."""
 
@@ -890,8 +871,8 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         related_name="cell_markers",
     )
     """Artifacts linked to the cell marker."""
-    feature_sets: FeatureSet = models.ManyToManyField(
-        FeatureSet, through="FeatureSetCellMarker", related_name="cell_markers"
+    schemas: Schema = models.ManyToManyField(
+        Schema, through="SchemaCellMarker", related_name="cell_markers"
     )
     """Featuresets linked to this cell marker."""
 
@@ -1517,8 +1498,8 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
     """Parent pathway records."""
     genes: Gene = models.ManyToManyField("Gene", related_name="pathways")
     """Genes that signifies the pathway."""
-    feature_sets: FeatureSet = models.ManyToManyField(
-        FeatureSet, through="FeatureSetPathway", related_name="pathways"
+    schemas: Schema = models.ManyToManyField(
+        Schema, through="SchemaPathway", related_name="pathways"
     )
     """Featuresets linked to the pathway."""
     artifacts: Artifact = models.ManyToManyField(
@@ -1900,44 +1881,48 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         return super().from_source(**kwargs)
 
 
-class FeatureSetGene(BasicRecord, LinkORM):
+class SchemaGene(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
-    gene: Gene = ForeignKey("Gene", PROTECT, related_name="+")
+    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="links_gene")
+    gene: Gene = ForeignKey("Gene", PROTECT, related_name="links_schema")
 
     class Meta:
-        unique_together = ("featureset", "gene")
+        unique_together = ("schema", "gene")
 
 
-class FeatureSetProtein(BasicRecord, LinkORM):
+class SchemaProtein(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
-    protein: Protein = ForeignKey("Protein", PROTECT, related_name="+")
+    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="links_protein")
+    protein: Protein = ForeignKey("Protein", PROTECT, related_name="links_schema")
 
     class Meta:
-        unique_together = ("featureset", "protein")
+        unique_together = ("schema", "protein")
 
 
-class FeatureSetCellMarker(BasicRecord, LinkORM):
+class SchemaCellMarker(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
-    cellmarker: CellMarker = ForeignKey("CellMarker", PROTECT, related_name="+")
+    schema: Schema = ForeignKey(
+        "lamindb.Schema", CASCADE, related_name="links_cellmarker"
+    )
+    cellmarker: CellMarker = ForeignKey(
+        "CellMarker", PROTECT, related_name="links_schema"
+    )
 
     class Meta:
-        unique_together = ("featureset", "cellmarker")
+        unique_together = ("schema", "cellmarker")
 
 
-class FeatureSetPathway(BasicRecord, LinkORM):
+class SchemaPathway(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = ForeignKey("lamindb.FeatureSet", CASCADE, related_name="+")
-    pathway: Pathway = ForeignKey("Pathway", PROTECT, related_name="+")
+    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="links_pathway")
+    pathway: Pathway = ForeignKey("Pathway", PROTECT, related_name="links_schema")
 
     class Meta:
-        unique_together = ("featureset", "pathway")
+        unique_together = ("schema", "pathway")
 
 
 class ArtifactOrganism(BasicRecord, LinkORM, TracksRun):
