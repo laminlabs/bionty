@@ -43,6 +43,7 @@ class Migration(migrations.Migration):
         ("bionty", "0047_lamindbv1_part5"),
         ("bionty", "0048_lamindbv1_part6"),
         ("bionty", "0049_alter_schemacellmarker_cellmarker_and_more"),
+        ("bionty", "0050_alter_source_uid"),
     ]
 
     dependencies = [
@@ -2877,7 +2878,7 @@ class Migration(migrations.Migration):
                 (
                     "uid",
                     lamindb.base.fields.CharField(
-                        blank=True, default=bionty.ids.source, max_length=4, unique=True
+                        blank=True, default=bionty.ids.source, max_length=8, unique=True
                     ),
                 ),
                 (
