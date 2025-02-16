@@ -24,7 +24,6 @@ class Settings:
 
         Examples:
             >>> bionty.settings.organism = "mouse"
-            ✅ set organism: Organism(id=vado, name=mouse, taxon_id=10090, scientific_name=mus_musculus, updated_at=2023-07-21 11:37:08, source_id=CXWj, created_by_id=DzTjkKse) # noqa
         """
         return self._organism
 
