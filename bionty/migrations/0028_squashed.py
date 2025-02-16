@@ -1843,7 +1843,7 @@ class Migration(migrations.Migration):
                 (
                     "uid",
                     models.CharField(
-                        default=bionty.ids.publicsource,
+                        default=bionty.ids.source,
                         max_length=8,
                         unique=True,
                     ),
