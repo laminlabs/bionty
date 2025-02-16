@@ -7,6 +7,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
+        ("bionty", "0041_alter_artifactcellline_artifact_and_more"),
         ("lamindb", "0071_lamindbv1_migrate_schema"),
     ]
 
