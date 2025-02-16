@@ -4,6 +4,21 @@ import lamindb.base.fields
 from django.db import migrations
 
 import bionty.ids
+from bionty._bionty import encode_uid
+
+
+def populate_uids(apps, schema_editor):
+    Source = apps.get_model("bionty", "Source")
+    for source in Source.objects.all():
+        # Convert model instance to dictionary of fields
+        kwargs = {
+            field.name: getattr(source, field.name)
+            for field in source._meta.fields
+            if field.name != "uid"  # Exclude uid field itself
+        }
+        # Generate and save new uid
+        source.uid = encode_uid(registry=Source, kwargs=kwargs)["uid"]
+        source.save()
 
 
 class Migration(migrations.Migration):
@@ -19,4 +34,5 @@ class Migration(migrations.Migration):
                 blank=True, default=bionty.ids.source, max_length=8, unique=True
             ),
         ),
+        migrations.RunPython(populate_uids, reverse_code=migrations.RunPython.noop),
     ]
