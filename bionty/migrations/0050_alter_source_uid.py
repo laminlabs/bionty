@@ -17,7 +17,7 @@ def populate_uids(apps, schema_editor):
             if field.name != "uid"  # Exclude uid field itself
         }
         # Generate and save new uid
-        source.uid = encode_uid(registry=Source, kwargs=kwargs)
+        source.uid = encode_uid(registry=Source, kwargs=kwargs)["uid"]
         source.save()
 
 
