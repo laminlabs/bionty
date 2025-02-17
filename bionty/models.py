@@ -68,7 +68,7 @@ class Source(Record, TracksRun, TracksUpdates):
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=8, default=ids.source)
-    """A universal id (hash of selected field)."""
+    """A universal id (base62-encoded hash of defining fields)."""
     entity: str = CharField(max_length=256, db_index=True)
     """Entity class name."""
     organism: str = CharField(max_length=64, db_index=True)
