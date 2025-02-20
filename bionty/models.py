@@ -582,7 +582,7 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
             >>> record = Organism.from_source(name="human")
             >>> record = Organism.from_source(ontology_id="9606")
         """
-        return super().from_source(**locals())
+        return super().from_source(**{k: v for k, v in locals().items() if k != "cls"})
 
 
 class Gene(BioRecord, TracksRun, TracksUpdates):
