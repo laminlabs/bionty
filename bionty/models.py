@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, overload
+from typing import TYPE_CHECKING, Any, TypeVar, overload
 
 import numpy as np
 from django.db import models
@@ -39,6 +39,8 @@ from .base._public_ontology import InvalidParamError
 if TYPE_CHECKING:
     from pandas import DataFrame
 
+T = TypeVar("T")
+
 
 class StaticReference(PublicOntology):
     def __init__(self, source_record: Source) -> None:
@@ -53,9 +55,19 @@ class StaticReference(PublicOntology):
         return self._source_record.dataframe_artifact.load(is_run_input=False)  # type:ignore
 
 
-def _from_source(super_cls, loc):
-    # no duplicate cls
-    loc["cls"]
+def _sanitize_from_source_args(super_cls, loc: dict[str, Any]) -> T | list[T] | None:
+    """Helper function to handle argument filtering in from_source() methods.
+
+    Preserves the original locals() behavior needed to properly handle explicitly
+    defined parameters vs kwargs, while allowing the logic to be reused across classes.
+
+    Args:
+        super_cls: The superclass object obtained via super()
+        loc: The locals() dict from the calling method
+
+    Returns:
+        Result of calling super().from_source() with filtered arguments
+    """
     source = loc["source"]
     mute = loc["mute"]
     kwargs = loc["kwargs"]
@@ -601,7 +613,7 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
             >>> record = Organism.from_source(name="human")
             >>> record = Organism.from_source(ontology_id="9606")
         """
-        return _from_source(super(), locals())
+        return _sanitize_from_source_args(super(), locals())
 
 
 class Gene(BioRecord, TracksRun, TracksUpdates):
@@ -724,7 +736,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
             >>> record = Gene.from_source(ensembl_gene_id="ENSG00000081059", organism="human")
             >>> record = Gene.from_source(stable_id="YAL001C", organism="yeast")
         """
-        return _from_source(super(), locals())
+        return _sanitize_from_source_args(super(), locals())
 
 
 class Protein(BioRecord, TracksRun, TracksUpdates):
@@ -837,7 +849,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
             >>> record = Protein.from_source(uniprotkb_id="Q8N6N3")
             >>> record = Protein.from_source(gene_symbol="SYT15B", organism="human")
         """
-        return _from_source(super(), locals())
+        return _sanitize_from_source_args(super(), locals())
 
 
 class CellMarker(BioRecord, TracksRun, TracksUpdates):
@@ -952,7 +964,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
             >>> record = CellMarker.from_source(gene_symbol="PDCD1", organism="human")
             >>> record = CellMarker.from_source(name="CD19", organism="mouse")
         """
-        return _from_source(super(), locals())
+        return _sanitize_from_source_args(super(), locals())
 
 
 class Tissue(BioRecord, TracksRun, TracksUpdates):
@@ -1058,7 +1070,7 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
             >>> record = CellMarker.from_source(gene_symbol="PDCD1", organism="human")
             >>> record = CellMarker.from_source(name="CD19", organism="mouse")
         """
-        return _from_source(super(), locals())
+        return _sanitize_from_source_args(super(), locals())
 
 
 class CellType(BioRecord, TracksRun, TracksUpdates):
@@ -1160,7 +1172,7 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
             >>> record = CellType.from_source(ontology_id="CL:0000084")
             >>> record = CellType.from_source(name="B cell", source=source)
         """
-        return _from_source(super(), locals())
+        return _sanitize_from_source_args(super(), locals())
 
 
 class Disease(BioRecord, TracksRun, TracksUpdates):
@@ -1262,7 +1274,7 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
             >>> record = Disease.from_source(ontology_id="MONDO:0004975")
             >>> record = Disease.from_source(name="type 2 diabetes")
         """
-        return _from_source(super(), locals())
+        return _sanitize_from_source_args(super(), locals())
 
 
 class CellLine(BioRecord, TracksRun, TracksUpdates):
@@ -1364,7 +1376,7 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
             >>> record = CellLine.from_source(name="K562")
             >>> record = CellLine.from_source(ontology_id="CLO:0009477")
         """
-        return _from_source(super(), locals())
+        return _sanitize_from_source_args(super(), locals())
 
 
 class Phenotype(BioRecord, TracksRun, TracksUpdates):
@@ -1469,7 +1481,7 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
             >>> record = Phenotype.from_source(name="Arachnodactyly")
             >>> record = Phenotype.from_source(ontology_id="HP:0001166")
         """
-        return _from_source(super(), locals())
+        return _sanitize_from_source_args(super(), locals())
 
 
 class Pathway(BioRecord, TracksRun, TracksUpdates):
@@ -1578,7 +1590,7 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
             >>> record = Pathway.from_source(name="mitotic cell cycle")
             >>> record = Pathway.from_source(ontology_id="GO:1903353")
         """
-        return _from_source(super(), locals())
+        return _sanitize_from_source_args(super(), locals())
 
 
 class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
@@ -1688,7 +1700,7 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
             >>> record = ExperimentalFactor.from_source(name="scRNA-seq")
             >>> record = ExperimentalFactor.from_source(ontology_id="EFO:0009922")
         """
-        return _from_source(super(), locals())
+        return _sanitize_from_source_args(super(), locals())
 
 
 class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
@@ -1793,7 +1805,7 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
             >>> record = DevelopmentalStage.from_source(name="neurula stage")
             >>> record = DevelopmentalStage.from_source(ontology_id="HsapDv:0000004")
         """
-        return _from_source(super(), locals())
+        return _sanitize_from_source_args(super(), locals())
 
 
 class Ethnicity(BioRecord, TracksRun, TracksUpdates):
@@ -1897,7 +1909,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
             >>> record = Ethnicity.from_source(name="European")
             >>> record = Ethnicity.from_source(ontology_id="HANCESTRO:0005")
         """
-        return _from_source(super(), locals())
+        return _sanitize_from_source_args(super(), locals())
 
 
 class SchemaGene(BasicRecord, LinkORM):
