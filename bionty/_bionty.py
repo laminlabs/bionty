@@ -135,7 +135,7 @@ def encode_uid(registry: type[Record], kwargs: dict):
 
     str_to_encode = None
     if name == "source":
-        str_to_encode = f"{kwargs.get('entity', '')}{kwargs.get('name', '')}{kwargs.get('organism', '')}{kwargs.get('version', '')}"
+        str_to_encode = f'{kwargs.get("entity", "")}{kwargs.get("name", "")}{kwargs.get("organism", "")}{kwargs.get("version", "")}'
     elif name == "gene":  # gene has multiple id fields
         str_to_encode = kwargs.get(ontology_id_field)
         if str_to_encode is None or str_to_encode == "":
