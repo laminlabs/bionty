@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, TypeVar, overload
+from typing import TYPE_CHECKING, Any, overload
 
 import numpy as np
 from django.db import models
@@ -39,8 +39,6 @@ from .base._public_ontology import InvalidParamError
 if TYPE_CHECKING:
     from pandas import DataFrame
 
-T = TypeVar("T")
-
 
 class StaticReference(PublicOntology):
     def __init__(self, source_record: Source) -> None:
@@ -55,18 +53,17 @@ class StaticReference(PublicOntology):
         return self._source_record.dataframe_artifact.load(is_run_input=False)  # type:ignore
 
 
-def _sanitize_from_source_args(super_cls, loc: dict[str, Any]) -> T | list[T] | None:
-    """Helper function to handle argument filtering in from_source() methods.
+def _sanitize_from_source_args(
+    super_cls, loc: dict[str, Any]
+) -> BioRecord | list[BioRecord] | None:
+    """Handles argument filtering in ``from_source()`` methods.
 
-    Preserves the original locals() behavior needed to properly handle explicitly
+    Preserves the original ``locals()`` behavior needed to properly handle explicitly
     defined parameters vs kwargs, while allowing the logic to be reused across classes.
 
     Args:
         super_cls: The superclass object obtained via super()
         loc: The locals() dict from the calling method
-
-    Returns:
-        Result of calling super().from_source() with filtered arguments
     """
     source = loc["source"]
     mute = loc["mute"]
