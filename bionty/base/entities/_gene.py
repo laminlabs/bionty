@@ -1,16 +1,17 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal, NamedTuple
+from typing import TYPE_CHECKING, Literal, NamedTuple, overload
 
 import pandas as pd
 from lamin_utils import logger
 
 from bionty.base._public_ontology import PublicOntology
 from bionty.base._settings import settings
+from bionty.base.dev._doc_util import _doc_params
 from bionty.base.dev._io import s3_bionty_assets
 
 from ._organism import Organism
-from ._shared_docstrings import _doc_params, doc_entites
+from ._shared_docstrings import doc_entites
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
