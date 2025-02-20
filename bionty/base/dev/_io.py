@@ -10,9 +10,7 @@ from rich.progress import Progress
 from bionty.base._settings import settings
 
 
-def load_yaml(
-    filename: Union[str, Path], convert_dates: bool = True
-):  # pragma: no cover
+def load_yaml(filename: Union[str, Path]):  # pragma: no cover
     with open(filename) as f:
         return yaml.safe_load(f)
 
