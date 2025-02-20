@@ -64,11 +64,5 @@ def ontology(input_id: Optional[str] = None):
 
 
 def source(input_id: Optional[str] = None):
-    """4 base62."""
-    return hash_id(input_id, n_char=4)
-
-
-# backward compat
-organism = ontology
-species = organism
-publicsource = source
+    """8 base62."""
+    return hash_id(input_id, n_char=8)

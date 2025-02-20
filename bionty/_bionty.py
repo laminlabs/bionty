@@ -193,7 +193,3 @@ def lookup2kwargs(record: Record, *args, **kwargs) -> dict:
             k: v for k, v in bionty_kwargs.items() if k in model_field_names
         }
     return encode_uid(registry=record.__class__, kwargs=bionty_kwargs)
-
-
-# backward compat
-create_or_get_species_record = create_or_get_organism_record
