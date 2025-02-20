@@ -53,15 +53,19 @@ class StaticReference(PublicOntology):
         return self._source_record.dataframe_artifact.load(is_run_input=False)  # type:ignore
 
 
-def from_source_arg_filter(cls, source: Source = None, mute: bool = False, **kwargs):
-    """Utility function to handle from_source."""
+def _from_source(super_cls, loc):
+    # no duplicate cls
+    loc["cls"]
+    source = loc["source"]
+    mute = loc["mute"]
+    kwargs = loc["kwargs"]
     id_params = {
         k: v
-        for k, v in locals().items()
+        for k, v in loc.items()
         if k not in ("cls", "source", "mute", "kwargs") and v is not None
     }
     main_params = dict(list(id_params.items())[:1]) if id_params else kwargs
-    return super(cls, cls).from_source(
+    return super_cls.from_source(
         **main_params | {"source": source, "mute": mute}
         if source or mute
         else main_params
@@ -597,7 +601,7 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
             >>> record = Organism.from_source(name="human")
             >>> record = Organism.from_source(ontology_id="9606")
         """
-        return from_source_arg_filter(cls, source=source, mute=mute, **kwargs)
+        return _from_source(super(), locals())
 
 
 class Gene(BioRecord, TracksRun, TracksUpdates):
@@ -720,7 +724,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
             >>> record = Gene.from_source(ensembl_gene_id="ENSG00000081059", organism="human")
             >>> record = Gene.from_source(stable_id="YAL001C", organism="yeast")
         """
-        return from_source_arg_filter(cls, source=source, mute=mute, **kwargs)
+        return _from_source(super(), locals())
 
 
 class Protein(BioRecord, TracksRun, TracksUpdates):
@@ -833,7 +837,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
             >>> record = Protein.from_source(uniprotkb_id="Q8N6N3")
             >>> record = Protein.from_source(gene_symbol="SYT15B", organism="human")
         """
-        return from_source_arg_filter(cls, source=source, mute=mute, **kwargs)
+        return _from_source(super(), locals())
 
 
 class CellMarker(BioRecord, TracksRun, TracksUpdates):
@@ -948,7 +952,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
             >>> record = CellMarker.from_source(gene_symbol="PDCD1", organism="human")
             >>> record = CellMarker.from_source(name="CD19", organism="mouse")
         """
-        return from_source_arg_filter(cls, source=source, mute=mute, **kwargs)
+        return _from_source(super(), locals())
 
 
 class Tissue(BioRecord, TracksRun, TracksUpdates):
@@ -1054,7 +1058,7 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
             >>> record = CellMarker.from_source(gene_symbol="PDCD1", organism="human")
             >>> record = CellMarker.from_source(name="CD19", organism="mouse")
         """
-        return from_source_arg_filter(cls, source=source, mute=mute, **kwargs)
+        return _from_source(super(), locals())
 
 
 class CellType(BioRecord, TracksRun, TracksUpdates):
@@ -1156,7 +1160,7 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
             >>> record = CellType.from_source(ontology_id="CL:0000084")
             >>> record = CellType.from_source(name="B cell", source=source)
         """
-        return from_source_arg_filter(cls, source=source, mute=mute, **kwargs)
+        return _from_source(super(), locals())
 
 
 class Disease(BioRecord, TracksRun, TracksUpdates):
@@ -1258,7 +1262,7 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
             >>> record = Disease.from_source(ontology_id="MONDO:0004975")
             >>> record = Disease.from_source(name="type 2 diabetes")
         """
-        return from_source_arg_filter(cls, source=source, mute=mute, **kwargs)
+        return _from_source(super(), locals())
 
 
 class CellLine(BioRecord, TracksRun, TracksUpdates):
@@ -1360,7 +1364,7 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
             >>> record = CellLine.from_source(name="K562")
             >>> record = CellLine.from_source(ontology_id="CLO:0009477")
         """
-        return from_source_arg_filter(cls, source=source, mute=mute, **kwargs)
+        return _from_source(super(), locals())
 
 
 class Phenotype(BioRecord, TracksRun, TracksUpdates):
@@ -1465,7 +1469,7 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
             >>> record = Phenotype.from_source(name="Arachnodactyly")
             >>> record = Phenotype.from_source(ontology_id="HP:0001166")
         """
-        return from_source_arg_filter(cls, source=source, mute=mute, **kwargs)
+        return _from_source(super(), locals())
 
 
 class Pathway(BioRecord, TracksRun, TracksUpdates):
@@ -1574,7 +1578,7 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
             >>> record = Pathway.from_source(name="mitotic cell cycle")
             >>> record = Pathway.from_source(ontology_id="GO:1903353")
         """
-        return from_source_arg_filter(cls, source=source, mute=mute, **kwargs)
+        return _from_source(super(), locals())
 
 
 class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
@@ -1684,7 +1688,7 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
             >>> record = ExperimentalFactor.from_source(name="scRNA-seq")
             >>> record = ExperimentalFactor.from_source(ontology_id="EFO:0009922")
         """
-        return from_source_arg_filter(cls, source=source, mute=mute, **kwargs)
+        return _from_source(super(), locals())
 
 
 class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
@@ -1789,7 +1793,7 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
             >>> record = DevelopmentalStage.from_source(name="neurula stage")
             >>> record = DevelopmentalStage.from_source(ontology_id="HsapDv:0000004")
         """
-        return from_source_arg_filter(cls, source=source, mute=mute, **kwargs)
+        return _from_source(super(), locals())
 
 
 class Ethnicity(BioRecord, TracksRun, TracksUpdates):
@@ -1893,7 +1897,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
             >>> record = Ethnicity.from_source(name="European")
             >>> record = Ethnicity.from_source(ontology_id="HANCESTRO:0005")
         """
-        return from_source_arg_filter(cls, source=source, mute=mute, **kwargs)
+        return _from_source(super(), locals())
 
 
 class SchemaGene(BasicRecord, LinkORM):
