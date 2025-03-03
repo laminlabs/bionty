@@ -1060,6 +1060,7 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
 
         Examples:
             >>> record = Tissue.from_source(name="nose", organism="human")
+            >>> record = Tissue.from_source(ontology_id="UBERON:0000004", organism="human")
         """
         return _sanitize_from_source_args(super(), locals())
 
