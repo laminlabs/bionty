@@ -1041,6 +1041,7 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
         cls,
         *,
         name: str | None = None,
+        ontology_id: str | None = None,
         organism: str | Organism | None = None,
         source: Source | None = None,
         mute: bool = False,
