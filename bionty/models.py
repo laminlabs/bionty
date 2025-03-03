@@ -1041,31 +1041,26 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
         cls,
         *,
         name: str | None = None,
-        gene_symbol: str | None = None,
-        ncbi_gene_id: str | None = None,
-        uniprotkb_id: str | None = None,
+        ontology_id: str | None = None,
         organism: str | Organism | None = None,
         source: Source | None = None,
         mute: bool = False,
         **kwargs,
-    ) -> CellMarker | list[CellMarker] | None:
-        """Create a CellMarker record from source based on a single identifying field.
+    ) -> Tissue | list[Tissue] | None:
+        """Create a Tissue record from source based on a single identifying field.
 
         Args:
-            name: Cell marker name (e.g. "PD1", "CD19")
-            gene_symbol: Gene symbol (e.g. "PDCD1", "CD19")
-            ncbi_gene_id: NCBI gene ID that corresponds to this cell marker
-            uniprotkb_id: UniProt ID that corresponds to this cell marker
+            name: Tissue name (e.g. "nose")
+            ontology_id: Tissue ontology ID (e.g. "UBERON:0000004")
             organism: Organism name or Organism record
             {doc_from_source}
 
         Returns:
-            A single CellMarker record, list of CellMarker records, or None if not found
+            A single Tissue record, list of Tissue records, or None if not found
 
         Examples:
-            >>> record = CellMarker.from_source(name="PD1", organism="human")
-            >>> record = CellMarker.from_source(gene_symbol="PDCD1", organism="human")
-            >>> record = CellMarker.from_source(name="CD19", organism="mouse")
+            >>> record = Tissue.from_source(name="nose", organism="human")
+            >>> record = Tissue.from_source(ontology_id="UBERON:0000004", organism="human")
         """
         return _sanitize_from_source_args(super(), locals())
 
