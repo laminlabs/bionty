@@ -123,7 +123,7 @@ def current_yaml_replica():
 
 def test_parse_versions_yaml(versions_yaml_replica):
     parsed_df = parse_sources_yaml(versions_yaml_replica)
-    assert parsed_df.shape == (6, 8)
+    assert parsed_df.shape == (6, 7)
     assert all(
         parsed_df["entity"].values
         == ["Organism", "Gene", "Gene", "Gene", "CellType", "CellType"]
