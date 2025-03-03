@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 
 from lamin_utils import logger
 
+from bionty._bionty import create_or_get_organism_record
+
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
@@ -49,20 +51,31 @@ def get_new_ontology_ids(
 
 
 def create_records(
-    registry: type[BioRecord], df: pd.DataFrame, source_record: Source
+    registry: type[BioRecord],
+    df: pd.DataFrame,
+    source_record: Source,
+    organism: str | Record,
 ) -> list[Record]:
     import lamindb as ln
 
-    df_records = (
-        df.reset_index()
-        .rename(columns={"definition": "description"})
-        .drop(columns=["parents"])
-        .to_dict(orient="records")
-    )
+    df = df.reset_index(drop=True)
+    df = df.rename(columns={"definition": "description"})
+
+    if "index" in df.columns:
+        df = df.drop(columns=["index"])
+
+    if "parents" in df.columns:
+        df = df.drop(columns=["parents"])
+
+    df_records = df.to_dict(orient="records")
+
+    organism = create_or_get_organism_record(organism=organism, registry=registry)
+
     try:
         ln.settings.creation.search_names = False
         records = [
-            registry(**record, source_id=source_record.id) for record in df_records
+            registry(**record, source_id=source_record.id, organism=organism)
+            for record in df_records
         ]
     finally:
         ln.settings.creation.search_names = True
@@ -135,7 +148,7 @@ def add_ontology_from_df(
     organism: str | Record | None = None,
     source: Source | None = None,
     ignore_conflicts: bool = True,
-):
+) -> None:
     import lamindb as ln
 
     from bionty._bionty import get_source_record
@@ -176,7 +189,7 @@ def add_ontology_from_df(
         n_in_db=n_in_db,
     )
 
-    records = create_records(registry, df_new, source_record)
+    records = create_records(registry, df_new, source_record, organism)
     new_records = [r for r in records if r._state.adding]
     if ontology_ids is None:
         logger.info(f"adding {len(new_records)} new records")
@@ -185,11 +198,12 @@ def add_ontology_from_df(
     all_records = registry.filter(
         source=source_record
     ).all()  # need to update all_records after bulk_create
-    link_records = create_link_records(registry, df_all, all_records)
-    new_link_records = [r for r in link_records if r._state.adding]
-    if ontology_ids is None:
-        logger.info(f"adding {len(new_link_records)} parents/children links")
-    ln.save(new_link_records, ignore_conflicts=ignore_conflicts)
+    if hasattr(registry, "parents"):
+        link_records = create_link_records(registry, df_all, all_records)
+        new_link_records = [r for r in link_records if r._state.adding]
+        if ontology_ids is None:
+            logger.info(f"adding {len(new_link_records)} parents/children links")
+        ln.save(new_link_records, ignore_conflicts=ignore_conflicts)
 
     if ontology_ids is None:
         logger.success("import is completed!")
@@ -202,7 +216,7 @@ def add_ontology(
     organism: str | Record | None = None,
     source: Source | None = None,
     ignore_conflicts: bool = True,
-):
+) -> None:
     registry = records[0]._meta.model
     source = source or records[0].source
     if hasattr(registry, "organism_id"):

@@ -276,7 +276,7 @@ class BioRecord(Record, HasParents, CanCurate):
         """
         from .core._add_ontology import add_ontology_from_df, check_source_in_db
 
-        if hasattr(cls, "ontology_id"):
+        if hasattr(cls, "ontology_id") or hasattr(cls, "_name_field"):
             add_ontology_from_df(
                 registry=cls,
                 ontology_ids=ontology_ids,
@@ -298,6 +298,8 @@ class BioRecord(Record, HasParents, CanCurate):
             df = public.df().reset_index()
             if hasattr(cls, "_ontology_id_field"):
                 field = cls._ontology_id_field
+            # elif hasattr(cls, "_name_field"):
+            #    field = cls._name_field
             else:
                 raise NotImplementedError(
                     f"import_source is not implemented for {cls.__name__}"
