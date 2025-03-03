@@ -95,7 +95,6 @@ def parse_sources_yaml(
         - organism
         - version
         - url
-        - md5
         - source_name
         - source_website
     """
@@ -116,7 +115,6 @@ def parse_sources_yaml(
                         organism,
                         str(version_key),
                         version_meta.get("url"),
-                        version_meta.get("md5", ""),
                         name,
                         website,
                     )
@@ -130,7 +128,6 @@ def parse_sources_yaml(
             "organism",
             "version",
             "url",
-            "md5",
             "source_name",
             "source_website",
         ],
@@ -232,19 +229,14 @@ def add_records_to_existing_dict(records: list[dict], target_dict: dict) -> dict
         if entity not in target_dict:
             target_dict[entity] = {}
         if source not in target_dict[entity]:
-            target_dict[entity][source] = {
-                organism: {version: {"url": kwargs["url"], "md5": kwargs["md5"]}}
-            }
+            target_dict[entity][source] = {organism: {version: {"url": kwargs["url"]}}}
             target_dict[entity][source].update(
                 {"name": kwargs["source_name"], "website": kwargs["source_website"]}
             )
         if organism not in target_dict[entity][source]:
-            target_dict[entity][source][organism] = {
-                version: {"url": kwargs["url"], "md5": kwargs["md5"]}
-            }
+            target_dict[entity][source][organism] = {version: {"url": kwargs["url"]}}
         if version not in target_dict[entity][source][organism]:
             target_dict[entity][source][organism][version] = {
                 "url": kwargs["url"],
-                "md5": kwargs["md5"],
             }
     return target_dict

@@ -45,10 +45,8 @@ def versions_yaml_replica():
         all:
           2023-02-15:
             url: http://purl.obolibrary.org/obo/cl/releases/2023-02-15/cl-base.owl
-            md5: 9331a6a029cb1863bd0584ab41508df7
           2022-08-16:
             url: http://purl.obolibrary.org/obo/cl/releases/2022-08-16/cl.owl
-            md5: d0655766574e63f3fe5ed56d3c030880
     """
     with tempfile.NamedTemporaryFile(mode="w+", delete=False) as f:
         f.write(input_file_content)
@@ -95,13 +93,10 @@ def new_versions_yaml_replica():
         all:
           new-version:
             url: new-cell-type-source
-            md5: new-md5
           2023-02-15:
             url: http://purl.obolibrary.org/obo/cl/releases/2023-02-15/cl-base.owl
-            md5: 9331a6a029cb1863bd0584ab41508df7
           2022-08-16:
             url: http://purl.obolibrary.org/obo/cl/releases/2022-08-16/cl.owl
-            md5: d0655766574e63f3fe5ed56d3c030880
     """
     with tempfile.NamedTemporaryFile(mode="w+", delete=False) as f:
         f.write(input_file_content)
@@ -163,7 +158,6 @@ def test_add_records_to_existing_dict(new_versions_yaml_replica, versions_yaml_r
             "organism": "new-organism",
             "version": "release-x",
             "url": "new-organism-source-link",
-            "md5": "",
             "source_name": "Ensembl",
             "source_website": "https://www.ensembl.org/index.html",
         },
@@ -173,7 +167,6 @@ def test_add_records_to_existing_dict(new_versions_yaml_replica, versions_yaml_r
             "organism": "human",
             "version": "release-x",
             "url": "new-gene-source-link",
-            "md5": "",
             "source_name": "",
             "source_website": "",
         },
@@ -183,7 +176,6 @@ def test_add_records_to_existing_dict(new_versions_yaml_replica, versions_yaml_r
             "organism": "all",
             "version": "new-version",
             "url": "new-cell-type-source",
-            "md5": "new-md5",
             "source_name": "Cell Ontology",
             "source_website": "https://obophenotype.github.io/cell-ontology/",
         },
@@ -198,14 +190,12 @@ def test_add_records_to_existing_dict(new_versions_yaml_replica, versions_yaml_r
     )
     assert updated_dict.get("Organism").get("ensembl").get("new-organism").get(
         "release-x"
-    ) == {"url": "new-organism-source-link", "md5": ""}
+    ) == {"url": "new-organism-source-link"}
     assert updated_dict.get("Gene").get("new-source").get("human").get("release-x") == {
         "url": "new-gene-source-link",
-        "md5": "",
     }
     assert updated_dict.get("CellType").get("cl").get("all").get("new-version") == {
         "url": "new-cell-type-source",
-        "md5": "new-md5",
     }
 
 

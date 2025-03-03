@@ -26,7 +26,6 @@ entity: # Bionty entity class name, e.g. CellType
     organism: # organism common name, (if none applied, use 'all') e.g. human
       version: # version of the source
         url: # "link to the source file"
-        md5: # "md5 of the source file"
 ```
 
 ## Setting default ontologies and versions
@@ -46,24 +45,20 @@ Disease:
     all:
       2023-02-06:
         source: http://purl.obolibrary.org/obo/mondo/releases/2023-02-06/mondo.owl
-        md5: 2b7d479d4bd02a94eab47d1c9e64c5db
       2022-10-11:
         source: http://purl.obolibrary.org/obo/mondo/releases/2022-10-11/mondo.owl
-        md5: 04b808d05c2c2e81430b20a0e87552bb
     name: Mondo Disease Ontology
     website: https://mondo.monarchinitiative.org/
   doid:
     human:
       2023-01-30:
         source: http://purl.obolibrary.org/obo/doid/releases/2023-01-30/doid.obo
-        md5: 9f0c92ad2896dda82195e9226a06dc36
     name: Human Disease Ontology
     website: https://disease-ontology.org/
   inhouse_diseases:
     human:
       2000-01-01:
         source: http://download-my-diseases.com/releases/2000-01-01/mydiseases.owl
-        md5: md5 if available or leave out this row
     name: My in-house Disease Ontology
     website: http://my-website.com
 ```
@@ -81,24 +76,20 @@ Disease:
     all:
       2022-10-11:
         source: http://purl.obolibrary.org/obo/mondo/releases/2022-10-11/mondo.owl
-        md5: 04b808d05c2c2e81430b20a0e87552bb
       2023-02-06:
         source: http://purl.obolibrary.org/obo/mondo/releases/2023-02-06/mondo.owl
-        md5: 2b7d479d4bd02a94eab47d1c9e64c5db
     name: Mondo Disease Ontology
     website: https://mondo.monarchinitiative.org/
   inhouse_diseases:
     human:
       2000-01-01:
         source: http://download-my-diseases.com/releases/2000-01-01/mydiseases.owl
-        md5: md5 if available or leave out this row
     name: My in-house Disease Ontology
     website: http://my-website.com
   doid:
     human:
       2023-01-30:
         source: http://purl.obolibrary.org/obo/doid/releases/2023-01-30/doid.obo
-        md5: 9f0c92ad2896dda82195e9226a06dc36
     name: Human Disease Ontology
     website: https://disease-ontology.org/
 ```
