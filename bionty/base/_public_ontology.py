@@ -12,7 +12,6 @@ from ._ontology import Ontology
 from ._settings import check_datasetdir_exists, check_dynamicdir_exists, settings
 from .dev._handle_sources import LAMINDB_INSTANCE_LOADED
 from .dev._io import s3_bionty_assets, url_download
-from .dev._md5 import verify_md5
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -70,7 +69,7 @@ class PublicOntology:
                 if LAMINDB_INSTANCE_LOADED():
                     pass
 
-            # search in all available sources to get url and md5
+            # search in all available sources to get url
             self._source_record = self._match_sources(
                 self._all_sources,
                 source=source,
@@ -167,23 +166,13 @@ class PublicOntology:
         }
         return fields - blacklist
 
-    def _download_ontology_file(self, localpath: Path, url: str, md5: str = "") -> None:
+    def _download_ontology_file(self, localpath: Path, url: str) -> None:
         """Download ontology source file to _local_ontology_path."""
         if not localpath.exists():
             logger.info(
                 f"downloading {self.__class__.__name__} ontology source file..."
             )
-            try:
-                self._url_download(url, localpath)
-            finally:
-                # Only verify md5 if it's actually available from the sources.yaml file
-                if len(md5) > 0:
-                    if not verify_md5(localpath, md5):
-                        logger.warning(
-                            f"MD5 sum for {localpath} did not match {md5}. re-downloading..."
-                        )
-                        localpath.unlink()
-                        self._url_download(url, localpath)
+            self._url_download(url, localpath)
 
     def _fetch_sources(self) -> None:
         from ._display_sources import (
@@ -275,7 +264,6 @@ class PublicOntology:
     def _set_file_paths(self) -> None:
         """Sets version, database and URL attributes for passed database and requested version."""
         self._url: str = self._source_record.get("url", "")
-        self._md5: str = self._source_record.get("md5", "")
 
         # parquet file name, ontology source file name
         self._parquet_filename, self._ontology_filename = encode_filenames(
@@ -343,7 +331,6 @@ class PublicOntology:
             self._download_ontology_file(
                 localpath=self._local_ontology_path,
                 url=self._url,
-                md5=self._md5,
             )
             return Ontology(handle=self._local_ontology_path)
 

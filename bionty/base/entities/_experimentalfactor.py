@@ -48,7 +48,6 @@ class ExperimentalFactor(PublicOntology):
         self._download_ontology_file(
             localpath=self._local_ontology_path,  # type:ignore
             url=self._url,  # type:ignore
-            md5=self._md5,  # type:ignore
         )
         onto = Ontology(
             handle=self._local_ontology_path,  # type:ignore

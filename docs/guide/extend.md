@@ -21,47 +21,25 @@ Disease:
     all:
       2023-02-06:
         source: http://purl.obolibrary.org/obo/mondo/releases/2023-02-06/mondo.owl
-        md5: 2b7d479d4bd02a94eab47d1c9e64c5db
       2022-10-11:
         source: http://purl.obolibrary.org/obo/mondo/releases/2022-10-11/mondo.owl
-        md5: 04b808d05c2c2e81430b20a0e87552bb
     name: Mondo Disease Ontology
     website: https://mondo.monarchinitiative.org/
   doid:
     human:
       2023-01-30:
         source: http://purl.obolibrary.org/obo/doid/releases/2023-01-30/doid.obo
-        md5: 9f0c92ad2896dda82195e9226a06dc36
     name: Human Disease Ontology
     website: https://disease-ontology.org/
   inhouse_diseases:
     human:
       2000-01-01:
         source: http://download-my-diseases.com/releases/2000-01-01/mydiseases.owl
-        md5: "md5 if available or leave out this row"
     name: My in-house Disease Ontology
     website: http://my-website.com
 ```
 
 Use "all" if organism doesn't apply or unknown.
-
-The md5 sum is optional (leave out if not available) and can be calculated with for example:
-
-```python
-import hashlib
-from pathlib import Path
-
-def calculate_md5(file_path: Path | str) -> str:
-    with open(file_path, "rb") as f:
-        md5 = hashlib.md5()
-        while True:
-            data = f.read(8192)
-            if not data:
-                break
-            md5.update(data)
-        file_md5 = md5.hexdigest()
-    print(file_md5)
-```
 
 If desired, the new ontology can be set as default. See {doc}`./config` for more details.
 
@@ -111,12 +89,10 @@ MyEntity:
     human:
       2042-01-01:
         source: http://my-url/releases/2042-01-01/mysource_1.owl
-        md5: "md5 if available or leave out this row"
   mysource_2:
     all:
       2042-01-01:
         source: http://my-url/releases/2042-01-01/mysource_2.owl
-        md5: "md5 if available or leave out this row"
 ```
 
 Great! Now we've added a new PublicOntology class, which can be used with all PublicOntology functions! 🎉
