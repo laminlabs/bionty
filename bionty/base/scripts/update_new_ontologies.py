@@ -1,5 +1,3 @@
-from typing import Dict
-
 import bioregistry
 from bionty.base.dev._handle_sources import parse_sources_yaml
 from rich import print
@@ -16,7 +14,7 @@ latest_versions = (
 )
 latest_versions_dict = latest_versions.set_index("source")["version"].to_dict()
 
-new_latest_versions: Dict[str, str] = {}
+new_latest_versions: dict[str, str] = {}
 for source, current_latest_version in latest_versions_dict.items():
     bioregistry_version = bioregistry.get_version(source)
     if bioregistry_version:

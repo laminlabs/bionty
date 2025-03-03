@@ -31,10 +31,6 @@ def prepend_bionty_to_entity(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ("bionty", "0031_alter_cellmarker_name_and_more"),
-        (
-            "lnschema_core",
-            "0056_rename_ulabel_ref_is_name_artifactulabel_label_ref_is_name_and_more",
-        ),
     ]
 
     operations = [
@@ -61,14 +57,14 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="source_dataframe_of",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
         migrations.AlterField(
             model_name="source",
             name="artifacts",
             field=models.ManyToManyField(
-                related_name="source_artifact_of", to="lnschema_core.artifact"
+                related_name="source_artifact_of", to="lamindb.artifact"
             ),
         ),
         migrations.AlterField(

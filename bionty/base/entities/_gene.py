@@ -1,16 +1,35 @@
 from __future__ import annotations
 
-from typing import Dict, Iterable, Literal, Optional
+from typing import TYPE_CHECKING, Literal, NamedTuple, overload
 
 import pandas as pd
 from lamin_utils import logger
 
 from bionty.base._public_ontology import PublicOntology
 from bionty.base._settings import settings
+from bionty.base.dev._doc_util import _doc_params
 from bionty.base.dev._io import s3_bionty_assets
 
 from ._organism import Organism
-from ._shared_docstrings import _doc_params, doc_entites
+from ._shared_docstrings import doc_entites
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+
+class MappingResult(NamedTuple):
+    """Result of mapping legacy Ensembl gene IDs to current IDs.
+
+    Attributes:
+        mapped: Dictionary of successfully mapped old ensembl IDs to new ensembl IDs
+        ambiguous: Dictionary of ambiguously mapped old ensembl IDs to new ensembl IDs - when
+            a legacy ID maps to multiple current IDs
+        unmapped: List of old ensembl IDs that couldn't be found in the current version
+    """
+
+    mapped: dict[str, str]
+    ambiguous: dict[str, list[str]]
+    unmapped: list[str]
 
 
 @_doc_params(doc_entities=doc_entites)
@@ -43,8 +62,20 @@ class Gene(PublicOntology):
             **kwargs,
         )
 
-    def map_legacy_ids(self, values: Iterable):
-        """Convert legacy ids to current ids."""
+    def map_legacy_ids(self, values: Iterable) -> MappingResult:
+        """Convert legacy ids to current IDs.
+
+        This only works if the legacy ensembl ID has a reference to the current ensembl ID.
+        It is possible that the HGNC IDs are identical, and the genomic locations are very close,
+        but a mapping may still be absent.
+
+        Args:
+            values: Legacy ensemble gene IDs of any version
+
+        Examples:
+            >>> gene = bt.base.Gene()
+            >>> gene.map_legacy_genes(["ENSG00000260150", "ENSG00000260587"])
+        """
         if self.source != "ensembl":
             raise NotImplementedError
         if isinstance(values, str):
@@ -66,23 +97,34 @@ class Gene(PublicOntology):
 
 
 class EnsemblGene:
-    def __init__(self, organism: str, version: str) -> None:
+    def __init__(
+        self,
+        organism: str,
+        version: str,
+        taxa: Literal[
+            "vertebrates", "bacteria", "fungi", "metazoa", "plants", "all"
+        ] = "vertebrates",
+    ) -> None:
         """Ensembl Gene mysql.
 
         Args:
-            organism: a bionty.Organism object
-            version: name of the ensembl DB version, e.g. "release-110"
+            organism: Name of the organism
+            version: Name of the ensembl DB version, e.g. "release-110"
+            taxa: The taxa of the organism to fetch genes for.
         """
         self._import()
         import mysql.connector as sql
         from sqlalchemy import create_engine
 
         self._organism = (
-            Organism(version=version).lookup().dict().get(organism)  # type:ignore
+            Organism(version=version, taxa=taxa).lookup().dict().get(organism)  # type:ignore
         )
-        self._url = (
-            f"mysql+mysqldb://anonymous:@ensembldb.ensembl.org/{self._organism.core_db}"
-        )
+        # vertebrates and plants use different ports
+        if taxa == "plants":
+            port = 4157
+        else:
+            port = 3306
+        self._url = f"mysql+mysqldb://anonymous:@ensembldb.ensembl.org:{port}/{self._organism.core_db}"
         self._engine = create_engine(url=self._url)
 
     def _import(self):
@@ -201,8 +243,10 @@ class EnsemblGene:
         df_res = df_res[~df_res["ensembl_gene_id"].isna()]
 
         # if stable_id is not ensembl_gene_id, keep a stable_id column
-        if not any(df_res["ensembl_gene_id"].str.startswith("ENS")):
-            logger.warning("no ensembl_gene_id found, writing to table_id column.")
+        if not all(df_res["ensembl_gene_id"].str.startswith("ENS")):
+            logger.warning(
+                "ensembl_gene_id column not all ENS-prefixed, writing to stable_id column."
+            )
             df_res.insert(0, "stable_id", df_res.pop("ensembl_gene_id"))
             df_res = df_res.sort_values("stable_id").reset_index(drop=True)
         else:
@@ -228,7 +272,7 @@ class EnsemblGene:
         self,
         results: pd.DataFrame,
         values: Iterable,
-    ):
+    ) -> MappingResult:
         # unique mappings
         mapper = (
             results.drop_duplicates(["old_stable_id"], keep=False)
@@ -246,9 +290,28 @@ class EnsemblGene:
         )
         # unmappables
         unmapped = set(values).difference(results["old_stable_id"])
-        return {"mapped": mapper, "ambiguous": ambiguous, "unmapped": list(unmapped)}
+        return MappingResult(
+            mapped=mapper, ambiguous=ambiguous, unmapped=list(unmapped)
+        )
 
-    def map_legacy_ids(self, values: Iterable, df: pd.DataFrame):
+    def map_legacy_ids(self, values: Iterable, df: pd.DataFrame) -> MappingResult:
+        """Maps legacy gene IDs to current Ensembl gene IDs.
+
+        Takes legacy gene IDs and maps them to current Ensembl IDs by querying the Ensembl MySQL database.
+        Returns mapping results categorized as unique mappings,
+        ambiguous mappings (one legacy ID maps to multiple current IDs), and unmapped IDs.
+
+        Args:
+            values: Single gene ID string or iterable of gene ID strings to map
+            df: DataFrame containing current Ensembl gene IDs in 'ensembl_gene_id' column
+
+        Example:
+            >>> map_legacy_ids(['ENSG00000139618'], df)
+            MappingResult(mapped={'ENSG00000139618': 'ENSG00000012048'},
+                          ambiguous={},
+                          unmapped=[]
+                          )
+        """
         if isinstance(values, str):
             legacy_genes = f"('{values}')"
             values = [values]

@@ -1,12 +1,17 @@
-from pathlib import Path
-from typing import Type
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import pandas as pd
 from lamin_utils import logger
 from lamindb_setup.core._setup_bionty_sources import RENAME
-from lnschema_core.models import Artifact, Record
 
-import bionty.base as bionty_base
+import bionty.base as bt_base
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from lamindb.models import Artifact, Record
 
 
 def sync_all_sources_to_latest():
@@ -25,7 +30,7 @@ def sync_all_sources_to_latest():
     try:
         ln.settings.creation.search_names = False
         records = Source.filter().all()
-        df_sources = bionty_base.display_available_sources().reset_index()
+        df_sources = bt_base.display_available_sources().reset_index()
         bionty_models = list_biorecord_models(bionty)
         for _, row in df_sources.iterrows():
             kwargs = row.to_dict()
@@ -79,7 +84,7 @@ def set_latest_sources_as_currently_used():
 
 
 def filter_bionty_df_columns(
-    model: Type[Record], public_ontology: bionty_base.PublicOntology
+    model: type[Record], public_ontology: bt_base.PublicOntology
 ) -> pd.DataFrame:
     """Filter columns of public ontology to match the model fields."""
     bionty_df = pd.DataFrame()
@@ -94,7 +99,7 @@ def filter_bionty_df_columns(
 
 def _prepare_bionty_df(model: type[Record], bionty_df: pd.DataFrame):
     """Prepare the bionty DataFrame to match the model fields."""
-    if model.__get_name_with_schema__() == "bionty.Gene":
+    if model.__get_name_with_module__() == "bionty.Gene":
         # groupby ensembl_gene_id and concat ncbi_gene_ids
         groupby_id_col = (
             "ensembl_gene_id" if "ensembl_gene_id" in bionty_df else "stable_id"

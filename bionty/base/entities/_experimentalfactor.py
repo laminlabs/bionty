@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-from typing import Dict, Literal, Optional
+from typing import Literal
 
 import pandas as pd
 from lamin_utils import logger
 
 from bionty.base._ontology import Ontology
 from bionty.base._public_ontology import PublicOntology
-from bionty.base.entities._shared_docstrings import _doc_params, organism_removed
+from bionty.base.dev._doc_util import _doc_params
+from bionty.base.entities._shared_docstrings import organism_removed
 
 
 @_doc_params(doc_entities=organism_removed)
@@ -25,7 +26,9 @@ class ExperimentalFactor(PublicOntology):
         self,
         organism: Literal["all"] | None = None,
         source: Literal["efo"] | None = None,
-        version: Literal["3.48.0", "3.57.0", "3.62.0", "3.63.0", "3.65.0", "3.66.0"]
+        version: Literal[
+            "3.48.0", "3.57.0", "3.62.0", "3.63.0", "3.65.0", "3.66.0", "3.70.0"
+        ]
         | None = None,
         **kwargs,
     ) -> None:

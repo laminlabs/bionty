@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 
 from django.core.exceptions import ObjectDoesNotExist
 from lamin_utils import logger
-from lnschema_core.models import Record
+from lamindb.models import Record
 
-import bionty.base as bionty_base
+import bionty.base as bt_base
 
 from . import ids
 
@@ -14,8 +14,14 @@ if TYPE_CHECKING:
     from types import ModuleType
 
 
+class OrganismNotSet(SystemExit):
+    """The `organism` parameter was not passed or is not globally set."""
+
+    pass
+
+
 def create_or_get_organism_record(
-    organism: str | Record | None, registry: type[Record]
+    organism: str | Record | None, registry: type[Record], field: str | None = None
 ) -> Record | None:
     # return None if an Record doesn't have organism field
     organism_record = None
@@ -39,9 +45,13 @@ def create_or_get_organism_record(
                 try:
                     # create a organism record from bionty reference
                     organism_record = Organism.from_source(name=organism)
+                    if organism_record is None:
+                        raise ValueError(
+                            f"Organism {organism} can't be created from the bionty reference, check your spelling or create it manually."
+                        )
                     # link the organism record to the default bionty source
                     organism_record.source = get_source_record(
-                        bionty_base.Organism(), Organism
+                        bt_base.Organism(), Organism
                     )  # type:ignore
                     organism_record.save()  # type:ignore
                 except KeyError:
@@ -49,7 +59,12 @@ def create_or_get_organism_record(
                     organism_record = None
 
         if organism_record is None:
-            raise AssertionError(
+            if hasattr(registry, "_ontology_id_field") and field in {
+                registry._ontology_id_field,
+                "uid",
+            }:
+                return None
+            raise OrganismNotSet(
                 f"{registry.__name__} requires to specify a organism name via `organism=` or `bionty.settings.organism=`!"
             )
 
@@ -57,15 +72,15 @@ def create_or_get_organism_record(
 
 
 def get_source_record(
-    public_ontology: bionty_base.PublicOntology, registry: type[Record]
+    public_ontology: bt_base.PublicOntology, registry: type[Record]
 ) -> Record:
     from .models import Source
 
     if public_ontology.__class__.__name__ == "StaticReference":
-        entity_name = registry.__get_name_with_schema__()
+        entity_name = registry.__get_name_with_module__()
     else:
         entity_name = (
-            f"{registry.__get_schema_name__()}.{public_ontology.__class__.__name__}"
+            f"{registry.__get_module_name__()}.{public_ontology.__class__.__name__}"
         )
     kwargs = {
         "entity": entity_name,
@@ -120,7 +135,7 @@ def encode_uid(registry: type[Record], kwargs: dict):
 
     str_to_encode = None
     if name == "source":
-        str_to_encode = f'{kwargs.get("entity", "")}{kwargs.get("name", "")}{kwargs.get("organism", "")}{kwargs.get("version", "")}'
+        str_to_encode = f"{kwargs.get('entity', '')}{kwargs.get('name', '')}{kwargs.get('organism', '')}{kwargs.get('version', '')}"
     elif name == "gene":  # gene has multiple id fields
         str_to_encode = kwargs.get(ontology_id_field)
         if str_to_encode is None or str_to_encode == "":
@@ -159,7 +174,7 @@ def lookup2kwargs(record: Record, *args, **kwargs) -> dict:
         bionty_kwargs = arg[0]._asdict()
 
     if len(bionty_kwargs) > 0:
-        import bionty.base as bionty_base
+        import bionty.base as bt_base
 
         # add organism and source
         organism_record = create_or_get_organism_record(
@@ -167,7 +182,7 @@ def lookup2kwargs(record: Record, *args, **kwargs) -> dict:
         )
         if organism_record is not None:
             bionty_kwargs["organism"] = organism_record
-        public_ontology = getattr(bionty_base, record.__class__.__name__)(
+        public_ontology = getattr(bt_base, record.__class__.__name__)(
             organism=organism_record.name if organism_record is not None else None
         )
         bionty_kwargs["source"] = get_source_record(public_ontology, record.__class__)
@@ -178,7 +193,3 @@ def lookup2kwargs(record: Record, *args, **kwargs) -> dict:
             k: v for k, v in bionty_kwargs.items() if k in model_field_names
         }
     return encode_uid(registry=record.__class__, kwargs=bionty_kwargs)
-
-
-# backward compat
-create_or_get_species_record = create_or_get_organism_record

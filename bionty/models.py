@@ -1,27 +1,38 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Tuple, overload
+from typing import TYPE_CHECKING, Any, overload
 
 import numpy as np
 from django.db import models
 from django.db.models import CASCADE, PROTECT
 from lamin_utils import logger
-from lnschema_core.models import (
+from lamindb.base.fields import (
+    BigIntegerField,
+    BooleanField,
+    CharField,
+    ForeignKey,
+    TextField,
+)
+from lamindb.models import (
     Artifact,
-    CanValidate,
+    BasicRecord,
+    CanCurate,
     Feature,
-    FeatureSet,
     HasParents,
     LinkORM,
     Record,
+    Schema,
     TracksRun,
     TracksUpdates,
 )
+from lamindb_setup.core import deprecated
 
-import bionty.base as bionty_base
+import bionty.base as bt_base
+from bionty.base.dev._doc_util import _doc_params
 
 from . import ids
 from ._bionty import encode_uid, lookup2kwargs
+from ._shared_docstrings import doc_from_source
 from .base import PublicOntology
 from .base._public_ontology import InvalidParamError
 
@@ -42,6 +53,34 @@ class StaticReference(PublicOntology):
         return self._source_record.dataframe_artifact.load(is_run_input=False)  # type:ignore
 
 
+def _sanitize_from_source_args(
+    super_cls, loc: dict[str, Any]
+) -> BioRecord | list[BioRecord] | None:
+    """Handles argument filtering in ``from_source()`` methods.
+
+    Preserves the original ``locals()`` behavior needed to properly handle explicitly
+    defined parameters vs kwargs, while allowing the logic to be reused across classes.
+
+    Args:
+        super_cls: The superclass object obtained via super()
+        loc: The locals() dict from the calling method
+    """
+    source = loc["source"]
+    mute = loc["mute"]
+    kwargs = loc["kwargs"]
+    id_params = {
+        k: v
+        for k, v in loc.items()
+        if k not in ("cls", "source", "mute", "kwargs") and v is not None
+    }
+    main_params = dict(list(id_params.items())[:1]) if id_params else kwargs
+    return super_cls.from_source(
+        **main_params | {"source": source, "mute": mute}
+        if source or mute
+        else main_params
+    )
+
+
 class Source(Record, TracksRun, TracksUpdates):
     """Versions of ontology sources.
 
@@ -58,29 +97,29 @@ class Source(Record, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=4, default=ids.source)
+    uid: str = CharField(unique=True, max_length=8, default=ids.source)
     """A universal id (hash of selected field)."""
-    entity: str = models.CharField(max_length=256, db_index=True)
+    entity: str = CharField(max_length=256, db_index=True)
     """Entity class name."""
-    organism: str = models.CharField(max_length=64, db_index=True)
+    organism: str = CharField(max_length=64, db_index=True)
     """Organism name, use 'all' if unknown or none applied."""
-    name: str = models.CharField(max_length=64, db_index=True)
+    name: str = CharField(max_length=64, db_index=True)
     """Source name, short form, CURIE prefix for ontologies."""
-    version: str = models.CharField(max_length=64, db_index=True)
+    version: str = CharField(max_length=64, db_index=True)
     """Version of the source."""
-    in_db: bool = models.BooleanField(default=False, db_index=True)
+    in_db: bool = BooleanField(default=False, db_index=True)
     """Whether this ontology has be added to the database."""
-    currently_used: bool = models.BooleanField(default=False, db_index=True)
+    currently_used: bool = BooleanField(default=False, db_index=True)
     """Whether this record is currently used."""
-    description: str | None = models.TextField(blank=True, db_index=True)
+    description: str | None = TextField(blank=True, db_index=True)
     """Source full name, long form."""
-    url: str | None = models.TextField(null=True, default=None)
+    url: str | None = TextField(null=True, default=None)
     """URL of the source file."""
-    md5: str | None = models.TextField(null=True, default=None)
+    md5: str | None = TextField(null=True, default=None)
     """Hash md5 of the source file."""
-    source_website: str | None = models.TextField(null=True, default=None)
+    source_website: str | None = TextField(null=True, default=None)
     """Website of the source."""
-    dataframe_artifact: Artifact = models.ForeignKey(
+    dataframe_artifact: Artifact = ForeignKey(
         Artifact, PROTECT, null=True, default=None, related_name="_source_dataframe_of"
     )
     """Dataframe artifact that corresponds to this source."""
@@ -131,11 +170,11 @@ class Source(Record, TracksRun, TracksUpdates):
         Source.filter(
             entity=self.entity, organism=self.organism, name=self.name
         ).exclude(uid=self.uid).update(currently_used=False)
-        logger.success(f"set {self} as currently used")
+        logger.success(f"set {self} as currently used.")
         logger.warning("please reload your instance to reflect the updates!")
 
 
-class BioRecord(Record, HasParents, CanValidate):
+class BioRecord(Record, HasParents, CanCurate):
     """Base Record of bionty.
 
     BioRecord inherits all methods from :class:`~lamindb.core.Record` and provides additional methods
@@ -151,7 +190,7 @@ class BioRecord(Record, HasParents, CanValidate):
     class Meta:
         abstract = True
 
-    source = models.ForeignKey(Source, PROTECT, null=True, related_name="+")
+    source = ForeignKey(Source, PROTECT, null=True, related_name="+")
     """:class:`~bionty.Source` this record associates with."""
 
     def __init__(self, *args, **kwargs):
@@ -164,12 +203,12 @@ class BioRecord(Record, HasParents, CanValidate):
         if (
             args
             and len(args) == 1
-            and isinstance(args[0], (Tuple, List))
+            and isinstance(args[0], (tuple, list))
             and len(args[0]) > 0
         ):
-            if isinstance(args[0], List) and len(args[0]) > 1:
+            if isinstance(args[0], list) and len(args[0]) > 1:
                 logger.warning(
-                    "multiple lookup/search results are passed, only returning record from the first entry"
+                    "multiple lookup/search results were passed. Only returning record from the first entry."
                 )
             result = lookup2kwargs(self, *args, **kwargs)  # type:ignore
             # exclude "parents" from query arguments
@@ -195,7 +234,7 @@ class BioRecord(Record, HasParents, CanValidate):
                     raise RuntimeError("please pass a organism!")
             elif kwargs.get("organism") is not None:
                 if not isinstance(kwargs.get("organism"), Organism):
-                    raise TypeError("organism must be a `bionty.Organism` record")
+                    raise TypeError("organism must be a `bionty.Organism` record.")
 
         kwargs = encode_uid(registry=self.__class__, kwargs=kwargs)
 
@@ -208,58 +247,32 @@ class BioRecord(Record, HasParents, CanValidate):
             if isinstance(parents, (list, np.ndarray)) and len(parents) > 0:
                 if not isinstance(parents[0], str):
                     raise ValueError(
-                        "not a valid parents kwarg, got to be list of ontology ids"
+                        "Invalid parents kwarg passed. Provide a list of ontology ids."
                     )
                 self._parents = parents
 
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def list_source(
-        cls,
-        currently_used: bool | None = None,
-        in_db: bool | None = None,
-        organism: str | None = None,
-    ) -> Source:
-        """Default source for the registry.
-
-        Args:
-            currently_used: Only returns currently used sources
-
-        Examples:
-            >>> bionty.Gene.list_source()
-            >>> bionty.Gene.list_source(currently_used=True)
-        """
-        filters = {}
-        if currently_used is not None:
-            filters["currently_used"] = currently_used
-        if in_db is not None:
-            filters["in_db"] = in_db
-        if organism is not None:
-            filters["organism"] = organism  # type:ignore
-        return Source.filter(entity=cls.__get_name_with_schema__(), **filters)
-
-    @classmethod
-    def import_from_source(
+    def import_source(
         cls,
         source: Source | None = None,
         ontology_ids: list[str] | None = None,
         organism: str | Record | None = None,
         ignore_conflicts: bool = True,
-        update: bool = False,
     ):
-        """Bulk save records from a dataframe.
+        """Bulk save records from a Bionty ontology.
 
         Use this method to initialize your registry with public ontology.
 
         Args:
-            ontology_ids: List of ontology ids to save
-            organism: Organism record or name
-            source: Source record
-            ignore_conflicts: Ignore conflicts during bulk create
+            ontology_ids: List of ontology ids to save.
+            organism: Organism name or record.
+            source: Source record to import records from.
+            ignore_conflicts: Whether to ignore conflicts during bulk record creation.
 
         Examples:
-            >>> bionty.CellType.import_from_source()
+            >>> bionty.CellType.import_source()
         """
         from .core._add_ontology import add_ontology_from_df, check_source_in_db
 
@@ -270,7 +283,6 @@ class BioRecord(Record, HasParents, CanValidate):
                 organism=organism,
                 source=source,
                 ignore_conflicts=ignore_conflicts,
-                update=update,
             )
         else:
             import lamindb as ln
@@ -288,7 +300,7 @@ class BioRecord(Record, HasParents, CanValidate):
                 field = cls._ontology_id_field
             else:
                 raise NotImplementedError(
-                    f"import_from_source is not implemented for {cls.__name__}"
+                    f"import_source is not implemented for {cls.__name__}"
                 )
             records = cls.from_values(
                 ontology_ids or df[field],
@@ -296,17 +308,14 @@ class BioRecord(Record, HasParents, CanValidate):
                 organism=organism,
                 source=source_record,
             )
-            if update:
-                logger.info(f"updating {len(records)} records...")
-                ln.save(records, ignore_conflicts=ignore_conflicts)
-            else:
-                new_records = [r for r in records if r._state.adding]
-                logger.info(f"saving {len(new_records)} new records...")
-                ln.save(new_records, ignore_conflicts=ignore_conflicts)
+
+            new_records = [r for r in records if r._state.adding]
+            logger.info(f"saving {len(new_records)} new records...")
+            ln.save(new_records, ignore_conflicts=ignore_conflicts)
             logger.success("import is completed!")
 
             # make sure source.in_db is correctly set based on the DB content
-            check_source_in_db(registry=cls, source=source_record, update=update)
+            check_source_in_db(registry=cls, source=source_record)
 
     @classmethod
     def add_source(cls, source: Source, currently_used=True) -> Source:
@@ -314,7 +323,7 @@ class BioRecord(Record, HasParents, CanValidate):
         import lamindb as ln
 
         unique_kwargs = {
-            "entity": cls.__get_name_with_schema__(),
+            "entity": cls.__get_name_with_module__(),
             "name": source.name,
             "version": source.version,
             "organism": source.organism,
@@ -351,11 +360,14 @@ class BioRecord(Record, HasParents, CanValidate):
         )
         if bionty_source is None:
             logger.warning(
-                "please register a DataFrame artifact!   \n→ artifact = ln.Artifact(df, visibility=0, run=False).save()   \n→ source.dataframe_artifact = artifact   \n→ source.save()"
+                "please register a DataFrame artifact!   \n"
+                "→ artifact = ln.Artifact(df, _branch_code=0, run=False).save()   \n"
+                "→ source.dataframe_artifact = artifact   \n"
+                "→ source.save()"
             )
         else:
             df_artifact = ln.Artifact(
-                bionty_source.dataframe_artifact.path, visibility=0, run=False
+                bionty_source.dataframe_artifact.path, _branch_code=0, run=False
             ).save()
             new_source.dataframe_artifact = df_artifact
             new_source.save()
@@ -402,7 +414,7 @@ class BioRecord(Record, HasParents, CanValidate):
             version = None
 
         try:
-            return getattr(bionty_base, cls.__name__)(
+            return getattr(bt_base, cls.__name__)(
                 organism=organism, source=source_name, version=version
             )
         except InvalidParamError as e:
@@ -410,7 +422,7 @@ class BioRecord(Record, HasParents, CanValidate):
         except (AttributeError, ValueError):
             if source is None:
                 kwargs = {
-                    "entity": cls.__get_name_with_schema__(),
+                    "entity": cls.__get_name_with_module__(),
                     "currently_used": True,
                 }
                 if organism is not None:
@@ -421,6 +433,27 @@ class BioRecord(Record, HasParents, CanValidate):
                 source = Source.filter(**kwargs).first()
             return StaticReference(source)
 
+    @deprecated(new_name="from_source")
+    @classmethod
+    def from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
+        return cls.from_source(*args, **kwargs)
+
+    @deprecated(new_name="import_source")
+    @classmethod
+    def import_from_source(
+        cls,
+        source: Source | None = None,
+        ontology_ids: list[str] | None = None,
+        organism: str | Record | None = None,
+        ignore_conflicts: bool = True,
+    ):
+        return cls.import_source(
+            source=source,
+            ontology_ids=ontology_ids,
+            organism=organism,
+            ignore_conflicts=ignore_conflicts,
+        )
+
     @classmethod
     def from_source(
         cls, *, mute: bool = False, **kwargs
@@ -430,7 +463,7 @@ class BioRecord(Record, HasParents, CanValidate):
         Notes:
             For more info, see tutorial :doc:`docs:bionty`
 
-            Bulk create protein records via :meth:`~docs:lamindb.core.Record.from_values`.
+            Bulk create records via :meth:`.from_values`.
 
         Examples:
             Create a record by passing a field value:
@@ -465,25 +498,6 @@ class BioRecord(Record, HasParents, CanValidate):
                 return None
             else:
                 return results
-
-    # deprecated
-    @classmethod
-    def from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
-        """Create a record or records from public reference based on a single field value.
-
-        Notes:
-            For more info, see tutorial :doc:`docs:bionty`
-
-            Bulk create protein records via :meth:`~docs:lamindb.core.Record.from_values`.
-
-        Examples:
-            Create a record by passing a field value:
-
-            >>> record = bionty.Gene.from_public(symbol="TCF7", organism="human")
-
-        """
-        logger.warning("`.from_public()` is deprecated, use `.from_source()`!'")
-        return cls.from_source(*args, **kwargs)
 
     def save(self, *args, **kwargs) -> BioRecord:
         """Save the record and its parents recursively."""
@@ -523,23 +537,21 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
     """A universal id (hash of selected field)."""
-    name: str = models.CharField(
-        max_length=64, db_index=True, default=None, unique=True
-    )
+    name: str = CharField(max_length=64, db_index=True, default=None, unique=True)
     """Name of a organism, required field."""
-    ontology_id: str | None = models.CharField(
+    ontology_id: str | None = CharField(
         max_length=32, unique=True, db_index=True, null=True, default=None
     )
     """NCBI Taxon ID."""
-    scientific_name: str | None = models.CharField(
+    scientific_name: str | None = CharField(
         max_length=64, db_index=True, unique=True, null=True, default=None
     )
     """Scientific name of a organism."""
-    synonyms: str | None = models.TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this organism."""
-    description: str | None = models.TextField(null=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the organism."""
     parents: Organism = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -571,6 +583,35 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        scientific_name: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> Organism | list[Organism] | None:
+        """Create an Organism record from source based on a single identifying field.
+
+        Args:
+            name: Common name of the organism (e.g. "human", "mouse", "zebrafish")
+            ontology_id: NCBI Taxon ID (e.g. "9606")
+            scientific_name: Scientific name (e.g. "Homo sapiens", "Mus musculus")
+            {doc_from_source}
+
+        Returns:
+            A single Organism record, list of Organism records, or None if not found
+
+        Examples:
+            >>> record = Organism.from_source(name="human")
+            >>> record = Organism.from_source(ontology_id="9606")
+        """
+        return _sanitize_from_source_args(super(), locals())
+
 
 class Gene(BioRecord, TracksRun, TracksUpdates):
     """Genes - `Ensembl <https://ensembl.org/>`__, `NCBI Gene <https://www.ncbi.nlm.nih.gov/gene/>`__.
@@ -578,7 +619,11 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:gene`.
 
-        Bulk create Gene records via :meth:`~docs:lamindb.core.Record.from_values`.
+        Bulk create Gene records via `.from_values()`.
+        Map legacy ensembl IDs to current ensembl IDs using :meth:`bionty.base.Gene.map_legacy_ids`.
+
+        We discourage validating gene symbols and to work with unique identifiers such as ENSEMBL IDs instead.
+        For more details, see :doc:`docs:faq/symbol-mapping`.
 
     Examples:
         >>> record = bionty.Gene.from_source(symbol="TCF7", organism="human")
@@ -592,33 +637,33 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=12, default=ids.gene)
+    uid: str = CharField(unique=True, max_length=12, default=ids.gene)
     """A universal id (hash of selected field)."""
-    symbol: str | None = models.CharField(
+    symbol: str | None = CharField(
         max_length=64, db_index=True, null=True, default=None
     )
     """A unique short form of gene name."""
-    stable_id: str | None = models.CharField(
+    stable_id: str | None = CharField(
         max_length=64, db_index=True, null=True, default=None, unique=True
     )
     """Stable ID of a gene that doesn't have ensembl_gene_id, e.g. a yeast gene."""
-    ensembl_gene_id: str | None = models.CharField(
+    ensembl_gene_id: str | None = CharField(
         max_length=64, db_index=True, null=True, default=None, unique=True
     )
     """Ensembl gene stable ID, in the form ENS[organism prefix][feature type prefix][a unique eleven digit number]."""
-    ncbi_gene_ids: str | None = models.TextField(null=True, default=None)
+    ncbi_gene_ids: str | None = TextField(null=True, default=None)
     """Bar-separated (|) NCBI Gene IDs that correspond to this Ensembl Gene ID.
     NCBI Gene ID, also known as Entrez Gene ID, in the form of numeric string, 1 to 9 digits.
     """
-    biotype: str | None = models.CharField(
+    biotype: str | None = CharField(
         max_length=64, db_index=True, null=True, default=None
     )
     """Type of the gene."""
-    synonyms: str | None = models.TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this gene."""
-    description: str | None = models.TextField(null=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the gene."""
-    organism: Organism = models.ForeignKey(
+    organism: Organism = ForeignKey(
         Organism, PROTECT, default=None, related_name="genes"
     )
     """:class:`~bionty.Organism` this gene associates with."""
@@ -626,8 +671,8 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         Artifact, through="ArtifactGene", related_name="genes"
     )
     """Artifacts linked to the gene."""
-    feature_sets: FeatureSet = models.ManyToManyField(
-        FeatureSet, through="FeatureSetGene", related_name="genes"
+    schemas: Schema = models.ManyToManyField(
+        Schema, through="SchemaGene", related_name="genes"
     )
     """Featuresets linked to this gene."""
 
@@ -658,6 +703,38 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
+    def from_source(
+        cls,
+        *,
+        symbol: str | None = None,
+        ensembl_gene_id: str | None = None,
+        stable_id: str | None = None,
+        organism: str | Organism = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> Gene | list[Gene] | None:
+        """Create a Gene record from source based on a single identifying field.
+
+        Args:
+            symbol: Gene symbol (e.g. "TCF7")
+            ensembl_gene_id: Ensembl gene ID (e.g. "ENSG00000081059")
+            stable_id: Stable ID for genes without Ensembl IDs (e.g. yeast genes)
+            organism: Organism name or Organism record
+            {doc_from_source}
+
+        Returns:
+            A single Gene record, list of Gene records, or None if not found
+
+        Examples:
+            >>> record = Gene.from_source(symbol="TCF7", organism="human")
+            >>> record = Gene.from_source(ensembl_gene_id="ENSG00000081059", organism="human")
+            >>> record = Gene.from_source(stable_id="YAL001C", organism="yeast")
+        """
+        return _sanitize_from_source_args(super(), locals())
+
 
 class Protein(BioRecord, TracksRun, TracksUpdates):
     """Proteins - `Uniprot <https://www.uniprot.org/>`__.
@@ -665,7 +742,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:protein`.
 
-        Bulk create Protein records via :meth:`~docs:lamindb.core.Record.from_values`.
+        Bulk create records via :meth:`.from_values`.
 
     Examples:
         >>> record = bionty.Protein.from_source(name="Synaptotagmin-15B", organism="human")
@@ -680,29 +757,27 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=12, default=ids.protein)
+    uid: str = CharField(unique=True, max_length=12, default=ids.protein)
     """A universal id (hash of selected field)."""
-    name: str | None = models.CharField(
-        max_length=256, db_index=True, null=True, default=None
-    )
+    name: str | None = CharField(max_length=256, db_index=True, null=True, default=None)
     """Unique name of a protein."""
-    uniprotkb_id: str | None = models.CharField(
+    uniprotkb_id: str | None = CharField(
         max_length=10, db_index=True, null=True, default=None, unique=True
     )
     """UniProt protein ID, 6 alphanumeric characters, possibly suffixed by 4 more."""
-    synonyms: str | None = models.TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this protein."""
-    description: str | None = models.TextField(null=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the protein."""
-    length: int | None = models.BigIntegerField(db_index=True, null=True)
+    length: int | None = BigIntegerField(db_index=True, null=True)
     """Length of the protein sequence."""
-    gene_symbol: str | None = models.CharField(
+    gene_symbol: str | None = CharField(
         max_length=256, db_index=True, null=True, default=None
     )
     """The primary gene symbol corresponds to this protein."""
-    ensembl_gene_ids: str | None = models.TextField(null=True, default=None)
+    ensembl_gene_ids: str | None = TextField(null=True, default=None)
     """Bar-separated (|) Ensembl Gene IDs that correspond to this protein."""
-    organism: Organism = models.ForeignKey(
+    organism: Organism = ForeignKey(
         Organism, PROTECT, default=None, related_name="proteins"
     )
     """:class:`~bionty.Organism` this protein associates with."""
@@ -710,8 +785,8 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
         Artifact, through="ArtifactProtein", related_name="proteins"
     )
     """Artifacts linked to the protein."""
-    feature_sets: FeatureSet = models.ManyToManyField(
-        FeatureSet, through="FeatureSetProtein", related_name="proteins"
+    schemas: Schema = models.ManyToManyField(
+        Schema, through="SchemaProtein", related_name="proteins"
     )
     """Featuresets linked to this protein."""
 
@@ -741,6 +816,38 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        uniprotkb_id: str | None = None,
+        gene_symbol: str | None = None,
+        organism: str | Organism | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> Protein | list[Protein] | None:
+        """Create a Protein record from source based on a single identifying field.
+
+        Args:
+            name: Protein name (e.g. "Synaptotagmin-15B")
+            uniprotkb_id: UniProt protein ID (e.g. "Q8N6N3")
+            gene_symbol: Gene symbol (e.g. "SYT15B")
+            organism: Organism name or Organism record
+            {doc_from_source}
+
+        Returns:
+            A single Protein record, list of Protein records, or None if not found
+
+        Examples:
+            >>> record = Protein.from_source(name="Synaptotagmin-15B", organism="human")
+            >>> record = Protein.from_source(uniprotkb_id="Q8N6N3")
+            >>> record = Protein.from_source(gene_symbol="SYT15B", organism="human")
+        """
+        return _sanitize_from_source_args(super(), locals())
+
 
 class CellMarker(BioRecord, TracksRun, TracksUpdates):
     """Cell markers - `CellMarker <http://xteam.xbio.top/CellMarker>`__.
@@ -748,7 +855,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:cell_marker`.
 
-        Bulk create CellMarker records via :meth:`~docs:lamindb.core.Record.from_values`.
+        Bulk create CellMarker records via :meth:`.from_values`.
 
     Examples:
         >>> record = bionty.CellMarker.from_source(name="PD1", organism="human")
@@ -762,27 +869,27 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=12, default=ids.cellmarker)
+    uid: str = CharField(unique=True, max_length=12, default=ids.cellmarker)
     """A universal id (hash of selected field)."""
-    name: str = models.CharField(max_length=64, db_index=True)
+    name: str = CharField(max_length=64, db_index=True)
     """Unique name of the cell marker."""
-    synonyms: str | None = models.TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this cell marker."""
-    description: str | None = models.TextField(null=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the cell marker."""
-    gene_symbol: str | None = models.CharField(
+    gene_symbol: str | None = CharField(
         max_length=64, db_index=True, null=True, default=None
     )
     """Gene symbol that corresponds to this cell marker."""
-    ncbi_gene_id: str | None = models.CharField(
+    ncbi_gene_id: str | None = CharField(
         max_length=32, db_index=True, null=True, default=None
     )
     """NCBI gene id that corresponds to this cell marker."""
-    uniprotkb_id: str | None = models.CharField(
+    uniprotkb_id: str | None = CharField(
         max_length=10, db_index=True, null=True, default=None
     )
     """Uniprotkb id that corresponds to this cell marker."""
-    organism: Organism = models.ForeignKey(
+    organism: Organism = ForeignKey(
         Organism, PROTECT, default=None, related_name="cell_markers"
     )
     """:class:`~bionty.Organism` this cell marker associates with."""
@@ -792,8 +899,8 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         related_name="cell_markers",
     )
     """Artifacts linked to the cell marker."""
-    feature_sets: FeatureSet = models.ManyToManyField(
-        FeatureSet, through="FeatureSetCellMarker", related_name="cell_markers"
+    schemas: Schema = models.ManyToManyField(
+        Schema, through="SchemaCellMarker", related_name="cell_markers"
     )
     """Featuresets linked to this cell marker."""
 
@@ -822,6 +929,40 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        gene_symbol: str | None = None,
+        ncbi_gene_id: str | None = None,
+        uniprotkb_id: str | None = None,
+        organism: str | Organism | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> CellMarker | list[CellMarker] | None:
+        """Create a CellMarker record from source based on a single identifying field.
+
+        Args:
+            name: Cell marker name (e.g. "PD1", "CD19")
+            gene_symbol: Gene symbol (e.g. "PDCD1", "CD19")
+            ncbi_gene_id: NCBI gene ID that corresponds to this cell marker
+            uniprotkb_id: UniProt ID that corresponds to this cell marker
+            organism: Organism name or Organism record
+            {doc_from_source}
+
+        Returns:
+            A single CellMarker record, list of CellMarker records, or None if not found
+
+        Examples:
+            >>> record = CellMarker.from_source(name="PD1", organism="human")
+            >>> record = CellMarker.from_source(gene_symbol="PDCD1", organism="human")
+            >>> record = CellMarker.from_source(name="CD19", organism="mouse")
+        """
+        return _sanitize_from_source_args(super(), locals())
+
 
 class Tissue(BioRecord, TracksRun, TracksUpdates):
     """Tissues - `Uberon <http://obophenotype.github.io/uberon/>`__.
@@ -829,7 +970,7 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` :doc:`docs:tissue`.
 
-        Bulk create Tissue records via :meth:`~docs:lamindb.core.Record.from_values`.
+        Bulk create Tissue records via :meth:`.from_values`.
 
     Examples:
         >>> record = bionty.Tissue.from_source(name="brain")
@@ -844,21 +985,21 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
     """A universal id (hash of selected field)."""
-    name: str = models.CharField(max_length=256, db_index=True)
+    name: str = CharField(max_length=256, db_index=True)
     """Name of the tissue."""
-    ontology_id: str | None = models.CharField(
+    ontology_id: str | None = CharField(
         max_length=32, db_index=True, null=True, default=None
     )
     """Ontology ID of the tissue."""
-    abbr: str | None = models.CharField(
+    abbr: str | None = CharField(
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of tissue."""
-    synonyms: str | None = models.TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this tissue."""
-    description: str | None = models.TextField(null=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the tissue."""
     parents: Tissue = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -894,6 +1035,40 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        gene_symbol: str | None = None,
+        ncbi_gene_id: str | None = None,
+        uniprotkb_id: str | None = None,
+        organism: str | Organism | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> CellMarker | list[CellMarker] | None:
+        """Create a CellMarker record from source based on a single identifying field.
+
+        Args:
+            name: Cell marker name (e.g. "PD1", "CD19")
+            gene_symbol: Gene symbol (e.g. "PDCD1", "CD19")
+            ncbi_gene_id: NCBI gene ID that corresponds to this cell marker
+            uniprotkb_id: UniProt ID that corresponds to this cell marker
+            organism: Organism name or Organism record
+            {doc_from_source}
+
+        Returns:
+            A single CellMarker record, list of CellMarker records, or None if not found
+
+        Examples:
+            >>> record = CellMarker.from_source(name="PD1", organism="human")
+            >>> record = CellMarker.from_source(gene_symbol="PDCD1", organism="human")
+            >>> record = CellMarker.from_source(name="CD19", organism="mouse")
+        """
+        return _sanitize_from_source_args(super(), locals())
+
 
 class CellType(BioRecord, TracksRun, TracksUpdates):
     """Cell types - `Cell Ontology <https://obophenotype.github.io/cell-ontology/>`__.
@@ -901,7 +1076,7 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:cell_type`.
 
-        Bulk create CellType records via :meth:`~docs:lamindb.core.Record.from_values`.
+        Bulk create CellType records via :meth:`.from_values`.
 
     Examples:
         >>> record = bionty.CellType.from_source(name="T cell")
@@ -916,21 +1091,21 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
     """A universal id (hash of selected field)."""
-    name: str = models.CharField(max_length=256, db_index=True)
+    name: str = CharField(max_length=256, db_index=True)
     """Name of the cell type."""
-    ontology_id: str | None = models.CharField(
+    ontology_id: str | None = CharField(
         max_length=32, db_index=True, null=True, default=None
     )
     """Ontology ID of the cell type."""
-    abbr: str | None = models.CharField(
+    abbr: str | None = CharField(
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of cell type."""
-    synonyms: str | None = models.TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this cell type."""
-    description: str | None = models.TextField(null=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the cell type."""
     parents: CellType = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -966,12 +1141,42 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> CellType | list[CellType] | None:
+        """Create a CellType record from source based on a single identifying field.
+
+        Args:
+            name: Name of the cell type (e.g. "T cell", "B cell")
+            ontology_id: Cell Ontology ID (e.g. "CL:0000084")
+            abbr: Unique abbreviation of cell type
+            {doc_from_source}
+
+        Returns:
+            A single CellType record, list of CellType records, or None if not found
+
+        Examples:
+            >>> record = CellType.from_source(name="T cell")
+            >>> record = CellType.from_source(ontology_id="CL:0000084")
+            >>> record = CellType.from_source(name="B cell", source=source)
+        """
+        return _sanitize_from_source_args(super(), locals())
+
 
 class Disease(BioRecord, TracksRun, TracksUpdates):
     """Diseases - `Mondo <https://mondo.monarchinitiative.org/>`__, `Human Disease <https://disease-ontology.org/>`__.
 
     Notes:
-        Bulk create Disease records via :meth:`~docs:lamindb.core.Record.from_values`.
+        Bulk create Disease records via :meth:`.from_values`.
 
         For more info, see tutorials: :doc:`docs:disease`.
 
@@ -988,21 +1193,21 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
     """A universal id (hash of selected field)."""
-    name: str = models.CharField(max_length=256, db_index=True)
+    name: str = CharField(max_length=256, db_index=True)
     """Name of the disease."""
-    ontology_id: str | None = models.CharField(
+    ontology_id: str | None = CharField(
         max_length=32, db_index=True, null=True, default=None
     )
     """Ontology ID of the disease."""
-    abbr: str | None = models.CharField(
+    abbr: str | None = CharField(
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of disease."""
-    synonyms: str | None = models.TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this disease."""
-    description: str | None = models.TextField(null=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the disease."""
     parents: Disease = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -1038,6 +1243,36 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> Disease | list[Disease] | None:
+        """Create a Disease record from source based on a single identifying field.
+
+        Args:
+            name: Name of the disease (e.g. "Alzheimer disease", "type 2 diabetes")
+            ontology_id: Disease ontology ID (e.g. "MONDO:0004975")
+            abbr: Unique abbreviation of disease
+            {doc_from_source}
+
+        Returns:
+            A single Disease record, list of Disease records, or None if not found
+
+        Examples:
+            >>> record = Disease.from_source(name="Alzheimer disease")
+            >>> record = Disease.from_source(ontology_id="MONDO:0004975")
+            >>> record = Disease.from_source(name="type 2 diabetes")
+        """
+        return _sanitize_from_source_args(super(), locals())
+
 
 class CellLine(BioRecord, TracksRun, TracksUpdates):
     """Cell lines - `Cell Line Ontology <https://github.com/CLO-ontology/CLO>`__.
@@ -1045,7 +1280,7 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:cell_line`.
 
-        Bulk create CellLine records via :meth:`~docs:lamindb.core.Record.from_values`.
+        Bulk create CellLine records via :meth:`.from_values`.
 
     Examples:
         >>> standard_name = bionty.CellLine.public().standardize(["K562"])[0]
@@ -1061,21 +1296,21 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
     """A universal id (hash of selected field)."""
-    name: str = models.CharField(max_length=256, db_index=True)
+    name: str = CharField(max_length=256, db_index=True)
     """Name of the cell line."""
-    ontology_id: str | None = models.CharField(
+    ontology_id: str | None = CharField(
         max_length=32, db_index=True, null=True, default=None
     )
     """Ontology ID of the cell line."""
-    abbr: str | None = models.CharField(
+    abbr: str | None = CharField(
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of cell line."""
-    synonyms: str | None = models.TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this cell line."""
-    description: str | None = models.TextField(null=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the cell line."""
     parents: CellLine = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -1111,6 +1346,35 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> CellLine | list[CellLine] | None:
+        """Create a CellLine record from source based on a single identifying field.
+
+        Args:
+            name: Name of the cell line (e.g. "K562", "HeLa")
+            ontology_id: Cell Line Ontology ID (e.g. "CLO:0009477")
+            abbr: Unique abbreviation of cell line
+            {doc_from_source}
+
+        Returns:
+            A single CellLine record, list of CellLine records, or None if not found
+
+        Examples:
+            >>> record = CellLine.from_source(name="K562")
+            >>> record = CellLine.from_source(ontology_id="CLO:0009477")
+        """
+        return _sanitize_from_source_args(super(), locals())
+
 
 class Phenotype(BioRecord, TracksRun, TracksUpdates):
     """Phenotypes - `Human Phenotype <https://hpo.jax.org/app/>`__,
@@ -1121,7 +1385,7 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:phenotype`.
 
-        Bulk create Phenotype records via :meth:`~docs:lamindb.core.Record.from_values`.
+        Bulk create Phenotype records via :meth:`.from_values`.
 
     Examples:
         >>> record = bionty.Phenotype.from_source(name="Arachnodactyly")
@@ -1137,21 +1401,21 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
     """A universal id (hash of selected field)."""
-    name: str = models.CharField(max_length=256, db_index=True)
+    name: str = CharField(max_length=256, db_index=True)
     """Name of the phenotype."""
-    ontology_id: str | None = models.CharField(
+    ontology_id: str | None = CharField(
         max_length=32, db_index=True, null=True, default=None
     )
     """Ontology ID of the phenotype."""
-    abbr: str | None = models.CharField(
+    abbr: str | None = CharField(
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of phenotype."""
-    synonyms: str | None = models.TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this phenotype."""
-    description: str | None = models.TextField(null=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the phenotype."""
     parents: Phenotype = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -1187,6 +1451,35 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> Phenotype | list[Phenotype] | None:
+        """Create a Phenotype record from source based on a single identifying field.
+
+        Args:
+            name: Name of the phenotype (e.g. "Arachnodactyly", "Cardiomegaly")
+            ontology_id: Phenotype ontology ID (e.g. "HP:0001166")
+            abbr: Unique abbreviation of phenotype
+            {doc_from_source}
+
+        Returns:
+            A single Phenotype record, list of Phenotype records, or None if not found
+
+        Examples:
+            >>> record = Phenotype.from_source(name="Arachnodactyly")
+            >>> record = Phenotype.from_source(ontology_id="HP:0001166")
+        """
+        return _sanitize_from_source_args(super(), locals())
+
 
 class Pathway(BioRecord, TracksRun, TracksUpdates):
     """Pathways - `Gene Ontology <https://bioportal.bioontology.org/ontologies/GO>`__,
@@ -1195,7 +1488,7 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:pathway`.
 
-        Bulk create Pathway records via :meth:`~docs:lamindb.core.Record.from_values`.
+        Bulk create Pathway records via :meth:`.from_values`.
 
     Examples:
         >>> record = bionty.Pathway.from_source(ontology_id="GO:1903353")
@@ -1211,21 +1504,21 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
     """A universal id (hash of selected field)."""
-    name: str = models.CharField(max_length=256, db_index=True)
+    name: str = CharField(max_length=256, db_index=True)
     """Name of the pathway."""
-    ontology_id: str | None = models.CharField(
+    ontology_id: str | None = CharField(
         max_length=32, db_index=True, null=True, default=None
     )
     """Ontology ID of the pathway."""
-    abbr: str | None = models.CharField(
+    abbr: str | None = CharField(
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of pathway."""
-    synonyms: str | None = models.TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this pathway."""
-    description: str | None = models.TextField(null=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the pathway."""
     parents: Pathway = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -1233,8 +1526,8 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
     """Parent pathway records."""
     genes: Gene = models.ManyToManyField("Gene", related_name="pathways")
     """Genes that signifies the pathway."""
-    feature_sets: FeatureSet = models.ManyToManyField(
-        FeatureSet, through="FeatureSetPathway", related_name="pathways"
+    schemas: Schema = models.ManyToManyField(
+        Schema, through="SchemaPathway", related_name="pathways"
     )
     """Featuresets linked to the pathway."""
     artifacts: Artifact = models.ManyToManyField(
@@ -1267,6 +1560,35 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> Pathway | list[Pathway] | None:
+        """Create a Pathway record from source based on a single identifying field.
+
+        Args:
+            name: Name of the pathway (e.g. "mitotic cell cycle", "glycolysis")
+            ontology_id: GO or Pathway Ontology ID (e.g. "GO:1903353", "PW:0000004")
+            abbr: Unique abbreviation of pathway
+            {doc_from_source}
+
+        Returns:
+            A single Pathway record, list of Pathway records, or None if not found
+
+        Examples:
+            >>> record = Pathway.from_source(name="mitotic cell cycle")
+            >>> record = Pathway.from_source(ontology_id="GO:1903353")
+        """
+        return _sanitize_from_source_args(super(), locals())
+
 
 class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
     """Experimental factors - `Experimental Factor Ontology <https://www.ebi.ac.uk/ols/ontologies/efo>`__.
@@ -1274,7 +1596,7 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:experimental_factor`.
 
-        Bulk create ExperimentalFactor records via :meth:`~docs:lamindb.core.Record.from_values`.
+        Bulk create ExperimentalFactor records via :meth:`.from_values`.
 
     Examples:
         >>> standard_name = bionty.ExperimentalFactor.public().standardize(["scRNA-seq"])
@@ -1290,27 +1612,27 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
     """A universal id (hash of selected field)."""
-    name: str = models.CharField(max_length=256, db_index=True)
+    name: str = CharField(max_length=256, db_index=True)
     """Name of the experimental factor."""
-    ontology_id: str | None = models.CharField(
+    ontology_id: str | None = CharField(
         max_length=32, db_index=True, null=True, default=None
     )
     """Ontology ID of the experimental factor."""
-    abbr: str | None = models.CharField(
+    abbr: str | None = CharField(
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of experimental factor."""
-    synonyms: str | None = models.TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this experimental factor."""
-    description: str | None = models.TextField(null=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the experimental factor."""
-    molecule: str | None = models.TextField(null=True, default=None, db_index=True)
+    molecule: str | None = TextField(null=True, default=None, db_index=True)
     """Molecular experimental factor, parsed from EFO."""
-    instrument: str | None = models.TextField(null=True, default=None, db_index=True)
+    instrument: str | None = TextField(null=True, default=None, db_index=True)
     """Instrument used to measure the experimental factor, parsed from EFO."""
-    measurement: str | None = models.TextField(null=True, default=None, db_index=True)
+    measurement: str | None = TextField(null=True, default=None, db_index=True)
     """Phenotypic experimental factor, parsed from EFO."""
     parents: ExperimentalFactor = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -1348,6 +1670,35 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> ExperimentalFactor | list[ExperimentalFactor] | None:
+        """Create an ExperimentalFactor record from source based on a single identifying field.
+
+        Args:
+            name: Name of the experimental factor (e.g. "scRNA-seq", "ChIP-seq")
+            ontology_id: Experimental Factor Ontology ID (e.g. "EFO:0009922")
+            abbr: Unique abbreviation of experimental factor
+            {doc_from_source}
+
+        Returns:
+            A single ExperimentalFactor record, list of ExperimentalFactor records, or None if not found
+
+        Examples:
+            >>> record = ExperimentalFactor.from_source(name="scRNA-seq")
+            >>> record = ExperimentalFactor.from_source(ontology_id="EFO:0009922")
+        """
+        return _sanitize_from_source_args(super(), locals())
+
 
 class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
     """Developmental stages - `Human Developmental Stages <https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv>`__,
@@ -1356,7 +1707,7 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:developmental_stage`.
 
-        Bulk create DevelopmentalStage records via :meth:`~docs:lamindb.core.Record.from_values`.
+        Bulk create DevelopmentalStage records via :meth:`.from_values`.
 
     Examples:
         >>> record = bionty.DevelopmentalStage.from_source(name="neurula stage")
@@ -1372,21 +1723,21 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
     """A universal id (hash of selected field)."""
-    name: str = models.CharField(max_length=256, db_index=True)
+    name: str = CharField(max_length=256, db_index=True)
     """Name of the developmental stage."""
-    ontology_id: str | None = models.CharField(
+    ontology_id: str | None = CharField(
         max_length=32, db_index=True, null=True, default=None
     )
     """Ontology ID of the developmental stage."""
-    abbr: str | None = models.CharField(
+    abbr: str | None = CharField(
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of developmental stage."""
-    synonyms: str | None = models.TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this developmental stage."""
-    description: str | None = models.TextField(null=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the developmental stage."""
     parents: str | None = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -1424,6 +1775,35 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> DevelopmentalStage | list[DevelopmentalStage] | None:
+        """Create a DevelopmentalStage record from source based on a single identifying field.
+
+        Args:
+            name: Name of the developmental stage (e.g. "neurula stage", "gastrula stage")
+            ontology_id: Developmental stage ontology ID (e.g. "HsapDv:0000004")
+            abbr: Unique abbreviation of developmental stage
+            {doc_from_source}
+
+        Returns:
+            A single DevelopmentalStage record, list of DevelopmentalStage records, or None if not found
+
+        Examples:
+            >>> record = DevelopmentalStage.from_source(name="neurula stage")
+            >>> record = DevelopmentalStage.from_source(ontology_id="HsapDv:0000004")
+        """
+        return _sanitize_from_source_args(super(), locals())
+
 
 class Ethnicity(BioRecord, TracksRun, TracksUpdates):
     """Ethnicity - `Human Ancestry Ontology <https://github.com/EBISPOT/hancestro>`__.
@@ -1431,7 +1811,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:ethnicity`.
 
-        Bulk create Ethnicity records via :meth:`~docs:lamindb.core.Record.from_values`.
+        Bulk create Ethnicity records via :meth:`.from_values`.
 
     Examples:
         >>> record = bionty.Ethnicity.from_source(name="European")
@@ -1447,21 +1827,21 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = models.CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
     """A universal id (hash of selected field)."""
-    name: str = models.CharField(max_length=256, db_index=True)
+    name: str = CharField(max_length=256, db_index=True)
     """Name of the ethnicity."""
-    ontology_id: str | None = models.CharField(
+    ontology_id: str | None = CharField(
         max_length=32, db_index=True, null=True, default=None
     )
     """Ontology ID of the ethnicity."""
-    abbr: str | None = models.CharField(
+    abbr: str | None = CharField(
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of ethnicity."""
-    synonyms: str | None = models.TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this ethnicity."""
-    description: str | None = models.TextField(null=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the ethnicity."""
     parents: Ethnicity = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -1499,255 +1879,298 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
     ):
         super().__init__(*args, **kwargs)
 
+    @classmethod
+    @_doc_params(doc_from_source=doc_from_source)
+    def from_source(
+        cls,
+        *,
+        name: str | None = None,
+        ontology_id: str | None = None,
+        abbr: str | None = None,
+        source: Source | None = None,
+        mute: bool = False,
+        **kwargs,
+    ) -> Ethnicity | list[Ethnicity] | None:
+        """Create an Ethnicity record from source based on a single identifying field.
 
-class FeatureSetGene(Record, LinkORM):
+        Args:
+            name: Name of the ethnicity (e.g. "European", "East Asian")
+            ontology_id: Human Ancestry Ontology ID (e.g. "HANCESTRO:0005")
+            abbr: Unique abbreviation of ethnicity
+            {doc_from_source}
+
+        Returns:
+            A single Ethnicity record, list of Ethnicity records, or None if not found
+
+        Examples:
+            >>> record = Ethnicity.from_source(name="European")
+            >>> record = Ethnicity.from_source(ontology_id="HANCESTRO:0005")
+        """
+        return _sanitize_from_source_args(super(), locals())
+
+
+class SchemaGene(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = models.ForeignKey(
-        "lnschema_core.FeatureSet", CASCADE, related_name="+"
-    )
-    gene: Gene = models.ForeignKey("Gene", PROTECT, related_name="+")
+    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="links_gene")
+    gene: Gene = ForeignKey("Gene", PROTECT, related_name="links_schema")
+
+    class Meta:
+        unique_together = ("schema", "gene")
 
 
-class FeatureSetProtein(Record, LinkORM):
+class SchemaProtein(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = models.ForeignKey(
-        "lnschema_core.FeatureSet", CASCADE, related_name="+"
-    )
-    protein: Protein = models.ForeignKey("Protein", PROTECT, related_name="+")
+    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="links_protein")
+    protein: Protein = ForeignKey("Protein", PROTECT, related_name="links_schema")
+
+    class Meta:
+        unique_together = ("schema", "protein")
 
 
-class FeatureSetCellMarker(Record, LinkORM):
+class SchemaCellMarker(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = models.ForeignKey(
-        "lnschema_core.FeatureSet", CASCADE, related_name="+"
+    schema: Schema = ForeignKey(
+        "lamindb.Schema", CASCADE, related_name="links_cellmarker"
     )
-    # follow the .lower() convention in link models
-    cellmarker: CellMarker = models.ForeignKey("CellMarker", PROTECT, related_name="+")
+    cellmarker: CellMarker = ForeignKey(
+        "CellMarker", PROTECT, related_name="links_schema"
+    )
+
+    class Meta:
+        unique_together = ("schema", "cellmarker")
 
 
-class FeatureSetPathway(Record, LinkORM):
+class SchemaPathway(BasicRecord, LinkORM):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
-    featureset: FeatureSet = models.ForeignKey(
-        "lnschema_core.FeatureSet", CASCADE, related_name="+"
-    )
-    pathway: Pathway = models.ForeignKey("Pathway", PROTECT, related_name="+")
+    schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="links_pathway")
+    pathway: Pathway = ForeignKey("Pathway", PROTECT, related_name="links_schema")
+
+    class Meta:
+        unique_together = ("schema", "pathway")
 
 
-class ArtifactOrganism(Record, LinkORM, TracksRun):
+class ArtifactOrganism(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = models.ForeignKey(
-        Artifact, CASCADE, related_name="links_organism"
-    )
-    organism: Organism = models.ForeignKey(
-        "Organism", PROTECT, related_name="links_artifact"
-    )
-    feature: Feature = models.ForeignKey(
+    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_organism")
+    organism: Organism = ForeignKey("Organism", PROTECT, related_name="links_artifact")
+    feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactorganism"
     )
-    label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "organism", "feature")
 
 
-class ArtifactGene(Record, LinkORM, TracksRun):
+class ArtifactGene(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = models.ForeignKey(Artifact, CASCADE, related_name="links_gene")
-    gene: Gene = models.ForeignKey("Gene", PROTECT, related_name="links_artifact")
-    feature: Feature = models.ForeignKey(
+    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_gene")
+    gene: Gene = ForeignKey("Gene", PROTECT, related_name="links_artifact")
+    feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactgene"
     )
-    gene_ref_is_symbol: bool | None = models.BooleanField(null=True, default=None)
-    feature_ref_is_symbol: bool | None = models.BooleanField(null=True, default=None)
+    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "gene", "feature")
 
 
-class ArtifactProtein(Record, LinkORM, TracksRun):
+class ArtifactProtein(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = models.ForeignKey(
-        Artifact, CASCADE, related_name="links_protein"
-    )
-    protein: Protein = models.ForeignKey(
-        "Protein", PROTECT, related_name="links_artifact"
-    )
-    feature: Feature = models.ForeignKey(
+    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_protein")
+    protein: Protein = ForeignKey("Protein", PROTECT, related_name="links_artifact")
+    feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactprotein"
     )
-    label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "protein", "feature")
 
 
-class ArtifactCellMarker(Record, LinkORM, TracksRun):
+class ArtifactCellMarker(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = models.ForeignKey(
-        Artifact, CASCADE, related_name="links_cell_marker"
-    )
+    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_cell_marker")
     # follow the .lower() convention in link models
-    cellmarker: CellMarker = models.ForeignKey(
+    cellmarker: CellMarker = ForeignKey(
         "CellMarker", PROTECT, related_name="links_artifact"
     )
-    feature: Feature = models.ForeignKey(
+    feature: Feature = ForeignKey(
         Feature,
         PROTECT,
         null=True,
         default=None,
         related_name="links_artifactcellmarker",
     )
-    label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "cellmarker", "feature")
 
 
-class ArtifactTissue(Record, LinkORM, TracksRun):
+class ArtifactTissue(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = models.ForeignKey(
-        Artifact, CASCADE, related_name="links_tissue"
-    )
-    tissue: Tissue = models.ForeignKey("Tissue", PROTECT, related_name="links_artifact")
-    feature: Feature = models.ForeignKey(
+    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_tissue")
+    tissue: Tissue = ForeignKey("Tissue", PROTECT, related_name="links_artifact")
+    feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifacttissue"
     )
-    label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "tissue", "feature")
 
 
-class ArtifactCellType(Record, LinkORM, TracksRun):
+class ArtifactCellType(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = models.ForeignKey(
-        Artifact, CASCADE, related_name="links_cell_type"
-    )
+    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_cell_type")
     # follow the .lower() convention in link models
-    celltype: CellType = models.ForeignKey(
-        "CellType", PROTECT, related_name="links_artifact"
-    )
-    feature: Feature = models.ForeignKey(
+    celltype: CellType = ForeignKey("CellType", PROTECT, related_name="links_artifact")
+    feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactcelltype"
     )
-    label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "celltype", "feature")
 
 
-class ArtifactDisease(Record, LinkORM, TracksRun):
+class ArtifactDisease(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = models.ForeignKey(
-        Artifact, CASCADE, related_name="links_disease"
-    )
-    disease: Disease = models.ForeignKey(
-        "Disease", PROTECT, related_name="links_artifact"
-    )
-    feature: Feature = models.ForeignKey(
+    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_disease")
+    disease: Disease = ForeignKey("Disease", PROTECT, related_name="links_artifact")
+    feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactdisease"
     )
-    label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "disease", "feature")
 
 
-class ArtifactCellLine(Record, LinkORM, TracksRun):
+class ArtifactCellLine(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = models.ForeignKey(
-        Artifact, CASCADE, related_name="links_cell_line"
-    )
+    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_cell_line")
     # follow the .lower() convention in link models
-    cellline: CellLine = models.ForeignKey(
-        "CellLine", PROTECT, related_name="links_artifact"
-    )
-    feature: Feature = models.ForeignKey(
+    cellline: CellLine = ForeignKey("CellLine", PROTECT, related_name="links_artifact")
+    feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactcellline"
     )
-    label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "cellline", "feature")
 
 
-class ArtifactPhenotype(Record, LinkORM, TracksRun):
+class ArtifactPhenotype(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = models.ForeignKey(
-        Artifact, CASCADE, related_name="links_phenotype"
-    )
-    phenotype: Phenotype = models.ForeignKey(
+    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_phenotype")
+    phenotype: Phenotype = ForeignKey(
         "Phenotype", PROTECT, related_name="links_artifact"
     )
-    feature: Feature = models.ForeignKey(
+    feature: Feature = ForeignKey(
         Feature,
         PROTECT,
         null=True,
         default=None,
         related_name="links_artifactphenotype",
     )
-    label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "phenotype", "feature")
 
 
-class ArtifactPathway(Record, LinkORM, TracksRun):
+class ArtifactPathway(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = models.ForeignKey(
-        Artifact, CASCADE, related_name="links_pathway"
-    )
-    pathway: Pathway = models.ForeignKey(
-        "Pathway", PROTECT, related_name="links_artifact"
-    )
-    feature: Feature = models.ForeignKey(
+    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_pathway")
+    pathway: Pathway = ForeignKey("Pathway", PROTECT, related_name="links_artifact")
+    feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactpathway"
     )
-    label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "pathway", "feature")
 
 
-class ArtifactExperimentalFactor(Record, LinkORM, TracksRun):
+class ArtifactExperimentalFactor(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = models.ForeignKey(
+    artifact: Artifact = ForeignKey(
         Artifact, CASCADE, related_name="links_experimental_factor"
     )
-    experimentalfactor: ExperimentalFactor = models.ForeignKey(
+    experimentalfactor: ExperimentalFactor = ForeignKey(
         "ExperimentalFactor", PROTECT, related_name="links_artifact"
     )
-    feature: Feature = models.ForeignKey(
+    feature: Feature = ForeignKey(
         Feature,
         PROTECT,
         null=True,
         default=None,
         related_name="links_artifactexperimentalfactor",
     )
-    label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "experimentalfactor", "feature")
 
 
-class ArtifactDevelopmentalStage(Record, LinkORM, TracksRun):
+class ArtifactDevelopmentalStage(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = models.ForeignKey(
+    artifact: Artifact = ForeignKey(
         Artifact, CASCADE, related_name="links_developmental_stage"
     )
     # follow the .lower() convention in link models
-    developmentalstage: DevelopmentalStage = models.ForeignKey(
+    developmentalstage: DevelopmentalStage = ForeignKey(
         "DevelopmentalStage", PROTECT, related_name="links_artifact"
     )
-    feature: Feature = models.ForeignKey(
+    feature: Feature = ForeignKey(
         Feature,
         PROTECT,
         null=True,
         default=None,
         related_name="links_artifactdevelopmentalstage",
     )
-    label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "developmentalstage", "feature")
 
 
-class ArtifactEthnicity(Record, LinkORM, TracksRun):
+class ArtifactEthnicity(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = models.ForeignKey(
-        Artifact, CASCADE, related_name="links_ethnicity"
-    )
-    ethnicity: Ethnicity = models.ForeignKey(
+    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_ethnicity")
+    ethnicity: Ethnicity = ForeignKey(
         "Ethnicity", PROTECT, related_name="links_artifact"
     )
-    feature: Feature = models.ForeignKey(
+    feature: Feature = ForeignKey(
         Feature,
         PROTECT,
         null=True,
         default=None,
         related_name="links_artifactethnicity",
     )
-    label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+
+    class Meta:
+        unique_together = ("artifact", "ethnicity", "feature")
 
 
 # backward compat

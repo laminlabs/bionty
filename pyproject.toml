@@ -4,18 +4,21 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "bionty"
+requires-python = ">=3.9,<3.13"
 authors = [{name = "Lamin Labs", email = "laminlabs@gmail.com"}]
 readme = "README.md"
 dynamic = ["version", "description"]
 classifiers = [
     "License :: OSI Approved :: Apache Software License",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "lamindb",
+    "lamindb>=1.1a1,<2",
+    "lamindb_setup>=0.81.2",
+    "lamin_utils>=0.13.9",
     "filelock",
     "requests",
     "pyyaml",

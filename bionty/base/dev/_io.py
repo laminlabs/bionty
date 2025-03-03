@@ -1,4 +1,5 @@
 import os
+import shutil
 from pathlib import Path
 from typing import Union
 
@@ -9,9 +10,7 @@ from rich.progress import Progress
 from bionty.base._settings import settings
 
 
-def load_yaml(
-    filename: Union[str, Path], convert_dates: bool = True
-):  # pragma: no cover
+def load_yaml(filename: Union[str, Path]):  # pragma: no cover
     with open(filename) as f:
         return yaml.safe_load(f)
 
@@ -48,6 +47,10 @@ def url_download(
     Raises:
         HttpError: If the request response is not 200 and OK.
     """
+    if url.startswith("file://"):
+        url = url.split("file://")[-1]
+        shutil.copy(url, localpath)
+        return localpath
     try:
         response = requests.get(url, stream=True, allow_redirects=True, **kwargs)
         response.raise_for_status()

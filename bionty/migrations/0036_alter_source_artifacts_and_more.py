@@ -7,7 +7,6 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     dependencies = [
         ("bionty", "0035_alter_protein_gene_symbol"),
-        ("lnschema_core", "0060_alter_artifact__actions"),
     ]
 
     operations = [
@@ -15,7 +14,7 @@ class Migration(migrations.Migration):
             model_name="source",
             name="artifacts",
             field=models.ManyToManyField(
-                related_name="_source_artifact_of", to="lnschema_core.artifact"
+                related_name="_source_artifact_of", to="lamindb.artifact"
             ),
         ),
         migrations.AlterField(
@@ -26,7 +25,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
                 related_name="_source_dataframe_of",
-                to="lnschema_core.artifact",
+                to="lamindb.artifact",
             ),
         ),
     ]

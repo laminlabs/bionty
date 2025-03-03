@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from typing import Literal, Optional
+from typing import Literal
 
 from bionty.base._public_ontology import PublicOntology
+from bionty.base.dev._doc_util import _doc_params
 
-from ._shared_docstrings import _doc_params, doc_entites
+from ._shared_docstrings import doc_entites
 
 
 @_doc_params(doc_entities=doc_entites)
@@ -31,6 +32,7 @@ class CellType(PublicOntology):
             "2024-02-13",
             "2024-04-05",
             "2024-05-15",
+            "2024-08-16",
         ]
         | None = None,
         **kwargs,

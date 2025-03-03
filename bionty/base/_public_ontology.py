@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Iterable, Literal, Union, get_args, get_origin
+from typing import TYPE_CHECKING, Literal, Union, get_args, get_origin
 
 import numpy as np
 import pandas as pd
@@ -15,6 +15,7 @@ from .dev._io import s3_bionty_assets, url_download
 from .dev._md5 import verify_md5
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
     from pathlib import Path
 
     from .dev import InspectResult
@@ -393,7 +394,13 @@ class PublicOntology:
         if isinstance(values, str):
             values = [values]
 
-        field_values = self._df[str(field)]
+        # in bionty-base passed django fields do not resolve properly to a string
+        if str(field).startswith("FieldAttr"):
+            field_str = str(field).split(".")[-1][:-1]
+        else:
+            field_str = str(field)
+        field_values = self._df[str(field_str)]
+
         return validate(
             identifiers=values,
             field_values=field_values,
@@ -467,14 +474,14 @@ class PublicOntology:
             return_mapper: `bool = False` If `True`, returns `{input_synonym1:
                 standardized_name1}`.
             case_sensitive: `bool = False` Whether the mapping is case sensitive.
-            keep: `Literal["first", "last", False] = "first"` When a synonym maps to
-                multiple names, determines which duplicates to mark as
-                `pd.DataFrame.duplicated`
+            keep: {'first', 'last', False}, default 'first'.
+                When a synonym maps to multiple standardized values, determines
+                which duplicates to mark as `pandas.DataFrame.duplicated`.
+
+                - "first": returns the first mapped standardized value
+                - "last": returns the last mapped standardized value
+                - False: returns all mapped standardized value
             mute: Whether to mute logging. Defaults to False.
-            Keep: Which standardized name to keep.
-                    - "first": returns the first mapped standardized name
-                    - "last": returns the last mapped standardized name
-                    - `False`: returns all mapped standardized name
             synonyms_field: `str = "synonyms"` A field containing the concatenated synonyms.
 
         Returns:
@@ -554,24 +561,18 @@ class PublicOntology:
         self,
         string: str,
         *,
-        field: PublicOntologyField | str | None = None,
+        field: PublicOntologyField | str | list[PublicOntologyField | str] = None,
         limit: int | None = None,
         case_sensitive: bool = False,
-        synonyms_field: PublicOntologyField | str | None = "synonyms",
     ):
-        """Search a given string against a PublicOntology field.
+        """Search a given string against a PublicOntology field or fields.
 
         Args:
             string: The input string to match against the field values.
-            field: The PublicOntologyField of the ontology the input string is matching against.
-            top_hit: Return all entries ranked by matching ratios.
-                If True, only return the top match.
-                Defaults to False.
-            limit: Maximum amount of top results to return.
-                   If None, return all results.
-                   Defaults to None.
+            field: The PublicOntologyField or several fileds of the ontology
+                the input string is matching against. Search all fields containing strings by default.
+            limit: Maximum amount of top results to return. If None, return all results.
             case_sensitive: Whether the match is case sensitive.
-            synonyms_field: By default also search against the synonyms (If None, skips search).
 
         Returns:
             Ranked search results.
@@ -583,14 +584,21 @@ class PublicOntology:
         """
         from lamin_utils._search import search
 
-        return search(
+        if isinstance(field, PublicOntologyField):
+            field = field.name
+        elif field is not None and not isinstance(field, str):
+            field = [f.name if isinstance(f, PublicOntologyField) else f for f in field]
+
+        result = search(
             df=self._df,
             string=string,
-            field=self._get_default_field(field),
+            field=field,
             limit=limit,
             case_sensitive=case_sensitive,
-            synonyms_field=str(synonyms_field),
         )
+        if "ontology_id" in result.columns:
+            result = result.set_index("ontology_id")
+        return result
 
     def diff(
         self, compare_to: PublicOntology, **kwargs
