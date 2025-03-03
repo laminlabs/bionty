@@ -200,6 +200,8 @@ ExperimentalFactor:
     all:
       3.70.0:
         url: http://www.ebi.ac.uk/efo/releases/v3.70.0/efo.owl # Manually fixed following https://github.com/EBISPOT/efo/issues/2264#issuecomment-2357942127
+      3.69.0:
+        url: http://www.ebi.ac.uk/efo/releases/v3.69.0/efo.owl # Manually fixed following https://github.com/EBISPOT/efo/issues/2264#issuecomment-2357942127
       3.66.0:
         url: http://www.ebi.ac.uk/efo/releases/v3.66.0/efo.owl
       3.65.0:
