@@ -298,8 +298,6 @@ class BioRecord(Record, HasParents, CanCurate):
             df = public.df().reset_index()
             if hasattr(cls, "_ontology_id_field"):
                 field = cls._ontology_id_field
-            elif hasattr(cls, "_name_field"):
-                field = cls._name_field
             else:
                 raise NotImplementedError(
                     f"import_source is not implemented for {cls.__name__}"

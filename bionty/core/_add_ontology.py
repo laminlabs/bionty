@@ -176,8 +176,8 @@ def add_ontology_from_df(
         df_all = df[df.index.isin(all_ontology_ids)]
 
     # do not create records from obsolete terms
-    name_field = registry._name_field if hasattr(registry, "_name_field") else "name"
-    df_all = df_all[~df_all[name_field].fillna("").str.startswith("obsolete")]
+    if hasattr(registry, "ontology_id"):
+        df_all = df_all[~df_all["name"].fillna("").str.startswith("obsolete")]
 
     n_all = df_all.shape[0]
     if n_all == 0:
