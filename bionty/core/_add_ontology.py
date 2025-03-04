@@ -58,12 +58,13 @@ def create_records(
 ) -> list[Record]:
     import lamindb as ln
 
-    df_records = (
-        df.reset_index()
-        .rename(columns={"definition": "description"})
-        .drop(columns=["parents"])
-        .to_dict(orient="records")
-    )
+    df = df.reset_index()
+    df = df.rename(columns={"definition": "description"})
+
+    if "parents" in df.columns:
+        df = df.drop(columns=["parents"])
+
+    df_records = df.to_dict(orient="records")
 
     organism = create_or_get_organism_record(organism=organism, registry=registry)
 
@@ -175,7 +176,8 @@ def add_ontology_from_df(
         df_all = df[df.index.isin(all_ontology_ids)]
 
     # do not create records from obsolete terms
-    df_all = df_all[~df_all["name"].str.startswith("obsolete")]
+    name_field = registry._name_field if hasattr(registry, "_name_field") else "name"
+    df_all = df_all[~df_all[name_field].fillna("").str.startswith("obsolete")]
 
     n_all = df_all.shape[0]
     if n_all == 0:
