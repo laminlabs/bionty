@@ -58,25 +58,28 @@ def create_records(
 ) -> list[Record]:
     import lamindb as ln
 
-    df = df.reset_index(drop=True)
-    df = df.rename(columns={"definition": "description"})
-
-    if "index" in df.columns:
-        df = df.drop(columns=["index"])
-
-    if "parents" in df.columns:
-        df = df.drop(columns=["parents"])
-
-    df_records = df.to_dict(orient="records")
+    df_records = (
+        df.reset_index()
+        .rename(columns={"definition": "description"})
+        .drop(columns=["parents"])
+        .to_dict(orient="records")
+    )
 
     organism = create_or_get_organism_record(organism=organism, registry=registry)
 
     try:
         ln.settings.creation.search_names = False
+
+        valid_fields = [f.name for f in registry._meta.fields]
         records = [
-            registry(**record, source_id=source_record.id, organism=organism)
+            registry(
+                **{k: v for k, v in record.items() if k in valid_fields},
+                source_id=source_record.id,
+                **({"organism": organism} if "organism" in valid_fields else {}),
+            )
             for record in df_records
         ]
+
     finally:
         ln.settings.creation.search_names = True
 
