@@ -23,19 +23,23 @@ class Organism(PublicOntology):
 
     def __init__(
         self,
-        taxa: Literal["vertebrates", "bacteria", "fungi", "metazoa", "plants", "all"]
-        | None = None,
+        taxa: (
+            Literal["vertebrates", "bacteria", "fungi", "metazoa", "plants", "all"]
+            | None
+        ) = None,
         source: Literal["ensembl", "ncbitaxon"] | None = None,
-        version: Literal[
-            "2023-06-20",
-            "release-57",
-            "release-108",
-            "release-109",
-            "release-110",
-            "release-111",
-            "release-112",
-        ]
-        | None = None,
+        version: (
+            Literal[
+                "2023-06-20",
+                "release-57",
+                "release-108",
+                "release-109",
+                "release-110",
+                "release-111",
+                "release-112",
+            ]
+            | None
+        ) = None,
         **kwargs,
     ):
         # To support the organism kwarg being passed in getattr access in other parts of the code
@@ -72,10 +76,16 @@ class Organism(PublicOntology):
                 )
                 df["name"] = df["name"].str.lower()
                 df["ontology_id"] = "NCBITaxon:" + df["ontology_id"].astype(str)
+                df["scientific_name"] = df["scientific_name"].apply(
+                    lambda x: " ".join(
+                        [x.split("_")[0].capitalize()] + x.split("_")[1:]
+                    )
+                )
                 df.to_parquet(self._local_parquet_path)
                 return df
             else:
-                return pd.read_parquet(self._local_parquet_path)
+                df = pd.read_parquet(self._local_parquet_path)
+                return _standardize_scientific_name(df)
         else:
             return super()._load_df()
 
@@ -90,3 +100,14 @@ class Organism(PublicOntology):
             >>> bt.Organism().df()
         """
         return self._df.set_index("name")
+
+
+def _standardize_scientific_name(df: pd.DataFrame) -> pd.DataFrame:
+    """Standardize scientific name following NCBITaxon convention.
+
+    homo_sapiens -> Homo sapiens
+    """
+    df["scientific_name"] = df["scientific_name"].apply(
+        lambda x: " ".join([x.split("_")[0].capitalize()] + x.split("_")[1:])
+    )
+    return df
