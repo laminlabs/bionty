@@ -89,7 +89,7 @@ Submodules:
 
 """
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 
 from lamindb_setup.core._setup_bionty_sources import (
     load_bionty_sources as _load_bionty_sources,
