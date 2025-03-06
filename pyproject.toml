@@ -5,7 +5,7 @@ build-backend = "flit_core.buildapi"
 [project]
 name = "bionty"
 requires-python = ">=3.9,<3.13"
-authors = [{name = "Lamin Labs", email = "laminlabs@gmail.com"}]
+authors = [{name = "Lamin Labs", email = "open-source@lamin.ai"}]
 readme = "README.md"
 dynamic = ["version", "description"]
 classifiers = [
