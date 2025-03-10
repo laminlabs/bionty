@@ -177,7 +177,7 @@ class Source(Record, TracksRun, TracksUpdates):
 class BioRecord(Record, HasParents, CanCurate):
     """Base Record of bionty.
 
-    BioRecord inherits all methods from :class:`~lamindb.core.Record` and provides additional methods
+    BioRecord inherits all methods from :class:`~lamindb.models.Record` and provides additional methods
     including :meth:`~bionty.core.BioRecord.public` and :meth:`~bionty.core.BioRecord.from_source`.
 
     Notes:
