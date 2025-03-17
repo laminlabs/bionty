@@ -145,9 +145,17 @@ class Ontology(pronto.Ontology):
         df = pd.DataFrame(
             df_values,
             columns=["ontology_id", "name", "definition", "synonyms", "parents"],
-        ).set_index("ontology_id")
+        )
+
+        df["ontology_id"] = [
+            i.replace(self._prefix, "").replace("_", ":") for i in df["ontology_id"]
+        ]
+        df["parents"] = [
+            [j.replace(self._prefix, "").replace("_", ":") for j in i]
+            for i in df["parents"]
+        ]
 
         # needed to avoid erroring in .lookup()
         df["name"] = df["name"].fillna("")
 
-        return df
+        return df.set_index("ontology_id")
