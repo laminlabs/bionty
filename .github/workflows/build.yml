@@ -6,9 +6,6 @@ on:
     branches: [main, staging]
   workflow_dispatch:
 
-env:
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-
 jobs:
   pre-filter:
     runs-on: ubuntu-latest
@@ -40,6 +37,13 @@ jobs:
             # Otherwise only run base groups
             MATRIX=$(jq -n -c --argjson groups "$BASE_GROUPS" '{group: $groups}')
           fi
+
+          # Output as single line for GitHub Actions
+          echo "matrix=$(echo "$MATRIX" | jq -c .)" >> $GITHUB_OUTPUT
+
+          # Pretty print for debugging
+          echo "Generated matrix:"
+          echo "$MATRIX" | jq .
 
   test:
     needs: pre-filter
