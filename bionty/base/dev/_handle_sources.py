@@ -77,8 +77,6 @@ def create_or_update_sources_local_yaml(overwrite: bool = True) -> None:
         versions_header = {"version": load_yaml(settings.public_sources).get("version")}
         versions_header.update(versions)
         write_yaml(versions_header, settings.local_sources)
-    else:
-        update_local_sources_yaml()
 
 
 def parse_sources_yaml(
@@ -154,31 +152,31 @@ def create_currently_used_sources_yaml(
         write_yaml(parse_currently_used_sources(source_path), settings.current_sources)
 
 
-def records_diff_btw_yamls(yamlpath1: str | Path, yamlpath2: str | Path) -> list:
-    """Records in yaml1 but not yaml2."""
-    public_df_records = parse_sources_yaml(yamlpath1).to_dict(orient="records")
-    local_df_records = parse_sources_yaml(yamlpath2).to_dict(orient="records")
-    additional_records = [
-        record for record in public_df_records if record not in local_df_records
-    ]
+# def records_diff_btw_yamls(yamlpath1: str | Path, yamlpath2: str | Path) -> list:
+#     """Records in yaml1 but not yaml2."""
+#     public_df_records = parse_sources_yaml(yamlpath1).to_dict(orient="records")
+#     local_df_records = parse_sources_yaml(yamlpath2).to_dict(orient="records")
+#     additional_records = [
+#         record for record in public_df_records if record not in local_df_records
+#     ]
 
-    return additional_records
+#     return additional_records
 
 
-def update_local_sources_yaml() -> None:
-    """Update settings.local_sources to add additional entries from settings.public_sources."""
-    additional_records = records_diff_btw_yamls(
-        settings.public_sources, settings.local_sources
-    )
-    if len(additional_records) > 0:
-        updated_local_versions = add_records_to_existing_dict(
-            additional_records, load_yaml(settings.local_sources)
-        )
-        write_yaml(updated_local_versions, settings.local_sources)
-        logger.success(
-            f"wrote new records from public sources.yaml to {settings.local_sources}!\n\n"
-            "if you see this message repeatedly, run: import bionty; bionty.base.reset_sources()"
-        )
+# def update_local_sources_yaml() -> None:
+#     """Update settings.local_sources to add additional entries from settings.public_sources."""
+#     additional_records = records_diff_btw_yamls(
+#         settings.public_sources, settings.local_sources
+#     )
+#     if len(additional_records) > 0:
+#         updated_local_versions = add_records_to_existing_dict(
+#             additional_records, load_yaml(settings.local_sources)
+#         )
+#         write_yaml(updated_local_versions, settings.local_sources)
+#         logger.success(
+#             f"wrote new records from public sources.yaml to {settings.local_sources}!\n\n"
+#             "if you see this message repeatedly, run: import bionty; bionty.base.reset_sources()"
+#         )
 
 
 def parse_currently_used_sources(yaml: str | Path | list[dict]) -> dict:

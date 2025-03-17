@@ -334,44 +334,41 @@ class BioRecord(Record, HasParents, CanCurate):
             "url": source.url,
             "source_website": source.source_website,
             "dataframe_artifact_id": source.dataframe_artifact_id,
+            "_skip_validation": True,
         }
         new_source = Source.filter(**unique_kwargs).one_or_none()
         if new_source is None:
-            try:
-                ln.settings.creation.search_names = False
-                new_source = Source(**unique_kwargs, **add_kwargs).save()
-            finally:
-                ln.settings.creation.search_names = True
+            new_source = Source(**unique_kwargs, **add_kwargs).save()
         else:
             logger.warning("source already exists!")
+        if new_source.dataframe_artifact_id is not None:
+            logger.warning("source already has a dataframe artifact!")
             return new_source
-        # get the dataframe from laminlabs/bionty-assets
-        bionty_source = (
-            Source.using("laminlabs/bionty-assets")
-            .filter(
-                **{
-                    "entity": source.entity,
-                    "name": source.name,
-                    "version": source.version,
-                    "organism": source.organism,
-                }
-            )
-            .one_or_none()
-        )
-        if bionty_source is None:
-            logger.warning(
-                "please register a DataFrame artifact!   \n"
-                "→ artifact = ln.Artifact(df, _branch_code=0, run=False).save()   \n"
-                "→ source.dataframe_artifact = artifact   \n"
-                "→ source.save()"
-            )
+        # register the dataframe
+        if source.url.startswith("s3://bionty-assets/"):
+            df_artifact = ln.Artifact(new_source.url, _branch_code=0, run=False).save()
         else:
-            df_artifact = ln.Artifact(
-                bionty_source.dataframe_artifact.path, _branch_code=0, run=False
-            ).save()
-            new_source.dataframe_artifact = df_artifact
-            new_source.save()
-            logger.important("source added!")
+            try:
+                df = source.public().df()
+            except Exception:
+                try:
+                    df = getattr(bt_base, source.entity)(
+                        organism=source.organism,
+                        source=source.name,
+                        version=source.version,
+                    ).df()
+                except Exception as e:
+                    logger.error(
+                        "please register a DataFrame artifact!\n"
+                        "    → artifact = ln.Artifact(df, _branch_code=0, run=False).save()\n"
+                        "    → source.dataframe_artifact = artifact\n"
+                        "    → source.save()"
+                    )
+                    raise ValueError from e
+            df_artifact = ln.Artifact.from_df(df, _branch_code=0, run=False).save()
+        new_source.dataframe_artifact = df_artifact
+        new_source.save()
+        logger.important("source added!")
 
         return new_source
 
