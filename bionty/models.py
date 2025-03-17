@@ -98,7 +98,7 @@ class Source(Record, TracksRun, TracksUpdates):
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=8, default=ids.source)
-    """A universal id (hash of selected field)."""
+    """A universal id (base62-encoded hash of defining fields)."""
     entity: str = CharField(max_length=256, db_index=True)
     """Entity class name."""
     organism: str = CharField(max_length=64, db_index=True)
@@ -535,7 +535,7 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
-    """A universal id (hash of selected field)."""
+    """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=64, db_index=True, default=None, unique=True)
     """Name of a organism, required field."""
     ontology_id: str | None = CharField(
@@ -635,7 +635,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=12, default=ids.gene)
-    """A universal id (hash of selected field)."""
+    """A universal id (base62-encoded hash of defining fields)."""
     symbol: str | None = CharField(
         max_length=64, db_index=True, null=True, default=None
     )
@@ -755,7 +755,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=12, default=ids.protein)
-    """A universal id (hash of selected field)."""
+    """A universal id (base62-encoded hash of defining fields)."""
     name: str | None = CharField(max_length=256, db_index=True, null=True, default=None)
     """Unique name of a protein."""
     uniprotkb_id: str | None = CharField(
@@ -867,7 +867,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=12, default=ids.cellmarker)
-    """A universal id (hash of selected field)."""
+    """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=64, db_index=True)
     """Unique name of the cell marker."""
     synonyms: str | None = TextField(null=True, default=None)
@@ -983,7 +983,7 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
-    """A universal id (hash of selected field)."""
+    """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the tissue."""
     ontology_id: str | None = CharField(
@@ -1084,7 +1084,7 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
-    """A universal id (hash of selected field)."""
+    """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the cell type."""
     ontology_id: str | None = CharField(
@@ -1186,7 +1186,7 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
-    """A universal id (hash of selected field)."""
+    """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the disease."""
     ontology_id: str | None = CharField(
@@ -1289,7 +1289,7 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
-    """A universal id (hash of selected field)."""
+    """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the cell line."""
     ontology_id: str | None = CharField(
@@ -1394,7 +1394,7 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
-    """A universal id (hash of selected field)."""
+    """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the phenotype."""
     ontology_id: str | None = CharField(
@@ -1497,7 +1497,7 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
-    """A universal id (hash of selected field)."""
+    """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the pathway."""
     ontology_id: str | None = CharField(
@@ -1605,7 +1605,7 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
-    """A universal id (hash of selected field)."""
+    """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the experimental factor."""
     ontology_id: str | None = CharField(
@@ -1716,7 +1716,7 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
-    """A universal id (hash of selected field)."""
+    """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the developmental stage."""
     ontology_id: str | None = CharField(
@@ -1820,7 +1820,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
-    """A universal id (hash of selected field)."""
+    """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the ethnicity."""
     ontology_id: str | None = CharField(

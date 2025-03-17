@@ -16,3 +16,21 @@ def test_add_source(setup_instance):
     assert new_source.name == "chebi"
     assert new_source.version == "2024-07-27"
     assert new_source.dataframe_artifact is not None
+
+
+def test_source_uids(setup_instance):
+    disease_ontology = bt.Source(
+        entity="bionty.Disease",
+        name="mondo",
+        version="2023-04-04",
+        _skip_validation=True,
+    )
+    assert disease_ontology.uid == "Hgw08Vk3"
+    phenotype_ontology = bt.Source(
+        entity="bionty.Phenotype",
+        name="hp",
+        version="2023-06-17",
+        organism="human",
+        _skip_validation=True,
+    )
+    assert phenotype_ontology.uid == "451W7iJS"
