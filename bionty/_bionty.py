@@ -13,6 +13,8 @@ from . import ids
 if TYPE_CHECKING:
     from types import ModuleType
 
+    from .models import BioRecord
+
 
 class OrganismNotSet(SystemExit):
     """The `organism` parameter was not passed or is not globally set."""
@@ -49,11 +51,11 @@ def create_or_get_organism_record(
                         raise ValueError(
                             f"Organism {organism} can't be created from the bionty reference, check your spelling or create it manually."
                         )
-                    # link the organism record to the default bionty source
-                    organism_record.source = get_source_record(
-                        bt_base.Organism(), Organism
-                    )  # type:ignore
-                    organism_record.save()  # type:ignore
+                    # # link the organism record to the default bionty source
+                    # organism_record.source = get_source_record_from_public(
+                    #     bt_base.Organism(), Organism
+                    # )  # type:ignore
+                    # organism_record.save()  # type:ignore
                 except KeyError:
                     # no such organism is found in bionty reference
                     organism_record = None
@@ -72,25 +74,63 @@ def create_or_get_organism_record(
 
 
 def get_source_record(
-    public_ontology: bt_base.PublicOntology, registry: type[Record]
+    registry: type[BioRecord],
+    organism: str | Record | None = None,
+    source: Record | None = None,
 ) -> Record:
+    """Get a Source record for a given BioRecord model."""
     from .models import Source
 
-    if public_ontology.__class__.__name__ == "StaticReference":
-        entity_name = registry.__get_name_with_module__()
-    else:
-        entity_name = (
-            f"{registry.__get_module_name__()}.{public_ontology.__class__.__name__}"
-        )
-    kwargs = {
-        "entity": entity_name,
-        "organism": public_ontology.organism,
-        "name": public_ontology.source,
-        "version": public_ontology.version,
-    }
+    if source is not None:
+        return source
 
-    source_record = Source.objects.get(**kwargs)
-    return source_record
+    if isinstance(organism, Record):
+        organism = organism.name
+    entity_name = registry.__get_name_with_module__()
+    filter_kwargs = {"entity": entity_name}
+    if organism is not None:
+        filter_kwargs["organism"] = organism
+
+    sources = Source.filter(filter_kwargs).all()
+    if len(sources) == 0:
+        raise ValueError(f"No source record found for {entity_name}")
+    if len(sources) == 1:
+        return sources[0]
+
+    current_sources = sources.filter(currently_used=True).all()
+    if len(current_sources) == 1:
+        return current_sources[0]
+    elif len(current_sources) > 1:
+        if organism is None:
+            # return source with organism="all"
+            current_sources_all = current_sources.filter(organism="all").all()
+            if len(current_sources_all) > 0:
+                return current_sources_all[0]
+        else:
+            return current_sources.first()
+    else:  # len(current_sources) == 0
+        sources_all = sources.filter(organism="all").all()
+        if len(sources_all) > 0:
+            # return source with organism="all"
+            return sources_all[0]
+        return sources.first()
+
+
+# def get_source_record_from_public(
+#     public_ontology: bt_base.PublicOntology, registry: type[Record]
+# ) -> Record:
+#     """Get a Source record from a public ontology object."""
+#     from .models import Source
+
+#     entity_name = registry.__get_name_with_module__()
+#     kwargs = {
+#         "entity": entity_name,
+#         "organism": public_ontology.organism,
+#         "name": public_ontology.source,
+#         "version": public_ontology.version,
+#     }
+
+#     return Source.objects.get(**kwargs)
 
 
 def list_biorecord_models(schema_module: ModuleType):
@@ -182,10 +222,14 @@ def lookup2kwargs(record: Record, *args, **kwargs) -> dict:
         )
         if organism_record is not None:
             bionty_kwargs["organism"] = organism_record
-        public_ontology = getattr(bt_base, record.__class__.__name__)(
-            organism=organism_record.name if organism_record is not None else None
+        # public_ontology = getattr(bt_base, record.__class__.__name__)(
+        #     organism=organism_record.name if organism_record is not None else None
+        # )
+        bionty_kwargs["source"] = get_source_record(
+            registry=record.__class__,
+            organism=organism_record,
+            source=kwargs.get("source"),
         )
-        bionty_kwargs["source"] = get_source_record(public_ontology, record.__class__)
 
         model_field_names = {i.name for i in record._meta.fields}
         model_field_names.add("parents")

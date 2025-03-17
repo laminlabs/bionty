@@ -282,7 +282,7 @@ class BioRecord(Record, HasParents, CanCurate):
         """
         from .core._add_ontology import add_ontology_from_df, check_source_in_db
 
-        if hasattr(cls, "ontology_id") or hasattr(cls, "_name_field"):
+        if hasattr(cls, "ontology_id") or hasattr(cls, "_name_field"):  # CellMaker
             add_ontology_from_df(
                 registry=cls,
                 ontology_ids=ontology_ids,
@@ -295,12 +295,13 @@ class BioRecord(Record, HasParents, CanCurate):
 
             from ._bionty import get_source_record
 
+            source_record = get_source_record(cls, organism=organism, source=source)
             public = cls.public(organism=organism, source=source)
             logger.info(
                 f"importing {cls.__name__} records from {public.source}, {public.version}"
             )
             # TODO: consider StaticReference
-            source_record = get_source_record(public, cls)  # type:ignore
+            # source_record = get_source_record_from_public(public, cls)  # type:ignore
             df = public.df().reset_index()
             if hasattr(cls, "_ontology_id_field"):
                 field = cls._ontology_id_field
@@ -371,22 +372,19 @@ class BioRecord(Record, HasParents, CanCurate):
             df_artifact = ln.Artifact(new_source.url, _branch_code=0, run=False).save()
         else:
             try:
-                df = source.public().df()
-            except Exception:
-                try:
-                    df = getattr(bt_base, source.entity)(
-                        organism=source.organism,
-                        source=source.name,
-                        version=source.version,
-                    ).df()
-                except Exception as e:
-                    logger.error(
-                        "please register a DataFrame artifact!\n"
-                        "    → artifact = ln.Artifact(df, _branch_code=0, run=False).save()\n"
-                        "    → source.dataframe_artifact = artifact\n"
-                        "    → source.save()"
-                    )
-                    raise ValueError from e
+                df = getattr(bt_base, source.entity)(
+                    organism=source.organism,
+                    source=source.name,
+                    version=source.version,
+                ).df()
+            except Exception as e:
+                logger.error(
+                    "please register a DataFrame artifact!\n"
+                    "    → artifact = ln.Artifact(df, _branch_code=0, run=False).save()\n"
+                    "    → source.dataframe_artifact = artifact\n"
+                    "    → source.save()"
+                )
+                raise ValueError from e
             df_artifact = ln.Artifact.from_df(df, _branch_code=0, run=False).save()
         new_source.dataframe_artifact = df_artifact
         new_source.save()

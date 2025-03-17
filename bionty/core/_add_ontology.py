@@ -157,11 +157,12 @@ def add_ontology_from_df(
 
     from bionty._bionty import get_source_record
 
-    public = registry.public(organism=organism, source=source)
+    source_record = get_source_record(registry, organism=organism, source=source)
+    public = registry.public(source=source_record)
     df = prepare_dataframe(public.df())
 
     # TODO: consider StaticReference
-    source_record = get_source_record(public, registry)  # type:ignore
+    # source_record = get_source_record_from_public(public, registry)  # type:ignore
 
     if ontology_ids is None:
         logger.info(
