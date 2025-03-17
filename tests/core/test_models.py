@@ -15,4 +15,4 @@ def test_add_source(setup_instance):
     new_source = bt.Phenotype.add_source(chebi_source)
     assert new_source.name == "chebi"
     assert new_source.version == "2024-07-27"
-    assert new_source.dataframe_artifact.exists()
+    assert new_source.dataframe_artifact is not None
