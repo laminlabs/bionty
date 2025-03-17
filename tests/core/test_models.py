@@ -1,5 +1,4 @@
 import bionty as bt
-import lamindb as ln
 import lamindb_setup as ln_setup
 import pytest
 
@@ -12,7 +11,7 @@ def setup_instance():
 
 
 def test_add_source(setup_instance):
-    chebi_source = ln.Source.get(name="chebi", version="2024-07-27")
+    chebi_source = bt.Source.get(name="chebi", version="2024-07-27")
     new_source = bt.Phenotype.add_source(chebi_source)
     assert new_source.name == "chebi"
     assert new_source.version == "2024-07-27"
