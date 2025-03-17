@@ -71,11 +71,6 @@ jobs:
       - name: Install laminci
         run: pip install "laminci@git+https://x-access-token:${{ secrets.LAMIN_BUILD_DOCS }}@github.com/laminlabs/laminci"
 
-      # - name: Install dependencies
-      #   run: |
-      #     uv pip install --system rich
-      #     uv pip install --system ipywidgets
-
       - name: Run lint
         if: matrix.group == 'bionty-core'
         run: nox -s lint
@@ -97,7 +92,6 @@ jobs:
           ref: main
 
       - name: Run build
-        if: ${{ !(matrix.group == 'bionty-docs' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository) }}
         run: nox -s "build(group='${{ matrix.group }}')"
 
       - uses: actions/upload-artifact@v4
