@@ -14,15 +14,17 @@ def lint(session: nox.Session) -> None:
 
 
 @nox.session
-@nox.parametrize("group", ["bionty-unit", "bionty-docs"])
+@nox.parametrize("group", ["bionty-base", "bionty-core", "bionty-docs"])
 def build(session: nox.Session, group: str):
     branch = "main" if IS_PR else "release"  # point back to "release"
     install_lamindb(session, branch=branch)
     session.run(*"uv pip install --system -e .[dev]".split())
 
     coverage_args = "--cov=bionty --cov-append --cov-report=term-missing"
-    if group == "bionty-unit":
-        session.run(*f"pytest {coverage_args} ./tests".split())
+    if group == "bionty-base":
+        session.run(*f"pytest {coverage_args} ./tests/base".split())
+    elif group == "bionty-core":
+        session.run(*f"pytest {coverage_args} ./tests/core".split())
     elif group == "bionty-docs":
         session.run(*f"pytest -s {coverage_args} ./docs/guide".split())
         run(session, "lamin init --storage ./docsbuild --modules bionty")
