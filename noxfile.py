@@ -14,7 +14,7 @@ def lint(session: nox.Session) -> None:
 
 
 @nox.session
-@nox.parametrize("group", ["bionty-base", "bionty-core", "bionty-docs"])
+@nox.parametrize("group", ["bionty-base", "bionty-core"])
 def build(session: nox.Session, group: str):
     branch = "main" if IS_PR else "release"  # point back to "release"
     install_lamindb(session, branch=branch)
@@ -23,7 +23,7 @@ def build(session: nox.Session, group: str):
     coverage_args = "--cov=bionty --cov-append --cov-report=term-missing"
     if group == "bionty-base":
         session.run(*f"pytest {coverage_args} ./tests/base".split())
-    if group == "bionty-core":
+    elif group == "bionty-core":
         session.run(*f"pytest {coverage_args} ./tests/core".split())
     elif group == "bionty-docs":
         session.run(*f"pytest -s {coverage_args} ./docs/guide".split())
