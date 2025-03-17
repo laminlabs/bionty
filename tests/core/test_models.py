@@ -52,6 +52,7 @@ def test_encode_uids(setup_instance):
         entity="bionty.Disease",
         name="mondo",
         version="2023-04-04",
+        organism="all",
         _skip_validation=True,
     )
     assert disease.uid == "Hgw08Vk3"
