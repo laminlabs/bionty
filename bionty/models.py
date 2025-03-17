@@ -159,9 +159,12 @@ class Source(Record, TracksRun, TracksUpdates):
     def set_as_currently_used(self):
         """Set this record as the currently used source.
 
-        Examples:
-            >>> record = bionty.Source.get(uid="...")
-            >>> record.set_as_currently_used()
+        Example::
+
+            import bionty as bt
+
+            record = bt.Source.get(uid="...")
+            record.set_as_currently_used()
         """
         # set this record as currently used
         self.currently_used = True
@@ -257,8 +260,8 @@ class BioRecord(Record, HasParents, CanCurate):
     def import_source(
         cls,
         source: Source | None = None,
-        ontology_ids: list[str] | None = None,
         organism: str | Record | None = None,
+        ontology_ids: list[str] | None = None,
         ignore_conflicts: bool = True,
     ):
         """Bulk save records from a Bionty ontology.
@@ -266,13 +269,16 @@ class BioRecord(Record, HasParents, CanCurate):
         Use this method to initialize your registry with public ontology.
 
         Args:
-            ontology_ids: List of ontology ids to save.
-            organism: Organism name or record.
             source: Source record to import records from.
+            organism: Organism name or record.
+            ontology_ids: List of ontology ids to save.
             ignore_conflicts: Whether to ignore conflicts during bulk record creation.
 
-        Examples:
-            >>> bionty.CellType.import_source()
+        Example::
+
+            import bionty as bt
+
+            bt.CellType.import_source()
         """
         from .core._add_ontology import add_ontology_from_df, check_source_in_db
 
@@ -319,7 +325,23 @@ class BioRecord(Record, HasParents, CanCurate):
 
     @classmethod
     def add_source(cls, source: Source, currently_used=True) -> Source:
-        """Configure a source of the entity."""
+        """Configure a source of the entity.
+
+        Args:
+            source: Source record to add from another entity.
+            currently_used: Whether to set this source as currently used.
+
+        Returns:
+            A Source record with this entity.
+
+        Example::
+
+            import bionty as bt
+
+            efo_source = bt.Source.get(entity="bionty.ExperimentalFactor", name="efo", version="3.70.0")
+            phenotype_efo_source = bt.Phenotype.add_source(source)
+            assert phenotype_efo_source.entity == "bionty.Phenotype"
+        """
         import lamindb as ln
 
         unique_kwargs = {
@@ -385,14 +407,17 @@ class BioRecord(Record, HasParents, CanCurate):
         See Also:
             :doc:`docs:public-ontologies`
 
-        Examples:
-            >>> celltype_pub = bionty.CellType.public()
-            >>> celltype_pub
-            PublicOntology
-            Entity: CellType
-            Organism: all
-            Source: cl, 2023-04-20
-            #terms: 2698
+        Example::
+
+            import bionty as bt
+
+            celltype_pub = bt.CellType.public()
+            celltype_pub
+            #> PublicOntology
+            #> Entity: CellType
+            #> Organism: all
+            #> Source: cl, 2023-04-20
+            #> #terms: 2698
         """
         if isinstance(organism, Organism):
             organism = organism.name
@@ -430,27 +455,6 @@ class BioRecord(Record, HasParents, CanCurate):
                 source = Source.filter(**kwargs).first()
             return StaticReference(source)
 
-    @deprecated(new_name="from_source")
-    @classmethod
-    def from_public(cls, *args, **kwargs) -> BioRecord | list[BioRecord] | None:
-        return cls.from_source(*args, **kwargs)
-
-    @deprecated(new_name="import_source")
-    @classmethod
-    def import_from_source(
-        cls,
-        source: Source | None = None,
-        ontology_ids: list[str] | None = None,
-        organism: str | Record | None = None,
-        ignore_conflicts: bool = True,
-    ):
-        return cls.import_source(
-            source=source,
-            ontology_ids=ontology_ids,
-            organism=organism,
-            ignore_conflicts=ignore_conflicts,
-        )
-
     @classmethod
     def from_source(
         cls, *, mute: bool = False, **kwargs
@@ -462,15 +466,16 @@ class BioRecord(Record, HasParents, CanCurate):
 
             Bulk create records via :meth:`.from_values`.
 
-        Examples:
-            Create a record by passing a field value:
+        Example::
 
-            >>> record = bionty.Gene.from_source(symbol="TCF7", organism="human")
+            import bionty as bt
 
-            Create a record from non-default source:
+            # Create a record by passing a field value:
+            record = bt.Gene.from_source(symbol="TCF7", organism="human")
 
-            >>> source = bionty.Source.get(entity="CellType", source="cl", version="2022-08-16")  # noqa
-            >>> record = bionty.CellType.from_source(name="T cell", source=source)
+            # Create a record from non-default source:
+            source = bt.Source.get(entity="CellType", source="cl", version="2022-08-16")
+            record = bt.CellType.from_source(name="T cell", source=source)
 
         """
         # non-relationship kwargs
@@ -497,7 +502,15 @@ class BioRecord(Record, HasParents, CanCurate):
                 return results
 
     def save(self, *args, **kwargs) -> BioRecord:
-        """Save the record and its parents recursively."""
+        """Save the record and its parents recursively.
+
+        Example::
+
+            import bionty as bt
+
+            record = bt.CellType.from_source(name="T cell")
+            record.save()
+        """
         super().save(*args, **kwargs)
         # saving records of parents
         if hasattr(self, "_parents"):
@@ -522,8 +535,11 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:organism`.
 
 
-    Examples:
-        >>> record = bionty.Organism.from_source(name="rabbit")
+    Example::
+
+        import bionty as bt
+
+        record = bt.Organism.from_source(name="rabbit")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -603,9 +619,12 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
         Returns:
             A single Organism record, list of Organism records, or None if not found
 
-        Examples:
-            >>> record = Organism.from_source(name="human")
-            >>> record = Organism.from_source(ontology_id="9606")
+        Example::
+
+            import bionty as bt
+
+            record = bt.Organism.from_source(name="human")
+            record = bt.Organism.from_source(ontology_id="NCBITaxon:9606")
         """
         return _sanitize_from_source_args(super(), locals())
 
@@ -622,8 +641,12 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         We discourage validating gene symbols and to work with unique identifiers such as ENSEMBL IDs instead.
         For more details, see :doc:`docs:faq/symbol-mapping`.
 
-    Examples:
-        >>> record = bionty.Gene.from_source(symbol="TCF7", organism="human")
+    Example::
+
+        import bionty as bt
+
+        record = bt.Gene.from_source(ensembl_gene_id="ENSG00000081059")
+        record = bt.Gene.from_source(symbol="TCF7", organism="human")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -725,10 +748,13 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         Returns:
             A single Gene record, list of Gene records, or None if not found
 
-        Examples:
-            >>> record = Gene.from_source(symbol="TCF7", organism="human")
-            >>> record = Gene.from_source(ensembl_gene_id="ENSG00000081059", organism="human")
-            >>> record = Gene.from_source(stable_id="YAL001C", organism="yeast")
+        Example::
+
+            import bionty as bt
+
+            record = bt.Gene.from_source(symbol="TCF7", organism="human")
+            record = bt.Gene.from_source(ensembl_gene_id="ENSG00000081059")
+            record = bt.Gene.from_source(stable_id="YAL001C", organism="yeast")
         """
         return _sanitize_from_source_args(super(), locals())
 
@@ -741,9 +767,12 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
 
         Bulk create records via :meth:`.from_values`.
 
-    Examples:
-        >>> record = bionty.Protein.from_source(name="Synaptotagmin-15B", organism="human")
-        >>> record = bionty.Protein.from_source(gene_symbol="SYT15B", organism="human")
+    Example::
+
+        import bionty as bt
+
+        record = bt.Protein.from_source(name="Synaptotagmin-15B", organism="human")
+        record = bt.Protein.from_source(gene_symbol="SYT15B", organism="human")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -838,10 +867,13 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
         Returns:
             A single Protein record, list of Protein records, or None if not found
 
-        Examples:
-            >>> record = Protein.from_source(name="Synaptotagmin-15B", organism="human")
-            >>> record = Protein.from_source(uniprotkb_id="Q8N6N3")
-            >>> record = Protein.from_source(gene_symbol="SYT15B", organism="human")
+        Example::
+
+            import bionty as bt
+
+            record = bt.Protein.from_source(name="Synaptotagmin-15B", organism="human")
+            record = bt.Protein.from_source(uniprotkb_id="Q8N6N3")
+            record = bt.Protein.from_source(gene_symbol="SYT15B", organism="human")
         """
         return _sanitize_from_source_args(super(), locals())
 
@@ -854,8 +886,11 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
 
         Bulk create CellMarker records via :meth:`.from_values`.
 
-    Examples:
-        >>> record = bionty.CellMarker.from_source(name="PD1", organism="human")
+    Example::
+
+        import bionty as bt
+
+        record = bt.CellMarker.from_source(name="PD1", organism="human")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -953,10 +988,13 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         Returns:
             A single CellMarker record, list of CellMarker records, or None if not found
 
-        Examples:
-            >>> record = CellMarker.from_source(name="PD1", organism="human")
-            >>> record = CellMarker.from_source(gene_symbol="PDCD1", organism="human")
-            >>> record = CellMarker.from_source(name="CD19", organism="mouse")
+        Example::
+
+            import bionty as bt
+
+            record = bt.CellMarker.from_source(name="PD1", organism="human")
+            record = bt.CellMarker.from_source(gene_symbol="PDCD1", organism="human")
+            record = bt.CellMarker.from_source(name="CD19", organism="mouse")
         """
         return _sanitize_from_source_args(super(), locals())
 
@@ -969,8 +1007,11 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
 
         Bulk create Tissue records via :meth:`.from_values`.
 
-    Examples:
-        >>> record = bionty.Tissue.from_source(name="brain")
+    Example::
+
+        import bionty as bt
+
+        record = bt.Tissue.from_source(name="brain")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -1055,9 +1096,12 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
         Returns:
             A single Tissue record, list of Tissue records, or None if not found
 
-        Examples:
-            >>> record = Tissue.from_source(name="nose", organism="human")
-            >>> record = Tissue.from_source(ontology_id="UBERON:0000004", organism="human")
+        Example::
+
+            import bionty as bt
+
+            record = bt.Tissue.from_source(name="nose")
+            record = bt.Tissue.from_source(ontology_id="UBERON:0000004")
         """
         return _sanitize_from_source_args(super(), locals())
 
@@ -1070,8 +1114,11 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
 
         Bulk create CellType records via :meth:`.from_values`.
 
-    Examples:
-        >>> record = bionty.CellType.from_source(name="T cell")
+    Example::
+
+        import bionty as bt
+
+        record = bt.CellType.from_source(name="T cell")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -1156,10 +1203,15 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
         Returns:
             A single CellType record, list of CellType records, or None if not found
 
-        Examples:
-            >>> record = CellType.from_source(name="T cell")
-            >>> record = CellType.from_source(ontology_id="CL:0000084")
-            >>> record = CellType.from_source(name="B cell", source=source)
+        Example::
+
+            import bionty as bt
+
+            record = bt.CellType.from_source(name="T cell")
+            record = bt.CellType.from_source(ontology_id="CL:0000084")
+
+            source = bt.Source.get(entity="bionty.CellType", source="cl", version="2024-08-16")
+            record = bt.CellType.from_source(name="B cell", source=source)
         """
         return _sanitize_from_source_args(super(), locals())
 
@@ -1172,8 +1224,11 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
 
         For more info, see tutorials: :doc:`docs:disease`.
 
-    Examples:
-        >>> record = bionty.Disease.from_source(name="Alzheimer disease")
+    Example::
+
+        import bionty as bt
+
+        record = bt.Disease.from_source(name="Alzheimer disease")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -1258,10 +1313,13 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
         Returns:
             A single Disease record, list of Disease records, or None if not found
 
-        Examples:
-            >>> record = Disease.from_source(name="Alzheimer disease")
-            >>> record = Disease.from_source(ontology_id="MONDO:0004975")
-            >>> record = Disease.from_source(name="type 2 diabetes")
+        Example::
+
+            import bionty as bt
+
+            record = bt.Disease.from_source(name="Alzheimer disease")
+            record = bt.Disease.from_source(ontology_id="MONDO:0004975")
+            record = bt.Disease.from_source(name="type 2 diabetes")
         """
         return _sanitize_from_source_args(super(), locals())
 
@@ -1274,9 +1332,12 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
 
         Bulk create CellLine records via :meth:`.from_values`.
 
-    Examples:
-        >>> standard_name = bionty.CellLine.public().standardize(["K562"])[0]
-        >>> record = bionty.CellLine.from_source(name=standard_name)
+    Example::
+
+        import bionty as bt
+
+        standard_name = bt.CellLine.public().standardize(["K562"])[0]
+        record = bt.CellLine.from_source(name=standard_name)
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -1361,9 +1422,12 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
         Returns:
             A single CellLine record, list of CellLine records, or None if not found
 
-        Examples:
-            >>> record = CellLine.from_source(name="K562")
-            >>> record = CellLine.from_source(ontology_id="CLO:0009477")
+        Example::
+
+            import bionty as bt
+
+            record = bt.CellLine.from_source(name="K562")
+            record = bt.CellLine.from_source(ontology_id="CLO:0009477")
         """
         return _sanitize_from_source_args(super(), locals())
 
@@ -1379,9 +1443,11 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
 
         Bulk create Phenotype records via :meth:`.from_values`.
 
-    Examples:
-        >>> record = bionty.Phenotype.from_source(name="Arachnodactyly")
-        >>> record.save()
+    Example::
+
+        import bionty as bt
+
+        record = bt.Phenotype.from_source(name="Arachnodactyly")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -1466,9 +1532,12 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
         Returns:
             A single Phenotype record, list of Phenotype records, or None if not found
 
-        Examples:
-            >>> record = Phenotype.from_source(name="Arachnodactyly")
-            >>> record = Phenotype.from_source(ontology_id="HP:0001166")
+        Example::
+
+            import bionty as bt
+
+            record = bt.Phenotype.from_source(name="Arachnodactyly")
+            record = bt.Phenotype.from_source(ontology_id="HP:0001166")
         """
         return _sanitize_from_source_args(super(), locals())
 
@@ -1482,9 +1551,11 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
 
         Bulk create Pathway records via :meth:`.from_values`.
 
-    Examples:
-        >>> record = bionty.Pathway.from_source(ontology_id="GO:1903353")
-        >>> record.save()
+    Example::
+
+        import bionty as bt
+
+        record = bt.Pathway.from_source(ontology_id="GO:1903353")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -1575,9 +1646,12 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
         Returns:
             A single Pathway record, list of Pathway records, or None if not found
 
-        Examples:
-            >>> record = Pathway.from_source(name="mitotic cell cycle")
-            >>> record = Pathway.from_source(ontology_id="GO:1903353")
+        Example::
+
+            import bionty as bt
+
+            record = bt.Pathway.from_source(name="mitotic cell cycle")
+            record = bt.Pathway.from_source(ontology_id="GO:1903353")
         """
         return _sanitize_from_source_args(super(), locals())
 
@@ -1590,9 +1664,12 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
 
         Bulk create ExperimentalFactor records via :meth:`.from_values`.
 
-    Examples:
-        >>> standard_name = bionty.ExperimentalFactor.public().standardize(["scRNA-seq"])
-        >>> record = bionty.ExperimentalFactor.from_source(name=standard_name)
+    Example::
+
+        import bionty as bt
+
+        standard_name = bt.ExperimentalFactor.public().standardize(["scRNA-seq"])
+        record = bt.ExperimentalFactor.from_source(name=standard_name)
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -1685,9 +1762,12 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
         Returns:
             A single ExperimentalFactor record, list of ExperimentalFactor records, or None if not found
 
-        Examples:
-            >>> record = ExperimentalFactor.from_source(name="scRNA-seq")
-            >>> record = ExperimentalFactor.from_source(ontology_id="EFO:0009922")
+        Example::
+
+            import bionty as bt
+
+            record = bt.ExperimentalFactor.from_source(name="scRNA-seq")
+            record = bt.ExperimentalFactor.from_source(ontology_id="EFO:0009922")
         """
         return _sanitize_from_source_args(super(), locals())
 
@@ -1701,9 +1781,11 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
 
         Bulk create DevelopmentalStage records via :meth:`.from_values`.
 
-    Examples:
-        >>> record = bionty.DevelopmentalStage.from_source(name="neurula stage")
-        >>> record.save()
+    Example::
+
+        import bionty as bt
+
+        record = bt.DevelopmentalStage.from_source(name="neurula stage")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -1790,9 +1872,12 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
         Returns:
             A single DevelopmentalStage record, list of DevelopmentalStage records, or None if not found
 
-        Examples:
-            >>> record = DevelopmentalStage.from_source(name="neurula stage")
-            >>> record = DevelopmentalStage.from_source(ontology_id="HsapDv:0000004")
+        Example::
+
+            import bionty as bt
+
+            record = bt.DevelopmentalStage.from_source(name="neurula stage")
+            record = bt.DevelopmentalStage.from_source(ontology_id="HsapDv:0000004")
         """
         return _sanitize_from_source_args(super(), locals())
 
@@ -1805,9 +1890,11 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
 
         Bulk create Ethnicity records via :meth:`.from_values`.
 
-    Examples:
-        >>> record = bionty.Ethnicity.from_source(name="European")
-        >>> record.save()
+    Example::
+
+        import bionty as bt
+
+        record = bt.Ethnicity.from_source(name="European")
     """
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -1894,9 +1981,12 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         Returns:
             A single Ethnicity record, list of Ethnicity records, or None if not found
 
-        Examples:
-            >>> record = Ethnicity.from_source(name="European")
-            >>> record = Ethnicity.from_source(ontology_id="HANCESTRO:0005")
+        Example::
+
+            import bionty as bt
+
+            record = bt.Ethnicity.from_source(name="European")
+            record = bt.Ethnicity.from_source(ontology_id="HANCESTRO:0005")
         """
         return _sanitize_from_source_args(super(), locals())
 
