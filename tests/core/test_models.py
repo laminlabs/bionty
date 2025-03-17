@@ -19,13 +19,6 @@ def test_add_source(setup_instance):
 
 
 def test_encode_uids(setup_instance):
-    gene = bt.Gene(
-        ensembl_gene_id="ENSG00000081059",
-        symbol="TCF7",
-        _skip_validation=True,
-    )
-    assert gene.uid == "7IkHKPl0ScQR"
-
     cell_type = bt.CellType(
         ontology_id="CL:0000084",
         _skip_validation=True,
@@ -46,6 +39,14 @@ def test_encode_uids(setup_instance):
         _skip_validation=True,
     )
     assert cell_marker.uid == "2dZ52W9noUDK"
+
+    gene = bt.Gene(
+        ensembl_gene_id="ENSG00000081059",
+        symbol="TCF7",
+        organism=bt.settings.organism,  # required
+        _skip_validation=True,
+    )
+    assert gene.uid == "7IkHKPl0ScQR"
 
     disease = bt.Source(
         entity="bionty.Disease",
