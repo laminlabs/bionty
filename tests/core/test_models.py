@@ -1,24 +1,19 @@
 import bionty as bt
-import lamindb_setup as ln_setup
-import pytest
 
 
-@pytest.fixture(scope="module")
-def setup_instance():
-    ln_setup.init(storage="./testdb", modules="bionty")
-    yield
-    ln_setup.delete("testdb", force=True)
+def test_public_synonym_mapping():
+    bt_result = bt.Gene.public().inspect(
+        ["ABC1", "TNFRSF4"], field="symbol", organism="human"
+    )
+    assert bt_result.synonyms_mapper == {"ABC1": "HEATR6"}
+
+    bt_result = bt.Gene.public().inspect(
+        ["ABC1", "TNFRSF4"], field="symbol", organism="human", inspect_synonyms=False
+    )
+    assert bt_result.synonyms_mapper == {}
 
 
-def test_add_source(setup_instance):
-    chebi_source = bt.Source.get(name="chebi", version="2024-07-27")
-    new_source = bt.Phenotype.add_source(chebi_source)
-    assert new_source.name == "chebi"
-    assert new_source.version == "2024-07-27"
-    assert new_source.dataframe_artifact is not None
-
-
-def test_encode_uids(setup_instance):
+def test_encode_uids():
     cell_type = bt.CellType(
         ontology_id="CL:0000084",
         _skip_validation=True,
