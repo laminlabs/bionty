@@ -25,7 +25,6 @@ from lamindb.models import (
     TracksRun,
     TracksUpdates,
 )
-from lamindb_setup.core import deprecated
 
 import bionty.base as bt_base
 from bionty.base.dev._doc_util import _doc_params
@@ -433,7 +432,10 @@ class BioRecord(Record, HasParents, CanCurate):
                     organism = settings.organism.name
             source_name = None
             version = None
-            get_source_record(cls, organism=organism)
+            source = get_source_record(cls, organism=organism)
+            if source is not None:
+                source_name = source.name
+                version = source.version
 
         try:
             return getattr(bt_base, cls.__name__)(

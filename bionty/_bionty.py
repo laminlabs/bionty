@@ -4,11 +4,9 @@ from typing import TYPE_CHECKING
 
 from django.core.exceptions import ObjectDoesNotExist
 from lamin_utils import logger
-from lamindb.models import Record
-
-import bionty.base as bt_base
 
 from . import ids
+from .models import Record
 
 if TYPE_CHECKING:
     from types import ModuleType
@@ -75,16 +73,16 @@ def create_or_get_organism_record(
 
 def get_source_record(
     registry: type[BioRecord],
-    organism: str | Record | None = None,
+    organism: str | BioRecord | None = None,
     source: Record | None = None,
 ) -> Record:
     """Get a Source record for a given BioRecord model."""
-    from .models import Source
+    from .models import Organism, Source
 
     if source is not None:
         return source
 
-    if isinstance(organism, Record):
+    if isinstance(organism, Organism):
         organism = organism.name
     entity_name = registry.__get_name_with_module__()
     filter_kwargs = {"entity": entity_name}
@@ -102,6 +100,13 @@ def get_source_record(
         return current_sources[0]
     elif len(current_sources) > 1:
         if organism is None:
+            # for Organism, in most cases we load from the vertebrates source because ncbitaxon is too big
+            if entity_name == "bionty.Organism":
+                current_sources_vertebrates = current_sources.filter(
+                    organism="vertebrates"
+                ).all()
+                if len(current_sources_vertebrates) > 0:
+                    return current_sources_vertebrates[0]
             # return source with organism="all"
             current_sources_all = current_sources.filter(organism="all").all()
             if len(current_sources_all) > 0:
@@ -205,7 +210,7 @@ def encode_uid(registry: type[Record], kwargs: dict):
     return kwargs
 
 
-def lookup2kwargs(record: Record, *args, **kwargs) -> dict:
+def lookup2kwargs(record: BioRecord, *args, **kwargs) -> dict:
     """Pass bionty search/lookup results."""
     arg = args[0]
     if isinstance(arg, tuple):
@@ -214,7 +219,7 @@ def lookup2kwargs(record: Record, *args, **kwargs) -> dict:
         bionty_kwargs = arg[0]._asdict()
 
     if len(bionty_kwargs) > 0:
-        import bionty.base as bt_base
+        # import bionty.base as bt_base
 
         # add organism and source
         organism_record = create_or_get_organism_record(
