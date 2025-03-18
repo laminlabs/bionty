@@ -91,7 +91,7 @@ def get_source_record(
     if organism is not None:
         filter_kwargs["organism"] = organism
 
-    sources = Source.filter(filter_kwargs).all()
+    sources = Source.filter(**filter_kwargs).all()
     if len(sources) == 0:
         raise ValueError(f"No source record found for {entity_name}")
     if len(sources) == 1:

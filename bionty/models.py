@@ -425,6 +425,7 @@ class BioRecord(Record, HasParents, CanCurate):
             source_name = source.name
             version = source.version
         else:
+            from ._bionty import get_source_record
             from .core._settings import settings
 
             if hasattr(cls, "organism_id"):
@@ -432,6 +433,7 @@ class BioRecord(Record, HasParents, CanCurate):
                     organism = settings.organism.name
             source_name = None
             version = None
+            get_source_record(cls, organism=organism)
 
         try:
             return getattr(bt_base, cls.__name__)(
