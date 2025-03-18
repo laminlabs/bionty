@@ -2,13 +2,13 @@ import bionty as bt
 
 
 def test_public_synonym_mapping():
-    bt_result = bt.Gene.public().inspect(
-        ["ABC1", "TNFRSF4"], field="symbol", organism="human"
+    bt_result = bt.Gene.public(organism="human").inspect(
+        ["ABC1", "TNFRSF4"], field="symbol"
     )
     assert bt_result.synonyms_mapper == {"ABC1": "HEATR6"}
 
-    bt_result = bt.Gene.public().inspect(
-        ["ABC1", "TNFRSF4"], field="symbol", organism="human", inspect_synonyms=False
+    bt_result = bt.Gene.public(organism="human").inspect(
+        ["ABC1", "TNFRSF4"], field="symbol", inspect_synonyms=False
     )
     assert bt_result.synonyms_mapper == {}
 

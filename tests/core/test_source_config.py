@@ -9,7 +9,7 @@ def test_add_source():
     with pytest.raises(ValueError):
         wl.Compound.import_source()
     chebi_source = bt.Source.get(name="chebi", version="2024-07-27")
-    new_source = wl.add_source(chebi_source)
+    new_source = wl.Compound.add_source(chebi_source)
     assert new_source.entity == "wetlab.Compound"
     assert new_source.name == "chebi"
     assert new_source.version == "2024-07-27"
