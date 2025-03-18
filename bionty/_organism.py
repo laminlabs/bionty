@@ -7,23 +7,6 @@ from lamin_utils import logger
 from .models import BioRecord, Organism
 
 
-def _is_organism_required(registry: type[BioRecord]) -> bool:
-    """Check if the registry has an organism field and is required.
-
-    Returns:
-        True if the registry has an organism field and is required, False otherwise.
-    """
-    try:
-        organism_field = registry._meta.get_field("organism")
-        # organism is not required or not a relation
-        if organism_field.null or not organism_field.is_relation:
-            return False
-        else:
-            return True
-    except FieldDoesNotExist:
-        return False
-
-
 class OrganismNotSet(SystemExit):
     """The `organism` parameter was not passed or is not globally set."""
 
@@ -34,9 +17,9 @@ def create_or_get_organism_record(
     organism: str | Organism | None, registry: type[BioRecord], field: str | None = None
 ) -> Organism | None:
     """Create or get an organism record from the given organism name."""
-    # return None if an Record doesn't have organism field
+    # return None if a registry doesn't require organism field
     organism_record = None
-    if _is_organism_required(registry):
+    if is_organism_required(registry):
         # using global setting of organism
         from .core._settings import settings
         from .models import Organism
@@ -59,10 +42,6 @@ def create_or_get_organism_record(
                         raise ValueError(
                             f"Organism {organism} can't be created from the bionty reference, check your spelling or create it manually."
                         )
-                    # # link the organism record to the default bionty source
-                    # organism_record.source = get_source_record_from_public(
-                    #     bt_base.Organism(), Organism
-                    # )  # type:ignore
                     organism_record.save()  # type:ignore
                 except KeyError:
                     # no such organism is found in bionty reference
@@ -81,7 +60,24 @@ def create_or_get_organism_record(
     return organism_record
 
 
-def _organism_from_ensembl_id(id: str, using_key: str | None) -> Organism | None:
+def is_organism_required(registry: type[BioRecord]) -> bool:
+    """Check if the registry has an organism field and is required.
+
+    Returns:
+        True if the registry has an organism field and is required, False otherwise.
+    """
+    try:
+        organism_field = registry._meta.get_field("organism")
+        # organism is not required or not a relation
+        if organism_field.null or not organism_field.is_relation:
+            return False
+        else:
+            return True
+    except FieldDoesNotExist:
+        return False
+
+
+def organism_from_ensembl_id(id: str, using_key: str | None) -> Organism | None:
     """Get organism record from ensembl id."""
     import bionty as bt
     from bionty.base.dev._io import s3_bionty_assets
