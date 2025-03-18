@@ -17,8 +17,8 @@ _check_instance_setup(from_module="bionty")
 from bionty.models import BioRecord, StaticReference
 
 from ._add_ontology import add_ontology
-from ._bionty import (
+from ._settings import Settings
+from ._source import (
     set_latest_sources_as_currently_used,
     sync_all_sources_to_latest,
 )
-from ._settings import Settings

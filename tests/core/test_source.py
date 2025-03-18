@@ -37,6 +37,10 @@ def test_import_source():
     bt.CellMarker.import_source(organism="mouse")
     assert bt.CellMarker.filter(organism__name="mouse").count() == 11206
 
+    # import source with stable_id
+    bt.Gene.import_source(organism="saccharomyces cerevisiae")
+    assert bt.Gene.filter(organism__name="saccharomyces cerevisiae").count() == 7127
+
 
 def test_add_ontology_from_values():
     bt.Ethnicity.filter().delete()
