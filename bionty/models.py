@@ -30,7 +30,7 @@ import bionty.base as bt_base
 from bionty.base.dev._doc_util import _doc_params
 
 from . import ids
-from ._bionty import encode_uid, lookup2kwargs
+from ._biorecord import encode_uid, lookup2kwargs
 from ._shared_docstrings import doc_from_source
 from .base import PublicOntology
 from .base._public_ontology import InvalidParamError
@@ -261,6 +261,7 @@ class BioRecord(Record, HasParents, CanCurate):
         source: Source | None = None,
         organism: str | Record | None = None,
         ontology_ids: list[str] | None = None,
+        # field: FieldAttr | None = None,
         ignore_conflicts: bool = True,
     ):
         """Bulk save records from a Bionty ontology.
@@ -270,7 +271,7 @@ class BioRecord(Record, HasParents, CanCurate):
         Args:
             source: Source record to import records from.
             organism: Organism name or record.
-            ontology_ids: List of ontology ids to save.
+            ontology_ids: List of ontology ids to save. Default is None (save all).
             ignore_conflicts: Whether to ignore conflicts during bulk record creation.
 
         Example::
@@ -279,49 +280,15 @@ class BioRecord(Record, HasParents, CanCurate):
 
             bt.CellType.import_source()
         """
-        from .core._add_ontology import add_ontology_from_df, check_source_in_db
+        from .core._add_ontology import add_ontology_from_df
 
-        if hasattr(cls, "ontology_id") or hasattr(cls, "_name_field"):  # CellMaker
-            add_ontology_from_df(
-                registry=cls,
-                ontology_ids=ontology_ids,
-                organism=organism,
-                source=source,
-                ignore_conflicts=ignore_conflicts,
-            )
-        else:
-            import lamindb as ln
-
-            from ._bionty import get_source_record
-
-            source_record = get_source_record(cls, organism=organism, source=source)
-            public = cls.public(organism=organism, source=source)
-            logger.info(
-                f"importing {cls.__name__} records from {public.source}, {public.version}"
-            )
-            # TODO: consider StaticReference
-            # source_record = get_source_record_from_public(public, cls)  # type:ignore
-            df = public.df().reset_index()
-            if hasattr(cls, "_ontology_id_field"):
-                field = cls._ontology_id_field
-            else:
-                raise NotImplementedError(
-                    f"import_source is not implemented for {cls.__name__}"
-                )
-            records = cls.from_values(
-                ontology_ids or df[field],
-                field=field,
-                organism=organism,
-                source=source_record,
-            )
-
-            new_records = [r for r in records if r._state.adding]
-            logger.info(f"saving {len(new_records)} new records...")
-            ln.save(new_records, ignore_conflicts=ignore_conflicts)
-            logger.success("import is completed!")
-
-            # make sure source.in_db is correctly set based on the DB content
-            check_source_in_db(registry=cls, source=source_record)
+        add_ontology_from_df(
+            registry=cls,
+            ontology_ids=ontology_ids,
+            organism=organism,
+            source=source,
+            ignore_conflicts=ignore_conflicts,
+        )
 
     @classmethod
     def add_source(cls, source: Source, currently_used=True) -> Source:
@@ -424,7 +391,7 @@ class BioRecord(Record, HasParents, CanCurate):
             source_name = source.name
             version = source.version
         else:
-            from ._bionty import get_source_record
+            from ._source import get_source_record
             from .core._settings import settings
 
             if hasattr(cls, "organism_id"):

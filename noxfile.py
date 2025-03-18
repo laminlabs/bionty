@@ -18,6 +18,7 @@ def lint(session: nox.Session) -> None:
 def build(session: nox.Session, group: str):
     branch = "default-source" if IS_PR else "release"  # point back to "release"
     install_lamindb(session, branch=branch)
+    run(session, "uv pip install --system wetlab")
     session.run(*"uv pip install --system -e .[dev]".split())
 
     coverage_args = "--cov=bionty --cov-append --cov-report=term-missing"

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from lamin_utils import logger
 
-from bionty._bionty import create_or_get_organism_record
+from bionty._organism import create_or_get_organism_record
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     import pandas as pd
     from lamindb.models import Record
 
-    from bionty.models import BioRecord, Source
+    from bionty.models import BioRecord, Organism, Source
 
 
 def get_all_ancestors(df: pd.DataFrame, ontology_ids: Iterable[str]) -> set[str]:
@@ -54,10 +54,9 @@ def create_records(
     registry: type[BioRecord],
     df: pd.DataFrame,
     source_record: Source,
-    organism: str | Record,
+    organism: str | Organism | None = None,
 ) -> list[Record]:
-    import lamindb as ln
-
+    """Bulk-create records from a DataFrame skipping validation."""
     df = df.reset_index()
     df = df.rename(columns={"definition": "description"})
 
@@ -68,21 +67,16 @@ def create_records(
 
     organism = create_or_get_organism_record(organism=organism, registry=registry)
 
-    try:
-        ln.settings.creation.search_names = False
-
-        valid_fields = [f.name for f in registry._meta.fields]
-        records = [
-            registry(
-                **{k: v for k, v in record.items() if k in valid_fields},
-                source_id=source_record.id,
-                **({"organism": organism} if "organism" in valid_fields else {}),
-            )
-            for record in df_records
-        ]
-
-    finally:
-        ln.settings.creation.search_names = True
+    valid_fields = [f.name for f in registry._meta.fields]
+    records = [
+        registry(
+            **{k: v for k, v in record.items() if k in valid_fields},
+            **({"organism": organism} if "organism" in valid_fields else {}),
+            source_id=source_record.id,
+            _skip_validation=True,
+        )
+        for record in df_records
+    ]
 
     return records
 
@@ -149,20 +143,18 @@ def check_source_in_db(
 def add_ontology_from_df(
     registry: type[BioRecord],
     ontology_ids: list[str] | None = None,
-    organism: str | Record | None = None,
+    organism: str | Organism | None = None,
     source: Source | None = None,
     ignore_conflicts: bool = True,
 ) -> None:
+    """Add ontology records from source to the database based on ontology ids."""
     import lamindb as ln
 
-    from bionty._bionty import get_source_record
+    from bionty._source import get_source_record
 
     source_record = get_source_record(registry, organism=organism, source=source)
     public = registry.public(source=source_record)
     df = prepare_dataframe(public.df())
-
-    # TODO: consider StaticReference
-    # source_record = get_source_record_from_public(public, registry)  # type:ignore
 
     if ontology_ids is None:
         logger.info(
@@ -217,15 +209,20 @@ def add_ontology_from_df(
         source_record.save()
 
 
+# used in save() to bulk save parents
 def add_ontology(
     records: list[BioRecord],
-    organism: str | Record | None = None,
+    organism: str | Organism | None = None,
     source: Source | None = None,
     ignore_conflicts: bool = True,
 ) -> None:
+    """Add ontology records from source to the database based on ontology ids."""
     registry = records[0]._meta.model
     source = source or records[0].source
-    if hasattr(registry, "organism_id"):
+    if (
+        hasattr(registry, "organism_id")
+        and not registry._meta.get_field("organism_id").null
+    ):
         organism = organism or records[0].organism
     ontology_ids = [r.ontology_id for r in records]
     add_ontology_from_df(
