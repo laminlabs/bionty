@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 import bionty
 import bionty.ids
-from bionty._bionty import encode_uid, list_biorecord_models
+from bionty._biorecord import encode_uid, list_biorecord_models
 
 
 def prepend_bionty_to_entity(apps, schema_editor):

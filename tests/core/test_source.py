@@ -1,9 +1,16 @@
 import bionty as bt
+import pytest
+from bionty._organism import OrganismNotSet
 
 
 def test_add_source():
+    import wetlab as wl
+
+    with pytest.raises(ValueError):
+        wl.Compound.import_source()
     chebi_source = bt.Source.get(name="chebi", version="2024-07-27")
-    new_source = bt.Phenotype.add_source(chebi_source)
+    new_source = wl.Compound.add_source(chebi_source)
+    assert new_source.entity == "wetlab.Compound"
     assert new_source.name == "chebi"
     assert new_source.version == "2024-07-27"
     assert new_source.dataframe_artifact is not None
@@ -22,6 +29,13 @@ def test_import_source():
     assert record.parents.all().one().name == "South East Asian"
     # the source.in_db should be set to True since we imported all the records
     assert record.source.in_db is True
+
+    # organism is required
+    bt.settings._organism = None
+    with pytest.raises(OrganismNotSet):
+        bt.CellMarker.import_source()
+    bt.CellMarker.import_source(organism="mouse")
+    assert bt.CellMarker.filter(organism__name="mouse").count() == 11206
 
 
 def test_add_ontology_from_values():

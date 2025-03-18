@@ -24,7 +24,7 @@ def sync_all_sources_to_latest():
     import lamindb as ln
 
     import bionty
-    from bionty._bionty import list_biorecord_models
+    from bionty._biorecord import list_biorecord_models
     from bionty.models import Source
 
     try:

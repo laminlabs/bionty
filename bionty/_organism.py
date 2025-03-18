@@ -1,0 +1,109 @@
+import re
+
+import pandas as pd
+from django.core.exceptions import FieldDoesNotExist, ObjectDoesNotExist
+from lamin_utils import logger
+
+from .models import BioRecord, Organism
+
+
+def _is_organism_required(registry: type[BioRecord]) -> bool:
+    """Check if the registry has an organism field and is required.
+
+    Returns:
+        True if the registry has an organism field and is required, False otherwise.
+    """
+    try:
+        organism_field = registry._meta.get_field("organism")
+        # organism is not required or not a relation
+        if organism_field.null or not organism_field.is_relation:
+            return False
+        else:
+            return True
+    except FieldDoesNotExist:
+        return False
+
+
+class OrganismNotSet(SystemExit):
+    """The `organism` parameter was not passed or is not globally set."""
+
+    pass
+
+
+def create_or_get_organism_record(
+    organism: str | Organism | None, registry: type[BioRecord], field: str | None = None
+) -> Organism | None:
+    """Create or get an organism record from the given organism name."""
+    # return None if an Record doesn't have organism field
+    organism_record = None
+    if _is_organism_required(registry):
+        # using global setting of organism
+        from .core._settings import settings
+        from .models import Organism
+
+        if organism is None and settings.organism is not None:
+            logger.debug(f"using global setting organism = {settings.organism.name}")
+            return settings.organism
+
+        if isinstance(organism, Organism):
+            organism_record = organism
+        elif isinstance(organism, str):
+            try:
+                # existing organism record
+                organism_record = Organism.objects.get(name=organism)
+            except ObjectDoesNotExist:
+                try:
+                    # create a organism record from bionty reference
+                    organism_record = Organism.from_source(name=organism)
+                    if organism_record is None:
+                        raise ValueError(
+                            f"Organism {organism} can't be created from the bionty reference, check your spelling or create it manually."
+                        )
+                    # # link the organism record to the default bionty source
+                    # organism_record.source = get_source_record_from_public(
+                    #     bt_base.Organism(), Organism
+                    # )  # type:ignore
+                    organism_record.save()  # type:ignore
+                except KeyError:
+                    # no such organism is found in bionty reference
+                    organism_record = None
+
+        if organism_record is None:
+            if hasattr(registry, "_ontology_id_field") and field in {
+                registry._ontology_id_field,
+                "uid",
+            }:
+                return None
+            raise OrganismNotSet(
+                f"{registry.__name__} requires to specify a organism name via `organism=` or `bionty.settings.organism=`!"
+            )
+
+    return organism_record
+
+
+def _organism_from_ensembl_id(id: str, using_key: str | None) -> Organism | None:
+    """Get organism record from ensembl id."""
+    import bionty as bt
+    from bionty.base.dev._io import s3_bionty_assets
+
+    localpath = s3_bionty_assets(
+        ".lamindb/0QeqXlKq9aqW8aqe0000.parquet", bt.base.settings.versionsdir
+    )
+    ensembl_prefixes = pd.read_parquet(localpath).set_index("gene_prefix")
+
+    prefix = re.sub(r"\d+", "", id)
+    if prefix in ensembl_prefixes.index:
+        organism_name = ensembl_prefixes.loc[prefix, "name"].lower()
+
+        using_key = None if using_key == "default" else using_key
+
+        organism_record = (
+            bt.Organism.using(using_key).filter(name=organism_name).one_or_none()
+        )
+        if organism_record is None:
+            organism_record = bt.Organism.from_source(name=organism_name)
+            if organism_record is not None:
+                organism_record.save(using=using_key)
+
+        return organism_record
+    return None
