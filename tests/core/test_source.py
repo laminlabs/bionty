@@ -31,6 +31,7 @@ def test_import_source():
     assert record.source.in_db is True
 
     # organism is required
+    bt.settings._organism = None
     with pytest.raises(OrganismNotSet):
         bt.CellMarker.import_source()
     bt.CellMarker.import_source(organism="mouse")
