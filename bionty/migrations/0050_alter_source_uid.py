@@ -4,7 +4,7 @@ import lamindb.base.fields
 from django.db import migrations
 
 import bionty.ids
-from bionty._bionty import encode_uid
+from bionty._biorecord import encode_uid
 
 
 def populate_uids(apps, schema_editor):
