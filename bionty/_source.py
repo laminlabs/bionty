@@ -1,4 +1,7 @@
+import pandas as pd
 from lamindb.models import Record
+
+import bionty.base as bt_base
 
 from ._organism import create_or_get_organism_record
 
@@ -52,18 +55,47 @@ def get_source_record(
         return sources.first()
 
 
-# def get_source_record_from_public(
-#     public_ontology: bt_base.PublicOntology, registry: type[Record]
-# ) -> Record:
-#     """Get a Source record from a public ontology object."""
-#     from .models import Source
+def filter_public_df_columns(
+    model: type[Record], public_ontology: bt_base.PublicOntology
+) -> pd.DataFrame:
+    """Filter columns of public ontology to match the model fields."""
 
-#     entity_name = registry.__get_name_with_module__()
-#     kwargs = {
-#         "entity": entity_name,
-#         "organism": public_ontology.organism,
-#         "name": public_ontology.source,
-#         "version": public_ontology.version,
-#     }
+    def _prepare_public_df(model: type[Record], bionty_df: pd.DataFrame):
+        """Prepare the bionty DataFrame to match the model fields."""
+        if model.__get_name_with_module__() == "bionty.Gene":
+            # groupby ensembl_gene_id and concat ncbi_gene_ids
+            groupby_id_col = (
+                "ensembl_gene_id" if "ensembl_gene_id" in bionty_df else "stable_id"
+            )
+            bionty_df.drop(
+                columns=["hgnc_id", "mgi_id", "index"], errors="ignore", inplace=True
+            )
+            bionty_df.drop_duplicates([groupby_id_col, "ncbi_gene_id"], inplace=True)
+            bionty_df["ncbi_gene_id"] = bionty_df["ncbi_gene_id"].fillna("")
+            bionty_df = (
+                bionty_df.groupby(groupby_id_col)
+                .agg(
+                    {
+                        "symbol": "first",
+                        "ncbi_gene_id": "|".join,
+                        "biotype": "first",
+                        "description": "first",
+                        "synonyms": "first",
+                    }
+                )
+                .reset_index()
+            )
+            bionty_df.rename(columns={"ncbi_gene_id": "ncbi_gene_ids"}, inplace=True)
 
-#     return Source.objects.get(**kwargs)
+        # rename definition to description for the bionty registry in db
+        bionty_df.rename(columns={"definition": "description"}, inplace=True)
+        return bionty_df
+
+    bionty_df = pd.DataFrame()
+    if public_ontology is not None:
+        model_field_names = {i.name for i in model._meta.fields}
+        # parents needs to be added here as relationships aren't in fields
+        model_field_names.add("parents")
+        bionty_df = _prepare_public_df(model, public_ontology.df().reset_index())
+        bionty_df = bionty_df.loc[:, bionty_df.columns.isin(model_field_names)]
+    return bionty_df

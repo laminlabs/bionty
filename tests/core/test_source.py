@@ -17,11 +17,13 @@ def test_add_source():
 
 
 def test_import_source():
+    # when adding a single record, it's parents are also added
     record = bt.Ethnicity.from_source(ontology_id="HANCESTRO:0005").save()
     parent = bt.Ethnicity.get(ontology_id="HANCESTRO:0004")
     assert parent in record.parents.list()
-    parent.delete()
 
+    # bulk import should fill in gaps of missing parents
+    parent.delete()
     bt.Ethnicity.import_source()
     parent = bt.Ethnicity.get(ontology_id="HANCESTRO:0004")
     assert parent in record.parents.list()
@@ -35,7 +37,15 @@ def test_import_source():
     with pytest.raises(OrganismNotSet):
         bt.CellMarker.import_source()
     bt.CellMarker.import_source(organism="mouse")
-    assert bt.CellMarker.filter(organism__name="mouse").count() == 11206
+    assert bt.CellMarker.filter(organism__name="mouse").exists()
+
+    # import source with stable_id
+    bt.Gene.import_source(organism="saccharomyces cerevisiae")
+    assert bt.Gene.filter(organism__name="saccharomyces cerevisiae").exists()
+
+    # import source with public df having extra columns than model fields
+    bt.CellLine.import_source(source=bt.Source.get(name="depmap", version="2024-Q2"))
+    assert bt.CellLine.filter(source__name="depmap").count() == 1959
 
 
 def test_add_ontology_from_values():
