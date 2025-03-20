@@ -3,22 +3,15 @@
 ## Public bionty sources
 
 Bionty maintains a [sources.yaml](https://raw.githubusercontent.com/laminlabs/bionty/main/bionty/base/sources.yaml) listing public sources of each entity.
-These sources are curated ([biony-assets](https://github.com/laminlabs/bionty-assets)) and stored in a [bionty-assets instance](https://lamin.ai/laminlabs/bionty-assets/) to provide fast and reliable access.
+These sources are curated ([bionty-assets](https://github.com/laminlabs/bionty-assets)) and stored in a [bionty-assets instance](https://lamin.ai/laminlabs/bionty-assets/) to provide fast and reliable access.
 Cached sources files are stored at your local `bionty/base/_dynamic/` directory.
 
-## Local bionty sources
+## Display public sources
 
-File `$home:/.lamin/bionty/versions/sources_local.yaml` stores all locally available ontologies.
-The content of this file is identical to the public `sources.yaml` for a freshly-installed Bionty.
-
-**Users may edit this file in order to configure customized sources.**
-
-## Display sources
-
-The available and currently active ontologies can also be printed with
+The available and currently used ontologies can also be printed with
 `bionty.base.display_available_sources` or `bionty.base.display_currently_used_sources`.
 
-## Format of the sources yaml file
+## Structure of the sources.yaml
 
 ```yaml
 entity: # Bionty entity class name, e.g. CellType
@@ -28,9 +21,9 @@ entity: # Bionty entity class name, e.g. CellType
         url: # "link to the source file"
 ```
 
-## Setting default ontologies and versions
+## Default ontologies and versions in sources.yaml
 
-For each entity, the **first source** and its **maximum version** defined in `sources_local.yaml` is used as default.
+For each entity, the **first source** and its **maximum version** defined in [sources.yaml](https://raw.githubusercontent.com/laminlabs/bionty/main/bionty/base/sources.yaml) is used as default.
 To set your own default ontology and version, shift the order of entries.
 For example, in the following "doid" used when "organism" is specified as "human":
 
