@@ -21,16 +21,16 @@ if TYPE_CHECKING:
 
 
 def encode_filenames(
-    organism: str, source: str, version: str, entity: PublicOntology | str
+    organism: str, name: str, version: str, entity: PublicOntology | str
 ) -> tuple[str, str]:
     """Encode names of the cached files."""
     if isinstance(entity, PublicOntology):
         entity_name = entity.__class__.__name__
     else:
         entity_name = entity
-    parquet_filename = f"df_{organism}__{source}__{version}__{entity_name}.parquet"
+    parquet_filename = f"df_{organism}__{name}__{version}__{entity_name}.parquet"
     ontology_filename = (
-        f"ontology_{organism}__{source}__{version}__{entity_name}".replace(" ", "_")
+        f"ontology_{organism}__{name}__{version}__{entity_name}".replace(" ", "_")
     )
 
     return parquet_filename, ontology_filename
@@ -54,20 +54,20 @@ class PublicOntology:
 
         try:
             self._fetch_sources()
-            try:
-                # match user input organism, source and version with currently used sources
-                current = self._match_sources(
-                    self._current_sources,
-                    source=source,
-                    version=version,
-                    organism=organism,
-                )
-                source = current.get("source")
-                version = current.get("version")
-                organism = current.get("organism")
-            except ValueError:
-                if LAMINDB_INSTANCE_LOADED():
-                    pass
+            # try:
+            #     # match user input organism, source and version with currently used sources
+            #     current = self._match_sources(
+            #         self._current_sources,
+            #         source=source,
+            #         version=version,
+            #         organism=organism,
+            #     )
+            #     source = current.get("source")
+            #     version = current.get("version")
+            #     organism = current.get("organism")
+            # except ValueError:
+            #     if LAMINDB_INSTANCE_LOADED():
+            #         pass
 
             # search in all available sources to get url
             self._source_record = self._match_sources(
@@ -78,7 +78,7 @@ class PublicOntology:
             )
 
             self._organism = self._source_record["organism"]
-            self._source = self._source_record["source"]
+            self._source = self._source_record["name"]
             self._version = self._source_record["version"]
 
             self._set_file_paths()
@@ -177,15 +177,15 @@ class PublicOntology:
     def _fetch_sources(self) -> None:
         from ._display_sources import (
             display_available_sources,
-            display_currently_used_sources,
+            # display_currently_used_sources,
         )
 
         def _subset_to_entity(df: pd.DataFrame, key: str):
             return df.loc[[key]] if isinstance(df.loc[key], pd.Series) else df.loc[key]
 
-        self._current_sources = _subset_to_entity(
-            display_currently_used_sources(), self.__class__.__name__
-        )
+        # self._current_sources = _subset_to_entity(
+        #     display_currently_used_sources(mute=True), self.__class__.__name__
+        # )
 
         self._all_sources = _subset_to_entity(
             display_available_sources(), self.__class__.__name__
@@ -204,7 +204,7 @@ class PublicOntology:
         # kwargs that are not None
         kwargs = {
             k: lc.get(k)
-            for k in ["source", "version", "organism"]
+            for k in ["name", "version", "organism"]
             if lc.get(k) is not None
         }
         keys = list(kwargs.keys())
@@ -225,13 +225,13 @@ class PublicOntology:
                 kwargs = {
                     k: v
                     for k, v in curr.items()
-                    if k in ["organism", "source", "version"]
+                    if k in ["organism", "name", "version"]
                 }
             # if all 3 kwargs are specified, match the record from currently used sources
             # do the same for the kwargs that obtained from default source to obtain url
             row = ref_sources[
                 (ref_sources["organism"] == kwargs["organism"])
-                & (ref_sources["source"] == kwargs["source"])
+                & (ref_sources["name"] == kwargs["source"])
                 & (ref_sources["version"] == kwargs["version"])
             ].head(1)
 
@@ -268,7 +268,7 @@ class PublicOntology:
         # parquet file name, ontology source file name
         self._parquet_filename, self._ontology_filename = encode_filenames(
             organism=self.organism,
-            source=self.source,
+            name=self.source,
             version=self.version,
             entity=self,
         )

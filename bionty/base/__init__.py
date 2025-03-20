@@ -82,7 +82,7 @@ from ._settings import settings
 from ._sync_sources import sync_sources
 
 # sources
-from .dev._handle_sources import reset_sources
+# from .dev._handle_sources import reset_sources
 from .entities._bfxpipeline import BFXPipeline
 from .entities._biosample import BioSample
 from .entities._cellline import CellLine
