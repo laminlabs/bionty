@@ -60,7 +60,7 @@ def test_parse_versions_yaml(versions_yaml_replica):
         parsed_df["organism"].values == ["all", "human", "human", "mouse", "all", "all"]
     )
     assert all(
-        parsed_df["source"].values
+        parsed_df["name"].values
         == ["ensembl", "ensembl", "ensembl", "ensembl", "cl", "cl"]
     )
 

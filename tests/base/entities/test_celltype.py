@@ -13,9 +13,6 @@ def test_cl_celltype_inspect_name():
         ]
     )
 
-    print(bt_base.settings.current_sources)
-    assert bt_base.settings.current_sources.exists()
-
     ct = bt_base.CellType(source="cl")
     inspected_df = ct.inspect(df.index, field=ct.name, return_df=True)
 
