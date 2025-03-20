@@ -49,21 +49,6 @@ def versions_yaml_replica():
     Path(f.name).unlink()
 
 
-@pytest.fixture(scope="function")
-def current_yaml_replica():
-    input_file_content = """
-    Organism:
-      all:
-        ensembl: release-108
-    """
-    with tempfile.NamedTemporaryFile(mode="w+", delete=False) as f:
-        f.write(input_file_content)
-        f.flush()
-        yield f.name
-
-    Path(f.name).unlink()
-
-
 def test_parse_versions_yaml(versions_yaml_replica):
     parsed_df = parse_sources_yaml(versions_yaml_replica)
     assert parsed_df.shape == (6, 7)

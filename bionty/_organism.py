@@ -83,7 +83,7 @@ def organism_from_ensembl_id(id: str, using_key: str | None) -> Organism | None:
     from bionty.base.dev._io import s3_bionty_assets
 
     localpath = s3_bionty_assets(
-        ".lamindb/0QeqXlKq9aqW8aqe0000.parquet", bt.base.settings.versionsdir
+        ".lamindb/0QeqXlKq9aqW8aqe0000.parquet", bt.base.settings.dynamicdir
     )
     ensembl_prefixes = pd.read_parquet(localpath).set_index("gene_prefix")
 

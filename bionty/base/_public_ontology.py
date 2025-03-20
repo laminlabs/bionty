@@ -54,20 +54,6 @@ class PublicOntology:
 
         try:
             self._fetch_sources()
-            # try:
-            #     # match user input organism, source and version with currently used sources
-            #     current = self._match_sources(
-            #         self._current_sources,
-            #         source=source,
-            #         version=version,
-            #         organism=organism,
-            #     )
-            #     source = current.get("source")
-            #     version = current.get("version")
-            #     organism = current.get("organism")
-            # except ValueError:
-            #     if LAMINDB_INSTANCE_LOADED():
-            #         pass
 
             # search in all available sources to get url
             self._source_record = self._match_sources(
@@ -175,17 +161,10 @@ class PublicOntology:
             self._url_download(url, localpath)
 
     def _fetch_sources(self) -> None:
-        from ._display_sources import (
-            display_available_sources,
-            # display_currently_used_sources,
-        )
+        from ._display_sources import display_available_sources
 
         def _subset_to_entity(df: pd.DataFrame, key: str):
             return df.loc[[key]] if isinstance(df.loc[key], pd.Series) else df.loc[key]
-
-        # self._current_sources = _subset_to_entity(
-        #     display_currently_used_sources(mute=True), self.__class__.__name__
-        # )
 
         self._all_sources = _subset_to_entity(
             display_available_sources(), self.__class__.__name__
@@ -340,9 +319,10 @@ class PublicOntology:
         Returns:
             A Pandas DataFrame of the ontology.
 
-        Examples:
-            >>> import bionty.base as bt_base
-            >>> bt_base.Gene().df()
+        Example::
+            import bionty.base as bt_base
+
+            bt_base.Gene().df()
         """
         if "ontology_id" in self._df.columns:
             return self._df.set_index("ontology_id")
@@ -362,19 +342,21 @@ class PublicOntology:
         Args:
             values: Identifiers that will be checked against the field.
             field: The PublicOntologyField of the ontology to compare against.
-                   Examples are 'ontology_id' to map against the source ID
-                   or 'name' to map against the ontologies field names.
+                Examples are 'ontology_id' to map against the source ID
+                or 'name' to map against the ontologies field names.
             mute: Whether to suppress logging. Defaults to False.
             kwargs: Used for backwards compatibility and return types.
 
         Returns:
             A boolean array indicating compliance validation.
 
-        Examples:
-            >>> import bionty.base as bt_base
-            >>> public = bt_base.Gene()
-            >>> gene_symbols = ["A1CF", "A1BG", "FANCD1", "FANCD20"]
-            >>> public.validate(gene_symbols, field=public.symbol)
+        Example::
+
+            import bionty.base as bt_base
+
+            public = bt_base.Gene()
+            gene_symbols = ["A1CF", "A1BG", "FANCD1", "FANCD20"]
+            public.validate(gene_symbols, field=public.symbol)
         """
         from lamin_utils._inspect import validate
 
@@ -409,8 +391,8 @@ class PublicOntology:
         Args:
             values: Identifiers that will be checked against the field.
             field: The PublicOntologyField of the ontology to compare against.
-                   Examples are 'ontology_id' to map against the source ID
-                   or 'name' to map against the ontologies field names.
+                Examples are 'ontology_id' to map against the source ID
+                or 'name' to map against the ontologies field names.
             return_df: Whether to return a Pandas DataFrame.
             mute: Whether to suppress logging. Defaults to False.
             kwargs: Used for backwards compatibility and return types.
@@ -420,11 +402,13 @@ class PublicOntology:
             - If `return_df`: A DataFrame indexed by identifiers with a boolean
                 `__validated__` column indicating compliance validation.
 
-        Examples:
-            >>> import bionty.base as bt_base
-            >>> public = bt_base.Gene()
-            >>> gene_symbols = ["A1CF", "A1BG", "FANCD1", "FANCD20"]
-            >>> public.inspect(gene_symbols, field=public.symbol)
+        Example::
+
+            import bionty.base as bt_base
+
+            public = bt_base.Gene()
+            gene_symbols = ["A1CF", "A1BG", "FANCD1", "FANCD20"]
+            public.inspect(gene_symbols, field=public.symbol)
         """
         from lamin_utils._inspect import inspect
 
@@ -476,11 +460,12 @@ class PublicOntology:
             a dictionary of mapped values with mappable synonyms as keys and
             standardized names as values.
 
-        Examples:
-            >>> import bionty.base as bt_base
-            >>> public = bt_base.Gene()
-            >>> gene_symbols = ["A1CF", "A1BG", "FANCD1", "FANCD20"]
-            >>> standardized_symbols = public.standardize(gene_symbols, public.symbol)
+        Example::
+            import bionty.base as bt_base
+
+            public = bt_base.Gene()
+            gene_symbols = ["A1CF", "A1BG", "FANCD1", "FANCD20"]
+            standardized_symbols = public.standardize(gene_symbols, public.symbol)
         """
         from lamin_utils._standardize import standardize as map_synonyms
 
@@ -525,17 +510,18 @@ class PublicOntology:
 
         Args:
             field: The field to lookup the values for.
-                   Defaults to 'name'.
+                Defaults to 'name'.
 
         Returns:
             A NamedTuple of lookup information of the field values.
 
-        Examples:
-            >>> import bionty.base as bt_base
-            >>> lookup = bt_base.CellType().lookup()
-            >>> lookup.cd103_positive_dendritic_cell
-            >>> lookup_dict = lookup.dict()
-            >>> lookup['CD103-positive dendritic cell']
+        Example::
+            import bionty.base as bt_base
+
+            lookup = bt_base.CellType().lookup()
+            lookup.cd103_positive_dendritic_cell
+            lookup_dict = lookup.dict()
+            lookup['CD103-positive dendritic cell']
         """
         return Lookup(
             df=self._df,
@@ -564,10 +550,12 @@ class PublicOntology:
         Returns:
             Ranked search results.
 
-        Examples:
-            >>> import bionty.base as bt_base
-            >>> public = bt_base.CellType()
-            >>> public.search("gamma delta T cell")
+        Example::
+
+            import bionty.base as bt_base
+
+            public = bt_base.CellType()
+            public.search("gamma delta T cell")
         """
         from lamin_utils._search import search
 
@@ -601,13 +589,15 @@ class PublicOntology:
             1. New entries.
             2. A pd.DataFrame.compare result which denotes all changes in `self` and `other`.
 
-        Examples:
-            >>> import bionty.base as bt_base
-            >>> public_1 = bt_base.Disease(source="mondo", version="2023-04-04")
-            >>> public_2 = bt_base.Disease(source="mondo", version="2023-04-04")
-            >>> new_entries, modified_entries = public_1.diff(public_2)
-            >>> print(new_entries.head())
-            >>> print(modified_entries.head())
+        Example::
+
+            import bionty.base as bt_base
+
+            public_1 = bt_base.Disease(source="mondo", version="2023-04-04")
+            public_2 = bt_base.Disease(source="mondo", version="2023-04-04")
+            new_entries, modified_entries = public_1.diff(public_2)
+            print(new_entries.head())
+            print(modified_entries.head())
         """
         if type(self) is not type(compare_to):
             raise ValueError("Both PublicOntology objects must be of the same class.")

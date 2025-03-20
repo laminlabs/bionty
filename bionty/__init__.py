@@ -91,15 +91,9 @@ Submodules:
 
 __version__ = "1.1.2"
 
-# from lamindb_setup.core._setup_bionty_sources import (
-#     load_bionty_sources as _load_bionty_sources,
-# )
+from lamindb_setup._check_setup import _check_instance_setup
 
 from . import base, ids
-
-base.sync_sources()
-
-from lamindb_setup._check_setup import _check_instance_setup
 
 
 def __getattr__(name):
@@ -109,8 +103,6 @@ def __getattr__(name):
 
 
 if _check_instance_setup():
-    # _load_bionty_sources()
-
     del __getattr__  # delete so that imports work out
     from .core._settings import settings
     from .models import (

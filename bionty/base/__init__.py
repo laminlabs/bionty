@@ -58,7 +58,6 @@ Ontology sources
 
    display_available_sources
    display_currently_used_sources
-   reset_sources
    settings
 
 Pronto Ontology
@@ -79,7 +78,6 @@ from ._ontology import Ontology
 # tools
 from ._public_ontology import PublicOntology, PublicOntologyField
 from ._settings import settings
-from ._sync_sources import sync_sources
 
 # sources
 # from .dev._handle_sources import reset_sources

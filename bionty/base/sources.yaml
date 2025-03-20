@@ -217,6 +217,14 @@ ExperimentalFactor:
     name: The Experimental Factor Ontology
     website: https://bioportal.bioontology.org/ontologies/EFO
 Phenotype:
+  pato:
+    all:
+      2024-03-28:
+        url: http://purl.obolibrary.org/obo/pato/releases/2024-03-28/pato.owl
+      2023-05-18:
+        url: http://purl.obolibrary.org/obo/pato/releases/2023-05-18/pato.owl
+    name: Phenotype And Trait Ontology
+    website: https://github.com/pato-ontology/pato
   hp:
     human:
       2024-04-26:
@@ -257,14 +265,6 @@ Phenotype:
         url: s3://bionty-assets/df_human__phe__1.2__Phenotype.parquet
     name: Phecodes ICD10 map
     website: https://phewascatalog.org/phecodes_icd10
-  pato:
-    all:
-      2024-03-28:
-        url: http://purl.obolibrary.org/obo/pato/releases/2024-03-28/pato.owl
-      2023-05-18:
-        url: http://purl.obolibrary.org/obo/pato/releases/2023-05-18/pato.owl
-    name: Phenotype And Trait Ontology
-    website: https://github.com/pato-ontology/pato
 Pathway:
   go:
     all:

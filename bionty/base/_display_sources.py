@@ -13,7 +13,7 @@ def display_available_sources() -> pd.DataFrame:
 
     Example::
 
-        import bionty.base as bionty_base
+        import bionty.base as bt_base
 
         bt.display_available_sources()
     """
@@ -31,7 +31,7 @@ def display_currently_used_sources(mute: bool = False) -> pd.DataFrame:
 
     Example::
 
-        import bionty.base as bionty_base
+        import bionty.base as bt_base
 
         bt.display_currently_used_sources()
     """
@@ -43,8 +43,6 @@ def display_currently_used_sources(mute: bool = False) -> pd.DataFrame:
             )
 
     versions = parse_currently_used_sources(settings.public_sources)
-
-    # versions = load_yaml(settings.current_sources.resolve())
 
     df_rows = []
     for bionty_class, bionty_class_data in versions.items():
