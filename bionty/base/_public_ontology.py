@@ -52,32 +52,23 @@ class PublicOntology:
         self._validate_args("source", source)
         self._validate_args("version", version)
 
-        try:
-            self._fetch_sources()
+        self._fetch_sources()
 
-            # search in all available sources to get url
-            self._source_record = self._match_sources(
-                self._all_sources,
-                source=source,
-                version=version,
-                organism=organism,
-            )
+        # search in all available sources to get url
+        self._source_record = self._match_sources(
+            self._all_sources,
+            source=source,
+            version=version,
+            organism=organism,
+        )
 
-            self._organism = self._source_record["organism"]
-            self._source = self._source_record["name"]
-            self._version = self._source_record["version"]
+        self._organism = self._source_record["organism"]
+        self._source = self._source_record["name"]
+        self._version = self._source_record["version"]
 
-            self._set_file_paths()
-            self.include_id_prefixes = include_id_prefixes
-            self.include_rel = include_rel
-        except KeyError:
-            if LAMINDB_INSTANCE_LOADED():
-                self._source = source
-                self._version = version
-                self._organism = organism
-                pass
-            else:
-                logger.error("no source is available. please check `source.yaml`.")
+        self._set_file_paths()
+        self.include_id_prefixes = include_id_prefixes
+        self.include_rel = include_rel
 
         # df is only read into memory at the init to improve performance
         df = self._load_df()
@@ -183,7 +174,7 @@ class PublicOntology:
         # kwargs that are not None
         kwargs = {
             k: lc.get(k)
-            for k in ["name", "version", "organism"]
+            for k in ["source", "version", "organism"]
             if lc.get(k) is not None
         }
         keys = list(kwargs.keys())
@@ -206,6 +197,7 @@ class PublicOntology:
                     for k, v in curr.items()
                     if k in ["organism", "name", "version"]
                 }
+                kwargs["source"] = kwargs.pop("name")
             # if all 3 kwargs are specified, match the record from currently used sources
             # do the same for the kwargs that obtained from default source to obtain url
             row = ref_sources[
