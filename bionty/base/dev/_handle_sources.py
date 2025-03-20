@@ -146,12 +146,15 @@ def create_currently_used_sources_yaml(
         source: The yaml source to use to create the settings.current_sources.
                 Defaults to 'local'.
     """
-    if not settings.current_sources.exists() or overwrite:
-        source_path = (
-            settings.public_sources if source == "versions" else settings.local_sources
-        )
+    # if not settings.current_sources.exists() or overwrite:
+    #     source_path = (
+    #         settings.public_sources if source == "versions" else settings.local_sources
+    #     )
 
-        write_yaml(parse_currently_used_sources(source_path), settings.current_sources)
+    #     write_yaml(parse_currently_used_sources(source_path), settings.current_sources)
+    write_yaml(
+        parse_currently_used_sources(settings.public_sources), settings.current_sources
+    )
 
 
 def records_diff_btw_yamls(yamlpath1: str | Path, yamlpath2: str | Path) -> list:
