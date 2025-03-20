@@ -57,7 +57,7 @@ class PublicOntology:
         # search in all available sources to get url
         self._source_record = self._match_sources(
             self._all_sources,
-            source=source,
+            name=source,
             version=version,
             organism=organism,
         )
@@ -164,17 +164,17 @@ class PublicOntology:
     def _match_sources(
         self,
         ref_sources: pd.DataFrame,
-        source: str | None = None,
+        name: str | None = None,
         version: str | None = None,
         organism: str | None = None,
     ) -> dict[str, str]:
-        """Match a source record base on passed organism, source and version."""
+        """Match a source record base on passed organism, name and version."""
         lc = locals()
 
         # kwargs that are not None
         kwargs = {
             k: lc.get(k)
-            for k in ["source", "version", "organism"]
+            for k in ["name", "version", "organism"]
             if lc.get(k) is not None
         }
         keys = list(kwargs.keys())
@@ -197,12 +197,11 @@ class PublicOntology:
                     for k, v in curr.items()
                     if k in ["organism", "name", "version"]
                 }
-                kwargs["source"] = kwargs.pop("name")
             # if all 3 kwargs are specified, match the record from currently used sources
             # do the same for the kwargs that obtained from default source to obtain url
             row = ref_sources[
                 (ref_sources["organism"] == kwargs["organism"])
-                & (ref_sources["name"] == kwargs["source"])
+                & (ref_sources["name"] == kwargs["name"])
                 & (ref_sources["version"] == kwargs["version"])
             ].head(1)
 
