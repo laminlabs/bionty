@@ -1,26 +1,10 @@
 import bionty.base as bt_base
 import pytest
-from bionty.base._settings import settings
 
 
 def test_unavailable_sources():
     with pytest.raises(ValueError):
         bt_base.CellType(source="random")
-
-
-def test_reset_sources(monkeypatch):
-    import shutil
-
-    monkeypatch.setattr("builtins.input", lambda _: "y")
-
-    shutil.copyfile(
-        settings.current_sources.as_posix(), settings.lamindb_sources.as_posix()
-    )
-    bt_base.reset_sources()
-
-    settings.current_sources.unlink()
-    settings.local_sources.unlink()
-    bt_base.reset_sources()
 
 
 def test_diff_successful():

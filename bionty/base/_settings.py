@@ -1,4 +1,3 @@
-import os
 from functools import wraps
 from pathlib import Path
 from typing import Union
@@ -30,21 +29,10 @@ class Settings:
         self,
         datasetdir: Union[str, Path] = ROOT_DIR / "data/",
         dynamicdir: Union[str, Path] = ROOT_DIR / "_dynamic/",
-        versionsdir: Union[str, Path] = HOME_DIR / "versions/",
     ):
         # setters convert to Path and resolve:
         self.datasetdir = datasetdir
         self.dynamicdir = dynamicdir
-
-        # needed when running with AWS Lambda
-        if "LAMIN_SETTINGS_DIR" in os.environ:
-            self.versionsdir = Path(
-                f"{os.environ['LAMIN_SETTINGS_DIR']}/.lamin/bionty/versions"
-            )
-        else:
-            self.versionsdir = versionsdir
-
-        self.versionsdir.mkdir(exist_ok=True, parents=True)  # type: ignore
 
     @property
     def datasetdir(self):
@@ -65,30 +53,8 @@ class Settings:
         self._dynamicdir = Path(dynamicdir).resolve()
 
     @property
-    def versionsdir(self):
-        """Directory for version yamls."""
-        return self._versionsdir
-
-    @versionsdir.setter
-    def versionsdir(self, versionsdir: Union[str, Path]):
-        self._versionsdir = Path(versionsdir).resolve()
-        self._versionsdir.mkdir(exist_ok=True, parents=True)  # type: ignore
-
-    @property
-    def local_sources(self):
-        return self.versionsdir / "sources_local.yaml"
-
-    @property
     def public_sources(self):
         return ROOT_DIR / "sources.yaml"
-
-    @property
-    def current_sources(self):
-        return self.versionsdir / ".current_sources.yaml"
-
-    @property
-    def lamindb_sources(self):
-        return self.versionsdir / ".lamindb_current_sources.yaml"
 
 
 settings = Settings()
