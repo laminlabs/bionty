@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from lamin_utils import logger
-from lamindb_setup.core._setup_bionty_sources import RENAME
 
 import bionty.base as bt_base
 
@@ -31,9 +30,6 @@ def sync_all_sources_to_latest():
     bionty_models = list_biorecord_models(bionty)
     for _, row in df_sources.iterrows():
         kwargs = row.to_dict()
-        for db_name, base_name in RENAME.items():
-            if base_name in kwargs:
-                kwargs[db_name] = kwargs.pop(base_name)
         if (
             not kwargs["entity"].startswith("bionty.")
             and kwargs["entity"] in bionty_models
