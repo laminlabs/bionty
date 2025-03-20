@@ -42,7 +42,7 @@ def sync_all_sources_to_latest():
             organism=kwargs["organism"],
         ).all()
         if len(record) == 0:
-            record = Source(**kwargs, _skip_validation=True).save()
+            record = Source(**kwargs).save()
             logger.success(f"added {record}")
         else:
             # update metadata fields
