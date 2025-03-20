@@ -19,7 +19,6 @@ dependencies = [
     "lamindb>=1.1a1,<2",
     "lamindb_setup>=0.81.2",
     "lamin_utils>=0.13.9",
-    "filelock",
     "requests",
     "pyyaml",
     "pronto",
@@ -52,7 +51,6 @@ omit = [
     "bionty/core/*",
     "bionty/migrations/*",
     "bionty/models.py",
-    "bionty/_bionty.py",
     "bionty/ids.py",
 ]
 

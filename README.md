@@ -8,7 +8,7 @@
 - Access full underlying public ontologies via `.public()` to search & bulk-create records.
 - Create in-house ontologies by extending public ontologies using hierarchical relationships among records (`.parents`).
 - Use `.synonyms` and `.abbr` to manage synonyms.
-- Safeguards against typos & duplications
-- Ontology versioning
+- Safeguards against typos & duplications.
+- Ontology versioning via the `bionty.Source` registry.
 
 Read [docs](https://docs.lamin.ai/bionty).
