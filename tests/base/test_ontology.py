@@ -8,7 +8,7 @@ def test_ontology():
     localpath = s3_bionty_assets("ontology_all__pw__7.79__Pathway")
 
     try:
-        onto = bt_base.Ontology(localpath)
+        onto = bt_base._ontology.Ontology(localpath)
         assert onto.get_term("PW:0000014").name == "neurodegenerative pathway"
 
         df = onto.to_df(source="pw", include_id_prefixes={"pw": ["PW"]})
