@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import warnings
 from typing import TYPE_CHECKING, BinaryIO
 
 import pandas as pd
@@ -32,10 +31,7 @@ class Ontology(pronto.Ontology):
         threads: int | None = None,
         prefix: str = "",
     ) -> None:
-        import pronto
-
         self._prefix = prefix
-        warnings.filterwarnings("ignore", category=pronto.warnings.ProntoWarning)
         super().__init__(
             handle=handle, import_depth=import_depth, timeout=timeout, threads=threads
         )
