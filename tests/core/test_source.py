@@ -65,33 +65,29 @@ def test_add_ontology_from_values():
 
 
 def test_sync_public_sources():
+    bt.Source.get(name="ensembl", version="release-112", organism="mouse").delete()
+    source_gene_release_111 = bt.Source.get(
+        name="ensembl", version="release-111", organism="mouse"
+    )
+    source_gene_release_111.currently_used = True
+    source_gene_release_111.save()
+    bt.Source.get(name="cl", version="2024-08-16").delete()
+    source_ct_2024_05_15 = bt.Source.get(name="cl", version="2024-05-15")
+    source_ct_2024_05_15.currently_used = True
+    source_ct_2024_05_15.save()
+
+    # update_currently_used=False
+    bt.core.sync_public_sources()
     source_gene_release_112 = bt.Source.get(
         name="ensembl", version="release-112", organism="mouse"
     )
-    source_gene_release_111 = bt.Source.filter(
-        name="ensembl", version="release-111", organism="mouse"
-    ).update(currently_used=True)
-    source_ct_2024_08_16 = bt.Source.get(name="cl", version="2024-08-16")
-    source_ct_2024_05_15 = bt.Source.filter(name="cl", version="2024-05-15").update(
-        currently_used=True
-    )
-    source_gene_release_112.delete()
-    source_ct_2024_08_16.delete()
-
-    bt.core.sync_public_sources()
-    source_gene_release_112 = bt.Source.filter(
-        name="ensembl", version="release-112", organism="mouse"
-    ).one_or_none()
-    assert source_gene_release_112 is not None
     assert not source_gene_release_112.currently_used
     assert source_gene_release_111.currently_used
-    source_ct_2024_08_16 = bt.Source.filter(
-        name="cl", version="2024-08-16"
-    ).one_or_none()
-    assert source_ct_2024_08_16 is not None
+    source_ct_2024_08_16 = bt.Source.get(name="cl", version="2024-08-16")
     assert not source_ct_2024_08_16.currently_used
     assert source_ct_2024_05_15.currently_used
 
+    # update_currently_used=True
     bt.core.sync_public_sources(update_currently_used=True)
     source_gene_release_112 = bt.Source.filter(
         name="ensembl", version="release-112", organism="mouse"
