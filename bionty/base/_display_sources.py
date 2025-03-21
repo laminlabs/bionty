@@ -3,7 +3,6 @@ from lamin_utils import logger
 
 from bionty.base.dev._handle_sources import LAMINDB_INSTANCE_LOADED
 
-# from bionty.base.dev._io import load_yaml
 from ._settings import settings
 from .dev._handle_sources import parse_currently_used_sources
 

@@ -62,3 +62,44 @@ def test_add_ontology_from_values():
     assert record.parents.all().one().name == "South East Asian"
     # the source.in_db should be set back to False since we deleted all records
     assert record.source.in_db is False
+
+
+def test_sync_public_sources():
+    source_gene_latest = bt.Source.get(
+        entity="bionty.Gene", name="ensembl", organism="mouse", currently_used=True
+    )
+    source_gene_release_111 = bt.Source.get(
+        entity="bionty.Gene", name="ensembl", version="release-111", organism="mouse"
+    )
+    source_gene_release_111.currently_used = True
+    # .save() updates currently_used of others to False
+    source_gene_release_111.save()
+    assert not bt.Source.get(source_gene_latest.uid).currently_used
+
+    bt.Source.get(entity="bionty.CellType", name="cl", currently_used=True).delete()
+    source_ct_2024_05_15 = bt.Source.get(name="cl", version="2024-05-15")
+    source_ct_2024_05_15.currently_used = True
+    source_ct_2024_05_15.save()
+
+    # update_currently_used=False
+    source_gene_latest.delete()
+    bt.core.sync_public_sources()
+    source_gene_latest = bt.Source.get(
+        entity="bionty.Gene", name="ensembl", organism="mouse", currently_used=True
+    )
+    assert source_gene_latest == source_gene_release_111
+    source_cl_latest = bt.Source.get(
+        entity="bionty.CellType", name="cl", currently_used=True
+    )
+    assert source_cl_latest == source_ct_2024_05_15
+
+    # update_currently_used=True
+    bt.core.sync_public_sources(update_currently_used=True)
+    source_gene_latest = bt.Source.get(
+        entity="bionty.Gene", name="ensembl", organism="mouse", currently_used=True
+    )
+    assert source_gene_latest != source_gene_release_111
+    source_cl_latest = bt.Source.get(
+        entity="bionty.CellType", name="cl", currently_used=True
+    )
+    assert source_cl_latest != source_ct_2024_05_15

@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from . import ids
-from .models import Record
 
 if TYPE_CHECKING:
     from types import ModuleType
@@ -11,7 +10,9 @@ if TYPE_CHECKING:
     from .models import BioRecord
 
 
-def encode_uid(registry: type[Record], kwargs: dict):
+def encode_uid(registry: type[BioRecord], kwargs: dict):
+    from lamindb.models import Record
+
     if kwargs.get("uid") is not None:
         # if uid is passed, no encoding is needed
         return kwargs
@@ -81,17 +82,12 @@ def lookup2kwargs(record: BioRecord, *args, **kwargs) -> dict:
         bionty_kwargs = arg[0]._asdict()
 
     if len(bionty_kwargs) > 0:
-        # import bionty.base as bt_base
-
         # add organism and source
         organism_record = create_or_get_organism_record(
             registry=record.__class__, organism=kwargs.get("organism")
         )
         if organism_record is not None:
             bionty_kwargs["organism"] = organism_record
-        # public_ontology = getattr(bt_base, record.__class__.__name__)(
-        #     organism=organism_record.name if organism_record is not None else None
-        # )
         bionty_kwargs["source"] = get_source_record(
             registry=record.__class__,
             organism=organism_record,
@@ -109,6 +105,8 @@ def lookup2kwargs(record: BioRecord, *args, **kwargs) -> dict:
 def list_biorecord_models(schema_module: ModuleType):
     """List all BioRecord models in a given schema module."""
     import inspect
+
+    import lamindb as ln  # needed here
 
     from .models import BioRecord
 
