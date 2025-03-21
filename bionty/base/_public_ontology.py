@@ -8,7 +8,6 @@ import pandas as pd
 from lamin_utils import logger
 from lamin_utils._lookup import Lookup
 
-from ._ontology import Ontology
 from ._settings import check_datasetdir_exists, check_dynamicdir_exists, settings
 from .dev._handle_sources import LAMINDB_INSTANCE_LOADED
 from .dev._io import s3_bionty_assets, url_download
@@ -294,6 +293,8 @@ class PublicOntology:
 
         See: https://pronto.readthedocs.io/en/stable/api/pronto.Ontology.html
         """
+        from ._ontology import Ontology
+
         if self._local_ontology_path is None:
             logger.error(f"{self.__class__.__name__} has no Pronto Ontology object!")
             return

@@ -32,6 +32,8 @@ class Ontology(pronto.Ontology):
         threads: int | None = None,
         prefix: str = "",
     ) -> None:
+        import pronto
+
         self._prefix = prefix
         warnings.filterwarnings("ignore", category=pronto.warnings.ProntoWarning)
         super().__init__(

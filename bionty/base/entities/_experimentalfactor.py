@@ -1,14 +1,13 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
-import pandas as pd
-from lamin_utils import logger
-
-from bionty.base._ontology import Ontology
 from bionty.base._public_ontology import PublicOntology
 from bionty.base.dev._doc_util import _doc_params
 from bionty.base.entities._shared_docstrings import organism_removed
+
+if TYPE_CHECKING:
+    from bionty.base._ontology import Ontology
 
 
 @_doc_params(doc_entities=organism_removed)
@@ -52,6 +51,8 @@ class ExperimentalFactor(PublicOntology):
 
         See: https://pronto.readthedocs.io/en/stable/api/pronto.Ontology.html
         """
+        from bionty.base._ontology import Ontology
+
         self._download_ontology_file(
             localpath=self._local_ontology_path,
             url=self._url,
