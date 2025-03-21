@@ -155,25 +155,16 @@ class Source(Record, TracksRun, TracksUpdates):
         kwargs = encode_uid(registry=Source, kwargs=kwargs)
         super().__init__(*args, **kwargs)
 
-    def set_as_currently_used(self):
-        """Set this record as the currently used source.
-
-        Example::
-
-            import bionty as bt
-
-            record = bt.Source.get(uid="...")
-            record.set_as_currently_used()
-        """
-        # set this record as currently used
-        self.currently_used = True
-        self.save()
-        # set all other records as not currently used
-        Source.filter(
-            entity=self.entity, organism=self.organism, name=self.name
-        ).exclude(uid=self.uid).update(currently_used=False)
-        logger.success(f"set {self} as currently used.")
-        logger.warning("please reload your instance to reflect the updates!")
+    def save(self, *args, **kwargs) -> Source:
+        """Save the source record."""
+        update = self.currently_used and self.pk
+        super().save(*args, **kwargs)
+        # when update currently_used, set all other records of the same source as not currently used
+        if update:
+            Source.filter(
+                entity=self.entity, organism=self.organism, name=self.name
+            ).exclude(id=self.id).update(currently_used=False)
+        return self
 
 
 class BioRecord(Record, HasParents, CanCurate):

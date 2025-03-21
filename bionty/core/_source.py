@@ -51,14 +51,14 @@ def sync_public_sources(update_currently_used: bool = False) -> None:
 
     if update_currently_used:
         logger.info("setting the latest version as currently_used...")
-        records = bt.Source.filter().all()
         df = records.df()
-        for (entity, organism), df_group in df.groupby(["entity", "organism"]):
+        for (_, _, _), df_group in df.groupby(["entity", "organism", "name"]):
+            if df_group.currently_used.sum() == 0:
+                continue
             latest_uid = df_group.sort_values("version", ascending=False).uid.iloc[0]
-            records.filter(uid=latest_uid).update(currently_used=True)
-            records.filter(entity=entity, organism=organism).exclude(
-                uid=latest_uid
-            ).update(currently_used=False)
+            latest_record = records.get(latest_uid)
+            latest_record.currently_used = True
+            latest_record.save()
 
     logger.success("synced up Source registry with the latest public sources")
 
