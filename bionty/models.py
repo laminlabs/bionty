@@ -88,8 +88,6 @@ class Source(Record, TracksRun, TracksUpdates):
         Do not modify the records unless you know what you are doing!
     """
 
-    _name_field: str = "name"
-
     class Meta(Record.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
         unique_together = (("entity", "name", "organism", "version"),)
@@ -99,7 +97,7 @@ class Source(Record, TracksRun, TracksUpdates):
     uid: str = CharField(unique=True, max_length=8, default=ids.source)
     """A universal id (base62-encoded hash of defining fields)."""
     entity: str = CharField(max_length=256, db_index=True)
-    """Entity class name."""
+    """Entity class name with schema, e.g. bionty.CellType."""
     organism: str = CharField(max_length=64, db_index=True)
     """Organism name, use 'all' if unknown or none applied."""
     name: str = CharField(max_length=64, db_index=True)
@@ -314,7 +312,6 @@ class BioRecord(Record, HasParents, CanCurate):
             "url": source.url,
             "source_website": source.source_website,
             "dataframe_artifact_id": source.dataframe_artifact_id,
-            "_skip_validation": True,
         }
         new_source = Source.filter(**unique_kwargs).one_or_none()
         if new_source is None:
@@ -322,9 +319,9 @@ class BioRecord(Record, HasParents, CanCurate):
         else:
             logger.warning("source already exists!")
         if new_source.dataframe_artifact_id is not None:
-            logger.warning("source already has a dataframe artifact!")
             return new_source
-        # register the dataframe
+
+        # register the dataframe artifact
         if source.url.startswith("s3://bionty-assets/"):
             df_artifact = ln.Artifact(new_source.url, _branch_code=0, run=False).save()
         else:
@@ -336,8 +333,8 @@ class BioRecord(Record, HasParents, CanCurate):
                 ).df()
             except Exception as e:
                 logger.error(
-                    "please register a DataFrame artifact!\n"
-                    "    → artifact = ln.Artifact(df, _branch_code=0, run=False).save()\n"
+                    "please first register a DataFrame artifact and link it to source!\n"
+                    "    → artifact = ln.Artifact.from_df(df, _branch_code=0, run=False).save()\n"
                     "    → source.dataframe_artifact = artifact\n"
                     "    → source.save()"
                 )
