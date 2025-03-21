@@ -6,8 +6,7 @@
    BioRecord
    StaticReference
    Settings
-   sync_all_sources_to_latest
-   set_latest_sources_as_currently_used
+   sync_public_sources
 """
 
 from lamindb_setup._check_setup import _check_instance_setup
@@ -18,7 +17,7 @@ from bionty.models import BioRecord, StaticReference
 
 from ._add_ontology import add_ontology
 from ._settings import Settings
-from ._source import (
-    set_latest_sources_as_currently_used,
-    sync_all_sources_to_latest,
-)
+from ._source import sync_public_sources
+
+# backward-compat
+sync_all_sources_to_latest = sync_public_sources

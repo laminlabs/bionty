@@ -121,6 +121,3 @@ if _check_instance_setup():
         Source,
         Tissue,
     )
-
-    # backward compat
-    PublicSource = Source

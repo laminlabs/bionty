@@ -62,3 +62,42 @@ def test_add_ontology_from_values():
     assert record.parents.all().one().name == "South East Asian"
     # the source.in_db should be set back to False since we deleted all records
     assert record.source.in_db is False
+
+
+def test_sync_public_sources():
+    source_gene_release_112 = bt.Source.get(
+        name="ensembl", version="release-112", organism="mouse"
+    )
+    source_gene_release_111 = bt.Source.filter(
+        name="ensembl", version="release-111", organism="mouse"
+    ).update(currently_used=True)
+    source_ct_2024_08_16 = bt.Source.get(name="cl", version="2024-08-16")
+    source_ct_2024_05_15 = bt.Source.filter(name="cl", version="2024-05-15").update(
+        currently_used=True
+    )
+    source_gene_release_112.delete()
+    source_ct_2024_08_16.delete()
+
+    bt.core.sync_public_sources()
+    source_gene_release_112 = bt.Source.filter(
+        name="ensembl", version="release-112", organism="mouse"
+    ).one_or_none()
+    assert source_gene_release_112 is not None
+    assert not source_gene_release_112.currently_used
+    assert source_gene_release_111.currently_used
+    source_ct_2024_08_16 = bt.Source.filter(
+        name="cl", version="2024-08-16"
+    ).one_or_none()
+    assert source_ct_2024_08_16 is not None
+    assert not source_ct_2024_08_16.currently_used
+    assert source_ct_2024_05_15.currently_used
+
+    bt.core.sync_public_sources(update_currently_used=True)
+    source_gene_release_112 = bt.Source.filter(
+        name="ensembl", version="release-112", organism="mouse"
+    ).one_or_none()
+    source_gene_release_111 = bt.Source.filter(
+        name="ensembl", version="release-111", organism="mouse"
+    ).one_or_none()
+    assert source_gene_release_112.currently_used
+    assert not source_gene_release_111.currently_used

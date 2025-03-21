@@ -12,28 +12,28 @@ if TYPE_CHECKING:
     from lamindb.models import Artifact, Record
 
 
-def sync_all_sources_to_latest():
-    """Sync up the Source registry with the latest available sources.
+def sync_public_sources(update_currently_used: bool = False) -> None:
+    """Sync up the Source registry with the new public sources.
+
+    This function registers new public sources in the Source registry.
+
+    Args:
+        update_currently_used: Whether to update the currently_used sources to the latest versions.
 
     Example::
 
         from bionty.core import sync_all_sources_to_latest
 
-        sync_all_sources_to_latest()
+        sync_public_sources()
     """
-    import bionty
+    import bionty as bt
     from bionty._biorecord import list_biorecord_models
-    from bionty.models import Source
 
-    records = Source.filter().all()
+    records = bt.Source.filter().all()
     df_sources = bt_base.display_available_sources().reset_index()
-    bionty_models = list_biorecord_models(bionty)
-    for _, row in df_sources.iterrows():
-        kwargs = row.to_dict()
-        if (
-            not kwargs["entity"].startswith("bionty.")
-            and kwargs["entity"] in bionty_models
-        ):
+    bionty_models = list_biorecord_models(bt)
+    for kwargs in df_sources.to_dict(orient="records"):
+        if kwargs["entity"] in bionty_models:
             kwargs["entity"] = "bionty." + kwargs["entity"]
         record = records.filter(
             name=kwargs["name"],
@@ -42,37 +42,25 @@ def sync_all_sources_to_latest():
             organism=kwargs["organism"],
         ).all()
         if len(record) == 0:
-            record = Source(**kwargs).save()
-            logger.success(f"added {record}")
+            record = bt.Source(**kwargs).save()
+            logger.success(f"added new source: {record}")
         else:
             # update metadata fields
             record.update(**kwargs)
-            logger.success(f"updated {record.one()}")
-    logger.info("setting the latest version as currently_used...")
-    set_latest_sources_as_currently_used()
-    logger.success("synced up Source registry with the latest available sources")
-    logger.warning("please reload your instance to reflect the updates!")
+            logger.success(f"updated source: {record.one()}")
 
+    if update_currently_used:
+        logger.info("setting the latest version as currently_used...")
+        records = bt.Source.filter().all()
+        df = records.df()
+        for (entity, organism), df_group in df.groupby(["entity", "organism"]):
+            latest_uid = df_group.sort_values("version", ascending=False).uid.iloc[0]
+            records.filter(uid=latest_uid).update(currently_used=True)
+            records.filter(entity=entity, organism=organism).exclude(
+                uid=latest_uid
+            ).update(currently_used=False)
 
-def set_latest_sources_as_currently_used():
-    """Set the currently_used column to True for the latest version of each source.
-
-    Example::
-
-        from bionty.core import set_latest_sources_as_currently_used
-
-        set_latest_sources_as_currently_used()
-    """
-    from bionty.models import Source
-
-    records = Source.filter().all()
-    df = records.df()
-    for (entity, organism), df_group in df.groupby(["entity", "organism"]):
-        latest_uid = df_group.sort_values("version", ascending=False).uid.iloc[0]
-        records.filter(uid=latest_uid).update(currently_used=True)
-        records.filter(entity=entity, organism=organism).exclude(uid=latest_uid).update(
-            currently_used=False
-        )
+    logger.success("synced up Source registry with the latest public sources")
 
 
 def register_source_in_bionty_assets(
