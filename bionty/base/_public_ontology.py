@@ -52,23 +52,30 @@ class PublicOntology:
         self._validate_args("source", source)
         self._validate_args("version", version)
 
-        self._fetch_sources()
-
         # search in all available sources to get url
-        self._source_record = self._match_sources(
-            self._all_sources,
-            name=source,
-            version=version,
-            organism=organism,
-        )
+        try:
+            self._fetch_sources()
+            self._source_dict = self._match_sources(
+                self._all_sources,
+                name=source,
+                version=version,
+                organism=organism,
+            )
 
-        self._organism = self._source_record["organism"]
-        self._source = self._source_record["name"]
-        self._version = self._source_record["version"]
+            self._organism = self._source_dict["organism"]
+            self._source = self._source_dict["name"]
+            self._version = self._source_dict["version"]
 
-        self._set_file_paths()
-        self.include_id_prefixes = include_id_prefixes
-        self.include_rel = include_rel
+            self._set_file_paths()
+            self.include_id_prefixes = include_id_prefixes
+            self.include_rel = include_rel
+
+        except (ValueError, KeyError) as e:
+            if LAMINDB_INSTANCE_LOADED:
+                # to support StaticSource in lamindb
+                pass
+            else:
+                raise e
 
         # df is only read into memory at the init to improve performance
         df = self._load_df()
@@ -233,7 +240,7 @@ class PublicOntology:
     @check_datasetdir_exists
     def _set_file_paths(self) -> None:
         """Sets version, database and URL attributes for passed database and requested version."""
-        self._url: str = self._source_record.get("url", "")
+        self._url: str = self._source_dict.get("url", "")
 
         # parquet file name, ontology source file name
         self._parquet_filename, self._ontology_filename = encode_filenames(
