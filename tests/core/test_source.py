@@ -1,4 +1,5 @@
 import bionty as bt
+import pandas as pd
 import pytest
 from bionty._organism import OrganismNotSet
 
@@ -62,6 +63,49 @@ def test_add_ontology_from_values():
     assert record.parents.all().one().name == "South East Asian"
     # the source.in_db should be set back to False since we deleted all records
     assert record.source.in_db is False
+
+
+def test_add_custom_source():
+    import lamindb as ln
+
+    internal_source = bt.Source(
+        entity="bionty.Gene",
+        name="internal",
+        version="0.0.1",
+        organism="rabbit",
+        description="internal gene reference",
+    ).save()
+
+    # without a dataframe artifact
+    assert bt.Gene.public(source=bt.Source.get(name="internal")).df().empty
+    records = bt.Gene.from_values(
+        ["ENSOCUG00000017195"],
+        field=bt.Gene.ensembl_gene_id,
+        source=internal_source,
+    )
+    assert len(records) == 0
+
+    # with a dataframe artifact
+    public_df = pd.DataFrame(
+        {
+            "ensembl_gene_id": ["ENSOCUG00000017195"],
+            "symbol": ["SEL1L3"],
+            "description": ["SEL1L family member 3"],
+        }
+    )
+    artifact = ln.Artifact.from_df(
+        public_df, key="test_rabbit_genes.parquet", run=False
+    )
+    artifact._branch_code = 0
+    artifact.save()
+    internal_source.dataframe_artifact = artifact
+    internal_source.save()
+    records = bt.Gene.from_values(
+        ["ENSOCUG00000017195"],
+        field=bt.Gene.ensembl_gene_id,
+        source=internal_source,
+    )
+    assert len(records) == 1
 
 
 def test_sync_public_sources():

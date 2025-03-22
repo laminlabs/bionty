@@ -52,19 +52,27 @@ class PublicOntology:
         self._validate_args("source", source)
         self._validate_args("version", version)
 
-        self._fetch_sources()
-
         # search in all available sources to get url
-        self._source_record = self._match_sources(
-            self._all_sources,
-            name=source,
-            version=version,
-            organism=organism,
-        )
+        try:
+            self._fetch_sources()
+            self._source_dict = self._match_sources(
+                self._all_sources,
+                name=source,
+                version=version,
+                organism=organism,
+            )
 
-        self._organism = self._source_record["organism"]
-        self._source = self._source_record["name"]
-        self._version = self._source_record["version"]
+        except (ValueError, KeyError) as e:
+            if LAMINDB_INSTANCE_LOADED:
+                # to support StaticSource in lamindb
+                self._source_dict = {}
+                pass
+            else:
+                raise e
+
+        self._organism = self._source_dict.get("organism")
+        self._source = self._source_dict.get("name")
+        self._version = self._source_dict.get("version")
 
         self._set_file_paths()
         self.include_id_prefixes = include_id_prefixes
@@ -233,7 +241,7 @@ class PublicOntology:
     @check_datasetdir_exists
     def _set_file_paths(self) -> None:
         """Sets version, database and URL attributes for passed database and requested version."""
-        self._url: str = self._source_record.get("url", "")
+        self._url: str = self._source_dict.get("url", "")
 
         # parquet file name, ontology source file name
         self._parquet_filename, self._ontology_filename = encode_filenames(

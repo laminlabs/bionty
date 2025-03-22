@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, overload
+from typing import Any, overload
 
 import numpy as np
+import pandas as pd
 from django.db import models
 from django.db.models import CASCADE, PROTECT
 from lamin_utils import logger
@@ -35,9 +36,6 @@ from ._shared_docstrings import doc_from_source
 from .base import PublicOntology
 from .base._public_ontology import InvalidParamError
 
-if TYPE_CHECKING:
-    from pandas import DataFrame
-
 
 class StaticReference(PublicOntology):
     def __init__(self, source_record: Source) -> None:
@@ -48,8 +46,11 @@ class StaticReference(PublicOntology):
             organism=source_record.organism,
         )
 
-    def _load_df(self) -> DataFrame:
-        return self._source_record.dataframe_artifact.load(is_run_input=False)  # type:ignore
+    def _load_df(self) -> pd.DataFrame:
+        if self._source_record.dataframe_artifact_id:
+            return self._source_record.dataframe_artifact.load(is_run_input=False)
+        else:
+            return pd.DataFrame()
 
 
 def _sanitize_from_source_args(
