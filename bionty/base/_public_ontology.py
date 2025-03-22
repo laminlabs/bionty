@@ -66,16 +66,17 @@ class PublicOntology:
             self._source = self._source_dict["name"]
             self._version = self._source_dict["version"]
 
-            self._set_file_paths()
-            self.include_id_prefixes = include_id_prefixes
-            self.include_rel = include_rel
-
         except (ValueError, KeyError) as e:
             if LAMINDB_INSTANCE_LOADED:
                 # to support StaticSource in lamindb
+                self._source_dict = {}
                 pass
             else:
                 raise e
+
+        self._set_file_paths()
+        self.include_id_prefixes = include_id_prefixes
+        self.include_rel = include_rel
 
         # df is only read into memory at the init to improve performance
         df = self._load_df()
