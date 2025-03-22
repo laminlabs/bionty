@@ -62,10 +62,6 @@ class PublicOntology:
                 organism=organism,
             )
 
-            self._organism = self._source_dict["organism"]
-            self._source = self._source_dict["name"]
-            self._version = self._source_dict["version"]
-
         except (ValueError, KeyError) as e:
             if LAMINDB_INSTANCE_LOADED:
                 # to support StaticSource in lamindb
@@ -73,6 +69,10 @@ class PublicOntology:
                 pass
             else:
                 raise e
+
+        self._organism = self._source_dict.get("organism")
+        self._source = self._source_dict.get("name")
+        self._version = self._source_dict.get("version")
 
         self._set_file_paths()
         self.include_id_prefixes = include_id_prefixes
