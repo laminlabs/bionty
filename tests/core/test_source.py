@@ -156,7 +156,7 @@ def test_sync_public_sources():
     assert source_cl_latest != source_ct_2024_05_15
 
 
-def test_upgrade_source():
+def test_import_source_update_records():
     import lamindb as ln
 
     source1 = bt.Source.get(name="cl", version="2022-08-16")
@@ -171,7 +171,7 @@ def test_upgrade_source():
     artifact.cell_types.add(record_w_artifact)
 
     # records with artifacts should not be upgraded
-    bt.CellType.upgrade_source(source=source2)
+    bt.CellType.import_source(source=source2, update_records=True)
     record_w_artifact = bt.CellType.get(ontology_id="CL:0000003")
     assert record_w_artifact.source == source1
 
