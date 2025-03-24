@@ -79,8 +79,6 @@ def test_add_ontology_from_values():
 
 
 def test_add_custom_source():
-    import lamindb as ln
-
     internal_source = bt.Source(
         entity="bionty.Gene",
         name="internal",
@@ -154,3 +152,28 @@ def test_sync_public_sources():
         entity="bionty.CellType", name="cl", currently_used=True
     )
     assert source_cl_latest != source_ct_2024_05_15
+
+
+def test_upgrade_source():
+    import lamindb as ln
+
+    source1 = bt.Source.get(name="cl", source="2022-08-16")
+    source2 = bt.Source.get(name="cl", source="2024-08-16")
+    bt.CellType.import_source(source=source1)
+
+    artifact = ln.Artifact(
+        pd.DataFrame({"a": [1, 2, 3]}), key="test-upgrade-labels.parquet"
+    ).save()
+    record_wo_artifact_name = bt.CellType.get(ontology_id="CL:0000409").name
+    record_w_artifact = bt.CellType.get(ontology_id="CL:0000003")
+    artifact.cell_types.add(record_w_artifact)
+
+    # records with artifacts should not be upgraded
+    bt.CellType.upgrade_source(source=source2)
+    record_w_artifact = bt.CellType.get(ontology_id="CL:0000003")
+    assert record_w_artifact.source == source1
+
+    # records without artifacts should be upgraded
+    record_wo_artifact = bt.CellType.get(ontology_id="CL:0000409")
+    assert record_wo_artifact.source == source2
+    assert record_wo_artifact.name != record_wo_artifact_name

@@ -386,40 +386,93 @@ class BioRecord(Record, HasParents, CanCurate):
             import bionty as bt
 
         """
+        import lamindb as ln
+
         from ._source import filter_public_df_columns
 
+        # find records that need to be upgraded
         filter_kwargs = {
             "source__entity": cls.__get_name_with_module__(),
             "source__name": source.name,
         }
         if hasattr(cls, "organism_id"):
             filter_kwargs["organism"] = source.organism
-        # get all records that can be upgraded
         records = cls.filter(**filter_kwargs).exclude(source=source).all()
         if len(records) == 0:
             return
-        # fetch the ontology ids from the source dataframe
-        ontology_id_col = (
-            cls._ontology_id_field
-            if hasattr(cls, "_ontology_id_field")
-            else "ontology_id"
-        )
+
+        # determine the ontology ID field to use
+        ontology_id_field = getattr(cls, "_ontology_id_field", "ontology_id")
+        name_field = getattr(cls, "_name_field", "name")
+
+        # get the new data from the source
         public_df = filter_public_df_columns(cls, cls.public(source=source))
-        if ontology_id_col not in public_df.columns:
-            if "stable_id" in public_df.columns:
-                ontology_id_col = "stable_id"
-            else:
+        public_df.rename(columns={"parents": "_parents"}, inplace=True)
+        if ontology_id_field not in public_df.columns:
+            ontology_id_field = (
+                "stable_id" if "stable_id" in public_df.columns else None
+            )
+            if not ontology_id_field:
                 raise ValueError(
-                    f"'{ontology_id_col}' column is not found in the source dataframe."
+                    f"'{ontology_id_field}' column is not found in the source dataframe."
                 )
-        public_dict = public_df.set_index(ontology_id_col).to_dict(orient="records")
-        records_to_update = records.filter(
-            **{ontology_id_col + "__in": public_dict.keys()}
+
+        # a dictionary of records indexed by ontology ID
+        public_dict = {row[ontology_id_field]: row for _, row in public_df.iterrows()}
+
+        # filter records that have matching ontology IDs
+        records = records.filter(
+            **{ontology_id_field + "__in": set(public_dict.keys())}
         ).all()
 
-        for record in records_to_update.filter(artifacts=None).all():
-            record.name = public_dict.get(record.ontology_id).get("name")
+        # update records without artifacts
+        # simply update the record if no artifacts are associated
+        records_without_artifacts = records.filter(artifacts=None).all()
+        records_to_update = []
+        if records_without_artifacts:
+            for record in records_without_artifacts:
+                ontology_id = getattr(record, ontology_id_field)
+                # update all fields from the new source
+                for col in public_df.columns:
+                    setattr(record, col, public_dict[ontology_id].get(col))
+                record.source_id = source.id
+                records_to_update.append(record)
 
+        # handle records with artifacts
+        records_with_artifacts = records.exclude(artifacts=None).all()
+        ontology_ids_for_new_records = []
+        for record in records_with_artifacts:
+            ontology_id = getattr(record, ontology_id_field)
+
+            # if name changed, create a new record
+            if (
+                ontology_id in public_dict
+                and hasattr(record, name_field)
+                and getattr(record, name_field)
+                != public_dict[ontology_id].get(name_field)
+            ):
+                ontology_ids_for_new_records.append(ontology_id)
+            # otherwise, update the existing record
+            else:
+                for col in public_df.columns:
+                    setattr(record, col, public_dict[ontology_id].get(col))
+                record.source_id = source.id
+                records_to_update.append(record)
+        # bulk update records with artifacts where name didn't change
+        if records_to_update:
+            ln.save(records_to_update)
+            logger.success(f"{len(records_to_update)} records updated!")
+
+        # create new records for those with name changes
+        if ontology_ids_for_new_records:
+            cls.from_values(
+                ontology_ids_for_new_records,
+                field=getattr(cls, ontology_id_field),
+                source=source,
+            ).save()
+            logger.success(f"{len(ontology_ids_for_new_records)} new records created!")
+
+        # set the source as currently used
         if not source.currently_used:
             source.currently_used = True
             source.save()
