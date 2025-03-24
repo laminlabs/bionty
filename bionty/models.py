@@ -225,6 +225,7 @@ class BioRecord(Record, HasParents, CanCurate):
                 else:
                     raise RuntimeError("please pass a organism!")
             elif kwargs.get("organism") is not None:
+                print("kwargs", kwargs)
                 if not isinstance(kwargs.get("organism"), Organism):
                     raise TypeError("organism must be a `bionty.Organism` record.")
 
@@ -365,6 +366,7 @@ class BioRecord(Record, HasParents, CanCurate):
                 )
                 raise ValueError from e
             df_artifact = ln.Artifact.from_df(df, _branch_code=0, run=False).save()
+
         new_source.dataframe_artifact = df_artifact
         new_source.save()
         logger.important("source added!")

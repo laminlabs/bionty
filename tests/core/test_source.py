@@ -104,7 +104,7 @@ def test_add_custom_source():
             "description": ["SEL1L family member 3"],
         }
     )
-    bt.Gene.add_source(internal_source, df)
+    bt.Gene.add_source(internal_source, df=df)
     records = bt.Gene.from_values(
         ["ENSOCUG00000017195"],
         field=bt.Gene.ensembl_gene_id,

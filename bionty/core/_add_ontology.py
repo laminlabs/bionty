@@ -65,7 +65,7 @@ def create_records(
 
     df_records = df.to_dict(orient="records")
 
-    if organism is None and is_organism_required:
+    if organism is None and is_organism_required(registry):
         organism = source_record.organism
 
     organism = create_or_get_organism_record(organism=organism, registry=registry)
