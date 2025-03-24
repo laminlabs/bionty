@@ -23,6 +23,8 @@ def get_source_record(
     filter_kwargs = {"entity": entity_name}
     if isinstance(organism_record, Record):
         filter_kwargs["organism"] = organism_record.name
+    elif isinstance(organism, str):
+        filter_kwargs["organism"] = organism
 
     sources = Source.filter(**filter_kwargs).all()
     if len(sources) == 0:
