@@ -20,8 +20,7 @@ dependencies = [
     "lamindb_setup>=0.81.2",
     "lamin_utils>=0.13.9",
     "requests",
-    "pyyaml",
-    "pronto",
+    "pyyaml"
 ]
 
 [project.urls]
@@ -36,6 +35,7 @@ dev = [
     "pytest-cov",
     "nbproject-test",
     "bioregistry",
+    "pronto",
     "sqlalchemy",
     "mysqlclient",
     "mysql-connector-python",
