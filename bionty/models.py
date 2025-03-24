@@ -392,9 +392,16 @@ class BioRecord(Record, HasParents, CanCurate):
 
         from ._source import filter_public_df_columns
 
+        entity = cls.__get_name_with_module__()
+
+        if entity != source.entity:
+            raise ValueError(
+                f"please pass a source record of the same entity: {entity}"
+            )
+
         # find records that need to be upgraded
         filter_kwargs = {
-            "source__entity": cls.__get_name_with_module__(),
+            "source__entity": entity,
             "source__name": source.name,
         }
         if hasattr(cls, "organism_id"):

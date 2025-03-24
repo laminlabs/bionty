@@ -157,8 +157,8 @@ def test_sync_public_sources():
 def test_upgrade_source():
     import lamindb as ln
 
-    source1 = bt.Source.get(name="cl", source="2022-08-16")
-    source2 = bt.Source.get(name="cl", source="2024-08-16")
+    source1 = bt.Source.get(name="cl", version="2022-08-16")
+    source2 = bt.Source.get(name="cl", version="2024-08-16")
     bt.CellType.import_source(source=source1)
 
     artifact = ln.Artifact(
