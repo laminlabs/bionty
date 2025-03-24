@@ -261,7 +261,10 @@ class BioRecord(Record, HasParents, CanCurate):
 
         Args:
             source: Source record to import records from.
-            update_records: Whether to update existing records with the new source.
+            update_records: If True, update existing records with the new source.
+                - If a record has the same metadata in the new source, link the record to the new source.
+                - If a record has no artifacts associated, update it's metadata and link to the new source.
+                - If a record associated artifacts, but different name in the new source, create a new record with the new source.
             organism: Organism name or record.
                 Required for entities with a required organism foreign key when no source is passed.
             ignore_conflicts: Whether to ignore conflicts during bulk record creation.
@@ -270,11 +273,18 @@ class BioRecord(Record, HasParents, CanCurate):
 
             import bionty as bt
 
-            # import all records from a source
-            bt.CellType.import_source(source1)
+            # import all records from a default source
+            default_sources = bt.Source.filter(entity="bionty.CellType", currently_used=True).df()
+            bt.CellType.import_source()
 
-            # update existing records with a new source
-            bt.CellType.import_source(source2, update_records=True)
+            # import all records from a specific source
+            source = bt.Source.get(entity="bionty.CellType", source="cl", version="2022-08-16")
+            bt.CellType.import_source(source)
+            bt.CellType.df()  # all records from the source are now in the registry
+
+            # update existing records with a new source (version update)
+            source = bt.Source.get(entity="bionty.CellType", source="cl", version="2024-08-16")
+            bt.CellType.import_source(source, update_records=True)
         """
         if update_records:
             from .core._source import update_records_to_source
@@ -296,12 +306,11 @@ class BioRecord(Record, HasParents, CanCurate):
         source: Source,
         df: pd.DataFrame | None = None,
     ) -> Source:
-        """Add a source of the entity.
+        """Link a source record to the entity with a reference DataFrame.
 
         Args:
             source: Source record to add (this can be from another entity).
             df: DataFrame to add to the source.dataframe_artifact.
-            currently_used: Whether to set this source as currently used.
 
         Returns:
             A Source record with this entity.
@@ -326,7 +335,7 @@ class BioRecord(Record, HasParents, CanCurate):
                 }
             )
 
-            bt.Gene.add_source(internal_source, df)
+            bt.Gene.add_source(internal_source, df=df)
         """
         import lamindb as ln
 
@@ -399,6 +408,7 @@ class BioRecord(Record, HasParents, CanCurate):
 
             import bionty as bt
 
+            # default source
             celltype_pub = bt.CellType.public()
             celltype_pub
             #> PublicOntology
@@ -406,6 +416,15 @@ class BioRecord(Record, HasParents, CanCurate):
             #> Organism: all
             #> Source: cl, 2023-04-20
             #> #terms: 2698
+
+            # default source of a organism
+            gene_pub = bt.Gene.public(organism="mouse")
+            gene_pub
+            #> PublicOntology
+            #> Entity: Gene
+            #> Organism: mouse
+            #> Source: ensembl, release-112
+            #> #terms: 57510
         """
         if isinstance(organism, Organism):
             organism = organism.name

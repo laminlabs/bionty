@@ -72,9 +72,12 @@ class Gene(PublicOntology):
         Args:
             values: Legacy ensemble gene IDs of any version
 
-        Examples:
-            >>> gene = bt.base.Gene()
-            >>> gene.map_legacy_genes(["ENSG00000260150", "ENSG00000260587"])
+        Example::
+
+            import bionty as bt
+
+            gene = bt.base.Gene()
+            gene.map_legacy_genes(["ENSG00000260150", "ENSG00000260587"])
         """
         if self.source != "ensembl":
             raise NotImplementedError
@@ -305,12 +308,14 @@ class EnsemblGene:
             values: Single gene ID string or iterable of gene ID strings to map
             df: DataFrame containing current Ensembl gene IDs in 'ensembl_gene_id' column
 
-        Example:
-            >>> map_legacy_ids(['ENSG00000139618'], df)
-            MappingResult(mapped={'ENSG00000139618': 'ENSG00000012048'},
-                          ambiguous={},
-                          unmapped=[]
-                          )
+        Example::
+
+            map_legacy_ids(['ENSG00000139618'], df)
+            #> MappingResult(
+            #>     mapped={'ENSG00000139618': 'ENSG00000012048'},
+            #>     ambiguous={},
+            #>     unmapped=[],
+            )
         """
         if isinstance(values, str):
             legacy_genes = f"('{values}')"
