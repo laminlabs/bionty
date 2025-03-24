@@ -253,8 +253,6 @@ class BioRecord(Record, HasParents, CanCurate):
         update_records: bool = False,
         *,
         organism: str | Record | None = None,
-        ontology_ids: list[str] | None = None,
-        # field: FieldAttr | None = None,
         ignore_conflicts: bool = True,
     ):
         """Bulk save records from a Bionty ontology.
@@ -265,7 +263,7 @@ class BioRecord(Record, HasParents, CanCurate):
             source: Source record to import records from.
             update_records: Whether to update existing records with the new source.
             organism: Organism name or record.
-            ontology_ids: List of ontology ids to save. Default is None (save all).
+                Required for entities with a required organism foreign key when no source is passed.
             ignore_conflicts: Whether to ignore conflicts during bulk record creation.
 
         Example::
@@ -287,7 +285,6 @@ class BioRecord(Record, HasParents, CanCurate):
 
             add_ontology_from_df(
                 registry=cls,
-                ontology_ids=ontology_ids,
                 organism=organism,
                 source=source,
                 ignore_conflicts=ignore_conflicts,
