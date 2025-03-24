@@ -13,16 +13,18 @@ if TYPE_CHECKING:
 
 
 def sync_public_sources(update_currently_used: bool = False) -> None:
-    """Sync up the Source registry with the new public sources.
+    """Add new public sources to the Source registry.
 
     This function registers new public sources in the Source registry.
 
+    Public sources are in [sources.yaml](https://github.com/laminlabs/bionty/blob/main/bionty/base/sources.yaml).
+
     Args:
-        update_currently_used: Whether to update the currently_used sources to the latest versions.
+        update_currently_used: If True, set the latest version as currently_used.
 
     Example::
 
-        from bionty.core import sync_all_sources_to_latest
+        from bionty.core import sync_public_sources
 
         sync_public_sources()
     """
