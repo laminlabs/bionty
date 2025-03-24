@@ -4,6 +4,19 @@ import pytest
 from bionty._organism import OrganismNotSet
 
 
+def test_get_source_record():
+    from bionty._source import get_source_record
+
+    source = get_source_record(bt.Phenotype, organism="human")
+    assert source.organism == "human"
+
+    source = get_source_record(bt.Phenotype)
+    assert source.organism == "all"
+
+    source = get_source_record(bt.Gene, organism="mouse")
+    assert source.organism == "mouse"
+
+
 def test_add_source():
     import wetlab as wl
 
