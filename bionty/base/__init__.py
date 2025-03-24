@@ -42,6 +42,8 @@ Bionty base provides access to several entities, most of which are also supporte
 Base class
 ----------
 
+`Pronto Ontology objects <https://pronto.readthedocs.io/en/stable/api/pronto.Ontology.html>`__ can be accessed via `{entity}.to_pronto()`.
+
 .. autosummary::
    :toctree: .
 

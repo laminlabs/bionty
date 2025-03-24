@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib
 import logging
 from typing import TYPE_CHECKING, Literal, Union, get_args, get_origin
 
@@ -293,6 +294,11 @@ class PublicOntology:
 
         See: https://pronto.readthedocs.io/en/stable/api/pronto.Ontology.html
         """
+        if importlib.util.find_spec("pronto") is None:
+            raise ImportError(
+                "pronto package is not installed. Please install it using: pip install pronto."
+            )
+
         from ._ontology import Ontology
 
         if self._local_ontology_path is None:
