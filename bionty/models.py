@@ -225,6 +225,7 @@ class BioRecord(Record, HasParents, CanCurate):
                 else:
                     raise RuntimeError("please pass a organism!")
             elif kwargs.get("organism") is not None:
+                print("kwargs", kwargs)
                 if not isinstance(kwargs.get("organism"), Organism):
                     raise TypeError("organism must be a `bionty.Organism` record.")
 
@@ -249,9 +250,9 @@ class BioRecord(Record, HasParents, CanCurate):
     def import_source(
         cls,
         source: Source | None = None,
+        update_records: bool = False,
+        *,
         organism: str | Record | None = None,
-        ontology_ids: list[str] | None = None,
-        # field: FieldAttr | None = None,
         ignore_conflicts: bool = True,
     ):
         """Bulk save records from a Bionty ontology.
@@ -260,32 +261,46 @@ class BioRecord(Record, HasParents, CanCurate):
 
         Args:
             source: Source record to import records from.
+            update_records: Whether to update existing records with the new source.
             organism: Organism name or record.
-            ontology_ids: List of ontology ids to save. Default is None (save all).
+                Required for entities with a required organism foreign key when no source is passed.
             ignore_conflicts: Whether to ignore conflicts during bulk record creation.
 
         Example::
 
             import bionty as bt
 
-            bt.CellType.import_source()
-        """
-        from .core._add_ontology import add_ontology_from_df
+            # import all records from a source
+            bt.CellType.import_source(source1)
 
-        add_ontology_from_df(
-            registry=cls,
-            ontology_ids=ontology_ids,
-            organism=organism,
-            source=source,
-            ignore_conflicts=ignore_conflicts,
-        )
+            # update existing records with a new source
+            bt.CellType.import_source(source2, update_records=True)
+        """
+        if update_records:
+            from .core._source import update_records_to_source
+
+            update_records_to_source(cls, source)
+        else:
+            from .core._add_ontology import add_ontology_from_df
+
+            add_ontology_from_df(
+                registry=cls,
+                organism=organism,
+                source=source,
+                ignore_conflicts=ignore_conflicts,
+            )
 
     @classmethod
-    def add_source(cls, source: Source, currently_used=True) -> Source:
-        """Configure a source of the entity.
+    def add_source(
+        cls,
+        source: Source,
+        df: pd.DataFrame | None = None,
+    ) -> Source:
+        """Add a source of the entity.
 
         Args:
-            source: Source record to add from another entity.
+            source: Source record to add (this can be from another entity).
+            df: DataFrame to add to the source.dataframe_artifact.
             currently_used: Whether to set this source as currently used.
 
         Returns:
@@ -295,9 +310,23 @@ class BioRecord(Record, HasParents, CanCurate):
 
             import bionty as bt
 
-            efo_source = bt.Source.get(entity="bionty.ExperimentalFactor", name="efo", version="3.70.0")
-            phenotype_efo_source = bt.Phenotype.add_source(source)
-            assert phenotype_efo_source.entity == "bionty.Phenotype"
+            internal_source = bt.Source(
+                entity="bionty.Gene",
+                name="internal",
+                version="0.0.1",
+                organism="rabbit",
+                description="internal gene reference",
+            ).save()
+
+            source_df = pd.DataFrame(
+                {
+                    "ensembl_gene_id": ["ENSOCUG00000017195"],
+                    "symbol": ["SEL1L3"],
+                    "description": ["SEL1L family member 3"],
+                }
+            )
+
+            bt.Gene.add_source(internal_source, df)
         """
         import lamindb as ln
 
@@ -308,7 +337,7 @@ class BioRecord(Record, HasParents, CanCurate):
             "organism": source.organism,
         }
         add_kwargs = {
-            "currently_used": currently_used,
+            "currently_used": source.currently_used,
             "description": source.description,
             "url": source.url,
             "source_website": source.source_website,
@@ -323,7 +352,12 @@ class BioRecord(Record, HasParents, CanCurate):
             return new_source
 
         # register the dataframe artifact
-        if source.url.startswith("s3://bionty-assets/"):
+        if isinstance(df, pd.DataFrame):
+            key = f"df__{unique_kwargs.get('organism')}__{unique_kwargs.get('name')}__{unique_kwargs.get('version')}__{unique_kwargs.get('entity')}.parquet"
+            df_artifact = ln.Artifact.from_df(
+                df, key=key, _branch_code=0, run=False
+            ).save()
+        elif source.url and source.url.startswith("s3://bionty-assets/"):
             df_artifact = ln.Artifact(new_source.url, _branch_code=0, run=False).save()
         else:
             try:
@@ -341,6 +375,7 @@ class BioRecord(Record, HasParents, CanCurate):
                 )
                 raise ValueError from e
             df_artifact = ln.Artifact.from_df(df, _branch_code=0, run=False).save()
+
         new_source.dataframe_artifact = df_artifact
         new_source.save()
         logger.important("source added!")
