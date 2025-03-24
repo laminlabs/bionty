@@ -326,6 +326,7 @@ class PublicOntology:
             A Pandas DataFrame of the ontology.
 
         Example::
+
             import bionty.base as bt_base
 
             bt_base.Gene().df()
@@ -467,6 +468,7 @@ class PublicOntology:
             standardized names as values.
 
         Example::
+
             import bionty.base as bt_base
 
             public = bt_base.Gene()
@@ -522,6 +524,7 @@ class PublicOntology:
             A NamedTuple of lookup information of the field values.
 
         Example::
+
             import bionty.base as bt_base
 
             lookup = bt_base.CellType().lookup()

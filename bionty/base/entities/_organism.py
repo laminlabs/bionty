@@ -95,9 +95,11 @@ class Organism(PublicOntology):
         Returns:
             A Pandas DataFrame of the ontology.
 
-        Examples:
-            >>> import bionty.base as bionty_base
-            >>> bt.Organism().df()
+        Example::
+
+            import bionty.base as bionty_base
+
+            bt.Organism().df()
         """
         return self._df.set_index("name")
 
