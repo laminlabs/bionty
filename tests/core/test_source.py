@@ -28,6 +28,8 @@ def test_add_source():
     assert new_source.name == "chebi"
     assert new_source.version == "2024-07-27"
     assert new_source.dataframe_artifact is not None
+    public_ontology = wl.Compound.public()
+    assert public_ontology.__class__.__name__ == "StaticReference"
 
 
 def test_import_source():
