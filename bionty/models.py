@@ -281,11 +281,16 @@ class BioRecord(Record, HasParents, CanCurate):
         )
 
     @classmethod
-    def add_source(cls, source: Source, currently_used=True) -> Source:
-        """Configure a source of the entity.
+    def add_source(
+        cls,
+        source: Source,
+        df: pd.DataFrame | None = None,
+    ) -> Source:
+        """Add a source of the entity.
 
         Args:
-            source: Source record to add from another entity.
+            source: Source record to add (this can be from another entity).
+            df: DataFrame to add to the source.dataframe_artifact.
             currently_used: Whether to set this source as currently used.
 
         Returns:
@@ -295,9 +300,23 @@ class BioRecord(Record, HasParents, CanCurate):
 
             import bionty as bt
 
-            efo_source = bt.Source.get(entity="bionty.ExperimentalFactor", name="efo", version="3.70.0")
-            phenotype_efo_source = bt.Phenotype.add_source(source)
-            assert phenotype_efo_source.entity == "bionty.Phenotype"
+            internal_source = bt.Source(
+                entity="bionty.Gene",
+                name="internal",
+                version="0.0.1",
+                organism="rabbit",
+                description="internal gene reference",
+            ).save()
+
+            source_df = pd.DataFrame(
+                {
+                    "ensembl_gene_id": ["ENSOCUG00000017195"],
+                    "symbol": ["SEL1L3"],
+                    "description": ["SEL1L family member 3"],
+                }
+            )
+
+            bt.Gene.add_source(internal_source, df)
         """
         import lamindb as ln
 
@@ -308,7 +327,7 @@ class BioRecord(Record, HasParents, CanCurate):
             "organism": source.organism,
         }
         add_kwargs = {
-            "currently_used": currently_used,
+            "currently_used": source.currently_used,
             "description": source.description,
             "url": source.url,
             "source_website": source.source_website,
@@ -323,7 +342,12 @@ class BioRecord(Record, HasParents, CanCurate):
             return new_source
 
         # register the dataframe artifact
-        if source.url.startswith("s3://bionty-assets/"):
+        if isinstance(df, pd.DataFrame):
+            key = f"df__{unique_kwargs.get('organism')}__{unique_kwargs.get('name')}__{unique_kwargs.get('version')}__{unique_kwargs.get('entity')}.parquet"
+            df_artifact = ln.Artifact.from_df(
+                df, key=key, _branch_code=0, run=False
+            ).save()
+        elif source.url and source.url.startswith("s3://bionty-assets/"):
             df_artifact = ln.Artifact(new_source.url, _branch_code=0, run=False).save()
         else:
             try:
@@ -346,6 +370,59 @@ class BioRecord(Record, HasParents, CanCurate):
         logger.important("source added!")
 
         return new_source
+
+    @classmethod
+    def upgrade_source(cls, source: Source) -> None:
+        """Upgrade the existing records associated with old source to the new source.
+
+        Args:
+            source: Source record to update from another entity.
+
+        Returns:
+            A Source record with this entity.
+
+        Example::
+
+            import bionty as bt
+
+        """
+        from ._source import filter_public_df_columns
+
+        filter_kwargs = {
+            "source__entity": cls.__get_name_with_module__(),
+            "source__name": source.name,
+        }
+        if hasattr(cls, "organism_id"):
+            filter_kwargs["organism"] = source.organism
+        # get all records that can be upgraded
+        records = cls.filter(**filter_kwargs).exclude(source=source).all()
+        if len(records) == 0:
+            return
+        # fetch the ontology ids from the source dataframe
+        ontology_id_col = (
+            cls._ontology_id_field
+            if hasattr(cls, "_ontology_id_field")
+            else "ontology_id"
+        )
+        public_df = filter_public_df_columns(cls, cls.public(source=source))
+        if ontology_id_col not in public_df.columns:
+            if "stable_id" in public_df.columns:
+                ontology_id_col = "stable_id"
+            else:
+                raise ValueError(
+                    f"'{ontology_id_col}' column is not found in the source dataframe."
+                )
+        public_dict = public_df.set_index(ontology_id_col).to_dict(orient="records")
+        records_to_update = records.filter(
+            **{ontology_id_col + "__in": public_dict.keys()}
+        ).all()
+
+        for record in records_to_update.filter(artifacts=None).all():
+            record.name = public_dict.get(record.ontology_id).get("name")
+
+        if not source.currently_used:
+            source.currently_used = True
+            source.save()
 
     @classmethod
     def public(

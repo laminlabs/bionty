@@ -86,20 +86,14 @@ def test_add_custom_source():
     assert len(records) == 0
 
     # with a dataframe artifact
-    public_df = pd.DataFrame(
+    df = pd.DataFrame(
         {
             "ensembl_gene_id": ["ENSOCUG00000017195"],
             "symbol": ["SEL1L3"],
             "description": ["SEL1L family member 3"],
         }
     )
-    artifact = ln.Artifact.from_df(
-        public_df, key="test_rabbit_genes.parquet", run=False
-    )
-    artifact._branch_code = 0
-    artifact.save()
-    internal_source.dataframe_artifact = artifact
-    internal_source.save()
+    bt.Gene.add_source(internal_source, df)
     records = bt.Gene.from_values(
         ["ENSOCUG00000017195"],
         field=bt.Gene.ensembl_gene_id,
