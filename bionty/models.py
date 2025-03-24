@@ -396,7 +396,7 @@ class BioRecord(Record, HasParents, CanCurate):
             "source__name": source.name,
         }
         if hasattr(cls, "organism_id"):
-            filter_kwargs["organism"] = source.organism
+            filter_kwargs["organism__name"] = source.organism
         records = cls.filter(**filter_kwargs).exclude(source=source).all()
         if len(records) == 0:
             return
@@ -460,11 +460,13 @@ class BioRecord(Record, HasParents, CanCurate):
                 records_to_update.append(record)
         # bulk update records with artifacts where name didn't change
         if records_to_update:
+            logger.info(f"updating {len(records_to_update)} records...")
             ln.save(records_to_update)
             logger.success(f"{len(records_to_update)} records updated!")
 
         # create new records for those with name changes
         if ontology_ids_for_new_records:
+            logger.info(f"creating {len(ontology_ids_for_new_records)} new records...")
             cls.from_values(
                 ontology_ids_for_new_records,
                 field=getattr(cls, ontology_id_field),
