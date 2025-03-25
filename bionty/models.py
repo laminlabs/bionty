@@ -225,7 +225,6 @@ class BioRecord(Record, HasParents, CanCurate):
                 else:
                     raise RuntimeError("please pass a organism!")
             elif kwargs.get("organism") is not None:
-                print("kwargs", kwargs)
                 if not isinstance(kwargs.get("organism"), Organism):
                     raise TypeError("organism must be a `bionty.Organism` record.")
 
