@@ -103,7 +103,9 @@ def s3_bionty_assets(
 
     if localpath is None:
         localpath = settings.datasetdir / filename
-    elif localpath.is_dir():
+    elif (
+        localpath.is_dir()
+    ):  # TODO: remove this; it errors on reticulate if we pass a directory
         localpath = localpath / filename
 
     bucket = assets_base_url.replace("s3://", "")
