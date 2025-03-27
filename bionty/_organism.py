@@ -82,8 +82,10 @@ def organism_from_ensembl_id(id: str, using_key: str | None) -> Organism | None:
     import bionty as bt
     from bionty.base.dev._io import s3_bionty_assets
 
+    # below has to consume a file path and NOT a directory because otherwise it fails on reticulate
     localpath = s3_bionty_assets(
-        ".lamindb/0QeqXlKq9aqW8aqe0000.parquet", bt.base.settings.dynamicdir
+        ".lamindb/0QeqXlKq9aqW8aqe0000.parquet",
+        bt.base.settings.dynamicdir / "ensembl_prefix.parquet",
     )
     ensembl_prefixes = pd.read_parquet(localpath).set_index("gene_prefix")
 
