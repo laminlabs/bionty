@@ -5,6 +5,7 @@ from typing import Union
 
 import requests  # type:ignore
 import yaml  # type:ignore
+from lamindb_setup.core.upath import UPath
 from rich.progress import Progress
 
 from bionty.base._settings import settings
@@ -98,58 +99,37 @@ def s3_bionty_assets(
     Returns:
         A Path object of the synchronized path.
     """
-    import botocore.session as session
-    from botocore.config import Config
-
     if localpath is None:
         localpath = settings.datasetdir / filename
     else:  # it errors on reticulate if we pass a directory
         if localpath.exists():
-            assert localpath.is_file(), f"localpath {localpath} has to be a file path"
-
-    bucket = assets_base_url.replace("s3://", "")
-    s3_client = session.get_session().create_client(
-        "s3", config=Config(signature_version=session.UNSIGNED)
+            assert localpath.is_file(), (
+                f"localpath {localpath} has to be a file path, not a directory"
+            )
+    # this requires s3fs, but it is installed by lamindb
+    # skip_instance_cache=True to avoid interference with cached filesystems
+    # especially with their dircache
+    remote_path = (
+        UPath(
+            assets_base_url,
+            skip_instance_cache=True,
+            use_listings_cache=True,
+            anon=True,
+        )
+        / filename
     )
-
+    # check that the remote path exists and is available
     try:
-        s3_object = s3_client.get_object(Bucket=bucket, Key=filename)
-    except s3_client.exceptions.ClientError:
+        remote_stat = remote_path.stat()
+    except (FileNotFoundError, PermissionError):
         return localpath
-
-    cloud_mts = s3_object["LastModified"].timestamp()
-    total_content_length = int(s3_object["ContentLength"])
-
-    CHUNK_SIZE = 64 * 1024
-
-    if not localpath.exists() or cloud_mts > localpath.stat().st_mtime:  # type: ignore
-        localpath.parent.mkdir(parents=True, exist_ok=True)
-        stream = s3_object["Body"]
-        if total_content_length > 5000000:
-            with Progress(refresh_per_second=10, transient=True) as progress:
-                task = progress.add_task(
-                    "[red]downloading...", total=total_content_length
-                )
-                try:
-                    with localpath.open(mode="wb") as f:
-                        for chunk in iter(lambda: stream.read(CHUNK_SIZE), b""):
-                            f.write(chunk)
-                            progress.update(task, advance=CHUNK_SIZE)
-                except Exception as e:
-                    if localpath.exists():
-                        localpath.unlink()
-                    raise e
-                # force the progress bar to 100% at the end
-                progress.update(task, completed=total_content_length, refresh=True)
-        else:
-            try:
-                with localpath.open(mode="wb") as f:
-                    for chunk in iter(lambda: stream.read(CHUNK_SIZE), b""):
-                        f.write(chunk)
-            except Exception as e:
-                if localpath.exists():
-                    localpath.unlink()
-                raise e
-        os.utime(localpath, times=(cloud_mts, cloud_mts))
+    # this is needed unfortunately because s3://bionty-assets doesn't have ListObjectsV2
+    # for anonymous users. And ListObjectsV2 is triggred inside .synchronize if no cache is present
+    parent_path = remote_path.parent.path.rstrip("/")
+    remote_path.fs.dircache[parent_path] = [remote_stat.as_info()]
+    # synchronize the remote path
+    remote_path.synchronize(localpath, error_no_origin=False, print_progress=True)
+    # clean the artificial cache
+    del remote_path.fs.dircache[parent_path]
 
     return localpath
