@@ -107,7 +107,17 @@ def s3_bionty_assets(
                 f"localpath {localpath} has to be a file path, not a directory"
             )
     # this requires s3fs, but it is installed by lamindb
-    remote_path = UPath(assets_base_url, use_listings_cache=True, anon=True) / filename
+    # skip_instance_cache=True to avoid interference with cached filesystems
+    # especially with their dircache
+    remote_path = (
+        UPath(
+            assets_base_url,
+            skip_instance_cache=True,
+            use_listings_cache=True,
+            anon=True,
+        )
+        / filename
+    )
     # check that the remote path exists and is available
     try:
         remote_stat = remote_path.stat()
