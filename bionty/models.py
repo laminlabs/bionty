@@ -71,11 +71,12 @@ def _sanitize_from_source_args(
     id_params = {
         k: v
         for k, v in loc.items()
-        if k not in ("cls", "source", "mute", "kwargs") and v is not None
+        if k not in ("cls", "source", "mute") and v is not None
     }
     main_params = dict(list(id_params.items())[:1]) if id_params else kwargs
+
     return super_cls.from_source(
-        **main_params | {"source": source, "mute": mute}
+        **main_params | {"source": source, "mute": mute, "kwargs": kwargs}
         if source or mute
         else main_params
     )
@@ -225,6 +226,11 @@ class BioRecord(Record, HasParents, CanCurate):
                 else:
                     raise RuntimeError("please pass a organism!")
             elif kwargs.get("organism") is not None:
+                from bionty._organism import create_or_get_organism_record
+
+                kwargs["organism"] = create_or_get_organism_record(
+                    registry=self.__class__, organism=kwargs.get("organism")
+                )
                 if not isinstance(kwargs.get("organism"), Organism):
                     raise TypeError("organism must be a `bionty.Organism` record.")
 
