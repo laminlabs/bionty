@@ -108,10 +108,15 @@ def s3_bionty_assets(
             )
     # this requires s3fs, but it is installed by lamindb
     remote_path = UPath(assets_base_url, use_listings_cache=True, anon=True) / filename
+    # check that the remote path exists and is available
+    try:
+        remote_stat = remote_path.stat()
+    except (FileNotFoundError, PermissionError):
+        return localpath
     # this is needed unfortunately because s3://bionty-assets doesn't have ListObjectsV2
     # for anonymous users. And ListObjectsV2 is triggred inside .synchronize if no cache is present
     parent_path = remote_path.parent.path.rstrip("/")
-    remote_path.fs.dircache[parent_path] = [remote_path.stat().as_info()]
+    remote_path.fs.dircache[parent_path] = [remote_stat.as_info()]
     # synchronize the remote path
     remote_path.synchronize(localpath, error_no_origin=False, print_progress=True)
     # clean the artificial cache
