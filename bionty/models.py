@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import functools
 from typing import Any, overload
 
 import numpy as np
@@ -53,32 +54,17 @@ class StaticReference(PublicOntology):
             return pd.DataFrame()
 
 
-def _sanitize_from_source_args(
-    super_cls, loc: dict[str, Any]
-) -> BioRecord | list[BioRecord] | None:
-    """Handles argument filtering in ``from_source()`` methods.
+def pass_to_super(cls_method):
+    """Decorator to pass all non-None parameters to the superclass method."""
 
-    Preserves the original ``locals()`` behavior needed to properly handle explicitly
-    defined parameters vs kwargs, while allowing the logic to be reused across classes.
+    @functools.wraps(cls_method)
+    def wrapper(cls, *args, **kwargs):
+        # Get all non-None kwargs
+        filtered_kwargs = {k: v for k, v in kwargs.items() if v is not None}
+        # Call superclass method with filtered kwargs
+        return getattr(super(cls, cls), cls_method.__name__)(*args, **filtered_kwargs)
 
-    Args:
-        super_cls: The superclass object obtained via super()
-        loc: The locals() dict from the calling method
-    """
-    source = loc["source"]
-    mute = loc["mute"]
-    kwargs = loc["kwargs"]
-    id_params = {
-        k: v
-        for k, v in loc.items()
-        if k not in ("cls", "source", "mute", "kwargs") and v is not None
-    }
-    main_params = dict(list(id_params.items())[:1]) if id_params else kwargs
-    return super_cls.from_source(
-        **main_params | {"source": source, "mute": mute}
-        if source or mute
-        else main_params
-    )
+    return wrapper
 
 
 class Source(Record, TracksRun, TracksUpdates):
@@ -608,6 +594,7 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @pass_to_super
     @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
@@ -637,7 +624,7 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
             record = bt.Organism.from_source(name="human")
             record = bt.Organism.from_source(ontology_id="NCBITaxon:9606")
         """
-        return _sanitize_from_source_args(super(), locals())
+        pass
 
 
 class Gene(BioRecord, TracksRun, TracksUpdates):
@@ -735,6 +722,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @pass_to_super
     @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
@@ -767,7 +755,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
             record = bt.Gene.from_source(ensembl_gene_id="ENSG00000081059")
             record = bt.Gene.from_source(stable_id="YAL001C", organism="yeast")
         """
-        return _sanitize_from_source_args(super(), locals())
+        pass
 
 
 class Protein(BioRecord, TracksRun, TracksUpdates):
@@ -854,6 +842,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @pass_to_super
     @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
@@ -886,7 +875,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
             record = bt.Protein.from_source(uniprotkb_id="Q8N6N3")
             record = bt.Protein.from_source(gene_symbol="SYT15B", organism="human")
         """
-        return _sanitize_from_source_args(super(), locals())
+        pass
 
 
 class CellMarker(BioRecord, TracksRun, TracksUpdates):
@@ -973,6 +962,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @pass_to_super
     @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
@@ -1007,7 +997,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
             record = bt.CellMarker.from_source(gene_symbol="PDCD1", organism="human")
             record = bt.CellMarker.from_source(name="CD19", organism="mouse")
         """
-        return _sanitize_from_source_args(super(), locals())
+        pass
 
 
 class Tissue(BioRecord, TracksRun, TracksUpdates):
@@ -1085,6 +1075,7 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @pass_to_super
     @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
@@ -1114,7 +1105,7 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
             record = bt.Tissue.from_source(name="nose")
             record = bt.Tissue.from_source(ontology_id="UBERON:0000004")
         """
-        return _sanitize_from_source_args(super(), locals())
+        pass
 
 
 class CellType(BioRecord, TracksRun, TracksUpdates):
@@ -1192,6 +1183,7 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @pass_to_super
     @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
@@ -1224,7 +1216,7 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
             source = bt.Source.get(entity="bionty.CellType", source="cl", version="2024-08-16")
             record = bt.CellType.from_source(name="B cell", source=source)
         """
-        return _sanitize_from_source_args(super(), locals())
+        pass
 
 
 class Disease(BioRecord, TracksRun, TracksUpdates):
@@ -1302,6 +1294,7 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @pass_to_super
     @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
@@ -1332,7 +1325,7 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
             record = bt.Disease.from_source(ontology_id="MONDO:0004975")
             record = bt.Disease.from_source(name="type 2 diabetes")
         """
-        return _sanitize_from_source_args(super(), locals())
+        pass
 
 
 class CellLine(BioRecord, TracksRun, TracksUpdates):
@@ -1411,6 +1404,7 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @pass_to_super
     @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
@@ -1440,7 +1434,7 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
             record = bt.CellLine.from_source(name="K562")
             record = bt.CellLine.from_source(ontology_id="CLO:0009477")
         """
-        return _sanitize_from_source_args(super(), locals())
+        pass
 
 
 class Phenotype(BioRecord, TracksRun, TracksUpdates):
@@ -1521,6 +1515,7 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @pass_to_super
     @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
@@ -1550,7 +1545,7 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
             record = bt.Phenotype.from_source(name="Arachnodactyly")
             record = bt.Phenotype.from_source(ontology_id="HP:0001166")
         """
-        return _sanitize_from_source_args(super(), locals())
+        pass
 
 
 class Pathway(BioRecord, TracksRun, TracksUpdates):
@@ -1635,6 +1630,7 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @pass_to_super
     @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
@@ -1664,7 +1660,7 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
             record = bt.Pathway.from_source(name="mitotic cell cycle")
             record = bt.Pathway.from_source(ontology_id="GO:1903353")
         """
-        return _sanitize_from_source_args(super(), locals())
+        pass
 
 
 class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
@@ -1751,6 +1747,7 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @pass_to_super
     @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
@@ -1780,7 +1777,7 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
             record = bt.ExperimentalFactor.from_source(name="scRNA-seq")
             record = bt.ExperimentalFactor.from_source(ontology_id="EFO:0009922")
         """
-        return _sanitize_from_source_args(super(), locals())
+        pass
 
 
 class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
@@ -1861,6 +1858,7 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @pass_to_super
     @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
@@ -1890,7 +1888,7 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
             record = bt.DevelopmentalStage.from_source(name="neurula stage")
             record = bt.DevelopmentalStage.from_source(ontology_id="HsapDv:0000004")
         """
-        return _sanitize_from_source_args(super(), locals())
+        pass
 
 
 class Ethnicity(BioRecord, TracksRun, TracksUpdates):
@@ -1970,6 +1968,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         super().__init__(*args, **kwargs)
 
     @classmethod
+    @pass_to_super
     @_doc_params(doc_from_source=doc_from_source)
     def from_source(
         cls,
@@ -1999,7 +1998,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
             record = bt.Ethnicity.from_source(name="European")
             record = bt.Ethnicity.from_source(ontology_id="HANCESTRO:0005")
         """
-        return _sanitize_from_source_args(super(), locals())
+        pass
 
 
 class SchemaGene(BasicRecord, LinkORM):
