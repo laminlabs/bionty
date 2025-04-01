@@ -60,3 +60,10 @@ def test_encode_uids():
         _skip_validation=True,
     )
     assert phenotype.uid == "451W7iJS"
+
+
+def test_create_kwargs():
+    human = bt.Organism.from_source(name="human").save()
+    assert bt.Gene(symbol="TSPAN6", organism=human)
+
+    assert bt.Gene(symbol="TSPAN6", organism="human")
