@@ -4,6 +4,11 @@ import pytest
 from bionty._organism import OrganismNotSet
 
 
+def test_from_source():
+    record = bt.Gene.from_source(symbol="BRCA2", organism="human")
+    assert record.ensembl_gene_id == "ENSG00000139618"
+
+
 def test_get_source_record():
     from bionty._source import get_source_record
 
