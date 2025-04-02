@@ -103,6 +103,10 @@ def organism_from_ensembl_id(id: str, using_key: str | None) -> Organism | None:
             if len(organisms) > 0:
                 organism_record = organisms[0]
                 organism_record.save(using=using_key)
+            else:
+                raise OrganismNotSet(
+                    f"Organism {organism_name} can't be created from the source, check your spelling or create it manually."
+                )
 
         return organism_record
     return None
