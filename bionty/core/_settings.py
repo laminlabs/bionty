@@ -38,12 +38,14 @@ class Settings:
             # do not show the validated message for organism
             verbosity = ln.settings.verbosity
             ln.settings.verbosity = 1
-            organism = Organism.from_source(name=name)
+            organisms = Organism.from_values([name])
             ln.settings.verbosity = verbosity
-            if organism is None:
+            if len(organisms) == 0:
                 raise ValueError(
                     f"No organism with name='{name}' is found, please create a organism record!"
                 )
+            else:
+                organism = organisms[0]
             if organism._state.adding:  # type:ignore
                 organism.save()  # type:ignore
             logger.debug(f"set organism: {organism}")

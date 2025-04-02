@@ -2,11 +2,21 @@ import bionty as bt
 import pandas as pd
 import pytest
 from bionty._organism import OrganismNotSet
+from bionty.models import DoesNotExist, InvalidArgument
 
 
 def test_from_source():
     record = bt.Gene.from_source(symbol="BRCA2", organism="human")
     assert record.ensembl_gene_id == "ENSG00000139618"
+
+    with pytest.raises(DoesNotExist):
+        bt.CellType.from_source(name="T-cellx")
+
+    with pytest.raises(InvalidArgument):
+        bt.CellType.from_source(name="T cell", ontology_id="CL:0000084")
+
+    with pytest.raises(InvalidArgument):
+        bt.CellType.from_source()
 
 
 def test_get_source_record():

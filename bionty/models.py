@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import functools
-from typing import Any, overload
+from typing import overload
 
 import numpy as np
 import pandas as pd
@@ -15,6 +15,7 @@ from lamindb.base.fields import (
     ForeignKey,
     TextField,
 )
+from lamindb.errors import DoesNotExist, InvalidArgument
 from lamindb.models import (
     Artifact,
     BasicRecord,
@@ -482,11 +483,11 @@ class BioRecord(Record, HasParents, CanCurate):
             if k not in [i.name for i in cls._meta.fields if i.is_relation]
         }
         if len(kv) > 1:
-            raise AssertionError(
-                "Only one field can be passed to generate record from public reference"
+            raise InvalidArgument(
+                "Only one field can be passed to generate records from source"
             )
         elif len(kv) == 0:
-            return None
+            raise InvalidArgument("No field passed to generate records from source")
         else:
             k = next(iter(kv))
             v = kwargs.pop(k)
@@ -494,7 +495,9 @@ class BioRecord(Record, HasParents, CanCurate):
             if len(results) == 1:
                 return results[0]
             elif len(results) == 0:
-                return None
+                raise DoesNotExist(
+                    "No record found in source for the given field value"
+                )
             else:
                 return results
 
