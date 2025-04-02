@@ -37,12 +37,12 @@ def create_or_get_organism_record(
             except ObjectDoesNotExist:
                 try:
                     # create a organism record from bionty reference
-                    organism_record = Organism.from_source(name=organism)
-                    if organism_record is None:
+                    organisms = Organism.from_values([organism])
+                    if len(organisms) == 0:
                         raise ValueError(
                             f"Organism {organism} can't be created from the bionty reference, check your spelling or create it manually."
                         )
-                    organism_record.save()  # type:ignore
+                    organism_record = organisms[0].save()  # type:ignore
                 except KeyError:
                     # no such organism is found in bionty reference
                     organism_record = None
@@ -99,8 +99,9 @@ def organism_from_ensembl_id(id: str, using_key: str | None) -> Organism | None:
             bt.Organism.using(using_key).filter(name=organism_name).one_or_none()
         )
         if organism_record is None:
-            organism_record = bt.Organism.from_source(name=organism_name)
-            if organism_record is not None:
+            organisms = bt.Organism.from_values([organism_name])
+            if len(organisms) > 0:
+                organism_record = organisms[0]
                 organism_record.save(using=using_key)
 
         return organism_record

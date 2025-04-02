@@ -15,6 +15,7 @@ from lamindb.base.fields import (
     ForeignKey,
     TextField,
 )
+from lamindb.errors import DoesNotExist
 from lamindb.models import (
     Artifact,
     BasicRecord,
@@ -483,10 +484,10 @@ class BioRecord(Record, HasParents, CanCurate):
         }
         if len(kv) > 1:
             raise AssertionError(
-                "Only one field can be passed to generate record from public reference"
+                "Only one field can be passed to generate records from source"
             )
         elif len(kv) == 0:
-            return None
+            raise AssertionError("No field passed to generate records from source")
         else:
             k = next(iter(kv))
             v = kwargs.pop(k)
@@ -494,7 +495,9 @@ class BioRecord(Record, HasParents, CanCurate):
             if len(results) == 1:
                 return results[0]
             elif len(results) == 0:
-                return None
+                raise DoesNotExist(
+                    "No record found in source for the given field value"
+                )
             else:
                 return results
 
