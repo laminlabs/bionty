@@ -2,8 +2,6 @@ version: "0.2.6"
 Organism:
   ensembl:
     vertebrates:
-      release-113:
-        url: https://ftp.ensembl.org/pub/release-113/species_EnsemblVertebrates.txt
       release-112:
         url: https://ftp.ensembl.org/pub/release-112/species_EnsemblVertebrates.txt
       release-111:
