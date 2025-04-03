@@ -46,6 +46,9 @@ def test_add_source():
     public_ontology = wl.Compound.public()
     assert public_ontology.__class__.__name__ == "StaticReference"
 
+    dron_source = bt.Source.get(entity="Drug", name="dron", version="2024-08-05")
+    new_source = wl.Compound.add_source(dron_source)
+
 
 def test_import_source():
     # when adding a single record, it's parents are also added

@@ -347,8 +347,8 @@ class BioRecord(Record, HasParents, CanCurate):
             return new_source
 
         # register the dataframe artifact
+        key = f"df__{unique_kwargs.get('organism')}__{unique_kwargs.get('name')}__{unique_kwargs.get('version')}__{unique_kwargs.get('entity')}.parquet"
         if isinstance(df, pd.DataFrame):
-            key = f"df__{unique_kwargs.get('organism')}__{unique_kwargs.get('name')}__{unique_kwargs.get('version')}__{unique_kwargs.get('entity')}.parquet"
             df_artifact = ln.Artifact.from_df(
                 df, key=key, _branch_code=0, run=False
             ).save()
@@ -369,7 +369,9 @@ class BioRecord(Record, HasParents, CanCurate):
                     "    → source.save()"
                 )
                 raise ValueError from e
-            df_artifact = ln.Artifact.from_df(df, _branch_code=0, run=False).save()
+            df_artifact = ln.Artifact.from_df(
+                df, key=key, _branch_code=0, run=False
+            ).save()
 
         new_source.dataframe_artifact = df_artifact
         new_source.save()
