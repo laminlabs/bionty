@@ -37,8 +37,7 @@ dev = [
     "bioregistry",
     "pronto",
     "sqlalchemy",
-    "mysqlclient",
-    "mysql-connector-python",
+    "pymysql",
 ]
 
 [tool.pytest.ini_options]
