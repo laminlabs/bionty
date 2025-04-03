@@ -127,17 +127,23 @@ class EnsemblGene:
             port = 4157
         else:
             port = 3306
-        self._url = f"mysql+mysqldb://anonymous:@ensembldb.ensembl.org:{port}/{self._organism.core_db}"
+
+        # Modified connection URL to use PyMySQL instead of mysqlclient
+        # This avoids the authentication plugin issue
+        self._url = f"mysql+pymysql://anonymous:@ensembldb.ensembl.org:{port}/{self._organism.core_db}"
         self._engine = create_engine(url=self._url)
 
     def _import(self):
         try:
-            import mysql.connector as sql
+            # SQLAlchemy is the ORM used for database connections
+            # PyMySQL is used as the database connector for SQLAlchemy
+            import pymysql  # type:ignore
             from sqlalchemy import create_engine
+
         except ModuleNotFoundError:
             raise ModuleNotFoundError(
-                "To query from the Ensembl database, please run `pip install"
-                " sqlalchemy mysqlclient mysql-connector-python`"
+                "To query from the Ensembl database, please run:\n"
+                "pip install sqlalchemy pymysql"
             ) from None
 
     def external_dbs(self):
@@ -245,15 +251,30 @@ class EnsemblGene:
         df_res = df_res[~df_res["ensembl_gene_id"].isnull()]
         df_res = df_res[~df_res["ensembl_gene_id"].isna()]
 
-        # if stable_id is not ensembl_gene_id, keep a stable_id column
-        if not all(df_res["ensembl_gene_id"].str.startswith("ENS")):
+        # Separate IDs: ensembl_gene_id for ENS-prefixed, stable_id for others
+        logger.debug("Separating IDs based on ENS prefix")
+        # Create a mask for ENS-prefixed IDs
+        is_ens = df_res["ensembl_gene_id"].str.startswith("ENS")
+        # If there are any non-ENS IDs, add a stable_id column
+        if not all(is_ens):
             logger.warning(
-                "ensembl_gene_id column not all ENS-prefixed, writing to stable_id column."
+                f"Found {(~is_ens).sum()} IDs without ENS prefix, moving these to stable_id column."
             )
-            df_res.insert(0, "stable_id", df_res.pop("ensembl_gene_id"))
-            df_res = df_res.sort_values("stable_id").reset_index(drop=True)
+            # Add stable_id column if it doesn't exist
+            if "stable_id" not in df_res.columns:
+                df_res.insert(0, "stable_id", None)
+
+            # Move non-ENS IDs to stable_id column
+            df_res.loc[~is_ens, "stable_id"] = df_res.loc[~is_ens, "ensembl_gene_id"]
+            # Clear the ensembl_gene_id for these rows
+            df_res.loc[~is_ens, "ensembl_gene_id"] = None
+
+        # Sort by stable_id first (if it exists and has values), then by ensembl_gene_id
+        if "stable_id" in df_res.columns and df_res["stable_id"].notna().any():
+            df_res = df_res.sort_values(
+                ["stable_id", "ensembl_gene_id"], na_position="last"
+            ).reset_index(drop=True)
         else:
-            df_res = df_res[df_res["ensembl_gene_id"].str.startswith("ENS")]
             df_res = df_res.sort_values("ensembl_gene_id").reset_index(drop=True)
 
         logger.success(f"downloaded Gene table containing {df_res.shape[0]} entries.")
@@ -261,15 +282,48 @@ class EnsemblGene:
         return df_res
 
     def download_legacy_ids_df(self, df: pd.DataFrame, col: str | None = None):
+        """Download legacy Ensembl gene IDs for the current IDs.
+
+        Args:
+            df: DataFrame containing Ensembl gene IDs
+            col: Column name in df that contains the Ensembl gene IDs
+
+        Returns:
+            DataFrame containing mapping between current and legacy IDs
+        """
         col = "ensembl_gene_id" if col is None else col
-        current_ids = tuple(df[col])
-        results = pd.read_sql(
-            "SELECT * FROM stable_id_event JOIN mapping_session USING"
-            " (mapping_session_id) WHERE type = 'gene' AND new_stable_id IN"
-            f" {current_ids} AND score > 0 AND old_stable_id != new_stable_id",
-            con=self._engine,
-        )
-        return results
+
+        # Filter out None/NaN values to prevent SQL errors
+        valid_ids = df[df[col].notna()][col].tolist()
+
+        # Handle empty list case
+        if not valid_ids:
+            logger.warning(
+                "No valid IDs found in the specified column. Returning empty DataFrame."
+            )
+            return pd.DataFrame()
+
+        # Format for SQL IN clause - need to add quotes around each ID
+        formatted_ids = "(" + ", ".join(f"'{id}'" for id in valid_ids) + ")"
+
+        # Construct and execute query
+        query = f"""
+            SELECT * FROM stable_id_event
+            JOIN mapping_session USING (mapping_session_id)
+            WHERE type = 'gene'
+            AND new_stable_id IN {formatted_ids}
+            AND score > 0
+            AND old_stable_id != new_stable_id
+        """
+
+        try:
+            results = pd.read_sql(query, con=self._engine)
+            logger.info(f"Downloaded {len(results)} legacy ID mappings")
+            return results
+        except Exception as e:
+            logger.error(f"Error querying legacy IDs: {e}")
+            # Return an empty DataFrame rather than failing
+            return pd.DataFrame()
 
     def _process_convert_result(
         self,
