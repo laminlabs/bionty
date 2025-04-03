@@ -116,7 +116,6 @@ class EnsemblGene:
             taxa: The taxa of the organism to fetch genes for.
         """
         self._import()
-        import mysql.connector as sql
         from sqlalchemy import create_engine
 
         self._organism = (
