@@ -27,8 +27,8 @@ def check_dynamicdir_exists(f):
 class Settings:
     def __init__(
         self,
-        datasetdir: Union[str, Path] = ROOT_DIR / "data/",
-        dynamicdir: Union[str, Path] = ROOT_DIR / "_dynamic/",
+        datasetdir: str | Path = ROOT_DIR / "data/",
+        dynamicdir: str | Path = ROOT_DIR / "_dynamic/",
     ):
         # setters convert to Path and resolve:
         self.datasetdir = datasetdir
@@ -40,7 +40,7 @@ class Settings:
         return self._datasetdir
 
     @datasetdir.setter
-    def datasetdir(self, datasetdir: Union[str, Path]):
+    def datasetdir(self, datasetdir: str | Path):
         self._datasetdir = Path(datasetdir).resolve()
 
     @property
@@ -49,7 +49,7 @@ class Settings:
         return self._dynamicdir
 
     @dynamicdir.setter
-    def dynamicdir(self, dynamicdir: Union[str, Path]):
+    def dynamicdir(self, dynamicdir: str | Path):
         self._dynamicdir = Path(dynamicdir).resolve()
 
     @property

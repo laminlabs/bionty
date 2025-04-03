@@ -36,33 +36,33 @@ def hash_str(s: str) -> str:
     return encodebytes(hashlib.md5(s.encode()).digest())
 
 
-def hash_id(input_id: Optional[str] = None, *, n_char: int) -> str:
+def hash_id(input_id: str | None = None, *, n_char: int) -> str:
     if input_id is None:
         return base62(n_char=n_char)
     else:
         return hash_str(input_id)[:n_char]
 
 
-def gene(input_id: Optional[str] = None) -> str:
+def gene(input_id: str | None = None) -> str:
     """12 base62."""
     return hash_id(input_id, n_char=12)
 
 
-def protein(input_id: Optional[str] = None) -> str:
+def protein(input_id: str | None = None) -> str:
     """12 base62."""
     return hash_id(input_id, n_char=12)
 
 
-def cellmarker(input_id: Optional[str] = None) -> str:
+def cellmarker(input_id: str | None = None) -> str:
     """12 base62."""
     return hash_id(input_id, n_char=12)
 
 
-def ontology(input_id: Optional[str] = None):
+def ontology(input_id: str | None = None):
     """8 base62."""
     return hash_id(input_id, n_char=8)
 
 
-def source(input_id: Optional[str] = None):
+def source(input_id: str | None = None):
     """8 base62."""
     return hash_id(input_id, n_char=8)

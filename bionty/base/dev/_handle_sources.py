@@ -72,7 +72,7 @@ def parse_sources_yaml(
 
 def parse_currently_used_sources(yaml: str | Path | list[dict]) -> dict:
     """Parse out the most recent versions from yaml."""
-    if isinstance(yaml, (str, Path)):
+    if isinstance(yaml, str | Path):
         df = parse_sources_yaml(yaml)
         df_current = (
             df[["entity", "name", "organism", "version"]]  # type: ignore
