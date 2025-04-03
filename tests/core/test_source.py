@@ -2,11 +2,21 @@ import bionty as bt
 import pandas as pd
 import pytest
 from bionty._organism import OrganismNotSet
+from bionty.models import DoesNotExist, InvalidArgument
 
 
 def test_from_source():
     record = bt.Gene.from_source(symbol="BRCA2", organism="human")
     assert record.ensembl_gene_id == "ENSG00000139618"
+
+    with pytest.raises(DoesNotExist):
+        bt.CellType.from_source(name="T-cellx")
+
+    with pytest.raises(InvalidArgument):
+        bt.CellType.from_source(name="T cell", ontology_id="CL:0000084")
+
+    with pytest.raises(InvalidArgument):
+        bt.CellType.from_source()
 
 
 def test_get_source_record():
@@ -35,6 +45,9 @@ def test_add_source():
     assert new_source.dataframe_artifact is not None
     public_ontology = wl.Compound.public()
     assert public_ontology.__class__.__name__ == "StaticReference"
+
+    dron_source = bt.Source.get(entity="Drug", name="dron", version="2024-08-05")
+    new_source = wl.Compound.add_source(dron_source)
 
 
 def test_import_source():
