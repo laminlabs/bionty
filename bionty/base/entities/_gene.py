@@ -72,7 +72,10 @@ class Gene(PublicOntology):
                 ensembl = EnsemblGene(
                     organism=self._organism, version=self._version, taxa=self.taxa
                 )
-                return ensembl.download_df()
+                df = ensembl.download_df()
+                df.to_parquet(self._local_parquet_path)
+                return df
+
         return super()._load_df()
 
     def map_legacy_ids(self, values: Iterable) -> MappingResult:
@@ -314,6 +317,10 @@ class EnsemblGene:
         else:
             df_res = df_res.sort_values("ensembl_gene_id").reset_index(drop=True)
 
+        if "description" in df_res.columns:
+            df_res["description"] = df_res["description"].str.replace(
+                r"\[.*?\]", "", regex=True
+            )
         logger.important(f"downloaded Gene table containing {df_res.shape[0]} entries.")
         return df_res
 
