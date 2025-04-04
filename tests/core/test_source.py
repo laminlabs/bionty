@@ -54,6 +54,7 @@ def test_base_gene_register_source_in_lamindb():
     bt.Organism.filter().delete()
     assert not bt.Source.filter(organism="rabbit").exists()
     gene = bt.base.Gene(source="ensembl", organism="rabbit", version="release-112")
+    assert gene.df().shape[0] > 10000
     gene.register_source_in_lamindb()
     assert bt.Organism.filter(name="rabbit").exists()
     rabbit_gene_source = bt.Source.get(organism="rabbit")

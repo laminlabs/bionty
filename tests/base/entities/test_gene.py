@@ -34,12 +34,6 @@ def test_gene_ensembl_inspect_hgnc_id(genes):
     assert inspect.equals(expected_series)
 
 
-def test_download_genes_for_a_new_organism():
-    gene = bt_base.Gene(source="ensembl", organism="rabbit", version="release-112")
-    df = gene.df()
-    assert df.shape[0] > 10000
-
-
 def test_ensemblgene_download():
     from bionty.base.entities._gene import EnsemblGene
 
