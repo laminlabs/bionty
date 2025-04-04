@@ -50,6 +50,19 @@ def test_add_source():
     new_source = wl.Compound.add_source(dron_source)
 
 
+def test_base_gene_register_source_in_lamindb():
+    bt.Organism.filter().delete()
+    assert not bt.Source.filter(organism="rabbit").exists()
+    gene = bt.base.Gene(source="ensembl", organism="rabbit", version="release-112")
+    gene.register_source_in_lamindb()
+    assert bt.Organism.filter(name="rabbit").exists()
+    rabbit_gene_source = bt.Source.get(organism="rabbit")
+    assert rabbit_gene_source.entity == "bionty.Gene"
+    assert rabbit_gene_source.source == "ensembl"
+    assert rabbit_gene_source.version == "release-112"
+    assert rabbit_gene_source.organism == "rabbit"
+
+
 def test_import_source():
     # when adding a single record, it's parents are also added
     record = bt.Ethnicity.from_source(ontology_id="HANCESTRO:0005").save()

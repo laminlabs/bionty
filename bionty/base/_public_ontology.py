@@ -83,7 +83,7 @@ class PublicOntology:
         # df is only read into memory at the init to improve performance
         df = self._load_df()
         # self._df has no index
-        if df.index.name is not None:
+        if not df.empty and df.index.name is not None:
             df = df.reset_index()
         self._df: pd.DataFrame = df
 
@@ -306,8 +306,10 @@ class PublicOntology:
                     )
                     df.to_parquet(self._local_parquet_path)
 
-        # Loading the parquet file resets the index
-        return pd.read_parquet(self._local_parquet_path)
+        if self._local_parquet_path.exists():
+            # Loading the parquet file resets the index
+            return pd.read_parquet(self._local_parquet_path)
+        return pd.DataFrame()
 
     def to_pronto(self, mute: bool = False) -> Ontology:  # type:ignore
         """The Pronto Ontology object.

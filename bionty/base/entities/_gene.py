@@ -8,6 +8,7 @@ from lamin_utils import logger
 from bionty.base._public_ontology import PublicOntology
 from bionty.base._settings import settings
 from bionty.base.dev._doc_util import _doc_params
+from bionty.base.dev._handle_sources import LAMINDB_INSTANCE_LOADED
 from bionty.base.dev._io import s3_bionty_assets
 
 from ._organism import Organism
@@ -65,18 +66,35 @@ class Gene(PublicOntology):
 
     def _load_df(self):
         if self.source == "ensembl":
-            try:
+            if self._local_parquet_path.exists():
                 return super()._load_df()
-            except FileNotFoundError:
+            else:
                 # Load the Ensembl gene table
-                ensembl = EnsemblGene(
+                df = EnsemblGene(
                     organism=self._organism, version=self._version, taxa=self.taxa
-                )
-                df = ensembl.download_df()
+                ).download_df()
                 df.to_parquet(self._local_parquet_path)
                 return df
 
-        return super()._load_df()
+    # TODO: generalize this to all sources
+    def register_source_in_lamindb(self):
+        """Register the source in lamindb."""
+        if not self._df.empty and LAMINDB_INSTANCE_LOADED:
+            import bionty as bt
+
+            # Register the source in lamindb
+            source_kwargs = {
+                "entity": "bionty.Gene",
+                "organism": self._organism,
+                "name": self.source,
+                "version": self._version,
+            }
+            source = bt.Source.filter(**source_kwargs).one_or_none()
+            if source is None:
+                source = bt.Source(**source_kwargs, description="Ensembl").save()
+                bt.Gene.add_source(source, df=self._df)
+            else:
+                logger.warning("source already exists!")
 
     def map_legacy_ids(self, values: Iterable) -> MappingResult:
         """Convert legacy ids to current IDs.
