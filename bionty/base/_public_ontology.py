@@ -17,6 +17,8 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
     from pathlib import Path
 
+    from bionty.base._ontology import Ontology
+
     from .dev import InspectResult
 
 
@@ -70,9 +72,9 @@ class PublicOntology:
             else:
                 raise e
 
-        self._organism = self._source_dict.get("organism")
-        self._source = self._source_dict.get("name")
-        self._version = self._source_dict.get("version")
+        self._organism = self._source_dict.get("organism") or organism
+        self._source = self._source_dict.get("name") or source
+        self._version = self._source_dict.get("version") or version
 
         self._set_file_paths()
         self.include_id_prefixes = include_id_prefixes
@@ -81,7 +83,7 @@ class PublicOntology:
         # df is only read into memory at the init to improve performance
         df = self._load_df()
         # self._df has no index
-        if df.index.name is not None:
+        if not df.empty and df.index.name is not None:
             df = df.reset_index()
         self._df: pd.DataFrame = df
 
@@ -260,6 +262,15 @@ class PublicOntology:
         else:
             self._local_ontology_path = settings.dynamicdir / self._ontology_filename
 
+        # ontology source not present in the sources.yaml file
+        # these entities don't have ontology files
+        if not self._url and self.__class__.__name__ in [
+            "Gene",
+            "Protein",
+            "CellMarker",
+        ]:
+            self._local_ontology_path = None
+
     def _get_default_field(self, field: PublicOntologyField | str | None = None) -> str:
         """Default to name field."""
         if field is None:
@@ -286,23 +297,26 @@ class PublicOntology:
         # If download is not possible, write a parquet file of the ontology df
         if not self._url.endswith("parquet"):
             if not self._local_parquet_path.exists():
-                df = self.to_pronto().to_df(
-                    source=self.source,
-                    include_id_prefixes=self.include_id_prefixes,
-                    include_rel=self.include_rel,
-                )
-                df.to_parquet(self._local_parquet_path)
+                pronto = self.to_pronto(mute=True)
+                if pronto is not None:
+                    df = pronto.to_df(
+                        source=self.source,
+                        include_id_prefixes=self.include_id_prefixes,
+                        include_rel=self.include_rel,
+                    )
+                    df.to_parquet(self._local_parquet_path)
 
-        # Loading the parquet file resets the index
-        df = pd.read_parquet(self._local_parquet_path)
-        return df
+        if self._local_parquet_path.exists():
+            # Loading the parquet file resets the index
+            return pd.read_parquet(self._local_parquet_path)
+        return pd.DataFrame()
 
-    def to_pronto(self):
+    def to_pronto(self, mute: bool = False) -> Ontology:  # type:ignore
         """The Pronto Ontology object.
 
         See: https://pronto.readthedocs.io/en/stable/api/pronto.Ontology.html
         """
-        if importlib.util.find_spec("pronto") is None:
+        if importlib.util.find_spec("pronto") is None:  # type:ignore
             raise ImportError(
                 "pronto package is not installed. Please install it using: pip install pronto."
             )
@@ -310,8 +324,10 @@ class PublicOntology:
         from ._ontology import Ontology
 
         if self._local_ontology_path is None:
-            logger.error(f"{self.__class__.__name__} has no Pronto Ontology object!")
-            return
+            if not mute:
+                logger.error(
+                    f"{self.__class__.__name__} has no Pronto Ontology object!"
+                )
         else:
             self._download_ontology_file(
                 localpath=self._local_ontology_path,
