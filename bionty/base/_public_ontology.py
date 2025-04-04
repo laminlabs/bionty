@@ -306,9 +306,11 @@ class PublicOntology:
                     )
                     df.to_parquet(self._local_parquet_path)
 
-        # Loading the parquet file resets the index
-        df = pd.read_parquet(self._local_parquet_path)
-        return df
+        if self._local_parquet_path.exists():
+            # Loading the parquet file resets the index
+            return pd.read_parquet(self._local_parquet_path)
+        else:
+            return pd.DataFrame()
 
     def to_pronto(self, mute: bool = False) -> Ontology:  # type:ignore
         """The Pronto Ontology object.
