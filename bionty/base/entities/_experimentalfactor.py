@@ -46,7 +46,7 @@ class ExperimentalFactor(PublicOntology):
             **kwargs,
         )
 
-    def to_pronto(self) -> Ontology:
+    def to_pronto(self, mute: bool = False) -> Ontology:
         """The Pronto Ontology object.
 
         See: https://pronto.readthedocs.io/en/stable/api/pronto.Ontology.html
