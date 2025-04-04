@@ -66,9 +66,8 @@ class Gene(PublicOntology):
 
     def _load_df(self):
         if self.source == "ensembl":
-            if self._local_parquet_path.exists():
-                return super()._load_df()
-            else:
+            df = super()._load_df()
+            if df.empty:
                 # Load the Ensembl gene table
                 df = EnsemblGene(
                     organism=self._organism, version=self._version, taxa=self.taxa
