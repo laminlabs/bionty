@@ -58,7 +58,7 @@ def test_base_gene_register_source_in_lamindb():
     assert bt.Organism.filter(name="rabbit").exists()
     rabbit_gene_source = bt.Source.get(organism="rabbit")
     assert rabbit_gene_source.entity == "bionty.Gene"
-    assert rabbit_gene_source.source == "ensembl"
+    assert rabbit_gene_source.name == "ensembl"
     assert rabbit_gene_source.version == "release-112"
     assert rabbit_gene_source.organism == "rabbit"
 
