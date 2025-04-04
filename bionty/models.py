@@ -340,11 +340,11 @@ class BioRecord(Record, HasParents, CanCurate):
             "source_website": source.source_website,
             "dataframe_artifact_id": source.dataframe_artifact_id,
         }
+        # make sure organism is registered
+        if is_organism_required(cls):
+            Organism.from_source(name=source.organism).save()
         new_source = Source.filter(**unique_kwargs).one_or_none()
         if new_source is None:
-            # make sure organism is registered
-            if is_organism_required(cls):
-                Organism.from_source(name=source.organism).save()
             new_source = Source(**unique_kwargs, **add_kwargs).save()
         if new_source.dataframe_artifact_id is not None:
             return new_source
