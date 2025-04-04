@@ -11,14 +11,14 @@ from rich.progress import Progress
 from bionty.base._settings import settings
 
 
-def load_yaml(filename: Union[str, Path]):  # pragma: no cover
+def load_yaml(filename: str | Path):  # pragma: no cover
     with open(filename) as f:
         return yaml.safe_load(f)
 
 
 def write_yaml(
     data: dict,
-    filename: Union[str, Path],
+    filename: str | Path,
     sort_keys: bool = False,
     default_flow_style: bool = False,
 ):  # pragma: no cover
@@ -32,8 +32,8 @@ def write_yaml(
 
 
 def url_download(
-    url: str, localpath: Union[str, Path, None] = None, block_size: int = 1024, **kwargs
-) -> Union[str, Path, None]:
+    url: str, localpath: str | Path | None = None, block_size: int = 1024, **kwargs
+) -> str | Path | None:
     """Downloads a file to a specified path.
 
     Args:

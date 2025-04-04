@@ -182,7 +182,7 @@ class BioRecord(Record, HasParents, CanCurate):
         if (
             args
             and len(args) == 1
-            and isinstance(args[0], (tuple, list))
+            and isinstance(args[0], tuple | list)
             and len(args[0]) > 0
         ):
             if isinstance(args[0], list) and len(args[0]) > 1:
@@ -223,7 +223,7 @@ class BioRecord(Record, HasParents, CanCurate):
         if "parents" in kwargs:
             parents = kwargs.pop("parents")
             # this checks if we receive a np.ndarray from pandas
-            if isinstance(parents, (list, np.ndarray)) and len(parents) > 0:
+            if isinstance(parents, list | np.ndarray) and len(parents) > 0:
                 if not isinstance(parents[0], str):
                     raise ValueError(
                         "Invalid parents kwarg passed. Provide a list of ontology ids."
