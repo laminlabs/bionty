@@ -89,7 +89,9 @@ def organism_from_ensembl_id(id: str, using_key: str | None) -> Organism | None:
     )
     ensembl_prefixes = pd.read_parquet(localpath).set_index("gene_prefix")
 
-    prefix = re.sub(r"\d+", "", id)
+    prefix = (
+        re.search(r"^[A-Za-z]+", id).group(0) if re.search(r"^[A-Za-z]+", id) else id
+    )
     if prefix in ensembl_prefixes.index:
         organism_name = ensembl_prefixes.loc[prefix, "name"].lower()
 
@@ -107,6 +109,5 @@ def organism_from_ensembl_id(id: str, using_key: str | None) -> Organism | None:
                 raise OrganismNotSet(
                     f"Organism {organism_name} can't be created from the source, check your spelling or create it manually."
                 )
-
         return organism_record
     return None
