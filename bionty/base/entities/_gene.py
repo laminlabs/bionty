@@ -150,9 +150,14 @@ class EnsemblGene:
         """
         self._import()
 
-        self._organism = (
-            Organism(version=version, taxa=taxa).lookup().dict().get(organism)  # type:ignore
-        )
+        try:
+            self._organism = (
+                Organism(version=version, taxa=taxa).lookup().dict().get(organism)  # type:ignore
+            )
+        except Exception:
+            self._organism = (
+                Organism(taxa=taxa).lookup().dict().get(organism)  # type:ignore
+            )
 
         # Determine port based on taxa
         self._port = 4157 if taxa == "plants" else 3306
