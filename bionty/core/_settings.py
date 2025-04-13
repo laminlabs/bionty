@@ -24,6 +24,8 @@ class Settings:
 
             bionty.settings.organism = "mouse"
         """
+        if isinstance(self._organism, str):
+            self.organism = self._organism  # type: ignore
         return self._organism
 
     @organism.setter
@@ -46,7 +48,6 @@ class Settings:
                 organism = organisms[0]
             if organism._state.adding:  # type:ignore
                 organism.save()  # type:ignore
-            logger.debug(f"set organism: {organism}")
             self._organism = organism
 
 
