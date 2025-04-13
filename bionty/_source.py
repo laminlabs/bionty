@@ -28,7 +28,7 @@ def get_source_record(
 
     sources = Source.filter(**filter_kwargs).all()
     if len(sources) == 0:
-        raise ValueError(f"No source record found for {entity_name}")
+        raise ValueError(f"No source record found for filter {filter_kwargs}")
     if len(sources) == 1:
         return sources.one()
 
