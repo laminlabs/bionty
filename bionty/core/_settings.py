@@ -22,7 +22,9 @@ class Settings:
 
         Examples:
 
-            bionty.settings.organism = "mouse"
+            ::
+
+                bionty.settings.organism = "mouse"
         """
         if isinstance(self._organism, str):
             self.organism = self._organism  # type: ignore
