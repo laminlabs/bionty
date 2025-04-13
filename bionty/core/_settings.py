@@ -8,24 +8,24 @@ from bionty.models import Organism
 class Settings:
     """Settings.
 
-    Directly use `.settings` rather than instantiating this class yourself.
+    Directly use `bt.settings` rather than instantiating this class yourself.
     """
 
     def __init__(self):
-        self._organism = None
+        self._organism = "human"
 
     @property
     def organism(self) -> Organism | None:
-        """Default organism argument (default `None`).
+        """Default organism argument (default `"human"`).
 
-        Default record to use when `organism` argument is required in `lamindb` functionality.
-
-        Only takes effect if explicitly set!
+        Default organism to use in cases of ambiguity. For instance, gene symbols are duplicated across organisms and need to be disambiguated.
 
         Examples:
-            >>> bionty.settings.organism = "mouse"
-            ✅ set organism: Organism(id=vado, name=mouse, taxon_id=10090, scientific_name=mus_musculus, updated_at=2023-07-21 11:37:08, source_id=CXWj, created_by_id=DzTjkKse) # noqa
+
+            bionty.settings.organism = "mouse"
         """
+        if isinstance(self._organism, str):
+            self.organism = self._organism  # type: ignore
         return self._organism
 
     @organism.setter
@@ -48,7 +48,6 @@ class Settings:
                 organism = organisms[0]
             if organism._state.adding:  # type:ignore
                 organism.save()  # type:ignore
-            logger.debug(f"set organism: {organism}")
             self._organism = organism
 
 
