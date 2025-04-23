@@ -244,6 +244,13 @@ class PublicOntology:
     def _set_file_paths(self) -> None:
         """Sets version, database and URL attributes for passed database and requested version."""
         self._url: str = self._source_dict.get("url", "")
+        if (
+            not self._url
+            and self.__class__.__name__ == "Organism"
+            and self._source == "ensembl"
+            and self._version.startswith("release-")
+        ):
+            self._url = f"https://ftp.ensembl.org/pub/{self._version}/species_EnsemblVertebrates.txt"
 
         # parquet file name, ontology source file name
         self._parquet_filename, self._ontology_filename = encode_filenames(
