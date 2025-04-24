@@ -76,6 +76,7 @@ class PublicOntology:
         self._source = self._source_dict.get("name") or source
         self._version = self._source_dict.get("version") or version
 
+        self._get_url()
         self._set_file_paths()
         self.include_id_prefixes = include_id_prefixes
         self.include_rel = include_rel
@@ -240,11 +241,13 @@ class PublicOntology:
             )
             _ = url_download(url, localpath)
 
-    @check_datasetdir_exists
-    def _set_file_paths(self) -> None:
-        """Sets version, database and URL attributes for passed database and requested version."""
+    def _get_url(self):
+        """Get the url of the source."""
         self._url: str = self._source_dict.get("url", "")
 
+    @check_datasetdir_exists
+    def _set_file_paths(self) -> None:
+        """Sets local file paths."""
         # parquet file name, ontology source file name
         self._parquet_filename, self._ontology_filename = encode_filenames(
             organism=self.organism,

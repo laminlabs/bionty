@@ -48,6 +48,15 @@ class Organism(PublicOntology):
             taxa = kwargs.pop("organism")
         super().__init__(organism=taxa, source=source, version=version, **kwargs)
 
+    def _get_url(self):
+        super()._get_url()
+        if (
+            not self._url
+            and self._source == "ensembl"
+            and self._version.startswith("release-")
+        ):
+            self._url = f"https://ftp.ensembl.org/pub/{self._version}/species_EnsemblVertebrates.txt"
+
     def _load_df(self) -> pd.DataFrame:
         if self.source == "ensembl":
             if not self._local_parquet_path.exists():

@@ -82,3 +82,15 @@ def test_ensemblgene_map_legacy_ids():
         ambiguous={},
         unmapped=[],
     )
+
+
+def test_old_ensembl_version():
+    gene_ontology_102 = bt_base.Gene(
+        source="ensembl", organism="mouse", version="release-102"
+    )
+    assert "ENSMUSG00000021745" in gene_ontology_102.df()["ensembl_gene_id"].values
+
+    gene_ontology_112 = bt_base.Gene(
+        source="ensembl", organism="mouse", version="release-112"
+    )
+    assert "ENSMUSG00000021745" not in gene_ontology_112.df()["ensembl_gene_id"].values
