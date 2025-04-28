@@ -37,11 +37,7 @@ class Settings:
         else:
             import lamindb as ln
 
-            # do not show the validated message for organism
-            verbosity = ln.settings.verbosity
-            ln.settings.verbosity = 1
-            organisms = Organism.from_values([name])
-            ln.settings.verbosity = verbosity
+            organisms = Organism.from_values([name], mute=True)
             if len(organisms) == 0:
                 raise ValueError(
                     f"No organism with name='{name}' is found, please create a organism record!"
