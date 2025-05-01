@@ -139,12 +139,9 @@ def encode_uid_for_hub(registry_name: str, registry_schema_json: dict, kwargs: d
         return kwargs
     name = registry_name.lower()
     # here we need to pass the organism record, not organism_id
-    if "organism" in registry_schema_json:
-        organism = kwargs.get("organism")
-    if organism is not None:
-        organism = organism.name
-    else:
-        organism = ""
+    organism = kwargs.get("organism", "")
+    if organism:
+        organism = organism.get("name", "")
 
     # default to ontology_id
     ontology_id_field = registry_schema_json.get("_ontology_id_field", "ontology_id")
