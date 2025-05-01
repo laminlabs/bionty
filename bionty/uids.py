@@ -17,10 +17,6 @@ Entity-related generators:
 import hashlib
 import secrets
 import string
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .models import BioRecord  # noqa
 
 
 def base62(n_char: int) -> str:
@@ -68,7 +64,8 @@ def source(input_id: str | None = None):
     return hash_id(input_id, n_char=8)
 
 
-def encode_uid(registry: type[BioRecord], kwargs: dict):
+def encode_uid(registry: type, kwargs: dict):
+    """The type passed needs to be a subclass of BioRecord."""
     from lamindb.models import Record
 
     from . import ids
