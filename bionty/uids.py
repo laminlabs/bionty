@@ -127,40 +127,26 @@ def encode_uid(registry: type, kwargs: dict):
     return kwargs
 
 
-def encode_uid_for_hub(registry_name, schema_json, kwargs: dict):
-    """The type passed needs to be a subclass of BioRecord."""
-    from lamindb.models import Record
+def encode_uid_for_hub(registry_name: str, registry_schema_json: dict, kwargs: dict):
+    """Encode the uid for the hub.
 
+    Note that `organism` record must be passed in kwargs instead of `organism_id`.
+    """
     from . import ids
 
     if kwargs.get("uid") is not None:
         # if uid is passed, no encoding is needed
         return kwargs
     name = registry_name.lower()
-    if schema_json["bionty"]["registry_name"]:
-        organism = kwargs.get("organism")
-        if organism is None:
-            if kwargs.get("organism_id") is not None:
-                from .models import Organism
-
-                organism = Organism.get(kwargs.get("organism_id")).name
-        elif isinstance(organism, Record):
-            organism = organism.name
+    # here we need to pass the organism record, not organism_id
+    if "organism" in registry_schema_json:
+        organism = kwargs.get("organism", "")
     else:
         organism = ""
 
-    if hasattr(
-        registry_name, "_ontology_id_field"
-    ):  # if schema_json["bionty"]["registry_name"]...:
-        ontology_id_field = registry_name._ontology_id_field
-    else:
-        ontology_id_field = "ontology_id"
-    if hasattr(
-        registry_name, "_name_field"
-    ):  # if schema_json["bionty"]["registry_name"]...:
-        name_field = registry_name._name_field
-    else:
-        name_field = "name"
+    # default to ontology_id
+    ontology_id_field = registry_schema_json.get("_ontology_id_field", "ontology_id")
+    name_field = registry_schema_json.get("_name_field", "name")
 
     str_to_encode = None
     if name == "source":
