@@ -64,31 +64,8 @@ def source(input_id: str | None = None):
     return hash_id(input_id, n_char=8)
 
 
-def encode_uid(registry: type, kwargs: dict, use_in_hub: bool = False):
+def encode_uid(registry: type, kwargs: dict):
     """The type passed needs to be a subclass of BioRecord."""
-    # First, configure Django if it's not already configured
-    if use_in_hub:
-        from django.conf import settings
-
-        if not settings.configured:
-            import django
-
-            settings.configure(
-                DATABASES={
-                    "default": {
-                        "ENGINE": "django.db.backends.sqlite3",
-                        "NAME": ":memory:",
-                    }
-                },
-                INSTALLED_APPS=[
-                    "lamindb",  # Your app name
-                    "django.contrib.contenttypes",
-                    # Other required apps
-                ],
-                DEFAULT_AUTO_FIELD="django.db.models.BigAutoField",
-            )
-            django.setup()
-
     from lamindb.models import Record
 
     from . import ids
