@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from . import ids
-
 if TYPE_CHECKING:
     from types import ModuleType
 
@@ -12,6 +10,8 @@ if TYPE_CHECKING:
 
 def encode_uid(registry: type[BioRecord], kwargs: dict):
     from lamindb.models import Record
+
+    from . import ids
 
     if kwargs.get("uid") is not None:
         # if uid is passed, no encoding is needed
