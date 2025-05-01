@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from uids import encode_uid
+from .uids import encode_uid
 
 if TYPE_CHECKING:
     from types import ModuleType

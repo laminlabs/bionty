@@ -19,7 +19,8 @@ import secrets
 import string
 from typing import TYPE_CHECKING
 
-from .models import BioRecord
+if TYPE_CHECKING:
+    from .models import BioRecord  # noqa
 
 
 def base62(n_char: int) -> str:
