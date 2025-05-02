@@ -93,7 +93,7 @@ __version__ = "1.3.1"
 
 from lamindb_setup._check_setup import _check_instance_setup
 
-from . import base, ids
+from . import _biorecord, base, ids
 
 
 def __getattr__(name):
