@@ -1,5 +1,5 @@
 import pandas as pd
-from lamindb.models import Record
+from lamindb.models import DBRecord
 
 import bionty.base as bt_base
 
@@ -7,10 +7,10 @@ from ._organism import create_or_get_organism_record
 
 
 def get_source_record(
-    registry: type[Record],
-    organism: str | Record | None = None,
-    source: Record | None = None,
-) -> Record:
+    registry: type[DBRecord],
+    organism: str | DBRecord | None = None,
+    source: DBRecord | None = None,
+) -> DBRecord:
     """Get a Source record for a given BioRecord model."""
     from .models import Source
 
@@ -21,7 +21,7 @@ def get_source_record(
 
     entity_name = registry.__get_name_with_module__()
     filter_kwargs = {"entity": entity_name}
-    if isinstance(organism_record, Record):
+    if isinstance(organism_record, DBRecord):
         filter_kwargs["organism"] = organism_record.name
     elif isinstance(organism, str):
         filter_kwargs["organism"] = organism
@@ -58,11 +58,11 @@ def get_source_record(
 
 
 def filter_public_df_columns(
-    model: type[Record], public_ontology: bt_base.PublicOntology
+    model: type[DBRecord], public_ontology: bt_base.PublicOntology
 ) -> pd.DataFrame:
     """Filter columns of public ontology to match the model fields."""
 
-    def _prepare_public_df(model: type[Record], bionty_df: pd.DataFrame):
+    def _prepare_public_df(model: type[DBRecord], bionty_df: pd.DataFrame):
         """Prepare the bionty DataFrame to match the model fields."""
         if bionty_df.empty:
             return bionty_df

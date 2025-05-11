@@ -9,7 +9,7 @@ import bionty.base as bt_base
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from lamindb.models import Artifact, Record
+    from lamindb.models import Artifact, DBRecord
 
 
 def sync_public_sources(update_currently_used: bool = False) -> None:
@@ -65,11 +65,11 @@ def sync_public_sources(update_currently_used: bool = False) -> None:
     logger.success("synced up Source registry with the latest public sources")
 
 
-def update_records_to_source(registry: type[Record], source: Record) -> None:
+def update_records_to_source(registry: type[DBRecord], source: DBRecord) -> None:
     """Update the existing records associated with old source to the new source.
 
     Args:
-        registry: Record class to update.
+        registry: DBRecord class to update.
         source: Source record to apply updates.
     """
     import lamindb as ln
@@ -170,7 +170,7 @@ def update_records_to_source(registry: type[Record], source: Record) -> None:
 
 def register_source_in_bionty_assets(
     filepath: Path,
-    source: Record,
+    source: DBRecord,
     is_dataframe: bool = True,
     update: bool = False,
 ) -> Artifact:
