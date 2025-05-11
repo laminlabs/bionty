@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     import pandas as pd
-    from lamindb.models import Record
+    from lamindb.models import DBRecord
 
     from bionty.models import BioRecord, Organism, Source
 
@@ -55,7 +55,7 @@ def create_records(
     df: pd.DataFrame,
     source_record: Source,
     organism: str | Organism | None = None,
-) -> list[Record]:
+) -> list[DBRecord]:
     """Bulk-create records from a DataFrame skipping validation."""
     df = df.reset_index()
     df = df.rename(columns={"definition": "description"})
@@ -85,8 +85,8 @@ def create_records(
 
 
 def create_link_records(
-    registry: type[BioRecord], df: pd.DataFrame, records: list[Record]
-) -> list[Record]:
+    registry: type[BioRecord], df: pd.DataFrame, records: list[DBRecord]
+) -> list[DBRecord]:
     """Create link records.
 
     Args:

@@ -20,10 +20,10 @@ from lamindb.models import (
     Artifact,
     BasicRecord,
     CanCurate,
+    DBRecord,
     Feature,
     HasParents,
     LinkORM,
-    Record,
     Schema,
     TracksRun,
     TracksUpdates,
@@ -68,7 +68,7 @@ def pass_to_super(cls_method):
     return wrapper
 
 
-class Source(Record, TracksRun, TracksUpdates):
+class Source(DBRecord, TracksRun, TracksUpdates):
     """Versions of ontology sources.
 
     .. warning::
@@ -76,7 +76,7 @@ class Source(Record, TracksRun, TracksUpdates):
         Do not modify the records unless you know what you are doing!
     """
 
-    class Meta(Record.Meta, TracksRun.Meta, TracksUpdates.Meta):
+    class Meta(DBRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
         unique_together = (("entity", "name", "organism", "version"),)
 
@@ -153,10 +153,10 @@ class Source(Record, TracksRun, TracksUpdates):
         return self
 
 
-class BioRecord(Record, HasParents, CanCurate):
-    """Base Record of bionty.
+class BioRecord(DBRecord, HasParents, CanCurate):
+    """Base DBRecord of bionty.
 
-    BioRecord inherits all methods from :class:`~lamindb.models.Record` and provides additional methods
+    BioRecord inherits all methods from :class:`~lamindb.models.DBRecord` and provides additional methods
     including :meth:`~bionty.core.BioRecord.public` and :meth:`~bionty.core.BioRecord.from_source`.
 
     Notes:
@@ -238,7 +238,7 @@ class BioRecord(Record, HasParents, CanCurate):
         source: Source | None = None,
         update_records: bool = False,
         *,
-        organism: str | Record | None = None,
+        organism: str | DBRecord | None = None,
         ignore_conflicts: bool = True,
     ):
         """Bulk save records from a Bionty ontology.
@@ -385,7 +385,7 @@ class BioRecord(Record, HasParents, CanCurate):
     @classmethod
     def public(
         cls,
-        organism: str | Record | None = None,
+        organism: str | DBRecord | None = None,
         source: Source | None = None,
     ) -> PublicOntology | StaticReference:
         """The corresponding :class:`docs:bionty.base.PublicOntology` object.
@@ -451,7 +451,7 @@ class BioRecord(Record, HasParents, CanCurate):
                     "currently_used": True,
                 }
                 if organism is not None:
-                    if isinstance(organism, Record):
+                    if isinstance(organism, DBRecord):
                         kwargs["organism"] = organism.name
                     else:
                         kwargs["organism"] = organism
