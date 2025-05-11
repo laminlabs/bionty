@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(lamindb.models.LinkORM, models.Model),
+            bases=(lamindb.models.IsLink, models.Model),
         ),
         migrations.CreateModel(
             name="ArtifactCellMarker",
@@ -113,7 +113,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(lamindb.models.LinkORM, models.Model),
+            bases=(lamindb.models.IsLink, models.Model),
         ),
         migrations.CreateModel(
             name="ArtifactCellType",
@@ -161,7 +161,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(lamindb.models.LinkORM, models.Model),
+            bases=(lamindb.models.IsLink, models.Model),
         ),
         migrations.CreateModel(
             name="ArtifactDevelopmentalStage",
@@ -212,7 +212,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(lamindb.models.LinkORM, models.Model),
+            bases=(lamindb.models.IsLink, models.Model),
         ),
         migrations.CreateModel(
             name="ArtifactDisease",
@@ -260,7 +260,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(lamindb.models.LinkORM, models.Model),
+            bases=(lamindb.models.IsLink, models.Model),
         ),
         migrations.CreateModel(
             name="ArtifactEthnicity",
@@ -308,7 +308,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(lamindb.models.LinkORM, models.Model),
+            bases=(lamindb.models.IsLink, models.Model),
         ),
         migrations.CreateModel(
             name="ArtifactExperimentalFactor",
@@ -359,7 +359,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(lamindb.models.LinkORM, models.Model),
+            bases=(lamindb.models.IsLink, models.Model),
         ),
         migrations.CreateModel(
             name="ArtifactGene",
@@ -407,7 +407,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(lamindb.models.LinkORM, models.Model),
+            bases=(lamindb.models.IsLink, models.Model),
         ),
         migrations.CreateModel(
             name="ArtifactOrganism",
@@ -455,7 +455,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(lamindb.models.LinkORM, models.Model),
+            bases=(lamindb.models.IsLink, models.Model),
         ),
         migrations.CreateModel(
             name="ArtifactPathway",
@@ -503,7 +503,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(lamindb.models.LinkORM, models.Model),
+            bases=(lamindb.models.IsLink, models.Model),
         ),
         migrations.CreateModel(
             name="ArtifactPhenotype",
@@ -551,7 +551,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(lamindb.models.LinkORM, models.Model),
+            bases=(lamindb.models.IsLink, models.Model),
         ),
         migrations.CreateModel(
             name="ArtifactProtein",
@@ -599,7 +599,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(lamindb.models.LinkORM, models.Model),
+            bases=(lamindb.models.IsLink, models.Model),
         ),
         migrations.CreateModel(
             name="ArtifactTissue",
@@ -647,7 +647,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(lamindb.models.LinkORM, models.Model),
+            bases=(lamindb.models.IsLink, models.Model),
         ),
         migrations.CreateModel(
             name="CellLine",
@@ -1258,7 +1258,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(models.Model, lamindb.models.LinkORM),
+            bases=(models.Model, lamindb.models.IsLink),
         ),
         migrations.AddField(
             model_name="cellmarker",
@@ -1285,7 +1285,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(models.Model, lamindb.models.LinkORM),
+            bases=(models.Model, lamindb.models.IsLink),
         ),
         migrations.CreateModel(
             name="FeatureSetPathway",
@@ -1303,7 +1303,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(models.Model, lamindb.models.LinkORM),
+            bases=(models.Model, lamindb.models.IsLink),
         ),
         migrations.CreateModel(
             name="FeatureSetProtein",
@@ -1321,7 +1321,7 @@ class Migration(migrations.Migration):
             options={
                 "abstract": False,
             },
-            bases=(models.Model, lamindb.models.LinkORM),
+            bases=(models.Model, lamindb.models.IsLink),
         ),
         migrations.CreateModel(
             name="Gene",
