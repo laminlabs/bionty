@@ -1,4 +1,3 @@
-import re
 from functools import lru_cache
 
 import bioregistry
@@ -51,19 +50,17 @@ def get_ontology_url(prefix: str, version: str | None = None) -> tuple[str, str]
 
     # If specific version requested, try to get it
     if version:
-        # Try to get a verified URL for this specific version
+        # try standard versioned URL patterns
         url, ver = _get_specific_version(normalized, version)
-
-        # Only return if we found a valid URL
         if url:
             return url, ver
-        else:
-            raise OntologyVersionNotFoundError(
-                f"version '{version}' of ontology '{prefix}' not found or URL not accessible"
-            )
+
+        raise OntologyVersionNotFoundError(
+            f"version '{version}' of ontology '{prefix}' not found"
+        )
 
     # For latest version
-    url, ver = _get_latest_version(normalized)
+    url, ver = _get_latest_from_ols4(normalized)
     if url:
         return url, ver
 
@@ -75,163 +72,97 @@ def get_ontology_url(prefix: str, version: str | None = None) -> tuple[str, str]
 
 def _prefix_exists(prefix: str) -> bool:
     """Check if a prefix exists in any registry."""
-    # Check Bioregistry
     if bioregistry.normalize_prefix(prefix):
         return True
 
-    # Check OLS
+    # Check OLS4
     try:
         response = requests.head(
-            f"https://www.ebi.ac.uk/ols/api/ontologies/{prefix.lower()}", timeout=5
+            f"https://www.ebi.ac.uk/ols4/api/ontologies/{prefix.lower()}", timeout=5
         )
         if response.status_code < 400:
             return True
     except requests.RequestException:
         pass
 
-    # Check OBO Foundry
-    if bioregistry.get_obofoundry_prefix(prefix):
-        return True
-
     return False
 
 
 def _url_exists(url: str) -> bool:
-    """Check if a URL exists and returns actual content."""
-    # First try a HEAD request (faster)
+    """Check if a URL exists and returns a valid response."""
     try:
         response = requests.head(url, timeout=5, allow_redirects=True)
-        if response.status_code >= 200 and response.status_code < 400:
-            # To be extra sure, do a small GET request to verify content
-            try:
-                get_response = requests.get(url, timeout=10, stream=True)
-                if get_response.status_code >= 200 and get_response.status_code < 400:
-                    # Read a small chunk to verify we get actual content
-                    chunk = next(get_response.iter_content(1024), None)
-                    get_response.close()  # Close the connection
-                    return chunk is not None
-            except (requests.RequestException, StopIteration):
-                return False
-            return True
+        return response.status_code >= 200 and response.status_code < 400
     except requests.RequestException:
         return False
 
-    return False
+
+def _extract_version_from_iri(version_iri: str | None):
+    """Extract version from an IRI string by taking the second-to-last path component."""
+    if isinstance(version_iri, str):
+        # If we have at least two parts, return the second-to-last
+        parts = version_iri.split("/")
+        if len(parts) >= 2:
+            return parts[-2].removeprefix("v")
 
 
 def _get_specific_version(prefix: str, version: str) -> tuple[str | None, str | None]:
-    """Get URL for a specific version of an ontology."""
+    """Get URL for a specific version of an ontology using standard patterns."""
     # Clean version string
     clean_version = version[1:] if version.startswith("v") else version
     obo_prefix = bioregistry.get_obofoundry_prefix(prefix) or prefix
 
-    # First try standard OBO Foundry versioned patterns
+    # Try standard OBO Foundry versioned patterns
     standard_patterns = [
-        # Standard OBO versioned pattern with releases directory (most common)
-        f"http://purl.obolibrary.org/obo/{obo_prefix.lower()}/releases/{clean_version}/{obo_prefix.lower()}.owl",
-        # Alternative version pattern
+        # Direct version path
         f"http://purl.obolibrary.org/obo/{obo_prefix.lower()}/{clean_version}/{obo_prefix.lower()}.owl",
-        # Date-based versioning pattern
-        f"http://purl.obolibrary.org/obo/{obo_prefix.lower()}/releases/{clean_version}/{obo_prefix.lower()}_{clean_version}.owl",
+        # Releases directory
+        f"http://purl.obolibrary.org/obo/{obo_prefix.lower()}/releases/{clean_version}/{obo_prefix.lower()}.owl",
+        # Semantic version with v prefix
+        f"http://purl.obolibrary.org/obo/{obo_prefix.lower()}/v{clean_version}/{obo_prefix.lower()}.owl",
     ]
 
     for url in standard_patterns:
         if _url_exists(url):
             return url, clean_version
 
-    # Try variants with different filenames
-    file_variants = ["base.owl", "core.owl"]
-    base_patterns = [
-        f"http://purl.obolibrary.org/obo/{obo_prefix.lower()}/releases/{clean_version}/",
-        f"http://purl.obolibrary.org/obo/{obo_prefix.lower()}/{clean_version}/",
-    ]
-
-    for base in base_patterns:
-        for variant in file_variants:
-            url = f"{base}{variant}"
-            if _url_exists(url):
-                return url, clean_version
-
-    # Try OLS API
-    try:
-        response = requests.get(
-            f"https://www.ebi.ac.uk/ols/api/ontologies/{prefix.lower()}/versions",
-            timeout=10,
-        )
-        if response.status_code == 200:
-            data = response.json()
-            versions = data.get("_embedded", {}).get("ontologyVersions", [])
-            for ver in versions:
-                if ver.get("number") == clean_version:
-                    config = ver.get("config", {})
-                    if "fileLocation" in config:
-                        file_location = config["fileLocation"]
-                        if _url_exists(file_location):
-                            return file_location, clean_version
-    except requests.RequestException:
-        pass
-
     return None, None
 
 
-def _get_latest_version(prefix: str) -> tuple[str | None, str | None]:
-    """Get the latest versioned URL for an ontology."""
-    # First try OBO Foundry to get latest version
-    obo_prefix = bioregistry.get_obofoundry_prefix(prefix) or prefix
-
-    # Try OBO Foundry registry for version info
-    version = _get_latest_version_from_obo_foundry(prefix, obo_prefix)
-    if version:
-        url, ver = _get_specific_version(prefix, version)
-        if url:
-            return url, ver
-
-    # Try OLS API
+def _get_latest_from_ols4(prefix: str) -> tuple[str | None, str | None]:
+    """Get the latest version information from OLS4."""
     try:
         response = requests.get(
-            f"https://www.ebi.ac.uk/ols/api/ontologies/{prefix.lower()}", timeout=10
+            f"https://www.ebi.ac.uk/ols4/api/ontologies/{prefix.lower()}", timeout=10
         )
-        if response.status_code == 200:
-            data = response.json()
-            config = data.get("config", {})
-            version = config.get("version")
-            file_location = config.get("fileLocation")
+        if response.status_code != 200:
+            return None, None
 
-            # If we have both version and file location from OLS
-            if version and file_location:
-                # First check if a standard versioned URL exists
-                url, ver = _get_specific_version(prefix, version)
-                if url:
-                    return url, ver
+        data = response.json()
+        config = data.get("config", {})
 
-                # If not, use the file location from OLS, but verify it exists
-                if _url_exists(file_location):
-                    return file_location, version
+        # Get version information
+        version = config.get("version")
+
+        # Check versionIri first (preferred source)
+        version_iri = config.get("versionIri")
+        if version_iri and _url_exists(version_iri):
+            # If we have a versionIri and it exists, use it
+            # Extract version from IRI if not already provided
+            if not version:
+                version = _extract_version_from_iri(version_iri)
+            return version_iri, version
+
+        # Fall back to fileLocation if available
+        file_location = config.get("fileLocation")
+        if file_location and _url_exists(file_location):
+            if not version and version_iri:
+                # even when version_iri is not accessible, we can still extract the version, for example: pw
+                version = _extract_version_from_iri(version_iri)
+            return file_location, version
+
+        # No valid URLs found
+        return None, None
+
     except requests.RequestException:
-        pass
-
-    return None, None
-
-
-def _get_latest_version_from_obo_foundry(prefix: str, obo_prefix: str) -> str | None:
-    """Extract the latest version from OBO Foundry registry."""
-    try:
-        response = requests.get(
-            "http://obofoundry.org/registry/ontologies.jsonld", timeout=10
-        )
-        if response.status_code == 200:
-            data = response.json()
-            for ontology in data.get("ontologies", []):
-                if (
-                    ontology.get("id") == obo_prefix
-                    or ontology.get("preferredPrefix") == prefix
-                ):
-                    # Try to get version from version IRI
-                    version_iri = ontology.get("versionIri", "")
-                    if version_iri:
-                        match = re.search(r"/releases/([^/]+)/", version_iri)
-                        if match:
-                            return match.group(1)
-    except requests.RequestException:
-        pass
-    return None
+        return None, None

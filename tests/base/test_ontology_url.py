@@ -13,8 +13,6 @@ def test_get_ontology_url():
     url, ver = get_ontology_url(prefix)
     assert url is not None
     assert ver is not None
-    # lowercase prefix
-    assert get_ontology_url("oba") == (url, ver)
 
     # A wrong version
     with pytest.raises(OntologyVersionNotFoundError):
@@ -23,3 +21,28 @@ def test_get_ontology_url():
     # Test with an unknown prefix
     with pytest.raises(OntologyVersionNotFoundError):
         get_ontology_url("UNKNOWN_PREFIX")
+
+    prefixes = [
+        "ncbitaxon",
+        "clo",
+        "cl",
+        "uberon",
+        "mondo",
+        "doid",
+        "efo",
+        "pato",
+        "hp",
+        "mp",
+        "zp",
+        "go",
+        "pw",
+        "dron",
+        "hsapdv",
+        "mmusdv",
+        "hancestro",
+    ]
+
+    for prefix in prefixes:
+        url, ver = get_ontology_url(prefix)
+        assert url is not None
+        assert ver is not None
