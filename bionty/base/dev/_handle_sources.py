@@ -19,6 +19,7 @@ def LAMINDB_INSTANCE_LOADED():
 
 def parse_sources_yaml(
     filepath: str | Path = settings.public_sources,
+    url_pattern: bool = False,
 ) -> pd.DataFrame:
     """Parse values from sources yaml file into a DataFrame.
 
@@ -44,17 +45,12 @@ def parse_sources_yaml(
             for organism, versions in organism_source.items():
                 if organism in ["name", "website"]:
                     continue
-                for version_key, version_meta in versions.items():
-                    row = (
-                        entity,
-                        source,
-                        organism,
-                        str(version_key),
-                        version_meta.get("url"),
-                        name,
-                        website,
-                    )
-                    all_rows.append(row)
+                latest_version = str(versions.get("latest-version"))
+                url = versions.get("url")
+                if not url_pattern:
+                    url = url.replace("{version}", latest_version)
+                row = (entity, source, organism, latest_version, url, name, website)
+                all_rows.append(row)
 
     return pd.DataFrame(
         all_rows,

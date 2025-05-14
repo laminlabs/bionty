@@ -163,13 +163,15 @@ class PublicOntology:
             self._url_download(url, localpath)
 
     def _fetch_sources(self) -> None:
-        from ._display_sources import display_available_sources
+        from .dev._handle_sources import parse_sources_yaml
 
         def _subset_to_entity(df: pd.DataFrame, key: str):
             return df.loc[[key]] if isinstance(df.loc[key], pd.Series) else df.loc[key]
 
+        # the url contains {version} placeholder
         self._all_sources = _subset_to_entity(
-            display_available_sources(), self.__class__.__name__
+            parse_sources_yaml(url_pattern=True).set_index("entity"),
+            self.__class__.__name__,
         )
 
     def _match_sources(
@@ -183,11 +185,7 @@ class PublicOntology:
         lc = locals()
 
         # kwargs that are not None
-        kwargs = {
-            k: lc.get(k)
-            for k in ["name", "version", "organism"]
-            if lc.get(k) is not None
-        }
+        kwargs = {k: lc.get(k) for k in ["name", "organism"] if lc.get(k) is not None}
         keys = list(kwargs.keys())
 
         # if 1 or 2 kwargs are specified, find the best match in currently used sources
@@ -200,20 +198,15 @@ class PublicOntology:
                 cond = cond.__and__(ref_sources[keys[1]] == kwargs.get(keys[1]))
                 row = ref_sources[cond].head(1)
         else:
-            # if no kwargs are passed, take the currently used source record
+            # if no kwargs are passed, take the first row of this entity
             if len(keys) == 0:
                 curr = ref_sources.head(1).to_dict(orient="records")[0]
-                kwargs = {
-                    k: v
-                    for k, v in curr.items()
-                    if k in ["organism", "name", "version"]
-                }
-            # if all 3 kwargs are specified, match the record from currently used sources
+                kwargs = {k: v for k, v in curr.items() if k in ["organism", "name"]}
+            # if both organism and name are specified, match the record with them
             # do the same for the kwargs that obtained from default source to obtain url
             row = ref_sources[
                 (ref_sources["organism"] == kwargs["organism"])
                 & (ref_sources["name"] == kwargs["name"])
-                & (ref_sources["version"] == kwargs["version"])
             ].head(1)
 
         # if no records matched the passed kwargs, raise error
@@ -222,7 +215,13 @@ class PublicOntology:
                 f"No source is available with {kwargs}\nCheck"
                 " `.display_available_sources()`"
             )
-        return row.to_dict(orient="records")[0]
+
+        # replace {version} in the url with the passed version
+        meta_dict = row.to_dict(orient="records")[0]
+        ver = version or meta_dict.get("version")
+        meta_dict["version"] = ver
+        meta_dict["url"] = meta_dict["url"].replace("{version}", ver)
+        return meta_dict
 
     @check_dynamicdir_exists
     def _url_download(self, url: str, localpath: Path) -> None:
@@ -257,10 +256,12 @@ class PublicOntology:
         )
         self._local_parquet_path: Path = settings.dynamicdir / self._parquet_filename
 
-        if self._url.endswith(".parquet"):  # user provide reference table as the url
+        # user provide reference table as the url in parquet format
+        if self._url.endswith(".parquet"):
             # no local ontology source file
             self._local_ontology_path = None  # type:ignore
             if not self._url.startswith("s3://bionty-assets/"):
+                # will not try to download the parquet file from s3://bionty-assets
                 self._parquet_filename = None  # type:ignore
         else:
             self._local_ontology_path = settings.dynamicdir / self._ontology_filename

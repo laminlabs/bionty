@@ -7,6 +7,7 @@ from ._settings import settings
 from .dev._handle_sources import parse_currently_used_sources
 
 
+# TODO: to be renamed to `display_sources`
 def display_available_sources() -> pd.DataFrame:
     """Displays all available sources.
 
@@ -21,6 +22,7 @@ def display_available_sources() -> pd.DataFrame:
     return parse_sources_yaml(settings.public_sources).set_index("entity")  # type: ignore
 
 
+# TODO: to be deprecated in favor of `display_available_sources`
 # This function naming is consistent with the `currently_used` field in Source SQL table
 # Do not rename!
 def display_currently_used_sources(mute: bool = False) -> pd.DataFrame:

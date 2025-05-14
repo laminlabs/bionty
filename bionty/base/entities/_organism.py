@@ -32,10 +32,6 @@ class Organism(PublicOntology):
             Literal[
                 "2023-06-20",
                 "release-57",
-                "release-108",
-                "release-109",
-                "release-110",
-                "release-111",
                 "release-112",
             ]
             | None
@@ -47,15 +43,6 @@ class Organism(PublicOntology):
         if "organism" in kwargs and taxa is None:
             taxa = kwargs.pop("organism")
         super().__init__(organism=taxa, source=source, version=version, **kwargs)
-
-    def _get_url(self):
-        super()._get_url()
-        if (
-            not self._url
-            and self._source == "ensembl"
-            and self._version.startswith("release-")
-        ):
-            self._url = f"https://ftp.ensembl.org/pub/{self._version}/species_EnsemblVertebrates.txt"
 
     def _load_df(self) -> pd.DataFrame:
         if self.source == "ensembl":
