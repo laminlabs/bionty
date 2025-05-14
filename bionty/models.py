@@ -289,13 +289,14 @@ class BioRecord(Record, HasParents, CanCurate):
     @classmethod
     def add_source(
         cls,
-        source: Source,
+        source: Source | PublicOntology,
         df: pd.DataFrame | None = None,
     ) -> Source:
         """Link a source record to the entity with a reference DataFrame.
 
         Args:
             source: Source record to add (this can be from another entity).
+            public_ontology: PublicOntology object from bionty.base.
             df: DataFrame to add to the source.dataframe_artifact.
 
         Returns:
@@ -327,22 +328,29 @@ class BioRecord(Record, HasParents, CanCurate):
 
         from ._organism import is_organism_required
 
+        if isinstance(source, PublicOntology):
+            source_record = Source(
+                **source._source_dict, entity=cls.__get_name_with_module__()
+            )
+        else:
+            source_record = source
+
         unique_kwargs = {
             "entity": cls.__get_name_with_module__(),
-            "name": source.name,
-            "version": source.version,
-            "organism": source.organism,
+            "name": source_record.name,
+            "version": source_record.version,
+            "organism": source_record.organism,
         }
         add_kwargs = {
-            "currently_used": source.currently_used,
-            "description": source.description,
-            "url": source.url,
-            "source_website": source.source_website,
-            "dataframe_artifact_id": source.dataframe_artifact_id,
+            "currently_used": source_record.currently_used,
+            "description": source_record.description,
+            "url": source_record.url,
+            "source_website": source_record.source_website,
+            "dataframe_artifact_id": source_record.dataframe_artifact_id,
         }
         # make sure organism is registered
         if is_organism_required(cls):
-            Organism.from_source(name=source.organism).save()
+            Organism.from_source(name=source_record.organism).save()
         new_source = Source.filter(**unique_kwargs).one_or_none()
         if new_source is None:
             new_source = Source(**unique_kwargs, **add_kwargs).save()
@@ -351,30 +359,19 @@ class BioRecord(Record, HasParents, CanCurate):
 
         # register the dataframe artifact
         key = f"df__{unique_kwargs.get('organism')}__{unique_kwargs.get('name')}__{unique_kwargs.get('version')}__{unique_kwargs.get('entity')}.parquet"
+        df_artifact = None
         if isinstance(df, pd.DataFrame):
-            df_artifact = ln.Artifact.from_df(
-                df, key=key, _branch_code=0, run=False
-            ).save()
-        elif source.url and source.url.startswith("s3://bionty-assets/"):
-            df_artifact = ln.Artifact(new_source.url, _branch_code=0, run=False).save()
+            df_artifact = ln.Artifact.from_df(df, key=key, run=False)
+        elif source_record.url and source_record.url.startswith("s3://bionty-assets/"):
+            df_artifact = ln.Artifact(new_source.url, run=False)
         else:
-            try:
-                df = getattr(bt_base, source.entity)(
-                    organism=source.organism,
-                    source=source.name,
-                    version=source.version,
-                ).df()
-            except Exception as e:
-                logger.error(
-                    "please first register a DataFrame artifact and link it to source!\n"
-                    "    → artifact = ln.Artifact.from_df(df, _branch_code=0, run=False).save()\n"
-                    "    → source.dataframe_artifact = artifact\n"
-                    "    → source.save()"
-                )
-                raise ValueError from e
-            df_artifact = ln.Artifact.from_df(
-                df, key=key, _branch_code=0, run=False
-            ).save()
+            if isinstance(source, PublicOntology):
+                if not source.df().empty:
+                    df = source.df()
+                    df_artifact = ln.Artifact.from_df(df, key=key, run=False)
+        if df_artifact is not None:
+            df_artifact.kind = "__lamindb__"
+            df_artifact.save()
 
         new_source.dataframe_artifact = df_artifact
         new_source.save()
@@ -438,25 +435,29 @@ class BioRecord(Record, HasParents, CanCurate):
                 source_name = source.name
                 version = source.version
 
+        if source is not None and source.dataframe_artifact_id is not None:
+            # if source is a DataFrame artifact, return the static reference
+            return StaticReference(source)
+        if source is None:
+            kwargs = {
+                "entity": cls.__get_name_with_module__(),
+                "currently_used": True,
+            }
+            if organism is not None:
+                if isinstance(organism, Record):
+                    kwargs["organism"] = organism.name
+                else:
+                    kwargs["organism"] = organism
+            source = Source.filter(**kwargs).first()
+            if source and source.dataframe_artifact_id is not None:
+                return StaticReference(source)
+
         try:
             return getattr(bt_base, cls.__name__)(
                 organism=organism, source=source_name, version=version
             )
         except InvalidParamError as e:
             raise ValueError(str(e)) from None
-        except (AttributeError, ValueError):
-            if source is None:
-                kwargs = {
-                    "entity": cls.__get_name_with_module__(),
-                    "currently_used": True,
-                }
-                if organism is not None:
-                    if isinstance(organism, Record):
-                        kwargs["organism"] = organism.name
-                    else:
-                        kwargs["organism"] = organism
-                source = Source.filter(**kwargs).first()
-            return StaticReference(source)
 
     @classmethod
     def from_source(

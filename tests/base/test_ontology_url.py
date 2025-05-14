@@ -1,5 +1,9 @@
 import pytest
-from bionty.base._ontology_url import OntologyVersionNotFoundError, get_ontology_url
+from bionty.base._ontology_url import (
+    OntologyNotFoundError,
+    OntologyVersionNotFoundError,
+    get_ontology_url,
+)
 
 
 def test_get_ontology_url():
@@ -19,7 +23,7 @@ def test_get_ontology_url():
         get_ontology_url("OBA", "wrong_version")
 
     # Test with an unknown prefix
-    with pytest.raises(OntologyVersionNotFoundError):
+    with pytest.raises(OntologyNotFoundError):
         get_ontology_url("UNKNOWN_PREFIX")
 
     prefixes = [
