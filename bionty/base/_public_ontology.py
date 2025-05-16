@@ -46,8 +46,10 @@ class PublicOntology:
         include_id_prefixes: dict[str, list[str]] | None = None,
         include_rel: str | None = None,
         entity: str | None = None,
+        has_ols: bool = True,
     ):
         self._entity = entity or self.__class__.__name__
+        self._has_ols = has_ols
 
         # search in all available sources to get url
         try:
@@ -179,30 +181,32 @@ class PublicOntology:
         if row.empty:
             url = None
             ontology_version = None
-            # try to get the ontology url
-            if name and name not in ref_sources["name"].values:
-                from ._ontology_url import get_ontology_url
+            if self._has_ols:
+                # try to get the ontology url
+                if name and name not in ref_sources["name"].values:
+                    from ._ontology_url import get_ontology_url
 
-                try:
-                    url, ontology_version = get_ontology_url(
-                        prefix=name, version=version
-                    )
-                except Exception as e:
-                    raise ValueError(
-                        f"No source is available with {conditions}\n"
-                        "Check `.display_sources()`"
-                    ) from e
-            else:
-                meta_dict = {
-                    "name": name,
-                    "version": ontology_version,
-                    "organism": organism or "all",
-                    "url": url,
-                    "description": f"{name} Ontology",
-                    "source_website": f"https://www.ebi.ac.uk/ols/ontologies/{name}",
-                }
+                    try:
+                        url, ontology_version = get_ontology_url(
+                            prefix=name, version=version
+                        )
+                        meta_dict = {
+                            "name": name,
+                            "version": ontology_version,
+                            "organism": organism or "all",
+                            "url": url,
+                            "description": f"{name} Ontology",
+                            "source_website": f"https://www.ebi.ac.uk/ols/ontologies/{name}",
+                        }
 
-                return meta_dict
+                        return meta_dict
+                    except Exception:
+                        pass
+            if url is None:
+                raise ValueError(
+                    f"No source is available with {conditions}\n"
+                    "Check `.display_sources()`"
+                )
 
         # Build result and replace version placeholder in URL
         meta_dict = row.iloc[0].to_dict()
@@ -255,11 +259,7 @@ class PublicOntology:
 
         # ontology source not present in the sources.yaml file
         # these entities don't have ontology files
-        if not self._url and self._entity in [
-            "Gene",
-            "Protein",
-            "CellMarker",
-        ]:
+        if not self._url and not self._has_ols:
             self._local_ontology_path = None
 
     def _get_default_field(self, field: PublicOntologyField | str | None = None) -> str:
