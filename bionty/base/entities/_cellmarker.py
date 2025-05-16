@@ -26,4 +26,6 @@ class CellMarker(PublicOntology):
         version: Literal["2.0"] | None = None,
         **kwargs,
     ) -> None:
-        super().__init__(source=source, version=version, organism=organism, **kwargs)
+        super().__init__(
+            source=source, version=version, organism=organism, has_ols=False, **kwargs
+        )

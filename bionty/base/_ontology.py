@@ -72,7 +72,7 @@ class Ontology(pronto.Ontology):
                 return list(
                     filter(
                         lambda val: any(
-                            val.id.startswith(prefix)
+                            val.id.startswith(f"{prefix}:")
                             for prefix in include_id_prefixes[source]  # type: ignore
                         ),
                         terms,

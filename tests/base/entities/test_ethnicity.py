@@ -14,6 +14,7 @@ def test_hancestro_ethnicity_inspect_name():
     )
 
     et = bt_base.Ethnicity(source="hancestro")
+    df.index = et.standardize(df.index)
     inspected_df = et.inspect(df.index, field=et.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
