@@ -1,5 +1,6 @@
 import pandas as pd
 from lamin_utils import logger
+from lamindb_setup.core import deprecated
 
 from bionty.base.dev._handle_sources import LAMINDB_INSTANCE_LOADED
 
@@ -7,24 +8,25 @@ from ._settings import settings
 from .dev._handle_sources import parse_currently_used_sources
 
 
-# TODO: to be renamed to `display_sources`
-def display_available_sources() -> pd.DataFrame:
+def display_sources() -> pd.DataFrame:
     """Displays all available sources.
 
     Example::
 
         import bionty.base as bt_base
 
-        bt.display_available_sources()
+        bt.display_sources()
     """
     from .dev._handle_sources import parse_sources_yaml
 
     return parse_sources_yaml(settings.public_sources).set_index("entity")  # type: ignore
 
 
-# TODO: to be deprecated in favor of `display_available_sources`
-# This function naming is consistent with the `currently_used` field in Source SQL table
-# Do not rename!
+@deprecated("display_sources")
+def display_available_sources() -> pd.DataFrame:
+    return display_sources()
+
+
 def display_currently_used_sources(mute: bool = False) -> pd.DataFrame:
     """Displays all currently used sources.
 
