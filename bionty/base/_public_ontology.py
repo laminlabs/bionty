@@ -142,7 +142,7 @@ class PublicOntology:
     def _fetch_sources(self) -> None:
         from .dev._handle_sources import parse_sources_yaml
 
-        self._all_sources = parse_sources_yaml(url_pattern=True).set_index("entity")
+        self._all_sources = parse_sources_yaml(url_pattern=True)
 
     def _match_sources(
         self,
@@ -159,15 +159,24 @@ class PublicOntology:
         if name is not None:
             conditions["name"] = name
 
+        if "Gene" in self._entity or "Organism" in self._entity:
+            ref_sources = ref_sources[ref_sources["entity"] == self._entity]
+
         # If no parameters provided, use the first source
         if not conditions:
-            row = ref_sources.head(1)
+            rows = ref_sources
         else:
             # Filter dataframe using all conditions
             query = True
             for col, value in conditions.items():
                 query = query & (ref_sources[col] == value)
-            row = ref_sources[query].head(1)
+            rows = ref_sources[query]
+
+        # For ensembl, need to filter by entity
+        if rows.head(1)["name"].values[0] == "ensembl":
+            rows = rows[rows["entity"] == self._entity]
+
+        row = rows.head(1)
 
         # If no records matched
         if row.empty:
@@ -276,7 +285,7 @@ class PublicOntology:
                 localpath=self._local_parquet_path,
             )
         # If download is not possible, write a parquet file of the ontology df
-        if not self._url.endswith("parquet"):
+        if not self._url.endswith(".parquet"):
             if not self._local_parquet_path.exists():
                 pronto = self.to_pronto(mute=True)
                 if pronto is not None:
