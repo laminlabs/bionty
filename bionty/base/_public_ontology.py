@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import importlib
 import logging
-from typing import TYPE_CHECKING, Literal, Union, get_args, get_origin
+from typing import TYPE_CHECKING, Literal
 
 import numpy as np
 import pandas as pd
@@ -23,16 +23,12 @@ if TYPE_CHECKING:
 
 
 def encode_filenames(
-    organism: str, name: str, version: str, entity: PublicOntology | str
+    organism: str, name: str, version: str, entity: str
 ) -> tuple[str, str]:
     """Encode names of the cached files."""
-    if isinstance(entity, PublicOntology):
-        entity_name = entity.__class__.__name__
-    else:
-        entity_name = entity
-    parquet_filename = f"df_{organism}__{name}__{version}__{entity_name}.parquet"
-    ontology_filename = (
-        f"ontology_{organism}__{name}__{version}__{entity_name}".replace(" ", "_")
+    parquet_filename = f"df_{organism}__{name}__{version}__{entity}.parquet"
+    ontology_filename = f"ontology_{organism}__{name}__{version}__{entity}".replace(
+        " ", "_"
     )
 
     return parquet_filename, ontology_filename
@@ -49,10 +45,9 @@ class PublicOntology:
         *,
         include_id_prefixes: dict[str, list[str]] | None = None,
         include_rel: str | None = None,
+        entity: str | None = None,
     ):
-        self._validate_args("organism", organism)
-        self._validate_args("source", source)
-        self._validate_args("version", version)
+        self._entity = entity or self.__class__.__name__
 
         # search in all available sources to get url
         try:
@@ -96,31 +91,11 @@ class PublicOntology:
             except AttributeError:
                 pass
 
-    def _validate_args(self, param_name: str, value: str | None) -> None:
-        """Validates passed arguments by comparing them against the typehints (Literals)."""
-        if value is not None:
-            hint = self.__class__.__init__.__annotations__.get(param_name)
-            valid_values = ()
-
-            if get_origin(hint) is Union:  # Handles | None which returns Union
-                for arg in get_args(hint):
-                    if get_origin(arg) is Literal:
-                        valid_values = get_args(arg)
-                        break
-            elif get_origin(hint) is Literal:
-                valid_values = get_args(hint)
-
-            if valid_values and value not in valid_values:
-                quoted_values = [f"'{v}'" for v in valid_values]
-                raise InvalidParamError(
-                    f"Invalid {param_name}: '{value}'. Must be one of: {', '.join(quoted_values)}"
-                )
-
     def __repr__(self) -> str:
         # fmt: off
         representation = (
             f"PublicOntology\n"
-            f"Entity: {self.__class__.__name__}\n"
+            f"Entity: {self._entity}\n"
             f"Organism: {self.organism}\n"
             f"Source: {self.source}, {self.version}\n"
             f"#terms: {self._df.shape[0] if hasattr(self, '_df') else ''}\n\n"
@@ -146,7 +121,7 @@ class PublicOntology:
     @property
     def fields(self) -> set:
         """All PublicOntology entity fields."""
-        blacklist = {"include_id_prefixes"}
+        blacklist = {"include_id_prefixes", "include_rel"}
         fields = {
             field
             for field in vars(self)
@@ -157,22 +132,17 @@ class PublicOntology:
     def _download_ontology_file(self, localpath: Path, url: str) -> None:
         """Download ontology source file to _local_ontology_path."""
         if not localpath.exists():
-            logger.info(
-                f"downloading {self.__class__.__name__} ontology source file..."
-            )
+            logger.info(f"downloading {self._entity} ontology source file...")
+            if not url:
+                raise ValueError(
+                    f"No source url is available for {self._entity} ontology."
+                )
             self._url_download(url, localpath)
 
     def _fetch_sources(self) -> None:
         from .dev._handle_sources import parse_sources_yaml
 
-        def _subset_to_entity(df: pd.DataFrame, key: str):
-            return df.loc[[key]] if isinstance(df.loc[key], pd.Series) else df.loc[key]
-
-        # the url contains {version} placeholder
-        self._all_sources = _subset_to_entity(
-            parse_sources_yaml(url_pattern=True).set_index("entity"),
-            self.__class__.__name__,
-        )
+        self._all_sources = parse_sources_yaml(url_pattern=True).set_index("entity")
 
     def _match_sources(
         self,
@@ -181,43 +151,52 @@ class PublicOntology:
         version: str | None = None,
         organism: str | None = None,
     ) -> dict[str, str]:
-        """Match a source record base on passed organism, name and version."""
-        lc = locals()
+        """Match a source record based on passed organism, name and version."""
+        # Build filter conditions from non-None parameters
+        conditions = {}
+        if organism is not None:
+            conditions["organism"] = organism
+        if name is not None:
+            conditions["name"] = name
 
-        # kwargs that are not None
-        kwargs = {k: lc.get(k) for k in ["name", "organism"] if lc.get(k) is not None}
-        keys = list(kwargs.keys())
-
-        # if 1 or 2 kwargs are specified, find the best match in currently used sources
-        if (len(kwargs) == 1) or (len(kwargs) == 2):
-            cond = ref_sources[keys[0]] == kwargs.get(keys[0])
-            if len(kwargs) == 1:
-                row = ref_sources[cond].head(1)
-            else:
-                # len(kwargs) == 2
-                cond = cond.__and__(ref_sources[keys[1]] == kwargs.get(keys[1]))
-                row = ref_sources[cond].head(1)
+        # If no parameters provided, use the first source
+        if not conditions:
+            row = ref_sources.head(1)
         else:
-            # if no kwargs are passed, take the first row of this entity
-            if len(keys) == 0:
-                curr = ref_sources.head(1).to_dict(orient="records")[0]
-                kwargs = {k: v for k, v in curr.items() if k in ["organism", "name"]}
-            # if both organism and name are specified, match the record with them
-            # do the same for the kwargs that obtained from default source to obtain url
-            row = ref_sources[
-                (ref_sources["organism"] == kwargs["organism"])
-                & (ref_sources["name"] == kwargs["name"])
-            ].head(1)
+            # Filter dataframe using all conditions
+            query = True
+            for col, value in conditions.items():
+                query = query & (ref_sources[col] == value)
+            row = ref_sources[query].head(1)
 
-        # if no records matched the passed kwargs, raise error
-        if row.shape[0] == 0:
-            raise ValueError(
-                f"No source is available with {kwargs}\nCheck"
-                " `.display_available_sources()`"
-            )
+        # If no records matched
+        if row.empty:
+            url = None
+            ontology_version = None
+            # try to get the ontology url
+            if name and name not in ref_sources["name"].values:
+                from ._ontology_url import get_ontology_url
 
-        # replace {version} in the url with the passed version
-        meta_dict = row.to_dict(orient="records")[0]
+                url, ontology_version = get_ontology_url(prefix=name, version=version)
+            if url is None:
+                raise ValueError(
+                    f"No source is available with {conditions}\n"
+                    "Check `.display_available_sources()`"
+                )
+            else:
+                meta_dict = {
+                    "name": name,
+                    "version": ontology_version,
+                    "organism": organism or "all",
+                    "url": url,
+                    "description": f"{name} Ontology",
+                    "source_website": f"https://www.ebi.ac.uk/ols/ontologies/{name}",
+                }
+
+                return meta_dict
+
+        # Build result and replace version placeholder in URL
+        meta_dict = row.iloc[0].to_dict()
         ver = version or meta_dict.get("version")
         meta_dict["version"] = ver
         meta_dict["url"] = meta_dict["url"].replace("{version}", ver)
@@ -235,9 +214,7 @@ class PublicOntology:
 
         # If the file is not available, download from the url
         if not localpath.exists():
-            logger.info(
-                f"downloading {self.__class__.__name__} source file from: {url}"
-            )
+            logger.info(f"downloading {self._entity} source file from: {url}")
             _ = url_download(url, localpath)
 
     def _get_url(self):
@@ -252,7 +229,7 @@ class PublicOntology:
             organism=self.organism,
             name=self.source,
             version=self.version,
-            entity=self,
+            entity=self._entity,
         )
         self._local_parquet_path: Path = settings.dynamicdir / self._parquet_filename
 
@@ -268,7 +245,7 @@ class PublicOntology:
 
         # ontology source not present in the sources.yaml file
         # these entities don't have ontology files
-        if not self._url and self.__class__.__name__ in [
+        if not self._url and self._entity in [
             "Gene",
             "Protein",
             "CellMarker",
@@ -329,9 +306,7 @@ class PublicOntology:
 
         if self._local_ontology_path is None:
             if not mute:
-                logger.error(
-                    f"{self.__class__.__name__} has no Pronto Ontology object!"
-                )
+                logger.error(f"{self._entity} has no Pronto Ontology object!")
         else:
             self._download_ontology_file(
                 localpath=self._local_ontology_path,
@@ -352,7 +327,10 @@ class PublicOntology:
             bt_base.Gene().df()
         """
         if "ontology_id" in self._df.columns:
-            return self._df.set_index("ontology_id")
+            # Filter ontology_id by source prefix
+            return self._df[
+                self._df["ontology_id"].str.startswith(f"{self._source.upper()}:")
+            ].set_index("ontology_id")
         else:
             return self._df
 
@@ -512,27 +490,6 @@ class PublicOntology:
             synonyms_field=str(synonyms_field),
         )
 
-    def map_synonyms(
-        self,
-        values: Iterable,
-        *,
-        return_mapper: bool = False,
-        case_sensitive: bool = False,
-        keep: Literal["first", "last", False] = "first",
-        synonyms_field: PublicOntologyField | str = "synonyms",
-        field: PublicOntologyField | str | None = None,
-    ) -> dict[str, str] | list[str]:
-        """Maps input synonyms to standardized names."""
-        logger.warning("`map_synonyms()` is deprecated, use `.standardize()`!'")
-        return self.standardize(
-            values=values,
-            return_mapper=return_mapper,
-            case_sensitive=case_sensitive,
-            keep=keep,
-            synonyms_field=synonyms_field,
-            field=field,
-        )
-
     def lookup(self, field: PublicOntologyField | str | None = None) -> tuple:
         """An auto-complete object for a PublicOntology field.
 
@@ -555,7 +512,7 @@ class PublicOntology:
         return Lookup(
             df=self._df,
             field=self._get_default_field(field),
-            tuple_name=self.__class__.__name__,
+            tuple_name=self._entity,
             prefix="bt",
         ).lookup()
 

@@ -35,6 +35,7 @@ def test_get_source_record():
 def test_add_source():
     import wetlab as wl
 
+    # pass a source record from another entity
     with pytest.raises(ValueError):
         wl.Compound.import_source()
     chebi_source = bt.Source.get(name="chebi", version="2024-07-27")
@@ -46,8 +47,21 @@ def test_add_source():
     public_ontology = wl.Compound.public()
     assert public_ontology.__class__.__name__ == "StaticReference"
 
-    dron_source = bt.Source.get(entity="Drug", name="dron", version="2024-08-05")
-    new_source = wl.Compound.add_source(dron_source)
+    # pass a PublicOntology object
+    public_ontology_ct_2024_05_15 = bt.base.CellType(source="cl", version="2024-05-15")
+    new_source = bt.CellType.add_source(public_ontology_ct_2024_05_15)
+    assert new_source.entity == "bionty.CellType"
+    assert new_source.name == "cl"
+    assert new_source.version == "2024-05-15"
+    assert new_source.dataframe_artifact is not None
+
+    # pass a source name and/ or version
+    new_source = bt.Phenotype.add_source("oba")
+    assert new_source.entity == "bionty.Phenotype"
+    assert new_source.name == "oba"
+    assert bt.Phenotype.add_source("oba", version=new_source.version) == new_source
+    public_df = bt.Phenotype.public(source=new_source).df()
+    assert all(public_df.index.str.startswith("OBA:"))  # restrict_to_prefix
 
 
 def test_base_gene_register_source_in_lamindb():
@@ -151,12 +165,8 @@ def test_sync_public_sources():
     source_gene_latest = bt.Source.get(
         entity="bionty.Gene", name="ensembl", organism="mouse", currently_used=True
     )
-    public_ontology_gene_release_111 = bt.base.Gene(
+    source_gene_release_111 = bt.Gene.add_source(
         source="ensembl", organism="mouse", version="release-111"
-    )
-    bt.Gene.add_source(public_ontology_gene_release_111)
-    source_gene_release_111 = bt.Source.get(
-        entity="bionty.Gene", name="ensembl", version="release-111", organism="mouse"
     )
     source_gene_release_111.currently_used = True
     # .save() updates currently_used of others to False
@@ -164,9 +174,7 @@ def test_sync_public_sources():
     assert not bt.Source.get(source_gene_latest.uid).currently_used
 
     bt.Source.get(entity="bionty.CellType", name="cl", currently_used=True).delete()
-    public_ontology_ct_2024_05_15 = bt.base.CellType(source="cl", version="2024-05-15")
-    bt.CellType.add_source(public_ontology_ct_2024_05_15)
-    source_ct_2024_05_15 = bt.Source.get(name="cl", version="2024-05-15")
+    source_ct_2024_05_15 = bt.CellType.add_source(source="cl", version="2024-05-15")
     source_ct_2024_05_15.currently_used = True
     source_ct_2024_05_15.save()
 
@@ -197,10 +205,8 @@ def test_sync_public_sources():
 def test_import_source_update_records():
     import lamindb as ln
 
-    bt.CellType.add_source(bt.base.CellType(source="cl", version="2022-08-16"))
-    bt.CellType.add_source(bt.base.CellType(source="cl", version="2024-08-16"))
-    source1 = bt.Source.get(name="cl", version="2022-08-16")
-    source2 = bt.Source.get(name="cl", version="2024-08-16")
+    source1 = bt.CellType.add_source(source="cl", version="2022-08-16")
+    source2 = bt.CellType.add_source(source="cl", version="2024-08-16")
     bt.CellType.import_source(source=source1)
 
     artifact = ln.Artifact(
