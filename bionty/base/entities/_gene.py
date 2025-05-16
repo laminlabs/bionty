@@ -61,6 +61,7 @@ class Gene(PublicOntology):
             source=source,
             version=version,
             organism=organism,
+            has_ols=False,
             **kwargs,
         )
 

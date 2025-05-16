@@ -26,4 +26,6 @@ class Protein(PublicOntology):
         version: Literal["2023-02", "2023-03", "2024-03"] | None = None,
         **kwargs,
     ) -> None:
-        super().__init__(source=source, version=version, organism=organism, **kwargs)
+        super().__init__(
+            source=source, version=version, organism=organism, has_ols=False, **kwargs
+        )
