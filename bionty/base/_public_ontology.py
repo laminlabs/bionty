@@ -159,9 +159,6 @@ class PublicOntology:
         if name is not None:
             conditions["name"] = name
 
-        if "Gene" in self._entity or "Organism" in self._entity:
-            ref_sources = ref_sources[ref_sources["entity"] == self._entity]
-
         # If no parameters provided, use the first source
         if not conditions:
             rows = ref_sources
@@ -174,7 +171,7 @@ class PublicOntology:
 
         # For ensembl, need to filter by entity
         if not rows.empty and rows.head(1)["name"].values[0] == "ensembl":
-            rows = rows[rows["entity"] == self._entity]
+            rows = rows[rows["entity"] == self._entity.split(".")[-1]]
 
         row = rows.head(1)
 
@@ -186,12 +183,15 @@ class PublicOntology:
             if name and name not in ref_sources["name"].values:
                 from ._ontology_url import get_ontology_url
 
-                url, ontology_version = get_ontology_url(prefix=name, version=version)
-            if url is None:
-                raise ValueError(
-                    f"No source is available with {conditions}\n"
-                    "Check `.display_available_sources()`"
-                )
+                try:
+                    url, ontology_version = get_ontology_url(
+                        prefix=name, version=version
+                    )
+                except Exception as e:
+                    raise ValueError(
+                        f"No source is available with {conditions}\n"
+                        "Check `.display_sources()`"
+                    ) from e
             else:
                 meta_dict = {
                     "name": name,
