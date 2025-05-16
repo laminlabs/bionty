@@ -338,9 +338,14 @@ class PublicOntology:
         """
         if "ontology_id" in self._df.columns:
             # Filter ontology_id by source prefix
-            return self._df[
+            df = self._df[
                 self._df["ontology_id"].str.startswith(f"{self._source.upper()}:")
             ].set_index("ontology_id")
+            if df.shape[0] > 0:
+                # If the DataFrame is not empty, return it
+                return df
+            else:
+                return self._df.set_index("ontology_id")
         else:
             return self._df
 
