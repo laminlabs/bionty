@@ -1,9 +1,10 @@
 import bionty.base as bt_base
 import pytest
+from bionty.base._ontology_url import OntologyNotFoundError
 
 
 def test_unavailable_sources():
-    with pytest.raises(ValueError):
+    with pytest.raises(OntologyNotFoundError):
         bt_base.CellType(source="random")
 
 

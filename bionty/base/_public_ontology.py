@@ -173,7 +173,7 @@ class PublicOntology:
             rows = ref_sources[query]
 
         # For ensembl, need to filter by entity
-        if rows.head(1)["name"].values[0] == "ensembl":
+        if not rows.empty and rows.head(1)["name"].values[0] == "ensembl":
             rows = rows[rows["entity"] == self._entity]
 
         row = rows.head(1)
@@ -209,6 +209,7 @@ class PublicOntology:
         ver = version or meta_dict.get("version")
         meta_dict["version"] = ver
         meta_dict["url"] = meta_dict["url"].replace("{version}", ver)
+        meta_dict.pop("entity", None)  # remove entity from the dict
         return meta_dict
 
     @check_dynamicdir_exists
