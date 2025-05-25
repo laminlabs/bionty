@@ -66,7 +66,7 @@ def source(input_id: str | None = None):
 
 def encode_uid(registry: type, kwargs: dict):
     """The type passed needs to be a subclass of BioRecord."""
-    from lamindb.models import DBRecord
+    from lamindb.models import SQLRecord
 
     from . import ids
 
@@ -81,7 +81,7 @@ def encode_uid(registry: type, kwargs: dict):
                 from .models import Organism
 
                 organism = Organism.get(kwargs.get("organism_id")).name
-        elif isinstance(organism, DBRecord):
+        elif isinstance(organism, SQLRecord):
             organism = organism.name
     else:
         organism = ""

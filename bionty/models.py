@@ -18,13 +18,13 @@ from lamindb.base.fields import (
 from lamindb.errors import DoesNotExist, InvalidArgument
 from lamindb.models import (
     Artifact,
-    BaseDBRecord,
+    BaseSQLRecord,
     CanCurate,
-    DBRecord,
     Feature,
     HasParents,
     IsLink,
     Schema,
+    SQLRecord,
     TracksRun,
     TracksUpdates,
 )
@@ -68,7 +68,7 @@ def pass_to_super(cls_method):
     return wrapper
 
 
-class Source(DBRecord, TracksRun, TracksUpdates):
+class Source(SQLRecord, TracksRun, TracksUpdates):
     """Versions of ontology sources.
 
     .. warning::
@@ -76,7 +76,7 @@ class Source(DBRecord, TracksRun, TracksUpdates):
         Do not modify the records unless you know what you are doing!
     """
 
-    class Meta(DBRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
+    class Meta(SQLRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
         unique_together = (("entity", "name", "organism", "version"),)
 
@@ -153,10 +153,10 @@ class Source(DBRecord, TracksRun, TracksUpdates):
         return self
 
 
-class BioRecord(DBRecord, HasParents, CanCurate):
-    """Base DBRecord of bionty.
+class BioRecord(SQLRecord, HasParents, CanCurate):
+    """Base SQLRecord of bionty.
 
-    BioRecord inherits all methods from :class:`~lamindb.models.DBRecord` and provides additional methods
+    BioRecord inherits all methods from :class:`~lamindb.models.SQLRecord` and provides additional methods
     including :meth:`~bionty.core.BioRecord.public` and :meth:`~bionty.core.BioRecord.from_source`.
 
     Notes:
@@ -238,7 +238,7 @@ class BioRecord(DBRecord, HasParents, CanCurate):
         source: Source | None = None,
         update_records: bool = False,
         *,
-        organism: str | DBRecord | None = None,
+        organism: str | SQLRecord | None = None,
         ignore_conflicts: bool = True,
     ):
         """Bulk save records from a Bionty ontology.
@@ -385,7 +385,7 @@ class BioRecord(DBRecord, HasParents, CanCurate):
     @classmethod
     def public(
         cls,
-        organism: str | DBRecord | None = None,
+        organism: str | SQLRecord | None = None,
         source: Source | None = None,
     ) -> PublicOntology | StaticReference:
         """The corresponding :class:`docs:bionty.base.PublicOntology` object.
@@ -451,7 +451,7 @@ class BioRecord(DBRecord, HasParents, CanCurate):
                     "currently_used": True,
                 }
                 if organism is not None:
-                    if isinstance(organism, DBRecord):
+                    if isinstance(organism, SQLRecord):
                         kwargs["organism"] = organism.name
                     else:
                         kwargs["organism"] = organism
@@ -2009,7 +2009,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         pass
 
 
-class SchemaGene(BaseDBRecord, IsLink):
+class SchemaGene(BaseSQLRecord, IsLink):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
     schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="links_gene")
@@ -2019,7 +2019,7 @@ class SchemaGene(BaseDBRecord, IsLink):
         unique_together = ("schema", "gene")
 
 
-class SchemaProtein(BaseDBRecord, IsLink):
+class SchemaProtein(BaseSQLRecord, IsLink):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
     schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="links_protein")
@@ -2029,7 +2029,7 @@ class SchemaProtein(BaseDBRecord, IsLink):
         unique_together = ("schema", "protein")
 
 
-class SchemaCellMarker(BaseDBRecord, IsLink):
+class SchemaCellMarker(BaseSQLRecord, IsLink):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
     schema: Schema = ForeignKey(
@@ -2043,7 +2043,7 @@ class SchemaCellMarker(BaseDBRecord, IsLink):
         unique_together = ("schema", "cellmarker")
 
 
-class SchemaPathway(BaseDBRecord, IsLink):
+class SchemaPathway(BaseSQLRecord, IsLink):
     id: int = models.BigAutoField(primary_key=True)
     # follow the .lower() convention in link models
     schema: Schema = ForeignKey("lamindb.Schema", CASCADE, related_name="links_pathway")
@@ -2053,7 +2053,7 @@ class SchemaPathway(BaseDBRecord, IsLink):
         unique_together = ("schema", "pathway")
 
 
-class ArtifactOrganism(BaseDBRecord, IsLink, TracksRun):
+class ArtifactOrganism(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_organism")
     organism: Organism = ForeignKey("Organism", PROTECT, related_name="links_artifact")
@@ -2067,7 +2067,7 @@ class ArtifactOrganism(BaseDBRecord, IsLink, TracksRun):
         unique_together = ("artifact", "organism", "feature")
 
 
-class ArtifactGene(BaseDBRecord, IsLink, TracksRun):
+class ArtifactGene(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_gene")
     gene: Gene = ForeignKey("Gene", PROTECT, related_name="links_artifact")
@@ -2081,7 +2081,7 @@ class ArtifactGene(BaseDBRecord, IsLink, TracksRun):
         unique_together = ("artifact", "gene", "feature")
 
 
-class ArtifactProtein(BaseDBRecord, IsLink, TracksRun):
+class ArtifactProtein(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_protein")
     protein: Protein = ForeignKey("Protein", PROTECT, related_name="links_artifact")
@@ -2095,7 +2095,7 @@ class ArtifactProtein(BaseDBRecord, IsLink, TracksRun):
         unique_together = ("artifact", "protein", "feature")
 
 
-class ArtifactCellMarker(BaseDBRecord, IsLink, TracksRun):
+class ArtifactCellMarker(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_cell_marker")
     # follow the .lower() convention in link models
@@ -2116,7 +2116,7 @@ class ArtifactCellMarker(BaseDBRecord, IsLink, TracksRun):
         unique_together = ("artifact", "cellmarker", "feature")
 
 
-class ArtifactTissue(BaseDBRecord, IsLink, TracksRun):
+class ArtifactTissue(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_tissue")
     tissue: Tissue = ForeignKey("Tissue", PROTECT, related_name="links_artifact")
@@ -2130,7 +2130,7 @@ class ArtifactTissue(BaseDBRecord, IsLink, TracksRun):
         unique_together = ("artifact", "tissue", "feature")
 
 
-class ArtifactCellType(BaseDBRecord, IsLink, TracksRun):
+class ArtifactCellType(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_cell_type")
     # follow the .lower() convention in link models
@@ -2145,7 +2145,7 @@ class ArtifactCellType(BaseDBRecord, IsLink, TracksRun):
         unique_together = ("artifact", "celltype", "feature")
 
 
-class ArtifactDisease(BaseDBRecord, IsLink, TracksRun):
+class ArtifactDisease(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_disease")
     disease: Disease = ForeignKey("Disease", PROTECT, related_name="links_artifact")
@@ -2159,7 +2159,7 @@ class ArtifactDisease(BaseDBRecord, IsLink, TracksRun):
         unique_together = ("artifact", "disease", "feature")
 
 
-class ArtifactCellLine(BaseDBRecord, IsLink, TracksRun):
+class ArtifactCellLine(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_cell_line")
     # follow the .lower() convention in link models
@@ -2174,7 +2174,7 @@ class ArtifactCellLine(BaseDBRecord, IsLink, TracksRun):
         unique_together = ("artifact", "cellline", "feature")
 
 
-class ArtifactPhenotype(BaseDBRecord, IsLink, TracksRun):
+class ArtifactPhenotype(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_phenotype")
     phenotype: Phenotype = ForeignKey(
@@ -2194,7 +2194,7 @@ class ArtifactPhenotype(BaseDBRecord, IsLink, TracksRun):
         unique_together = ("artifact", "phenotype", "feature")
 
 
-class ArtifactPathway(BaseDBRecord, IsLink, TracksRun):
+class ArtifactPathway(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_pathway")
     pathway: Pathway = ForeignKey("Pathway", PROTECT, related_name="links_artifact")
@@ -2208,7 +2208,7 @@ class ArtifactPathway(BaseDBRecord, IsLink, TracksRun):
         unique_together = ("artifact", "pathway", "feature")
 
 
-class ArtifactExperimentalFactor(BaseDBRecord, IsLink, TracksRun):
+class ArtifactExperimentalFactor(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(
         Artifact, CASCADE, related_name="links_experimental_factor"
@@ -2230,7 +2230,7 @@ class ArtifactExperimentalFactor(BaseDBRecord, IsLink, TracksRun):
         unique_together = ("artifact", "experimentalfactor", "feature")
 
 
-class ArtifactDevelopmentalStage(BaseDBRecord, IsLink, TracksRun):
+class ArtifactDevelopmentalStage(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(
         Artifact, CASCADE, related_name="links_developmental_stage"
@@ -2253,7 +2253,7 @@ class ArtifactDevelopmentalStage(BaseDBRecord, IsLink, TracksRun):
         unique_together = ("artifact", "developmentalstage", "feature")
 
 
-class ArtifactEthnicity(BaseDBRecord, IsLink, TracksRun):
+class ArtifactEthnicity(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_ethnicity")
     ethnicity: Ethnicity = ForeignKey(
