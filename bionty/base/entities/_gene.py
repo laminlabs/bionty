@@ -61,6 +61,7 @@ class Gene(PublicOntology):
             source=source,
             version=version,
             organism=organism,
+            ols_supported=False,
             **kwargs,
         )
 
@@ -74,6 +75,7 @@ class Gene(PublicOntology):
                 ).download_df()
                 df.to_parquet(self._local_parquet_path)
             return df
+        return super()._load_df()
 
     # TODO: generalize this to all sources
     def register_source_in_lamindb(self):

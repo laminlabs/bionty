@@ -1,341 +1,203 @@
-version: "0.2.6"
+version: "0.3.0"
 Organism:
   ensembl:
     vertebrates:
-      release-112:
-        url: https://ftp.ensembl.org/pub/release-112/species_EnsemblVertebrates.txt
-      release-111:
-        url: https://ftp.ensembl.org/pub/release-111/species_EnsemblVertebrates.txt
-      release-110:
-        url: https://ftp.ensembl.org/pub/release-110/species_EnsemblVertebrates.txt
-      release-109:
-        url: https://ftp.ensembl.org/pub/release-109/species_EnsemblVertebrates.txt
-      release-108:
-        url: https://ftp.ensembl.org/pub/release-108/species_EnsemblVertebrates.txt
+      latest-version: release-112
+      url: https://ftp.ensembl.org/pub/{version}/species_EnsemblVertebrates.txt
     bacteria:
-      release-57:
-        url: https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/release-57/species_EnsemblBacteria.txt
+      latest-version: release-57
+      url: https://ftp.ensemblgenomes.ebi.ac.uk/pub/bacteria/{version}/species_EnsemblBacteria.txt
     fungi:
-      release-57:
-        url: http://ftp.ensemblgenomes.org/pub/fungi/release-57/species_EnsemblFungi.txt
+      latest-version: release-57
+      url: https://ftp.ensemblgenomes.ebi.ac.uk/pub/fungi/{version}/species_EnsemblFungi.txt
     metazoa:
-      release-57:
-        url: http://ftp.ensemblgenomes.org/pub/metazoa/release-57/species_EnsemblMetazoa.txt
+      latest-version: release-57
+      url: https://ftp.ensemblgenomes.ebi.ac.uk/pub/metazoa/{version}/species_EnsemblMetazoa.txt
     plants:
-      release-57:
-        url: https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-57/species_EnsemblPlants.txt
+      latest-version: release-57
+      url: https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/{version}/species_EnsemblPlants.txt
     name: Ensembl
     website: https://www.ensembl.org
   ncbitaxon:
     all:
-      2023-06-20:
-        url: s3://bionty-assets/df_all__ncbitaxon__2023-06-20__Organism.parquet
+      latest-version: 2023-06-20
+      url: http://purl.obolibrary.org/obo/ncbitaxon/{version}/ncbitaxon.owl
     name: NCBItaxon Ontology
     website: https://github.com/obophenotype/ncbitaxon
 Gene:
   ensembl:
     human:
-      release-112:
-        url: s3://bionty-assets/df_human__ensembl__release-112__Gene.parquet
-      release-111:
-        url: s3://bionty-assets/df_human__ensembl__release-111__Gene.parquet
-      release-110:
-        url: s3://bionty-assets/df_human__ensembl__release-110__Gene.parquet
-      release-109:
-        url: s3://bionty-assets/human_ensembl_release-109_Gene_lookup.parquet
+      latest-version: release-112
+      url: s3://bionty-assets/df_human__ensembl__{version}__Gene.parquet
     mouse:
-      release-112:
-        url: s3://bionty-assets/df_mouse__ensembl__release-112__Gene.parquet
-      release-111:
-        url: s3://bionty-assets/df_mouse__ensembl__release-111__Gene.parquet
-      release-110:
-        url: s3://bionty-assets/df_mouse__ensembl__release-110__Gene.parquet
-      release-109:
-        url: s3://bionty-assets/mouse_ensembl_release-109_Gene_lookup.parquet
+      latest-version: release-112
+      url: s3://bionty-assets/df_mouse__ensembl__{version}__Gene.parquet
     saccharomyces cerevisiae:
-      release-112:
-        url: s3://bionty-assets/df_saccharomyces cerevisiae__ensembl__release-112__Gene.parquet
-      release-111:
-        url: s3://bionty-assets/df_saccharomyces cerevisiae__ensembl__release-111__Gene.parquet
-      release-110:
-        url: s3://bionty-assets/df_saccharomyces cerevisiae__ensembl__release-110__Gene.parquet
+      latest-version: release-112
+      url: s3://bionty-assets/df_saccharomyces cerevisiae__ensembl__{version}__Gene.parquet
     name: Ensembl
     website: https://www.ensembl.org
 Protein:
   uniprot:
     human:
-      2024-03:
-        url: s3://bionty-assets/df_human__uniprot__2024-03__Protein.parquet
-      2023-03:
-        url: s3://bionty-assets/df_human__uniprot__2023-03__Protein.parquet
-      2023-02:
-        url: s3://bionty-assets/human_uniprot_2023-02_Protein_lookup.parquet
+      latest-version: 2024-03
+      url: s3://bionty-assets/df_human__uniprot__{version}__Protein.parquet
     mouse:
-      2024-03:
-        url: s3://bionty-assets/df_mouse__uniprot__2024-03__Protein.parquet
-      2023-03:
-        url: s3://bionty-assets/df_mouse__uniprot__2023-03__Protein.parquet
-      2023-02:
-        url: s3://bionty-assets/mouse_uniprot_2023-02_Protein_lookup.parquet
+      latest-version: 2024-03
+      url: s3://bionty-assets/df_mouse__uniprot__{version}__Protein.parquet
     name: Uniprot
     website: https://www.uniprot.org
 CellMarker:
   cellmarker:
     human:
-      2.0:
-        url: s3://bionty-assets/human_cellmarker_2.0_CellMarker_lookup.parquet
+      latest-version: 2.0
+      url: s3://bionty-assets/human_cellmarker_{version}_CellMarker_lookup.parquet
     mouse:
-      2.0:
-        url: s3://bionty-assets/mouse_cellmarker_2.0_CellMarker_lookup.parquet
+      latest-version: 2.0
+      url: s3://bionty-assets/mouse_cellmarker_{version}_CellMarker_lookup.parquet
     name: CellMarker
     website: http://bio-bigdata.hrbmu.edu.cn/CellMarker
 CellLine:
   clo:
     all:
-      2022-03-21:
-        url: https://data.bioontology.org/ontologies/CLO/submissions/65/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
+      latest-version: 2022-03-21
+      url: s3://bionty-assets/df_all__clo__{version}__CellLine.parquet
     name: Cell Line Ontology
     website: https://bioportal.bioontology.org/ontologies/CLO
   depmap:
     all:
-      2024-Q2:
-        url: s3://bionty-assets/df_all__depmap__2024-Q2__CellLine.parquet
+      latest-version: 2024-Q2
+      url: s3://bionty-assets/df_all__depmap__{version}__CellLine.parquet
     name: Dependency Map
     website: https://depmap.org/portal/
 CellType:
   cl:
     all:
-      2024-08-16:
-        url: http://purl.obolibrary.org/obo/cl/releases/2024-08-16/cl.owl
-      2024-05-15:
-        url: http://purl.obolibrary.org/obo/cl/releases/2024-05-15/cl.owl
-      2024-04-05:
-        url: http://purl.obolibrary.org/obo/cl/releases/2024-04-05/cl.owl
-      2024-02-13:
-        url: http://purl.obolibrary.org/obo/cl/releases/2024-02-13/cl.owl
-      2024-01-04:
-        url: http://purl.obolibrary.org/obo/cl/releases/2024-01-04/cl.owl
-      2023-08-24:
-        url: http://purl.obolibrary.org/obo/cl/releases/2023-08-24/cl.owl
-      2023-04-20:
-        url: http://purl.obolibrary.org/obo/cl/releases/2023-04-20/cl-base.owl
-      2023-02-15:
-        url: http://purl.obolibrary.org/obo/cl/releases/2023-02-15/cl-base.owl
-      2022-08-16:
-        url: http://purl.obolibrary.org/obo/cl/releases/2022-08-16/cl.owl
+      latest-version: 2024-08-16
+      url: http://purl.obolibrary.org/obo/cl/releases/{version}/cl.owl
     name: Cell Ontology
     website: https://obophenotype.github.io/cell-ontology
 Tissue:
   uberon:
     all:
-      2024-08-07:
-        url: http://purl.obolibrary.org/obo/uberon/releases/2024-08-07/uberon.owl
-      2024-05-13:
-        url: http://purl.obolibrary.org/obo/uberon/releases/2024-05-13/uberon.owl
-      2024-03-22:
-        url: http://purl.obolibrary.org/obo/uberon/releases/2024-03-22/uberon.owl
-      2024-02-20:
-        url: http://purl.obolibrary.org/obo/uberon/releases/2024-02-20/uberon.owl
-      2024-01-18:
-        url: http://purl.obolibrary.org/obo/uberon/releases/2024-01-18/uberon.owl
-      2023-09-05:
-        url: http://purl.obolibrary.org/obo/uberon/releases/2023-09-05/uberon.owl
-      2023-04-19:
-        url: http://purl.obolibrary.org/obo/uberon/releases/2023-04-19/uberon.owl
-      2023-02-14:
-        url: http://purl.obolibrary.org/obo/uberon/releases/2023-02-14/uberon.owl
-      2022-08-19:
-        url: http://purl.obolibrary.org/obo/uberon/releases/2022-08-19/uberon.owl
+      latest-version: 2024-08-07
+      url: http://purl.obolibrary.org/obo/uberon/releases/{version}/uberon.owl
     name: Uberon multi-species anatomy ontology
     website: http://obophenotype.github.io/uberon
 Disease:
   mondo:
     all:
-      2024-08-06:
-        url: http://purl.obolibrary.org/obo/mondo/releases/2024-08-06/mondo.owl
-      2024-06-04:
-        url: http://purl.obolibrary.org/obo/mondo/releases/2024-06-04/mondo.owl
-      2024-05-08:
-        url: http://purl.obolibrary.org/obo/mondo/releases/2024-05-08/mondo.owl
-      2024-02-06:
-        url: http://purl.obolibrary.org/obo/mondo/releases/2024-02-06/mondo.owl
-      2024-01-03:
-        url: http://purl.obolibrary.org/obo/mondo/releases/2024-01-03/mondo.owl
-      2023-08-02:
-        url: http://purl.obolibrary.org/obo/mondo/releases/2023-08-02/mondo.owl
-      2023-04-04:
-        url: http://purl.obolibrary.org/obo/mondo/releases/2023-04-04/mondo.owl
-      2023-02-06:
-        url: http://purl.obolibrary.org/obo/mondo/releases/2023-02-06/mondo.owl
-      2022-10-11:
-        url: http://purl.obolibrary.org/obo/mondo/releases/2022-10-11/mondo.owl
+      latest-version: 2024-08-06
+      url: http://purl.obolibrary.org/obo/mondo/releases/{version}/mondo.owl
     name: Mondo Disease Ontology
     website: https://mondo.monarchinitiative.org
   doid:
     human:
-      2024-05-29:
-        url: http://purl.obolibrary.org/obo/doid/releases/2024-05-29/doid.obo
-      2024-01-31:
-        url: http://purl.obolibrary.org/obo/doid/releases/2024-01-31/doid.obo
-      2023-03-31:
-        url: http://purl.obolibrary.org/obo/doid/releases/2023-03-31/doid.obo
-      2023-01-30:
-        url: http://purl.obolibrary.org/obo/doid/releases/2023-01-30/doid.obo
+      latest-version: 2024-05-29
+      url: http://purl.obolibrary.org/obo/doid/releases/{version}/doid.obo
     name: Human Disease Ontology
     website: https://disease-ontology.org
   icd:
     human:
-      icd-11-2023:
-        url: s3://bionty-assets/df_human__icd__icd-11-2023__Disease.parquet
-      icd-10-2024:
-        url: s3://bionty-assets/df_human__icd__icd-10-2024__Disease.parquet
-      icd-10-2020:
-        url: s3://bionty-assets/df_human__icd__icd-10-2020__Disease.parquet
-      icd-9-2011:
-        url: s3://bionty-assets/df_human__icd__icd-9-2011__Disease.parquet
+      latest-version: icd-11-2023
+      url: s3://bionty-assets/df_human__icd__{version}__Disease.parquet
     name: International Classification of Diseases (ICD)
     website: https://www.who.int/standards/classifications/classification-of-diseases
 ExperimentalFactor:
   efo:
     all:
-      3.70.0:
-        url: http://www.ebi.ac.uk/efo/releases/v3.70.0/efo.owl # Manually fixed following https://github.com/EBISPOT/efo/issues/2264#issuecomment-2357942127
-      3.69.0:
-        url: http://www.ebi.ac.uk/efo/releases/v3.69.0/efo.owl # Manually fixed following https://github.com/EBISPOT/efo/issues/2264#issuecomment-2357942127
-      3.66.0:
-        url: http://www.ebi.ac.uk/efo/releases/v3.66.0/efo.owl
-      3.65.0:
-        url: http://www.ebi.ac.uk/efo/releases/v3.65.0/efo.owl
-      3.63.0:
-        url: http://www.ebi.ac.uk/efo/releases/v3.63.0/efo.owl
-      3.62.0:
-        url: http://www.ebi.ac.uk/efo/releases/v3.62.0/efo.owl
-      3.57.0:
-        url: http://www.ebi.ac.uk/efo/releases/v3.57.0/efo.owl
-      3.48.0:
-        url: http://www.ebi.ac.uk/efo/releases/v3.48.0/efo.owl
+      latest-version: 3.70.0
+      url: http://www.ebi.ac.uk/efo/releases/v{version}/efo.owl
     name: The Experimental Factor Ontology
     website: https://bioportal.bioontology.org/ontologies/EFO
 Phenotype:
   pato:
     all:
-      2024-03-28:
-        url: http://purl.obolibrary.org/obo/pato/releases/2024-03-28/pato.owl
-      2023-05-18:
-        url: http://purl.obolibrary.org/obo/pato/releases/2023-05-18/pato.owl
+      latest-version: 2024-03-28
+      url: http://purl.obolibrary.org/obo/pato/releases/{version}/pato.owl
     name: Phenotype And Trait Ontology
     website: https://github.com/pato-ontology/pato
   hp:
     human:
-      2024-04-26:
-        url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2024-04-26/hp.owl
-      2024-03-06:
-        url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2024-03-06/hp.owl
-      2023-06-17:
-        url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2023-06-17/hp.owl
-      2023-04-05:
-        url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2023-04-05/hp.owl
-      2023-01-27:
-        url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v2023-01-27/hp.owl
+      latest-version: 2024-04-26
+      url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v{version}/hp.owl
     name: Human Phenotype Ontology
     website: https://hpo.jax.org
   mp:
     mammalian:
-      2024-06-18:
-        url: https://github.com/mgijax/mammalian-phenotype-ontology/releases/download/v2024-06-18/mp.owl
-      2024-02-07:
-        url: https://github.com/mgijax/mammalian-phenotype-ontology/releases/download/v2024-02-07/mp.owl
-      2023-05-31:
-        url: https://github.com/mgijax/mammalian-phenotype-ontology/releases/download/v2023-05-31/mp.owl
+      latest-version: 2024-06-18
+      url: https://github.com/mgijax/mammalian-phenotype-ontology/releases/download/v{version}/mp.owl
     name: Mammalian Phenotype Ontology
     website: https://github.com/mgijax/mammalian-phenotype-ontology
   zp:
     zebrafish:
-      2024-04-18:
-        url: https://github.com/obophenotype/zebrafish-phenotype-ontology/releases/download/v2024-04-18/zp.owl
-      2024-01-22:
-        url: https://github.com/obophenotype/zebrafish-phenotype-ontology/releases/download/v2024-01-22/zp.owl
-      2022-12-17:
-        url: https://github.com/obophenotype/zebrafish-phenotype-ontology/releases/download/v2022-12-17/zp.owl
+      latest-version: 2024-04-18
+      url: https://github.com/obophenotype/zebrafish-phenotype-ontology/releases/download/v{version}/zp.owl
     name: Zebrafish Phenotype Ontology
     website: https://github.com/obophenotype/zebrafish-phenotype-ontology
   phe:
     human:
-      1.2:
-        url: s3://bionty-assets/df_human__phe__1.2__Phenotype.parquet
+      latest-version: 1.2
+      url: s3://bionty-assets/df_human__phe__{version}__Phenotype.parquet
     name: Phecodes ICD10 map
     website: https://phewascatalog.org/phecodes_icd10
 Pathway:
   go:
     all:
-      2024-06-17:
-        url: https://data.bioontology.org/ontologies/GO/submissions/1824/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
-      2023-05-10:
-        url: https://data.bioontology.org/ontologies/GO/submissions/1814/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
+      latest-version: 2024-06-17
+      url: http://purl.obolibrary.org/obo/go/releases/{version}/extensions/go-plus.owl
     name: Gene Ontology
     website: http://geneontology.org
   pw:
     all:
-      7.84:
-        url: https://data.bioontology.org/ontologies/PW/submissions/114/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
-      7.82:
-        url: https://data.bioontology.org/ontologies/PW/submissions/112/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
-      7.79:
-        url: https://data.bioontology.org/ontologies/PW/submissions/109/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
+      latest-version: 7.84
+      url: http://purl.obolibrary.org/obo/pw/{version}/pw.owl
     name: Pathway Ontology
     website: https://www.ebi.ac.uk/ols/ontologies/pw
 BFXPipeline:
   lamin:
     all:
-      1.0.0:
-        url: s3://bionty-assets/df_all__lamin__1.0.0__BFXpipeline.parquet
+      latest-version: 1.0.0
+      url: s3://bionty-assets/df_all__lamin__{version}__BFXpipeline.parquet
     name: Bioinformatics Pipeline
     website: https://lamin.ai
 Drug:
   dron:
     all:
-      2024-08-05:
-        url: https://data.bioontology.org/ontologies/DRON/submissions/24/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
-      2024-03-02:
-        url: https://data.bioontology.org/ontologies/DRON/submissions/22/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
-      2023-03-10:
-        url: https://data.bioontology.org/ontologies/DRON/submissions/17/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb
+      latest-version: 2024-08-05
+      url: http://purl.obolibrary.org/obo/dron/releases/{version}/dron.owl
     name: Drug Ontology
     website: https://bioportal.bioontology.org/ontologies/DRON
   chebi:
     all:
-      2024-07-27:
-        url: s3://bionty-assets/df_all__chebi__2024-07-27__Drug.parquet
+      latest-version: 2024-07-27
+      url: s3://bionty-assets/df_all__chebi__{version}__Drug.parquet
     name: Chemical Entities of Biological Interest
     website: https://www.ebi.ac.uk/chebi/
 DevelopmentalStage:
   hsapdv:
     human:
-      2024-05-28:
-        url: https://github.com/obophenotype/developmental-stage-ontologies/releases/download/v2024-05-28/hsapdv.owl
-      2020-03-10:
-        url: http://aber-owl.net/media/ontologies/HSAPDV/11/hsapdv.owl
+      latest-version: 2024-05-28
+      url: https://github.com/obophenotype/developmental-stage-ontologies/releases/download/v{version}/hsapdv.owl
     name: Human Developmental Stages
     website: https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv
   mmusdv:
     mouse:
-      2024-05-28:
-        url: https://github.com/obophenotype/developmental-stage-ontologies/releases/download/v2024-05-28/mmusdv.owl
-      2020-03-10:
-        url: http://aber-owl.net/media/ontologies/MMUSDV/9/mmusdv.owl
+      latest-version: 2024-05-28
+      url: https://github.com/obophenotype/developmental-stage-ontologies/releases/download/v{version}/mmusdv.owl
     name: Mouse Developmental Stages
     website: https://github.com/obophenotype/developmental-stage-ontologies/wiki/MmusDv
 Ethnicity:
   hancestro:
     human:
-      3.0:
-        url: https://github.com/EBISPOT/hancestro/raw/3.0/hancestro-base.owl
+      latest-version: 2025-04-01
+      url: http://purl.obolibrary.org/obo/hancestro/releases/{version}/hancestro.owl
     name: Human Ancestry Ontology
     website: https://github.com/EBISPOT/hancestro
 BioSample:
   ncbi:
     all:
-      2023-09:
-        url: s3://bionty-assets/df_all__ncbi__2023-09__BioSample.parquet
+      latest-version: 2023-09
+      url: s3://bionty-assets/df_all__ncbi__{version}__BioSample.parquet
     name: NCBI BioSample attributes
     website: https://www.ncbi.nlm.nih.gov/biosample/docs/attributes

@@ -20,3 +20,9 @@ def test_cl_celltype_inspect_name():
     expected_series = pd.Series([True, True, True, True, False])
 
     assert inspect.equals(expected_series)
+
+
+def test_cl_celltype_version():
+    # old version, not in s3://bionty-assets
+    ct = bt_base.CellType(version="2020-05-20")
+    assert ct.df().shape[0] == 2355

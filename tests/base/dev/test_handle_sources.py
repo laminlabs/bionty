@@ -11,35 +11,31 @@ from bionty.base.dev._handle_sources import (
 @pytest.fixture(scope="function")
 def versions_yaml_replica():
     input_file_content = """
-    version: "0.2.0"
+    version: "0.3.0"
     Organism:
       ensembl:
-        all:
-          release-108:
-            url: https://ftp.ensembl.org/pub/release-108/species_EnsemblVertebrates.txt
+        vertebrates:
+          latest-version: release-112
+          url: https://ftp.ensembl.org/pub/{version}/species_EnsemblVertebrates.txt
         name: Ensembl
         website: https://www.ensembl.org/index.html
     Gene:
       ensembl:
         human:
-          release-108:
-            url: https://ftp.ensembl.org/pub/release-108/mysql/homo_sapiens_core_108_38/
-          release-107:
-            url: https://ftp.ensembl.org/pub/release-107/mysql/homo_sapiens_core_107_38/
+          latest-version: release-112
+          url: s3://bionty-assets/df_human__ensembl__{version}__Gene.parquet
         mouse:
-          release-108:
-            url: https://ftp.ensembl.org/pub/release-108/mysql/mus_musculus_core_108_39/
+          latest-version: release-112
+          url: s3://bionty-assets/df_mouse__ensembl__{version}__Gene.parquet
         name: Ensembl
         website: https://www.ensembl.org/index.html
     CellType:
       cl:
-        name: Cell Ontology
-        website: https://obophenotype.github.io/cell-ontology/
         all:
-          2023-02-15:
-            url: http://purl.obolibrary.org/obo/cl/releases/2023-02-15/cl-base.owl
-          2022-08-16:
-            url: http://purl.obolibrary.org/obo/cl/releases/2022-08-16/cl.owl
+          latest-version: 2024-08-16
+          url: http://purl.obolibrary.org/obo/cl/releases/{version}/cl.owl
+        name: Cell Ontology
+        website: https://obophenotype.github.io/cell-ontology
     """
     with tempfile.NamedTemporaryFile(mode="w+", delete=False) as f:
         f.write(input_file_content)
@@ -51,28 +47,20 @@ def versions_yaml_replica():
 
 def test_parse_versions_yaml(versions_yaml_replica):
     parsed_df = parse_sources_yaml(versions_yaml_replica)
-    assert parsed_df.shape == (6, 7)
-    assert all(
-        parsed_df["entity"].values
-        == ["Organism", "Gene", "Gene", "Gene", "CellType", "CellType"]
-    )
-    assert all(
-        parsed_df["organism"].values == ["all", "human", "human", "mouse", "all", "all"]
-    )
-    assert all(
-        parsed_df["name"].values
-        == ["ensembl", "ensembl", "ensembl", "ensembl", "cl", "cl"]
-    )
+    assert parsed_df.shape == (4, 7)
+    assert all(parsed_df["entity"].values == ["Organism", "Gene", "Gene", "CellType"])
+    assert all(parsed_df["organism"].values == ["vertebrates", "human", "mouse", "all"])
+    assert all(parsed_df["name"].values == ["ensembl", "ensembl", "ensembl", "cl"])
 
 
 def test_parse_current_versions(versions_yaml_replica):
     expected = {
-        "Organism": {"all": {"ensembl": "release-108"}},
+        "Organism": {"vertebrates": {"ensembl": "release-112"}},
         "Gene": {
-            "human": {"ensembl": "release-108"},
-            "mouse": {"ensembl": "release-108"},
+            "human": {"ensembl": "release-112"},
+            "mouse": {"ensembl": "release-112"},
         },
-        "CellType": {"all": {"cl": "2023-02-15"}},
+        "CellType": {"all": {"cl": "2024-08-16"}},
     }
 
     assert parse_currently_used_sources(versions_yaml_replica) == expected
