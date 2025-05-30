@@ -444,7 +444,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                 "currently_used": True,
             }
             if organism is not None:
-                if isinstance(organism, DBRecord):
+                if isinstance(organism, SQLRecord):
                     kwargs["organism"] = organism.name
                 else:
                     kwargs["organism"] = organism
