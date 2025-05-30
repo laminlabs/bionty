@@ -1,5 +1,5 @@
 import pandas as pd
-from lamindb.models import DBRecord
+from lamindb.models import SQLRecord
 
 import bionty.base as bt_base
 
@@ -7,10 +7,10 @@ from ._organism import create_or_get_organism_record
 
 
 def get_source_record(
-    registry: type[DBRecord],
-    organism: str | DBRecord | None = None,
-    source: DBRecord | None = None,
-) -> DBRecord:
+    registry: type[SQLRecord],
+    organism: str | SQLRecord | None = None,
+    source: SQLRecord | None = None,
+) -> SQLRecord:
     """Get a Source record for a given BioRecord model."""
     from .models import Source
 
@@ -21,7 +21,7 @@ def get_source_record(
 
     entity_name = registry.__get_name_with_module__()
     filter_kwargs = {"entity": entity_name}
-    if isinstance(organism_record, DBRecord):
+    if isinstance(organism_record, SQLRecord):
         filter_kwargs["organism"] = organism_record.name
     elif isinstance(organism, str):
         filter_kwargs["organism"] = organism
@@ -58,11 +58,11 @@ def get_source_record(
 
 
 def filter_public_df_columns(
-    model: type[DBRecord], public_ontology: bt_base.PublicOntology
+    model: type[SQLRecord], public_ontology: bt_base.PublicOntology
 ) -> pd.DataFrame:
     """Filter columns of public ontology to match the model fields."""
 
-    def _prepare_public_df(model: type[DBRecord], bionty_df: pd.DataFrame):
+    def _prepare_public_df(model: type[SQLRecord], bionty_df: pd.DataFrame):
         """Prepare the bionty DataFrame to match the model fields."""
         if bionty_df.empty:
             return bionty_df
