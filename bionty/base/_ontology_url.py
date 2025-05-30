@@ -1,6 +1,5 @@
 from functools import lru_cache
 
-import bioregistry
 import requests
 
 
@@ -38,6 +37,8 @@ def get_ontology_url(prefix: str, version: str | None = None) -> tuple[str, str]
         OntologyNotFoundError: If the ontology cannot be found
         OntologyVersionNotFoundError: If no versioned URL can be found
     """
+    import bioregistry
+
     if not prefix:
         raise ValueError("please provide a prefix")
 
@@ -72,6 +73,8 @@ def get_ontology_url(prefix: str, version: str | None = None) -> tuple[str, str]
 
 def _prefix_exists(prefix: str) -> bool:
     """Check if a prefix exists in any registry."""
+    import bioregistry
+
     if bioregistry.normalize_prefix(prefix):
         return True
 
@@ -108,6 +111,8 @@ def _extract_version_from_iri(version_iri: str | None):
 
 def _get_specific_version(prefix: str, version: str) -> tuple[str | None, str | None]:
     """Get URL for a specific version of an ontology using standard patterns."""
+    import bioregistry
+
     # Clean version string
     clean_version = version[1:] if version.startswith("v") else version
     obo_prefix = bioregistry.get_obofoundry_prefix(prefix) or prefix
