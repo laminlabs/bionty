@@ -150,7 +150,7 @@ def _get_latest_from_ols4(prefix: str) -> tuple[str | None, str | None]:
     """Get the latest version information from OLS4."""
     try:
         response = requests.get(
-            f"https://www.ebi.ac.uk/ols4/api/ontologies/{prefix.lower()}", timeout=20
+            f"https://www.ebi.ac.uk/ols4/api/ontologies/{prefix.lower()}", timeout=30
         )
         if response.status_code != 200:
             return None, None
