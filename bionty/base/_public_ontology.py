@@ -341,7 +341,7 @@ class PublicOntology:
             filtered_df = self._df[
                 self._df["ontology_id"]
                 .str.upper()
-                .startswith(f"{self._source.upper()}:")
+                .str.startswith(f"{self._source.upper()}:")
             ].set_index("ontology_id")
             if not filtered_df.empty:
                 return filtered_df
