@@ -26,4 +26,10 @@ class BioSample(PublicOntology):
         version: Literal["2023-09"] | None = None,
         **kwargs,
     ) -> None:
-        super().__init__(source=source, version=version, organism=organism, **kwargs)
+        super().__init__(
+            source=source,
+            version=version,
+            organism=organism,
+            ols_supported=False,
+            **kwargs,
+        )

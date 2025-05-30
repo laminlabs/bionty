@@ -46,10 +46,10 @@ class PublicOntology:
         include_id_prefixes: dict[str, list[str]] | None = None,
         include_rel: str | None = None,
         entity: str | None = None,
-        has_ols: bool = True,
+        ols_supported: bool = True,
     ):
         self._entity = entity or self.__class__.__name__
-        self._has_ols = has_ols
+        self._ols_supported = ols_supported
 
         # search in all available sources to get url
         try:
@@ -181,7 +181,7 @@ class PublicOntology:
         if row.empty:
             url = None
             ontology_version = None
-            if self._has_ols:
+            if self._ols_supported:
                 # try to get the ontology url
                 if name and name not in ref_sources["name"].values:
                     from ._ontology_url import get_ontology_url
@@ -259,7 +259,7 @@ class PublicOntology:
 
         # ontology source not present in the sources.yaml file
         # these entities don't have ontology files
-        if not self._url and not self._has_ols:
+        if not self._url and not self._ols_supported:
             self._local_ontology_path = None
 
     def _get_default_field(self, field: PublicOntologyField | str | None = None) -> str:

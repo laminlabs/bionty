@@ -27,5 +27,9 @@ class CellMarker(PublicOntology):
         **kwargs,
     ) -> None:
         super().__init__(
-            source=source, version=version, organism=organism, has_ols=False, **kwargs
+            source=source,
+            version=version,
+            organism=organism,
+            ols_supported=False,
+            **kwargs,
         )
