@@ -21,7 +21,6 @@ dependencies = [
     "lamin_utils>=0.13.9",
     "requests",
     "pyyaml",
-    "bioregistry",
 ]
 
 [project.urls]
@@ -31,12 +30,12 @@ Home = "https://github.com/laminlabs/bionty"
 dev = [
     "laminci",
     "pre-commit",
-    "requests",
     "pytest>=6.0",
     "pytest-cov",
     "nbproject-test",
     "pronto",
     "pymysql",
+    "bioregistry",
 ]
 
 [tool.pytest.ini_options]

@@ -4,7 +4,6 @@ import importlib
 import logging
 from typing import TYPE_CHECKING, Literal
 
-import bioregistry
 import numpy as np
 import pandas as pd
 from lamin_utils import logger
@@ -338,13 +337,15 @@ class PublicOntology:
             bt_base.Gene().df()
         """
         if "ontology_id" in self._df.columns:
-            if bioregistry.normalize_prefix(self._source):
-                # Filter ontology_id by source prefix
-                return self._df[
-                    self._df["ontology_id"].str.startswith(f"{self._source.upper()}:")
-                ].set_index("ontology_id")
-            else:
-                return self._df.set_index("ontology_id")
+            # Filter ontology_id by source prefix
+            filtered_df = self._df[
+                self._df["ontology_id"]
+                .str.upper()
+                .startswith(f"{self._source.upper()}:")
+            ].set_index("ontology_id")
+            if not filtered_df.empty:
+                return filtered_df
+            return self._df.set_index("ontology_id")
         else:
             return self._df
 
