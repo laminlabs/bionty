@@ -7,7 +7,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("bionty", "0050_squashed"),
+        ("bionty", "0050_alter_source_uid"),
         ("lamindb", "0100_branch_alter_artifact__branch_code_and_more"),
     ]
 
