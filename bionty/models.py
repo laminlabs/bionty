@@ -23,6 +23,7 @@ from lamindb.models import (
     Feature,
     HasParents,
     IsLink,
+    Record,
     Schema,
     SQLRecord,
     TracksRun,
@@ -593,6 +594,10 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
         Artifact, through="ArtifactOrganism", related_name="organisms"
     )
     """Artifacts linked to the organism."""
+    records: Record = models.ManyToManyField(
+        Record, through="RecordOrganism", related_name="organisms"
+    )
+    """Records linked to the organism."""
 
     @overload
     def __init__(
@@ -711,6 +716,10 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         Artifact, through="ArtifactGene", related_name="genes"
     )
     """Artifacts linked to the gene."""
+    records: Record = models.ManyToManyField(
+        Record, through="RecordGene", related_name="genes"
+    )
+    """Records linked to the gene."""
     schemas: Schema = models.ManyToManyField(
         Schema, through="SchemaGene", related_name="genes"
     )
@@ -832,6 +841,10 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
         Artifact, through="ArtifactProtein", related_name="proteins"
     )
     """Artifacts linked to the protein."""
+    records: Record = models.ManyToManyField(
+        Record, through="RecordProtein", related_name="proteins"
+    )
+    """Records linked to the protein."""
     schemas: Schema = models.ManyToManyField(
         Schema, through="SchemaProtein", related_name="proteins"
     )
@@ -953,6 +966,12 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         related_name="cell_markers",
     )
     """Artifacts linked to the cell marker."""
+    records: Record = models.ManyToManyField(
+        Record,
+        through="RecordCellMarker",
+        related_name="cell_markers",
+    )
+    """Records linked to the cell marker."""
     schemas: Schema = models.ManyToManyField(
         Schema, through="SchemaCellMarker", related_name="cell_markers"
     )
@@ -1070,6 +1089,10 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
         Artifact, through="ArtifactTissue", related_name="tissues"
     )
     """Artifacts linked to the tissue."""
+    records: Record = models.ManyToManyField(
+        Record, through="RecordTissue", related_name="tissues"
+    )
+    """Records linked to the tissue."""
 
     @overload
     def __init__(
@@ -1178,6 +1201,10 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
         Artifact, through="ArtifactCellType", related_name="cell_types"
     )
     """Artifacts linked to the cell type."""
+    records: Record = models.ManyToManyField(
+        Record, through="RecordCellType", related_name="cell_types"
+    )
+    """Records linked to the cell type."""
 
     @overload
     def __init__(
@@ -1289,6 +1316,10 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
         Artifact, through="ArtifactDisease", related_name="diseases"
     )
     """Artifacts linked to the disease."""
+    records: Record = models.ManyToManyField(
+        Record, through="RecordDisease", related_name="diseases"
+    )
+    """Records linked to the disease."""
 
     @overload
     def __init__(
@@ -1399,6 +1430,10 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
         Artifact, through="ArtifactCellLine", related_name="cell_lines"
     )
     """Artifacts linked to the cell line."""
+    records: Record = models.ManyToManyField(
+        Record, through="RecordCellLine", related_name="cell_lines"
+    )
+    """Records linked to the cell line."""
 
     @overload
     def __init__(
@@ -1510,6 +1545,10 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
         Artifact, through="ArtifactPhenotype", related_name="phenotypes"
     )
     """Artifacts linked to the phenotype."""
+    records: Record = models.ManyToManyField(
+        Record, through="RecordPhenotype", related_name="phenotypes"
+    )
+    """Records linked to the phenotype."""
 
     @overload
     def __init__(
@@ -1625,6 +1664,10 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
         Artifact, through="ArtifactPathway", related_name="pathways"
     )
     """Artifacts linked to the pathway."""
+    records: Record = models.ManyToManyField(
+        Record, through="RecordPathway", related_name="pathways"
+    )
+    """Records linked to the pathway."""
 
     @overload
     def __init__(
@@ -1742,6 +1785,12 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
         related_name="experimental_factors",
     )
     """Artifacts linked to the experimental_factors."""
+    records: Record = models.ManyToManyField(
+        Record,
+        through="RecordExperimentalFactor",
+        related_name="experimental_factors",
+    )
+    """Records linked to the experimental_factors."""
 
     @overload
     def __init__(
@@ -1853,6 +1902,12 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
         related_name="developmental_stages",
     )
     """Artifacts linked to the developmental stage."""
+    records: Record = models.ManyToManyField(
+        Record,
+        through="RecordDevelopmentalStage",
+        related_name="developmental_stages",
+    )
+    """Records linked to the developmental stage."""
 
     @overload
     def __init__(
@@ -1963,6 +2018,12 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         related_name="ethnicities",
     )
     """Artifacts linked to the ethnicity."""
+    records: Record = models.ManyToManyField(
+        Record,
+        through="RecordEthnicity",
+        related_name="ethnicities",
+    )
+    """Records linked to the ethnicity."""
 
     @overload
     def __init__(
@@ -2285,6 +2346,196 @@ class ArtifactEthnicity(BaseSQLRecord, IsLink, TracksRun):
 
     class Meta:
         unique_together = ("artifact", "ethnicity", "feature")
+
+
+class RecordOrganism(BaseSQLRecord, IsLink, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    record: Record = ForeignKey(Record, CASCADE, related_name="links_organism")
+    organism: Organism = ForeignKey("Organism", PROTECT, related_name="links_record")
+    feature: Feature = ForeignKey(
+        Feature, PROTECT, null=True, default=None, related_name="links_recordorganism"
+    )
+
+    class Meta:
+        unique_together = ("record", "organism", "feature")
+
+
+class RecordGene(BaseSQLRecord, IsLink, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    record: Record = ForeignKey(Record, CASCADE, related_name="links_gene")
+    gene: Gene = ForeignKey("Gene", PROTECT, related_name="links_record")
+    feature: Feature = ForeignKey(
+        Feature, PROTECT, null=True, default=None, related_name="links_recordgene"
+    )
+
+    class Meta:
+        unique_together = ("record", "gene", "feature")
+
+
+class RecordProtein(BaseSQLRecord, IsLink, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    record: Record = ForeignKey(Record, CASCADE, related_name="links_protein")
+    protein: Protein = ForeignKey("Protein", PROTECT, related_name="links_record")
+    feature: Feature = ForeignKey(
+        Feature, PROTECT, null=True, default=None, related_name="links_recordprotein"
+    )
+
+    class Meta:
+        unique_together = ("record", "protein", "feature")
+
+
+class RecordCellMarker(BaseSQLRecord, IsLink, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    record: Record = ForeignKey(Record, CASCADE, related_name="links_cell_marker")
+    # follow the .lower() convention in link models
+    cellmarker: CellMarker = ForeignKey(
+        "CellMarker", PROTECT, related_name="links_record"
+    )
+    feature: Feature = ForeignKey(
+        Feature,
+        PROTECT,
+        null=True,
+        default=None,
+        related_name="links_recordcellmarker",
+    )
+
+    class Meta:
+        unique_together = ("record", "cellmarker", "feature")
+
+
+class RecordTissue(BaseSQLRecord, IsLink, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    record: Record = ForeignKey(Record, CASCADE, related_name="links_tissue")
+    tissue: Tissue = ForeignKey("Tissue", PROTECT, related_name="links_record")
+    feature: Feature = ForeignKey(
+        Feature, PROTECT, null=True, default=None, related_name="links_recordtissue"
+    )
+
+    class Meta:
+        unique_together = ("record", "tissue", "feature")
+
+
+class RecordCellType(BaseSQLRecord, IsLink, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    record: Record = ForeignKey(Record, CASCADE, related_name="links_cell_type")
+    # follow the .lower() convention in link models
+    celltype: CellType = ForeignKey("CellType", PROTECT, related_name="links_record")
+    feature: Feature = ForeignKey(
+        Feature, PROTECT, null=True, default=None, related_name="links_recordcelltype"
+    )
+
+    class Meta:
+        unique_together = ("record", "celltype", "feature")
+
+
+class RecordDisease(BaseSQLRecord, IsLink, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    record: Record = ForeignKey(Record, CASCADE, related_name="links_disease")
+    disease: Disease = ForeignKey("Disease", PROTECT, related_name="links_record")
+    feature: Feature = ForeignKey(
+        Feature, PROTECT, null=True, default=None, related_name="links_recorddisease"
+    )
+
+    class Meta:
+        unique_together = ("record", "disease", "feature")
+
+
+class RecordCellLine(BaseSQLRecord, IsLink, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    record: Record = ForeignKey(Record, CASCADE, related_name="links_cell_line")
+    # follow the .lower() convention in link models
+    cellline: CellLine = ForeignKey("CellLine", PROTECT, related_name="links_record")
+    feature: Feature = ForeignKey(
+        Feature, PROTECT, null=True, default=None, related_name="links_recordcellline"
+    )
+
+    class Meta:
+        unique_together = ("record", "cellline", "feature")
+
+
+class RecordPhenotype(BaseSQLRecord, IsLink, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    record: Record = ForeignKey(Record, CASCADE, related_name="links_phenotype")
+    phenotype: Phenotype = ForeignKey("Phenotype", PROTECT, related_name="links_record")
+    feature: Feature = ForeignKey(
+        Feature,
+        PROTECT,
+        null=True,
+        default=None,
+        related_name="links_recordphenotype",
+    )
+
+    class Meta:
+        unique_together = ("record", "phenotype", "feature")
+
+
+class RecordPathway(BaseSQLRecord, IsLink, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    record: Record = ForeignKey(Record, CASCADE, related_name="links_pathway")
+    pathway: Pathway = ForeignKey("Pathway", PROTECT, related_name="links_record")
+    feature: Feature = ForeignKey(
+        Feature, PROTECT, null=True, default=None, related_name="links_recordpathway"
+    )
+
+    class Meta:
+        unique_together = ("record", "pathway", "feature")
+
+
+class RecordExperimentalFactor(BaseSQLRecord, IsLink, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    record: Record = ForeignKey(
+        Record, CASCADE, related_name="links_experimental_factor"
+    )
+    experimentalfactor: ExperimentalFactor = ForeignKey(
+        "ExperimentalFactor", PROTECT, related_name="links_record"
+    )
+    feature: Feature = ForeignKey(
+        Feature,
+        PROTECT,
+        null=True,
+        default=None,
+        related_name="links_recordexperimentalfactor",
+    )
+
+    class Meta:
+        unique_together = ("record", "experimentalfactor", "feature")
+
+
+class RecordDevelopmentalStage(BaseSQLRecord, IsLink, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    record: Record = ForeignKey(
+        Record, CASCADE, related_name="links_developmental_stage"
+    )
+    # follow the .lower() convention in link models
+    developmentalstage: DevelopmentalStage = ForeignKey(
+        "DevelopmentalStage", PROTECT, related_name="links_record"
+    )
+    feature: Feature = ForeignKey(
+        Feature,
+        PROTECT,
+        null=True,
+        default=None,
+        related_name="links_recorddevelopmentalstage",
+    )
+
+    class Meta:
+        unique_together = ("record", "developmentalstage", "feature")
+
+
+class RecordEthnicity(BaseSQLRecord, IsLink, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    record: Record = ForeignKey(Record, CASCADE, related_name="links_ethnicity")
+    ethnicity: Ethnicity = ForeignKey("Ethnicity", PROTECT, related_name="links_record")
+    feature: Feature = ForeignKey(
+        Feature,
+        PROTECT,
+        null=True,
+        default=None,
+        related_name="links_recordethnicity",
+    )
+
+    class Meta:
+        unique_together = ("record", "ethnicity", "feature")
 
 
 # backward compat
