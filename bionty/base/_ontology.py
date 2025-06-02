@@ -15,7 +15,7 @@ def import_pronto():
 
         import pronto  # type: ignore
 
-        warnings.filterwarnings("ignore", category=pronto.warnings.SyntaxWarning)
+        warnings.filterwarnings("ignore", category=pronto.warnings.ProntoWarning)
         return pronto
     except ImportError as exc:
         raise ImportError(
