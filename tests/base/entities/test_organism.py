@@ -22,9 +22,14 @@ def test_ensembl_organism_inspect_name():
     assert inspect.equals(expected_series)
 
 
-def test_ensembl_organism_organism():
+def test_ensembl_organism_version():
+    df = bt_base.Organism(version="release-108").df()
+    assert df.shape[0] == 315
+
+
+def test_ensembl_organism_taxa():
     for sp in ["bacteria", "plants", "fungi", "metazoa"]:
-        df = bt_base.Organism(organism=sp).df()
+        df = bt_base.Organism(taxa=sp).df()
         assert df.shape[0] > 10
 
 

@@ -23,4 +23,10 @@ class BFXPipeline(PublicOntology):
         version: Literal["1.0.0"] | None = None,
         **kwargs,
     ) -> None:
-        super().__init__(source=source, version=version, organism=organism, **kwargs)
+        super().__init__(
+            source=source,
+            version=version,
+            organism=organism,
+            ols_supported=False,
+            **kwargs,
+        )

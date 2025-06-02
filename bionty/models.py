@@ -290,97 +290,94 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
     @classmethod
     def add_source(
         cls,
-        source: Source,
+        source: Source | PublicOntology | str,
+        *,
         df: pd.DataFrame | None = None,
+        version: str | None = None,
+        organism: str | None = None,
     ) -> Source:
-        """Link a source record to the entity with a reference DataFrame.
-
-        Args:
-            source: Source record to add (this can be from another entity).
-            df: DataFrame to add to the source.dataframe_artifact.
-
-        Returns:
-            A Source record with this entity.
-
-        Example::
-
-            import bionty as bt
-
-            internal_source = bt.Source(
-                entity="bionty.Gene",
-                name="internal",
-                version="0.0.1",
-                organism="rabbit",
-                description="internal gene reference",
-            ).save()
-
-            source_df = pd.DataFrame(
-                {
-                    "ensembl_gene_id": ["ENSOCUG00000017195"],
-                    "symbol": ["SEL1L3"],
-                    "description": ["SEL1L family member 3"],
-                }
-            )
-
-            bt.Gene.add_source(internal_source, df=df)
-        """
+        """Link a source record to the entity with a reference DataFrame."""
         import lamindb as ln
+
+        from bionty.base._public_ontology import encode_filenames
 
         from ._organism import is_organism_required
 
+        entity_name = cls.__get_name_with_module__()
+        source_record = source if isinstance(source, Source) else None
+        parquet_filename = None
+
+        # Process source input and get source_record
+        if isinstance(source, str):
+            filter_kwargs = {"name": source, "entity": entity_name}
+            if version:
+                filter_kwargs["version"] = version
+            if organism:
+                filter_kwargs["organism"] = organism
+
+            source_record = Source.filter(**filter_kwargs).first()
+            if not source_record:
+                source = PublicOntology(
+                    source=source,
+                    version=version,
+                    organism=organism,
+                    entity=entity_name,
+                )
+        if source_record is None and isinstance(source, PublicOntology):
+            parquet_filename = source._parquet_filename
+            source_record = Source(**source._source_dict, entity=entity_name)
+
+        # Core source metadata
         unique_kwargs = {
-            "entity": cls.__get_name_with_module__(),
-            "name": source.name,
-            "version": source.version,
-            "organism": source.organism,
+            "entity": entity_name,
+            "name": source_record.name,
+            "version": source_record.version,
+            "organism": source_record.organism,
         }
-        add_kwargs = {
-            "currently_used": source.currently_used,
-            "description": source.description,
-            "url": source.url,
-            "source_website": source.source_website,
-            "dataframe_artifact_id": source.dataframe_artifact_id,
-        }
-        # make sure organism is registered
+
+        # Register organism if required
         if is_organism_required(cls):
-            Organism.from_source(name=source.organism).save()
+            Organism.from_source(name=source_record.organism).save()
+
+        # Get existing or create new source
         new_source = Source.filter(**unique_kwargs).one_or_none()
-        if new_source is None:
-            new_source = Source(**unique_kwargs, **add_kwargs).save()
-        if new_source.dataframe_artifact_id is not None:
+        if not new_source:
+            new_source = Source(  # type:ignore
+                **unique_kwargs,
+                currently_used=source_record.currently_used,
+                description=source_record.description,
+                url=source_record.url,
+                source_website=source_record.source_website,
+                dataframe_artifact_id=source_record.dataframe_artifact_id,
+            ).save()
+
+        # Return early if artifact already exists
+        if new_source.dataframe_artifact_id:
             return new_source
 
-        # register the dataframe artifact
-        key = f"df__{unique_kwargs.get('organism')}__{unique_kwargs.get('name')}__{unique_kwargs.get('version')}__{unique_kwargs.get('entity')}.parquet"
+        # Generate filename if not already created
+        if not parquet_filename:
+            parquet_filename, _ = encode_filenames(**unique_kwargs)
+
+        # Create artifact if needed
+        df_artifact = None
         if isinstance(df, pd.DataFrame):
+            df_artifact = ln.Artifact.from_df(df, key=parquet_filename, run=False)
+        elif source_record.url and source_record.url.startswith("s3://bionty-assets/"):
+            df_artifact = ln.Artifact(new_source.url, run=False)
+        elif isinstance(source, PublicOntology) and not source.df().empty:
             df_artifact = ln.Artifact.from_df(
-                df, key=key, _branch_code=0, run=False
-            ).save()
-        elif source.url and source.url.startswith("s3://bionty-assets/"):
-            df_artifact = ln.Artifact(new_source.url, _branch_code=0, run=False).save()
-        else:
-            try:
-                df = getattr(bt_base, source.entity)(
-                    organism=source.organism,
-                    source=source.name,
-                    version=source.version,
-                ).df()
-            except Exception as e:
-                logger.error(
-                    "please first register a DataFrame artifact and link it to source!\n"
-                    "    → artifact = ln.Artifact.from_df(df, _branch_code=0, run=False).save()\n"
-                    "    → source.dataframe_artifact = artifact\n"
-                    "    → source.save()"
-                )
-                raise ValueError from e
-            df_artifact = ln.Artifact.from_df(
-                df, key=key, _branch_code=0, run=False
-            ).save()
+                source.df(), key=parquet_filename, run=False
+            )
 
-        new_source.dataframe_artifact = df_artifact
-        new_source.save()
+        # Save artifact and update source
+        if df_artifact:
+            df_artifact.kind = "__lamindb__"
+            df_artifact.save()
+            new_source.dataframe_artifact = df_artifact
+            new_source.save()
+
         logger.important("source added!")
-
         return new_source
 
     @classmethod
@@ -438,6 +435,23 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             if source is not None:
                 source_name = source.name
                 version = source.version
+
+        if source is not None and source.dataframe_artifact_id is not None:
+            # if source is a DataFrame artifact, return the static reference
+            return StaticReference(source)
+        if source is None:
+            kwargs = {
+                "entity": cls.__get_name_with_module__(),
+                "currently_used": True,
+            }
+            if organism is not None:
+                if isinstance(organism, SQLRecord):
+                    kwargs["organism"] = organism.name
+                else:
+                    kwargs["organism"] = organism
+            source = Source.filter(**kwargs).first()
+            if source and source.dataframe_artifact_id is not None:
+                return StaticReference(source)
 
         try:
             return getattr(bt_base, cls.__name__)(
