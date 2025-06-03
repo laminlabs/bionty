@@ -12,7 +12,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     dependencies = [
         ("bionty", "0052_rename__branch_code_cellline_branch_and_more"),
-        ("lamindb", "0103_squashed"),
+        ("lamindb", "0103_remove_writelog_migration_state_and_more"),
     ]
 
     operations = [
