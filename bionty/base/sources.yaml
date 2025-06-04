@@ -87,7 +87,7 @@ Tissue:
 Disease:
   mondo:
     all:
-      latest-version: 2024-08-06
+      latest-version: 2025-06-03
       url: http://purl.obolibrary.org/obo/mondo/releases/{version}/mondo.owl
     name: Mondo Disease Ontology
     website: https://mondo.monarchinitiative.org

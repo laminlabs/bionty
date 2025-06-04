@@ -13,7 +13,7 @@ def test_mondo_disease_inspect_name():
         ]
     )
 
-    ds = bt_base.Disease(source="mondo")
+    ds = bt_base.Disease(source="mondo", version="2025-06-03")
     inspected_df = ds.inspect(df.index, field=ds.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
