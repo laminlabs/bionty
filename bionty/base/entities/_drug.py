@@ -27,7 +27,9 @@ class Drug(PublicOntology):
         self,
         organism: Literal["all"] | None = None,
         source: Literal["dron", "chebi"] | None = None,
-        version: Literal["2024-07-27", "2023-03-10", "2024-03-02", "2024-08-05"]
+        version: Literal[
+            "2024-07-27", "2023-03-10", "2024-03-02", "2024-08-05", "2025-04-18"
+        ]
         | None = None,
         **kwargs,
     ) -> None:

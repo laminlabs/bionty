@@ -94,6 +94,7 @@ try:
                         filter(
                             lambda val: any(
                                 val.id.startswith(f"{prefix}:")
+                                or val.id.startswith(prefix)
                                 for prefix in include_id_prefixes[source]  # type: ignore
                             ),
                             terms,

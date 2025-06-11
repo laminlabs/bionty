@@ -31,6 +31,7 @@ class Organism(PublicOntology):
         version: (
             Literal[
                 "2023-06-20",
+                "2025-03-13",
                 "release-57",
                 "release-112",
             ]

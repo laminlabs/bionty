@@ -34,6 +34,7 @@ class ExperimentalFactor(PublicOntology):
             "3.66.0",
             "3.69.0",
             "3.70.0",
+            "3.78.0",
         ]
         | None = None,
         **kwargs,

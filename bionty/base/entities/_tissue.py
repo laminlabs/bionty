@@ -33,6 +33,7 @@ class Tissue(PublicOntology):
             "2024-03-22",
             "2024-05-13",
             "2024-08-07",
+            "2025-05-28",
         ]
         | None = None,
         **kwargs,
