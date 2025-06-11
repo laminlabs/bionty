@@ -26,7 +26,7 @@ class Pathway(PublicOntology):
         self,
         organism: Literal["all"] | None = None,
         source: Literal["go", "pw"] | None = None,
-        version: Literal["2023-05-10", "2024-06-17", "2025-03-16", "7.93"]
+        version: Literal["2023-05-10", "2024-06-17", "2025-03-16", "7.84", "7.93"]
         | None = None,
         **kwargs,
     ) -> None:
