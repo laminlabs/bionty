@@ -132,13 +132,13 @@ Phenotype:
 Pathway:
   go:
     all:
-      latest-version: 2025-03-16
+      latest-version: 2024-11-03
       url: http://purl.obolibrary.org/obo/go/releases/{version}/extensions/go-plus.owl
     name: Gene Ontology
     website: http://geneontology.org
   pw:
     all:
-      latest-version: 7.93
+      latest-version: 7.84
       url: http://purl.obolibrary.org/obo/pw/{version}/pw.owl
     name: Pathway Ontology
     website: https://www.ebi.ac.uk/ols/ontologies/pw
