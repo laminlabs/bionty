@@ -199,7 +199,7 @@ def register_source_in_bionty_assets(
     """
     import lamindb as ln
 
-    # assert ln.setup.settings.instance.slug == "laminlabs/bionty-assets"
+    assert ln.setup.settings.instance.slug == "laminlabs/bionty-assets"
 
     if "." not in source.entity:
         raise ValueError(
