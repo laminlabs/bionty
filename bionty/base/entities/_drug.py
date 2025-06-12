@@ -28,7 +28,11 @@ class Drug(PublicOntology):
         organism: Literal["all"] | None = None,
         source: Literal["dron", "chebi"] | None = None,
         version: Literal[
-            "2024-07-27", "2023-03-10", "2024-03-02", "2024-08-05", "2025-04-18"
+            "2025-04-18",
+            "2024-08-05",
+            "2024-07-27",
+            "2024-03-02",
+            "2023-03-10",
         ]
         | None = None,
         **kwargs,
@@ -37,6 +41,6 @@ class Drug(PublicOntology):
             source=source,
             version=version,
             organism=organism,
-            include_id_prefixes={"dron": ["DRON"]},
+            include_id_prefixes={"dron:": ["DRON"]},
             **kwargs,
         )

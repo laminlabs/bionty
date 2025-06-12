@@ -33,7 +33,7 @@ def test_pw_pathway_inspect_name():
         ]
     )
 
-    pw = bt_base.Pathway(source="pw", version="7.84")
+    pw = bt_base.Pathway(source="pw")
     inspected_df = pw.inspect(df.index, field=pw.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)

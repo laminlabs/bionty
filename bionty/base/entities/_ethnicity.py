@@ -30,6 +30,6 @@ class Ethnicity(PublicOntology):
             source=source,
             version=version,
             organism=organism,
-            include_id_prefixes={"hancestro": ["HANCESTRO"]},
+            include_id_prefixes={"hancestro:": ["HANCESTRO"]},
             **kwargs,
         )

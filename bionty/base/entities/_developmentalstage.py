@@ -23,14 +23,14 @@ class DevelopmentalStage(PublicOntology):
         self,
         organism: Literal["human", "mouse"] | None = None,
         source: Literal["hsapdv", "mmusdv"] | None = None,
-        version: Literal["2020-03-10", "2024-05-28", "2025-01-23"] | None = None,
+        version: Literal["2025-01-23", "2024-05-28", "2020-03-10"] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(
             source=source,
             version=version,
             organism=organism,
-            include_id_prefixes={"hsapdv": ["HsapDv"], "mmusdv": ["MmusDv"]},
+            include_id_prefixes={"hsapdv:": ["HsapDv"], "mmusdv:": ["MmusDv"]},
             include_rel="part_of",
             **kwargs,
         )
