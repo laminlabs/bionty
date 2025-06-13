@@ -237,6 +237,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
     def import_source(
         cls,
         source: Source | None = None,
+        version: str | None = None,
         update_records: bool = False,
         *,
         organism: str | SQLRecord | None = None,
@@ -284,6 +285,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                 registry=cls,
                 organism=organism,
                 source=source,
+                version=version,
                 ignore_conflicts=ignore_conflicts,
             )
 

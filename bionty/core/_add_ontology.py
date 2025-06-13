@@ -103,7 +103,7 @@ def create_link_records(
     record_dict = {r.ontology_id: r for r in records if r.source_id == source.id}
 
     for child_id, parents_ids in df["parents"].items():
-        if len(parents_ids) == 0:
+        if parents_ids is None or len(parents_ids) == 0:
             continue
         child_record = record_dict.get(child_id)
         if not child_record:
@@ -148,6 +148,7 @@ def add_ontology_from_df(
     ontology_ids: list[str] | None = None,
     organism: str | Organism | None = None,
     source: Source | None = None,
+    version: str | None = None,
     ignore_conflicts: bool = True,
 ) -> None:
     """Add ontology records from source to the database based on ontology ids."""
@@ -155,7 +156,9 @@ def add_ontology_from_df(
 
     from bionty._source import get_source_record
 
-    source_record = get_source_record(registry, organism=organism, source=source)
+    source_record = get_source_record(
+        registry, organism=organism, source=source, version=version
+    )
     public = registry.public(source=source_record)
     df = prepare_dataframe(public.df())
 
@@ -200,11 +203,13 @@ def add_ontology_from_df(
         source=source_record
     ).all()  # need to update all_records after bulk_create
     if hasattr(registry, "parents"):
-        source_has_parents = ("parents" in df_all.columns and 
-                              not df_all["parents"].isna().all() and
-                              len(df_all["parents"].dropna()) > 0)
-        
-        if source_has_parents:    
+        source_has_parents = (
+            "parents" in df_all.columns
+            and not df_all["parents"].isna().all()
+            and len(df_all["parents"].dropna()) > 0
+        )
+
+        if source_has_parents:
             link_records = create_link_records(registry, df_all, all_records)
             new_link_records = [r for r in link_records if r._state.adding]
             if ontology_ids is None:
