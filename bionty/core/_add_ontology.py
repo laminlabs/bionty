@@ -194,7 +194,7 @@ def add_ontology_from_df(
     new_records = [r for r in records if r._state.adding]
     if ontology_ids is None:
         logger.info(f"adding {len(new_records)} new records")
-    registry.objects.bulk_create(new_records, ignore_conflicts=ignore_conflicts)
+    ln.save(new_records, ignore_conflicts=ignore_conflicts)
 
     all_records = registry.filter(
         source=source_record
