@@ -99,7 +99,7 @@ Disease:
     website: https://disease-ontology.org
   icd:
     human:
-      latest-version: icd-11-2023
+      latest-version: icd-10-2024
       url: s3://bionty-assets/df_human__icd__{version}__Disease.parquet
     name: International Classification of Diseases (ICD)
     website: https://www.who.int/standards/classifications/classification-of-diseases
