@@ -148,7 +148,6 @@ def add_ontology_from_df(
     ontology_ids: list[str] | None = None,
     organism: str | Organism | None = None,
     source: Source | None = None,
-    version: str | None = None,
     ignore_conflicts: bool = True,
 ) -> None:
     """Add ontology records from source to the database based on ontology ids."""
@@ -156,9 +155,7 @@ def add_ontology_from_df(
 
     from bionty._source import get_source_record
 
-    source_record = get_source_record(
-        registry, organism=organism, source=source, version=version
-    )
+    source_record = get_source_record(registry, organism=organism, source=source)
     public = registry.public(source=source_record)
     df = prepare_dataframe(public.df())
 
@@ -204,9 +201,7 @@ def add_ontology_from_df(
     ).all()  # need to update all_records after bulk_create
     if hasattr(registry, "parents"):
         source_has_parents = (
-            "parents" in df_all.columns
-            and not df_all["parents"].isna().all()
-            and len(df_all["parents"].dropna()) > 0
+            "parents" in df_all.columns and not df_all["parents"].isna().all()
         )
 
         if source_has_parents:

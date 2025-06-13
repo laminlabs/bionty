@@ -9,28 +9,10 @@ from ._organism import create_or_get_organism_record
 def get_source_record(
     registry: type[SQLRecord],
     organism: str | SQLRecord | None = None,
-    source: SQLRecord | str | None = None,
-    version: str | None = None,
+    source: SQLRecord | None = None,
 ) -> SQLRecord:
     """Get a Source record for a given BioRecord model."""
     from .models import Source
-
-    if isinstance(source, str):
-        entity_name = registry.__get_name_with_module__()
-        filter_kwargs = {"entity": entity_name, "name": source}
-        if version is not None:
-            filter_kwargs["version"] = version
-        source_record = Source.filter(**filter_kwargs).first()
-        if source_record is None:
-            if version is not None:
-                raise ValueError(
-                    f"No source '{source}' with version '{version}' found for entity '{entity_name}'."
-                )
-            else:
-                raise ValueError(
-                    f"No source '{source}' found for entity '{entity_name}'."
-                )
-        return source_record
 
     if source is not None:
         return source

@@ -237,7 +237,6 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
     def import_source(
         cls,
         source: Source | None = None,
-        version: str | None = None,
         update_records: bool = False,
         *,
         organism: str | SQLRecord | None = None,
@@ -274,6 +273,11 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             source = bt.Source.get(entity="bionty.CellType", source="cl", version="2024-08-16")
             bt.CellType.import_source(source, update_records=True)
         """
+        if isinstance(source, str):
+            raise TypeError(
+                "import_source() expects a `bt.Source` object, not a str.\n"
+            )
+
         if update_records:
             from .core._source import update_records_to_source
 
@@ -285,7 +289,6 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                 registry=cls,
                 organism=organism,
                 source=source,
-                version=version,
                 ignore_conflicts=ignore_conflicts,
             )
 
