@@ -200,11 +200,16 @@ def add_ontology_from_df(
         source=source_record
     ).all()  # need to update all_records after bulk_create
     if hasattr(registry, "parents"):
-        link_records = create_link_records(registry, df_all, all_records)
-        new_link_records = [r for r in link_records if r._state.adding]
-        if ontology_ids is None:
-            logger.info(f"adding {len(new_link_records)} parents/children links")
-        ln.save(new_link_records, ignore_conflicts=ignore_conflicts)
+        source_has_parents = ("parents" in df_all.columns and 
+                              not df_all["parents"].isna().all() and
+                              len(df_all["parents"].dropna()) > 0)
+        
+        if source_has_parents:    
+            link_records = create_link_records(registry, df_all, all_records)
+            new_link_records = [r for r in link_records if r._state.adding]
+            if ontology_ids is None:
+                logger.info(f"adding {len(new_link_records)} parents/children links")
+            ln.save(new_link_records, ignore_conflicts=ignore_conflicts)
 
     if ontology_ids is None:
         logger.success("import is completed!")
