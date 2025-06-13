@@ -26,13 +26,13 @@ class CellLine(PublicOntology):
         self,
         organism: Literal["all"] | None = None,
         source: Literal["clo", "depmap"] | None = None,
-        version: Literal["2022-03-21", "2024-Q2"] | None = None,
+        version: Literal["2024-Q2", "2023-03-28", "2022-03-21"] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(
             source=source,
             version=version,
             organism=organism,
-            include_id_prefixes={"clo": ["CLO"]},
+            include_id_prefixes={"clo:": ["CLO"]},
             **kwargs,
         )

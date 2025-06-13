@@ -93,7 +93,7 @@ try:
                     return list(
                         filter(
                             lambda val: any(
-                                val.id.startswith(f"{prefix}:")
+                                val.id.startswith(f"{prefix}")
                                 for prefix in include_id_prefixes[source]  # type: ignore
                             ),
                             terms,

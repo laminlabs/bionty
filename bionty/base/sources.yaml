@@ -73,14 +73,14 @@ CellLine:
 CellType:
   cl:
     all:
-      latest-version: 2024-08-16
+      latest-version: 2025-04-10
       url: http://purl.obolibrary.org/obo/cl/releases/{version}/cl.owl
     name: Cell Ontology
     website: https://obophenotype.github.io/cell-ontology
 Tissue:
   uberon:
     all:
-      latest-version: 2024-08-07
+      latest-version: 2025-05-28
       url: http://purl.obolibrary.org/obo/uberon/releases/{version}/uberon.owl
     name: Uberon multi-species anatomy ontology
     website: http://obophenotype.github.io/uberon
@@ -93,7 +93,7 @@ Disease:
     website: https://mondo.monarchinitiative.org
   doid:
     human:
-      latest-version: 2024-05-29
+      latest-version: 2025-05-30
       url: http://purl.obolibrary.org/obo/doid/releases/{version}/doid.obo
     name: Human Disease Ontology
     website: https://disease-ontology.org
@@ -106,35 +106,23 @@ Disease:
 ExperimentalFactor:
   efo:
     all:
-      latest-version: 3.70.0
+      latest-version: 3.78.0
       url: http://www.ebi.ac.uk/efo/releases/v{version}/efo.owl
     name: The Experimental Factor Ontology
     website: https://bioportal.bioontology.org/ontologies/EFO
 Phenotype:
   pato:
     all:
-      latest-version: 2024-03-28
+      latest-version: 2025-05-14
       url: http://purl.obolibrary.org/obo/pato/releases/{version}/pato.owl
     name: Phenotype And Trait Ontology
     website: https://github.com/pato-ontology/pato
   hp:
     human:
-      latest-version: 2024-04-26
+      latest-version: 2025-05-06
       url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v{version}/hp.owl
     name: Human Phenotype Ontology
     website: https://hpo.jax.org
-  mp:
-    mammalian:
-      latest-version: 2024-06-18
-      url: https://github.com/mgijax/mammalian-phenotype-ontology/releases/download/v{version}/mp.owl
-    name: Mammalian Phenotype Ontology
-    website: https://github.com/mgijax/mammalian-phenotype-ontology
-  zp:
-    zebrafish:
-      latest-version: 2024-04-18
-      url: https://github.com/obophenotype/zebrafish-phenotype-ontology/releases/download/v{version}/zp.owl
-    name: Zebrafish Phenotype Ontology
-    website: https://github.com/obophenotype/zebrafish-phenotype-ontology
   phe:
     human:
       latest-version: 1.2
@@ -144,7 +132,7 @@ Phenotype:
 Pathway:
   go:
     all:
-      latest-version: 2024-06-17
+      latest-version: 2024-11-03
       url: http://purl.obolibrary.org/obo/go/releases/{version}/extensions/go-plus.owl
     name: Gene Ontology
     website: http://geneontology.org
@@ -164,7 +152,7 @@ BFXPipeline:
 Drug:
   dron:
     all:
-      latest-version: 2024-08-05
+      latest-version: 2025-04-18
       url: http://purl.obolibrary.org/obo/dron/releases/{version}/dron.owl
     name: Drug Ontology
     website: https://bioportal.bioontology.org/ontologies/DRON
@@ -177,13 +165,13 @@ Drug:
 DevelopmentalStage:
   hsapdv:
     human:
-      latest-version: 2024-05-28
+      latest-version: 2025-01-23
       url: https://github.com/obophenotype/developmental-stage-ontologies/releases/download/v{version}/hsapdv.owl
     name: Human Developmental Stages
     website: https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv
   mmusdv:
     mouse:
-      latest-version: 2024-05-28
+      latest-version: 2025-01-23
       url: https://github.com/obophenotype/developmental-stage-ontologies/releases/download/v{version}/mmusdv.owl
     name: Mouse Developmental Stages
     website: https://github.com/obophenotype/developmental-stage-ontologies/wiki/MmusDv

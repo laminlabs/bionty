@@ -52,7 +52,12 @@ class Gene(PublicOntology):
         self,
         organism: Literal["human", "mouse", "saccharomyces cerevisiae"] | None = None,
         source: Literal["ensembl"] | None = None,
-        version: Literal["release-109", "release-110", "release-111", "release-112"]
+        version: Literal[
+            "release-112",
+            "release-111",
+            "release-110",
+            "release-109",
+        ]
         | None = None,
         **kwargs,
     ):
