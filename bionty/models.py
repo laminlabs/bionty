@@ -195,7 +195,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             query_kwargs = {k: v for k, v in result.items() if k != "parents"}
             existing_record = self.__class__.filter(**query_kwargs).one_or_none()
             if existing_record is not None:
-                from lamindb._record import init_self_from_db
+                from lamindb.models.sqlrecord import init_self_from_db
 
                 init_self_from_db(self, existing_record)
                 return None
@@ -273,6 +273,11 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             source = bt.Source.get(entity="bionty.CellType", source="cl", version="2024-08-16")
             bt.CellType.import_source(source, update_records=True)
         """
+        if isinstance(source, str):
+            raise TypeError(
+                "import_source() expects a `bt.Source` object, not a str.\n"
+            )
+
         if update_records:
             from .core._source import update_records_to_source
 
