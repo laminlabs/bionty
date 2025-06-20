@@ -92,32 +92,28 @@ Submodules:
 __version__ = "1.5.0"
 
 from lamindb_setup._check_setup import _check_instance_setup
+from lamindb_setup.lazy_import import enable_lazy_imports
+
+enable_lazy_imports(
+    "bionty.models",
+    on_load=lambda mod, attr: _check_instance_setup(from_module="bionty"),
+)
 
 from . import _biorecord, base, ids
-
-
-def __getattr__(name):
-    if name != "models":
-        _check_instance_setup(from_module="bionty")
-    return globals()[name]
-
-
-if _check_instance_setup():
-    del __getattr__  # delete so that imports work out
-    from .core._settings import settings
-    from .models import (
-        CellLine,
-        CellMarker,
-        CellType,
-        DevelopmentalStage,
-        Disease,
-        Ethnicity,
-        ExperimentalFactor,
-        Gene,
-        Organism,
-        Pathway,
-        Phenotype,
-        Protein,
-        Source,
-        Tissue,
-    )
+from .core._settings import settings
+from .models import (
+    CellLine,
+    CellMarker,
+    CellType,
+    DevelopmentalStage,
+    Disease,
+    Ethnicity,
+    ExperimentalFactor,
+    Gene,
+    Organism,
+    Pathway,
+    Phenotype,
+    Protein,
+    Source,
+    Tissue,
+)
