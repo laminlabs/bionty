@@ -1,12 +1,8 @@
-import warnings
-
 import bionty as bt
 import pandas as pd
 import pytest
 from bionty._organism import OrganismNotSet
 from bionty.models import DoesNotExist, InvalidArgument
-
-warnings.filterwarnings("ignore", category=SyntaxWarning)
 
 
 def test_from_source():
