@@ -93,9 +93,9 @@ __version__ = "1.5.0"
 
 import warnings
 
-from lamindb_setup._check_setup import _check_instance_setup
+warnings.filterwarnings("ignore", category=SyntaxWarning)
 
-warnings.filterwarnings("ignore", category=SyntaxWarning, module="pronto.*")
+from lamindb_setup._check_setup import _check_instance_setup
 
 from . import _biorecord, base, ids
 
