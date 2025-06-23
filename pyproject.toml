@@ -44,7 +44,7 @@ testpaths = [
 ]
 filterwarnings = [
     "ignore::DeprecationWarning:botocore.*",
-    "ignore::SyntaxWarning:pronto",
+    "ignore::SyntaxWarning:pronto.*",
 ]
 
 [tool.coverage.run]
