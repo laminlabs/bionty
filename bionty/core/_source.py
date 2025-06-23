@@ -32,7 +32,7 @@ def sync_public_sources(update_currently_used: bool = False) -> None:
     from bionty._biorecord import list_biorecord_models
 
     records = bt.Source.filter().all()
-    df_sources = bt_base.display_available_sources().reset_index()
+    df_sources = bt_base.display_sources().reset_index()
     bionty_models = list_biorecord_models(bt)
     for kwargs in df_sources.to_dict(orient="records"):
         if kwargs["entity"] in bionty_models:
