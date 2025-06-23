@@ -25,9 +25,8 @@ def build(session: nox.Session, group: str):
     if group == "bionty-base":
         session.run(*f"pytest {coverage_args} ./tests/base".split())
     elif group == "bionty-core":
-        session.run(
-            *f"pytest {coverage_args} -W ignore::SyntaxWarning ./tests/core".split()
-        )
+        session.env["PYTHONWARNINGS"] = "ignore::SyntaxWarning"
+        session.run(*f"pytest {coverage_args} ./tests/core".split())
     elif group == "bionty-docs":
         session.run(*f"pytest -s {coverage_args} ./docs/guide".split())
         run(session, "lamin init --storage ./docsbuild --modules bionty")
