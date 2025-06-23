@@ -42,6 +42,12 @@ dev = [
 testpaths = [
     "tests",
 ]
+filterwarnings = [
+    "ignore::DeprecationWarning:botocore.*",
+    "ignore::SyntaxWarning:pronto",
+    "ignore::UserWarning:anndata",
+    "ignore:Jupyter is migrating its paths to use standard platformdirs:DeprecationWarning"
+]
 
 [tool.coverage.run]
 omit = [
