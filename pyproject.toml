@@ -44,7 +44,7 @@ testpaths = [
 ]
 filterwarnings = [
     "ignore::DeprecationWarning:botocore.*",
-    "ignore:unknown element in.*:SyntaxWarning",
+    "ignore::SyntaxWarning:pronto.parsers.rdfxml",
 ]
 
 [tool.coverage.run]
