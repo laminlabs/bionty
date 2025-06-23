@@ -105,6 +105,18 @@ def test_import_source():
     bt.Gene.import_source(organism="saccharomyces cerevisiae")
     assert bt.Gene.filter(organism__name="saccharomyces cerevisiae").exists()
 
+    # import organism data without 'parents' column (should not crash with KeyError)
+    bt.Organism.import_source()
+    assert bt.Organism.filter().count() > 0
+
+    # test that string sources raise TypeError
+    with pytest.raises(TypeError):
+        bt.CellLine.import_source(source="depmap")
+
+    # test that ICD Source does not crash
+    source = bt.Disease.add_source(source="icd", version="icd-11-2023")
+    bt.Disease.import_source(source=source)
+
     # import source with public df having extra columns than model fields
     bt.CellLine.import_source(source=bt.Source.get(name="depmap", version="2024-Q2"))
     assert bt.CellLine.filter(source__name="depmap").count() == 1959
