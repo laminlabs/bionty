@@ -1,8 +1,12 @@
+import warnings
+
 import bionty as bt
 import pandas as pd
 import pytest
 from bionty._organism import OrganismNotSet
 from bionty.models import DoesNotExist, InvalidArgument
+
+warnings.filterwarnings("ignore", category=SyntaxWarning)
 
 
 def test_from_source():
@@ -78,7 +82,6 @@ def test_base_gene_register_source_in_lamindb():
     assert rabbit_gene_source.organism == "rabbit"
 
 
-@pytest.mark.filterwarnings("ignore::SyntaxWarning")
 def test_import_source():
     # when adding a single record, it's parents are also added
     record = bt.Ethnicity.from_source(ontology_id="HANCESTRO:0005").save()
