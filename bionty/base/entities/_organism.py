@@ -30,9 +30,10 @@ class Organism(PublicOntology):
         source: Literal["ensembl", "ncbitaxon"] | None = None,
         version: (
             Literal[
+                "2025-03-13",
                 "2023-06-20",
-                "release-57",
                 "release-112",
+                "release-57",
             ]
             | None
         ) = None,
