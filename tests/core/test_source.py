@@ -9,13 +9,20 @@ def test_from_source():
     record = bt.Gene.from_source(symbol="BRCA2", organism="human")
     assert record.ensembl_gene_id == "ENSG00000139618"
 
-    with pytest.raises(DoesNotExist):
+    with pytest.raises(
+        DoesNotExist, match=r"No record found in source for the given field value"
+    ):
         bt.CellType.from_source(name="T-cellx")
 
-    with pytest.raises(InvalidArgument):
+    with pytest.raises(
+        InvalidArgument,
+        match=r"Only one field can be passed to generate records from source",
+    ):
         bt.CellType.from_source(name="T cell", ontology_id="CL:0000084")
 
-    with pytest.raises(InvalidArgument):
+    with pytest.raises(
+        InvalidArgument, match=r"No field passed to generate records from source"
+    ):
         bt.CellType.from_source()
 
 
@@ -96,7 +103,10 @@ def test_import_source():
 
     # organism is required
     bt.settings._organism = None
-    with pytest.raises(OrganismNotSet):
+    with pytest.raises(
+        OrganismNotSet,
+        match=r"CellMarker requires to specify a organism name via `organism=` or `bionty\.settings\.organism=`!",
+    ):
         bt.CellMarker.import_source()
     bt.CellMarker.import_source(organism="mouse")
     assert bt.CellMarker.filter(organism__name="mouse").exists()
@@ -109,8 +119,10 @@ def test_import_source():
     bt.Organism.import_source()
     assert bt.Organism.filter().count() > 0
 
-    # test that string sources raise TypeError
-    with pytest.raises(TypeError):
+    # strings are not supported (only Sources) and should raise a TypeError
+    with pytest.raises(
+        TypeError, match=r"import_source\(\) expects a `bt\.Source` object, not a str"
+    ):
         bt.CellLine.import_source(source="depmap")
 
     # test that ICD Source does not crash
