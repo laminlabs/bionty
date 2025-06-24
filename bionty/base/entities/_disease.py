@@ -84,6 +84,6 @@ class Disease(PublicOntology):
             source=source,
             version=version,
             organism=organism,
-            include_id_prefixes={"mondo": ["MONDO"]},
+            include_id_prefixes={"mondo:": ["MONDO"]},
             **kwargs,
         )

@@ -23,7 +23,7 @@ class Protein(PublicOntology):
         self,
         organism: Literal["human", "mouse"] | None = None,
         source: Literal["uniprot"] | None = None,
-        version: Literal["2023-02", "2023-03", "2024-03"] | None = None,
+        version: Literal["2024-03", "2023-03", "2023-02"] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(

@@ -23,13 +23,13 @@ class Ethnicity(PublicOntology):
         self,
         organism: Literal["human"] | None = None,
         source: Literal["hancestro"] | None = None,
-        version: Literal["3.0"] | None = None,
+        version: Literal["3.0", "2025-04-01"] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(
             source=source,
             version=version,
             organism=organism,
-            include_id_prefixes={"hancestro": ["HANCESTRO"]},
+            include_id_prefixes={"hancestro:": ["HANCESTRO"]},
             **kwargs,
         )

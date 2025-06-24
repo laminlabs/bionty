@@ -20,3 +20,10 @@ def test_efo_experimental_factor_inspect_ontology_id():
     expected_series = pd.Series([True, True, True, True, False])
 
     assert inspect.equals(expected_series)
+
+
+def test_efo_shape():
+    """We observed issues with new EFO versions not including all records."""
+    # 3.78.0 is the latest version where had initially observed this issue
+    # If this works well, we may unpin the fixed version
+    assert bt_base.ExperimentalFactor(version="3.78.0").df().shape[0] > 18000
