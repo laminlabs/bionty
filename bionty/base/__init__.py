@@ -56,7 +56,7 @@ Ontology sources
 .. autosummary::
    :toctree: .
 
-   display_available_sources
+   display_sources
    display_currently_used_sources
    settings
 
@@ -64,7 +64,7 @@ Ontology sources
 
 # dynamic classes
 from . import dev
-from ._display_sources import display_available_sources, display_currently_used_sources
+from ._display_sources import display_currently_used_sources, display_sources
 
 # tools
 from ._public_ontology import PublicOntology, PublicOntologyField

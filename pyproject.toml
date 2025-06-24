@@ -42,6 +42,11 @@ dev = [
 testpaths = [
     "tests",
 ]
+filterwarnings = [
+    "ignore::DeprecationWarning:botocore.*",
+    "ignore::pronto.utils.warnings.SyntaxWarning",
+    "ignore::pronto.utils.warnings.NotImplementedWarning",
+]
 
 [tool.coverage.run]
 omit = [
