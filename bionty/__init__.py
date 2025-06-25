@@ -9,7 +9,7 @@
 Install and mount `bionty` in a new instance:
 
 >>> pip install 'bionty'
->>> lamin init --storage <storage_name> --modules bionty
+>>> lamin init --storage <path_to_storage_location> --modules bionty
 
 Import the package:
 
