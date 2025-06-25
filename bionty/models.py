@@ -94,7 +94,7 @@ class Source(SQLRecord, TracksRun, TracksUpdates):
     version: str = CharField(max_length=64, db_index=True)
     """Version of the source."""
     in_db: bool = BooleanField(default=False, db_index=True)
-    """Whether this ontology has be added to the database."""
+    """Whether this ontology has been added to the database."""
     currently_used: bool = BooleanField(default=False, db_index=True)
     """Whether this record is currently used."""
     description: str | None = TextField(blank=True, db_index=True)
