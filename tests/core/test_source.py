@@ -237,3 +237,15 @@ def test_import_source_update_records():
     record_wo_artifact = bt.CellType.get(ontology_id="CL:0000409")
     assert record_wo_artifact.source == source2
     assert record_wo_artifact.name != record_wo_artifact_name
+
+
+def test_import_source_no_prefix_filter():
+    from bionty.base._ontology import Ontology
+
+    efo_public = bt.base.ExperimentalFactor(version="3.78.0")
+    efo_ontology = Ontology(bt.base.settings.dynamicdir / efo_public._ontology_filename)
+    efo_ontology_df = efo_ontology.to_df()
+    # efo_ontology_df.shape()
+    source = bt.ExperimentalFactor.add_source(source="efo", df=efo_ontology_df)
+    bt.ExperimentalFactor.import_source(source=source)
+    assert bt.ExperimentalFactor.filter().count() == 66971
