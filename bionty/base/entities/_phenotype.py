@@ -20,14 +20,8 @@ PHEVersions = Literal["1.2"]
 
 PATOVersions = Literal[
     "2025-05-14",
-    "2024-06-18",
-    "2024-04-18",
     "2024-03-28",
-    "2024-02-07",
-    "2024-01-22",
-    "2023-05-31",
     "2023-05-18",
-    "2022-12-17",
 ]
 
 
@@ -38,8 +32,11 @@ class Phenotype(PublicOntology):
     1. Human Phenotype Ontology
     https://hpo.jax.org/app/
 
-    4.Phecodes ICD10 map
+    2. Phecodes ICD10 map
     https://phewascatalog.org/phecodes_icd10
+
+    3. PATO - Phenotype And Trait Ontology
+    https://obofoundry.org/ontology/pato.html
 
     Args:
         {doc_entities}
