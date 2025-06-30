@@ -23,7 +23,9 @@ MondoVersions = Literal[
     "2023-04-04",
 ]
 
-DOIDVersions = Literal["2024-05-29", "2024-01-31", "2023-03-31", "2023-01-30"]
+DOIDVersions = Literal[
+    "2025-05-30", "2024-05-29", "2024-01-31", "2023-03-31", "2023-01-30"
+]
 
 
 @_doc_params(doc_entities=doc_entites)

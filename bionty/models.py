@@ -51,6 +51,7 @@ class StaticReference(PublicOntology):
 
     def _load_df(self) -> pd.DataFrame:
         if self._source_record.dataframe_artifact_id:
+            self._filter_prefix = False
             return self._source_record.dataframe_artifact.load(is_run_input=False)
         else:
             return pd.DataFrame()
@@ -94,7 +95,7 @@ class Source(SQLRecord, TracksRun, TracksUpdates):
     version: str = CharField(max_length=64, db_index=True)
     """Version of the source."""
     in_db: bool = BooleanField(default=False, db_index=True)
-    """Whether this ontology has be added to the database."""
+    """Whether this ontology has been added to the database."""
     currently_used: bool = BooleanField(default=False, db_index=True)
     """Whether this record is currently used."""
     description: str | None = TextField(blank=True, db_index=True)
@@ -368,7 +369,12 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             df_artifact = ln.Artifact.from_df(df, key=parquet_filename, run=False)
         elif source_record.url and source_record.url.startswith("s3://bionty-assets/"):
             df_artifact = ln.Artifact(new_source.url, run=False)
-        elif isinstance(source, PublicOntology) and not source.df().empty:
+        elif (
+            # for bionty-assets, we do not create dataframe artifact here but with register_source_in_bionty_assets
+            ln.setup.settings.instance.slug != "laminlabs/bionty-assets"
+            and isinstance(source, PublicOntology)
+            and not source.df().empty
+        ):
             df_artifact = ln.Artifact.from_df(
                 source.df(), key=parquet_filename, run=False
             )
