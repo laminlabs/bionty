@@ -371,7 +371,11 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             df_artifact = ln.Artifact.from_df(df, key=parquet_filename, run=False)
         elif source_record.url and source_record.url.startswith("s3://bionty-assets/"):
             df_artifact = ln.Artifact(new_source.url, run=False)
-        elif isinstance(source, PublicOntology) and not source.df().empty:
+        elif (
+            ln.setup.settings.instance.slug != "laminlabs/bionty-assets"
+            and isinstance(source, PublicOntology)
+            and not source.df().empty
+        ):
             df_artifact = ln.Artifact.from_df(
                 source.df(), key=parquet_filename, run=False
             )
