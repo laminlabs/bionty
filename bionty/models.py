@@ -372,6 +372,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
         elif source_record.url and source_record.url.startswith("s3://bionty-assets/"):
             df_artifact = ln.Artifact(new_source.url, run=False)
         elif (
+            # for bionty-assets, we do not create dataframe artifact here but with register_source_in_bionty_assets
             ln.setup.settings.instance.slug != "laminlabs/bionty-assets"
             and isinstance(source, PublicOntology)
             and not source.df().empty
