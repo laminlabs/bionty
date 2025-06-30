@@ -237,3 +237,13 @@ def test_import_source_update_records():
     record_wo_artifact = bt.CellType.get(ontology_id="CL:0000409")
     assert record_wo_artifact.source == source2
     assert record_wo_artifact.name != record_wo_artifact_name
+
+
+def test_import_source_no_prefix_filter():
+    efo_public = bt.base.ExperimentalFactor(version="3.78.0")
+    efo_ontology_df = efo_public.to_pronto().to_df(include_id_prefixes=None)
+    assert efo_ontology_df.shape[0] == 66971
+    assert efo_ontology_df.index.str.startswith("EFO:").sum() == 18229
+    source = bt.ExperimentalFactor.add_source(source="efo", df=efo_ontology_df)
+    bt.ExperimentalFactor.import_source(source=source)
+    assert bt.ExperimentalFactor.filter().count() == 66971

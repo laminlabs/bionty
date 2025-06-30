@@ -51,6 +51,7 @@ class StaticReference(PublicOntology):
 
     def _load_df(self) -> pd.DataFrame:
         if self._source_record.dataframe_artifact_id:
+            self._filter_prefix = False
             return self._source_record.dataframe_artifact.load(is_run_input=False)
         else:
             return pd.DataFrame()
