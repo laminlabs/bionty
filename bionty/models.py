@@ -2368,7 +2368,7 @@ class RecordOrganism(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "organism", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordGene(BaseSQLRecord, IsLink, TracksRun):
@@ -2380,7 +2380,7 @@ class RecordGene(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "gene", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordProtein(BaseSQLRecord, IsLink, TracksRun):
@@ -2392,7 +2392,7 @@ class RecordProtein(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "protein", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordCellMarker(BaseSQLRecord, IsLink, TracksRun):
@@ -2408,7 +2408,7 @@ class RecordCellMarker(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "cellmarker", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordTissue(BaseSQLRecord, IsLink, TracksRun):
@@ -2420,7 +2420,7 @@ class RecordTissue(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "tissue", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordCellType(BaseSQLRecord, IsLink, TracksRun):
@@ -2432,7 +2432,7 @@ class RecordCellType(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "celltype", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordDisease(BaseSQLRecord, IsLink, TracksRun):
@@ -2444,7 +2444,7 @@ class RecordDisease(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "disease", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordCellLine(BaseSQLRecord, IsLink, TracksRun):
@@ -2456,7 +2456,7 @@ class RecordCellLine(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "cellline", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordPhenotype(BaseSQLRecord, IsLink, TracksRun):
@@ -2472,7 +2472,7 @@ class RecordPhenotype(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "phenotype", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordPathway(BaseSQLRecord, IsLink, TracksRun):
@@ -2484,7 +2484,7 @@ class RecordPathway(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "pathway", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordExperimentalFactor(BaseSQLRecord, IsLink, TracksRun):
@@ -2504,7 +2504,7 @@ class RecordExperimentalFactor(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "experimentalfactor", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordDevelopmentalStage(BaseSQLRecord, IsLink, TracksRun):
@@ -2524,7 +2524,7 @@ class RecordDevelopmentalStage(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "developmentalstage", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordEthnicity(BaseSQLRecord, IsLink, TracksRun):
@@ -2540,7 +2540,7 @@ class RecordEthnicity(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "ethnicity", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 # backward compat
