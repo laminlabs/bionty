@@ -8,7 +8,6 @@ from django.db import migrations
 class Migration(migrations.Migration):
     dependencies = [
         ("bionty", "0055_rename_cellline_recordcellline_value_and_more"),
-        ("lamindb", "0112_alter_recordartifact_feature_and_more"),
     ]
 
     operations = [
