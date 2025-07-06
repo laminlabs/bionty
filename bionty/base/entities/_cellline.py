@@ -1,11 +1,15 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Literal, overload
 
 from bionty.base._public_ontology import PublicOntology
 from bionty.base.dev._doc_util import _doc_params
 
 from ._shared_docstrings import doc_entites
+
+CLOVersions = Literal["2023-03-28", "2022-03-21"]
+
+DepMapVersions = Literal["2024-Q2"]
 
 
 @_doc_params(doc_entities=doc_entites)
@@ -22,11 +26,29 @@ class CellLine(PublicOntology):
         {doc_entities}
     """
 
+    @overload
+    def __init__(
+        self,
+        organism: Literal["all"] | None = None,
+        source: Literal["clo"] = None,
+        version: CLOVersions | None = None,
+        **kwargs,
+    ) -> None: ...
+
+    @overload
+    def __init__(
+        self,
+        organism: Literal["all"] | None = None,
+        source: Literal["depmap"] = None,
+        version: DepMapVersions | None = None,
+        **kwargs,
+    ) -> None: ...
+
     def __init__(
         self,
         organism: Literal["all"] | None = None,
         source: Literal["clo", "depmap"] | None = None,
-        version: Literal["2024-Q2", "2023-03-28", "2022-03-21"] | None = None,
+        version: CLOVersions | DepMapVersions | None = None,
         **kwargs,
     ) -> None:
         super().__init__(
