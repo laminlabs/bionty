@@ -90,7 +90,7 @@ try:
                 - synonyms: A pipe-separated string of exact synonyms (None if no synonyms).
                 - parents: A list of parent term IDs, including superclasses and optionally the specified relationship.
             """
-            logger.info(f"starting ontology to_df() conversion for source: {source}")
+            logger.info(f"starting ontology `to_df()` conversion for source: {source}")
 
             def filter_include_id_prefixes(terms: pronto.ontology._OntologyTerms):  # type:ignore
                 if include_id_prefixes and source in list(include_id_prefixes.keys()):
@@ -129,8 +129,9 @@ try:
 
             for i, term in enumerate(filtered_terms):
                 if i % log_interval == 0 and i > 0:
+                    print("  ", end="")
                     logger.info(
-                        f"\tprocessed {i}/{len(filtered_terms)} terms ({i / len(filtered_terms) * 100:.1f}%)"
+                        f"Processed {i}/{len(filtered_terms)} terms ({i / len(filtered_terms) * 100:.1f}%)"
                     )
 
                 # skip terms without id or name
