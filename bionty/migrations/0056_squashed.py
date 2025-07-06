@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
     ]
 
     dependencies = [
-        ("lamindb", "0112_alter_recordartifact_feature_and_more"),
+        ("lamindb", "0104_alter_branch_uid"),
     ]
 
     operations = [
