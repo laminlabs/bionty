@@ -16,7 +16,9 @@ def import_pronto():
 
         import pronto  # type: ignore
 
-        warnings.filterwarnings("ignore", category=pronto.warnings.ProntoWarning)
+        if logger._verbosity <= 3:
+            warnings.filterwarnings("ignore", category=pronto.warnings.ProntoWarning)
+
         return pronto
     except ImportError as exc:
         raise ImportError(
