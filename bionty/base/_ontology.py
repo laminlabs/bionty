@@ -90,12 +90,12 @@ try:
                 - synonyms: A pipe-separated string of exact synonyms (None if no synonyms).
                 - parents: A list of parent term IDs, including superclasses and optionally the specified relationship.
             """
-            logger.hint(f"Starting ontology to_df() conversion for source: {source}")
+            logger.info(f"starting ontology to_df() conversion for source: {source}")
 
             def filter_include_id_prefixes(terms: pronto.ontology._OntologyTerms):  # type:ignore
                 if include_id_prefixes and source in list(include_id_prefixes.keys()):
-                    logger.hint(
-                        f"Filtering terms by ID prefixes for source {source}: {include_id_prefixes[source]}"
+                    logger.info(
+                        f"filtering terms by ID prefixes for source {source}: {include_id_prefixes[source]}"
                     )
                     return list(
                         filter(
@@ -107,7 +107,6 @@ try:
                         )
                     )
                 else:
-                    logger.hint("No ID prefix filtering applied")
                     return terms
 
             if source is not None:
@@ -119,10 +118,10 @@ try:
             else:
                 prefix_list = None
 
-            logger.hint("Filtering terms by ID prefixes...")
+            logger.info("filtering terms by ID prefixes...")
             filtered_terms = filter_include_id_prefixes(self.terms())
 
-            logger.hint("Processing individual terms...")
+            logger.info("processing individual terms...")
             df_values = []
 
             processed_count = 0
@@ -130,8 +129,8 @@ try:
 
             for i, term in enumerate(filtered_terms):
                 if i % log_interval == 0 and i > 0:
-                    logger.hint(
-                        f"Processed {i}/{len(filtered_terms)} terms ({i / len(filtered_terms) * 100:.1f}%)"
+                    logger.info(
+                        f"\tprocessed {i}/{len(filtered_terms)} terms ({i / len(filtered_terms) * 100:.1f}%)"
                     )
 
                 # skip terms without id or name
@@ -185,13 +184,13 @@ try:
                 )
                 processed_count += 1
 
-            logger.hint(f"Processed {processed_count} terms")
+            logger.success(f"processed {processed_count} terms")
 
             df = pd.DataFrame(
                 df_values,
                 columns=["ontology_id", "name", "definition", "synonyms", "parents"],
             )
-            logger.hint(f"Created DataFrame with {len(df)} rows")
+            logger.success(f"created DataFrame with {len(df)} rows")
 
             df["ontology_id"] = [
                 i.replace(self._prefix, "").replace("_", ":") for i in df["ontology_id"]
@@ -203,7 +202,7 @@ try:
 
             # needed to avoid erroring in .lookup()
             df["name"] = df["name"].fillna("")
-            logger.hint("Conversion completed")
+            logger.success("conversion completed")
 
             return df.set_index("ontology_id")
 
