@@ -91,17 +91,6 @@ Submodules:
 
 __version__ = "1.6.0"
 
-
-from importlib.util import find_spec
-
-if find_spec("pronto"):
-    import warnings
-
-    from pronto.utils.warnings import NotImplementedWarning, SyntaxWarning
-
-    warnings.filterwarnings("ignore", category=SyntaxWarning)
-    warnings.filterwarnings("ignore", category=NotImplementedWarning)
-
 from lamindb_setup._check_setup import _check_instance_setup
 
 from . import _biorecord, base, ids
