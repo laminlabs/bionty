@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, BinaryIO
 
 import pandas as pd
+from lamin_utils import logger
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -87,9 +88,13 @@ try:
                 - synonyms: A pipe-separated string of exact synonyms (None if no synonyms).
                 - parents: A list of parent term IDs, including superclasses and optionally the specified relationship.
             """
+            logger.hint(f"Starting ontology to_df() conversion for source: {source}")
 
             def filter_include_id_prefixes(terms: pronto.ontology._OntologyTerms):  # type:ignore
                 if include_id_prefixes and source in list(include_id_prefixes.keys()):
+                    logger.hint(
+                        f"Filtering terms by ID prefixes for source {source}: {include_id_prefixes[source]}"
+                    )
                     return list(
                         filter(
                             lambda val: any(
@@ -100,6 +105,7 @@ try:
                         )
                     )
                 else:
+                    logger.hint("No ID prefix filtering applied")
                     return terms
 
             if source is not None:
@@ -111,10 +117,21 @@ try:
             else:
                 prefix_list = None
 
+            logger.hint("Filtering terms by ID prefixes...")
             filtered_terms = filter_include_id_prefixes(self.terms())
 
+            logger.hint("Processing individual terms...")
             df_values = []
-            for term in filtered_terms:
+
+            processed_count = 0
+            log_interval = max(1, len(filtered_terms) // 20)  # log every 5% of terms
+
+            for i, term in enumerate(filtered_terms):
+                if i % log_interval == 0 and i > 0:
+                    logger.hint(
+                        f"Processed {i}/{len(filtered_terms)} terms ({i / len(filtered_terms) * 100:.1f}%)"
+                    )
+
                 # skip terms without id or name
                 if (not term.id) or (not term.name):
                     continue
@@ -164,11 +181,15 @@ try:
                 df_values.append(
                     (term.id, term.name, definition, synonyms, superclasses)
                 )
+                processed_count += 1
+
+            logger.hint(f"Processed {processed_count} terms")
 
             df = pd.DataFrame(
                 df_values,
                 columns=["ontology_id", "name", "definition", "synonyms", "parents"],
             )
+            logger.hint(f"Created DataFrame with {len(df)} rows")
 
             df["ontology_id"] = [
                 i.replace(self._prefix, "").replace("_", ":") for i in df["ontology_id"]
@@ -180,6 +201,7 @@ try:
 
             # needed to avoid erroring in .lookup()
             df["name"] = df["name"].fillna("")
+            logger.hint("Conversion completed")
 
             return df.set_index("ontology_id")
 
