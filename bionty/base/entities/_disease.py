@@ -33,11 +33,6 @@ class Disease(PublicOntology):
         organism: Literal["all", "human"] | None = None,
         source: Literal["mondo", "doid", "icd"] | None = None,
         version: Literal[
-            # ICD
-            "icd-9-2011",
-            "icd-10-2020",
-            "icd-10-2024",
-            "icd-11-2023",
             # Mondo
             "2025-06-03",
             "2024-08-06",
@@ -56,6 +51,11 @@ class Disease(PublicOntology):
             "2024-01-31",
             "2023-03-31",
             "2023-01-30",
+            # ICD
+            "icd-9-2011",
+            "icd-10-2020",
+            "icd-10-2024",
+            "icd-11-2023",
         ]
         | None = None,
         **kwargs,

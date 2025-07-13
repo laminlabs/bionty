@@ -14,7 +14,10 @@ from bionty.base.entities._shared_docstrings import organism_removed
 class Organism(PublicOntology):
     """Organism.
 
-    1. Organism ontology
+    1. NCBItaxon Ontology
+    https://github.com/obophenotype/ncbitaxon
+
+    2. Organism ontology
     https://www.ensembl.org/index.html
 
     Args:
@@ -30,8 +33,10 @@ class Organism(PublicOntology):
         source: Literal["ensembl", "ncbitaxon"] | None = None,
         version: (
             Literal[
+                # NCBITaxon
                 "2025-03-13",
                 "2023-06-20",
+                # Ensembl
                 "release-112",
                 "release-57",
             ]

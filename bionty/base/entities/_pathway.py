@@ -27,9 +27,11 @@ class Pathway(PublicOntology):
         organism: Literal["all"] | None = None,
         source: Literal["go", "pw"] | None = None,
         version: Literal[
+            # Gene Ontology
             "2024-11-03",
             "2024-06-17",
             "2023-05-10",
+            # Pathway Ontology
             "7.84",
         ]
         | None = None,
