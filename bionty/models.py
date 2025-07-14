@@ -250,14 +250,16 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
         Args:
             source: Source record to import records from.
             update_records: If True, update existing records with the new source.
+
                 - If a record has the same metadata in the new source, link the record to the new source.
                 - If a record has no artifacts associated, update it's metadata and link to the new source.
                 - If a record associated artifacts, but different name in the new source, create a new record with the new source.
+
             organism: Organism name or record.
                 Required for entities with a required organism foreign key when no source is passed.
             ignore_conflicts: Whether to ignore conflicts during bulk record creation.
 
-        Examples:
+        Examples::
 
             import bionty as bt
 
@@ -310,9 +312,11 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
 
         Args:
             source: Source specification. Can be:
+
                 - Source record: Existing :class:`bionty.Source` instance
                 - PublicOntology: Ontology object with source metadata
                 - str: Source name (e.g., "mondo", "cl", "go")
+
             df: Optional DataFrame containing ontology data to store as Artifact.
                 If None and source is a PublicOntology, uses the ontology's DataFrame.
             version: Source version string. Required when source is str and no existing source found.
