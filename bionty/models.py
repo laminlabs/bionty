@@ -171,7 +171,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
     class Meta:
         abstract = True
 
-    source = ForeignKey(Source, PROTECT, null=True, related_name="+")
+    source: Source = ForeignKey(Source, PROTECT, null=True, related_name="+")
     """:class:`~bionty.Source` this record associates with."""
 
     def __init__(self, *args, **kwargs):
@@ -2418,7 +2418,7 @@ class RecordOrganism(BaseSQLRecord, IsLink, TracksRun):
 
 class RecordGene(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(Record, CASCADE, related_name="values_gene")
+    record: Record = ForeignKey("lamindb.Record", CASCADE, related_name="values_gene")
     value: Gene = ForeignKey("Gene", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recordgene"
