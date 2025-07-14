@@ -443,6 +443,10 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
 
         Note that the source is auto-configured and tracked via :class:`docs:bionty.Source`.
 
+        Args:
+            organism: Organism name or record to filter by
+            source: Source record to use instead of default
+
         See Also:
             :doc:`docs:public-ontologies`
 
