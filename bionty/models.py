@@ -314,7 +314,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             source: Source specification. Can be:
 
                 - Source record: Existing :class:`bionty.Source` instance
-                - PublicOntology: Ontology object with source metadata
+                - PublicOntology: PublicOntology object with source metadata
                 - str: Source name (e.g., "mondo", "cl", "go")
 
             df: Optional DataFrame containing ontology data to store as Artifact.
@@ -2186,9 +2186,7 @@ class SchemaPathway(BaseSQLRecord, IsLink):
 
 class ArtifactOrganism(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = ForeignKey(
-        "lamindb.Artifact", CASCADE, related_name="links_organism"
-    )
+    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_organism")
     organism: Organism = ForeignKey("Organism", PROTECT, related_name="links_artifact")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactorganism"
@@ -2202,9 +2200,7 @@ class ArtifactOrganism(BaseSQLRecord, IsLink, TracksRun):
 
 class ArtifactGene(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = ForeignKey(
-        "lamindb.Artifact", CASCADE, related_name="links_gene"
-    )
+    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_gene")
     gene: Gene = ForeignKey("Gene", PROTECT, related_name="links_artifact")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactgene"
@@ -2410,9 +2406,7 @@ class ArtifactEthnicity(BaseSQLRecord, IsLink, TracksRun):
 
 class RecordOrganism(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(
-        "lamindb.Record", CASCADE, related_name="values_organism"
-    )
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_organism")
     value: Organism = ForeignKey("Organism", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recordorganism"
@@ -2424,7 +2418,7 @@ class RecordOrganism(BaseSQLRecord, IsLink, TracksRun):
 
 class RecordGene(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey("lamindb.Record", CASCADE, related_name="values_gene")
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_gene")
     value: Gene = ForeignKey("Gene", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recordgene"
@@ -2436,9 +2430,7 @@ class RecordGene(BaseSQLRecord, IsLink, TracksRun):
 
 class RecordProtein(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(
-        "lamindb.Record", CASCADE, related_name="values_protein"
-    )
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_protein")
     value: Protein = ForeignKey("Protein", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recordprotein"
@@ -2450,9 +2442,7 @@ class RecordProtein(BaseSQLRecord, IsLink, TracksRun):
 
 class RecordCellMarker(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(
-        "lamindb.Record", CASCADE, related_name="values_cell_marker"
-    )
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_cell_marker")
     value: CellMarker = ForeignKey("CellMarker", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature,
@@ -2468,7 +2458,7 @@ class RecordCellMarker(BaseSQLRecord, IsLink, TracksRun):
 
 class RecordTissue(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey("lamindb.Record", CASCADE, related_name="values_tissue")
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_tissue")
     value: Tissue = ForeignKey("Tissue", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recordtissue"
@@ -2480,9 +2470,7 @@ class RecordTissue(BaseSQLRecord, IsLink, TracksRun):
 
 class RecordCellType(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(
-        "lamindb.Record", CASCADE, related_name="values_cell_type"
-    )
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_cell_type")
     value: CellType = ForeignKey("CellType", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recordcelltype"
@@ -2494,9 +2482,7 @@ class RecordCellType(BaseSQLRecord, IsLink, TracksRun):
 
 class RecordDisease(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(
-        "lamindb.Record", CASCADE, related_name="values_disease"
-    )
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_disease")
     value: Disease = ForeignKey("Disease", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recorddisease"
@@ -2508,9 +2494,7 @@ class RecordDisease(BaseSQLRecord, IsLink, TracksRun):
 
 class RecordCellLine(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(
-        "lamindb.Record", CASCADE, related_name="values_cell_line"
-    )
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_cell_line")
     value: CellLine = ForeignKey("CellLine", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recordcellline"
@@ -2522,9 +2506,7 @@ class RecordCellLine(BaseSQLRecord, IsLink, TracksRun):
 
 class RecordPhenotype(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(
-        "lamindb.Record", CASCADE, related_name="values_phenotype"
-    )
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_phenotype")
     value: Phenotype = ForeignKey("Phenotype", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature,
@@ -2540,9 +2522,7 @@ class RecordPhenotype(BaseSQLRecord, IsLink, TracksRun):
 
 class RecordPathway(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(
-        "lamindb.Record", CASCADE, related_name="values_pathway"
-    )
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_pathway")
     value: Pathway = ForeignKey("Pathway", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recordpathway"
