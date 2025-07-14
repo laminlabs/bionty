@@ -2407,16 +2407,17 @@ class RecordOrganism(BaseSQLRecord, IsLink, TracksRun):
     class Meta:
         unique_together = ("record", "value", "feature")
 
-    class RecordGene(BaseSQLRecord, IsLink, TracksRun):
-        id: int = models.BigAutoField(primary_key=True)
-        record: Record = ForeignKey(Record, CASCADE, related_name="values_gene")
-        value: Gene = ForeignKey("Gene", PROTECT, related_name="links_record")
-        feature: Feature = ForeignKey(
-            Feature, PROTECT, null=True, default=None, related_name="links_recordgene"
-        )
 
-        class Meta:
-            unique_together = ("record", "value", "feature")
+class RecordGene(BaseSQLRecord, IsLink, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_gene")
+    value: Gene = ForeignKey("Gene", PROTECT, related_name="links_record")
+    feature: Feature = ForeignKey(
+        Feature, PROTECT, null=True, default=None, related_name="links_recordgene"
+    )
+
+    class Meta:
+        unique_together = ("record", "value", "feature")
 
 
 class RecordProtein(BaseSQLRecord, IsLink, TracksRun):
