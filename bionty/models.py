@@ -171,7 +171,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
     class Meta:
         abstract = True
 
-    source = ForeignKey(Source, PROTECT, null=True, related_name="+")
+    source: Source = ForeignKey(Source, PROTECT, null=True, related_name="+")
     """:class:`~bionty.Source` this record associates with."""
 
     def __init__(self, *args, **kwargs):
@@ -250,14 +250,16 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
         Args:
             source: Source record to import records from.
             update_records: If True, update existing records with the new source.
+
                 - If a record has the same metadata in the new source, link the record to the new source.
                 - If a record has no artifacts associated, update it's metadata and link to the new source.
                 - If a record associated artifacts, but different name in the new source, create a new record with the new source.
+
             organism: Organism name or record.
                 Required for entities with a required organism foreign key when no source is passed.
             ignore_conflicts: Whether to ignore conflicts during bulk record creation.
 
-        Example::
+        Examples::
 
             import bionty as bt
 
@@ -302,7 +304,47 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
         version: str | None = None,
         organism: str | None = None,
     ) -> Source:
-        """Link a source record to the entity with a reference DataFrame."""
+        """Link a source record to the entity with a reference DataFrame.
+
+        Creates or retrieves a Source record for the entity and optionally associates
+        it with a DataFrame artifact containing the ontology data. If the source
+        already exists with a dataframe artifact, returns the existing source.
+
+        Args:
+            source: Source specification. Can be:
+
+                - Source record: Existing :class:`bionty.Source` instance
+                - PublicOntology: PublicOntology object with source metadata
+                - str: Source name (e.g., "mondo", "cl", "go")
+
+            df: Optional DataFrame containing ontology data to store as Artifact.
+                If None and source is a PublicOntology, uses the ontology's DataFrame.
+            version: Source version string. Required when source is str and no existing source found.
+                Examples: "2025-06-03", "v1.0", "release-112"
+            organism: Organism identifier. Required for organism-specific entities when source is str.
+                Use "all" for cross-organism ontologies.
+
+        Examples:
+            Add a source by name with version and organism::
+
+                import bionty as bt
+                source = bt.Disease.add_source("mondo", version="2025-06-03", organism="all")
+
+            Add a source with custom DataFrame::
+
+                import pandas as pd
+                df = pd.DataFrame({"name": ["disease1"], "ontology_id": ["MONDO:123"]})
+                source = bt.Disease.add_source("custom", version="1.0", organism="all", df=df)
+
+            Add from existing PublicOntology::
+
+                pub_ont = bt.Disease.public()
+                source = bt.Disease.add_source(pub_ont)
+
+            Add organism-specific source::
+
+                source = bt.Gene.add_source("ensembl", version="release-112", organism="human")
+        """
         import lamindb as ln
 
         from bionty.base._public_ontology import encode_filenames
@@ -400,6 +442,10 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
         """The corresponding :class:`docs:bionty.base.PublicOntology` object.
 
         Note that the source is auto-configured and tracked via :class:`docs:bionty.Source`.
+
+        Args:
+            organism: Organism name or record to filter by
+            source: Source record to use instead of default
 
         See Also:
             :doc:`docs:public-ontologies`
@@ -565,7 +611,6 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:organism`.
 
-
     Example::
 
         import bionty as bt
@@ -722,7 +767,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
     organism: Organism = ForeignKey(
         Organism, PROTECT, default=None, related_name="genes"
     )
-    """:class:`~bionty.Organism` this gene associates with."""
+    """:class:`~bionty.Organism` of the gene."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactGene", related_name="genes"
     )
@@ -734,7 +779,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
     schemas: Schema = models.ManyToManyField(
         Schema, through="SchemaGene", related_name="genes"
     )
-    """Featuresets linked to this gene."""
+    """Schemas linked to this gene."""
 
     @overload
     def __init__(
