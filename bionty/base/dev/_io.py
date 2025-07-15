@@ -129,7 +129,13 @@ def s3_bionty_assets(
     parent_path = remote_path.parent.path.rstrip("/")
     remote_path.fs.dircache[parent_path] = [remote_stat.as_info()]
     # synchronize the remote path
-    remote_path.synchronize_to(localpath, error_no_origin=False, print_progress=True)
+    if hasattr(remote_path, "synchronize_to"):
+        remote_path.synchronize_to(
+            localpath, error_no_origin=False, print_progress=True
+        )
+    else:
+        # UPath.synchronize is deprecated
+        remote_path.synchronize(localpath, error_no_origin=False, print_progress=True)
     # clean the artificial cache
     del remote_path.fs.dircache[parent_path]
 
