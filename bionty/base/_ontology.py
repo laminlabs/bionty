@@ -73,7 +73,7 @@ try:
             include_rel: str | None = None,
             include_id_prefixes: dict[str, list[str]] | None = None,
         ):
-            """Convert pronto.Ontology to a DataFrame with columns id, name, parents, definition, and synonyms.
+            """Convert `pronto.Ontology` to a DataFrame with columns id, name, parents, definition, and synonyms.
 
             Args:
                 source: The source of the ontology terms to include. If None, all terms are included.
