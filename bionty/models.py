@@ -349,6 +349,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
 
         from ._organism import is_organism_required
 
+        # wetlab.Compound, bionty.CellType, etc.
         entity_name = cls.__get_name_with_module__()
         source_record = source if isinstance(source, Source) else None
         parquet_filename = None
@@ -361,6 +362,8 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             if organism:
                 filter_kwargs["organism"] = organism
 
+            # if source is new and hasn't been registered in the instance yet
+            # try to download the source via PublicOntology
             source_record = Source.filter(**filter_kwargs).first()
             if not source_record:
                 source = PublicOntology(
@@ -405,7 +408,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
         if not parquet_filename:
             parquet_filename, _ = encode_filenames(**unique_kwargs)
 
-        # Create artifact if needed
+        # Create dataframe artifact if needed
         df_artifact = None
         if isinstance(df, pd.DataFrame):
             df_artifact = ln.Artifact.from_df(df, key=parquet_filename, run=False)
@@ -421,9 +424,9 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                 source.df(), key=parquet_filename, run=False
             )
 
-        # Save artifact and update source
+        # Save dataframe artifact and update source
         if df_artifact:
-            df_artifact.kind = "__lamindb__"
+            df_artifact.kind = "__lamindb_run__"
             df_artifact.save()
             new_source.dataframe_artifact = df_artifact
             new_source.save()
