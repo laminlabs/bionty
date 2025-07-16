@@ -277,9 +277,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             bt.CellType.import_source(source, update_records=True)
         """
         if isinstance(source, str):
-            raise TypeError(
-                "import_source() expects a `bt.Source` object, not a str.\n"
-            )
+            raise TypeError("import_source() expects a `bt.Source` object, not a str.")
 
         if update_records:
             from .core._source import update_records_to_source

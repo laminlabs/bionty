@@ -15,8 +15,11 @@ class Phenotype(PublicOntology):
     1. Human Phenotype Ontology
     https://hpo.jax.org/app/
 
-    4.Phecodes ICD10 map
+    2. Phecodes ICD10 map
     https://phewascatalog.org/phecodes_icd10
+
+    3. PATO - Phenotype And Trait Ontology
+    https://obofoundry.org/ontology/pato.html
 
     Args:
         {doc_entities}
