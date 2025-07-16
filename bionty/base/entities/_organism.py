@@ -94,10 +94,14 @@ class Organism(PublicOntology):
                         [x.split("_")[0].capitalize()] + x.split("_")[1:]
                     )
                 )
+                df["synonyms"] = None
                 df.to_parquet(self._local_parquet_path)
                 return df
             else:
                 df = pd.read_parquet(self._local_parquet_path)
+                if "synonyms" not in df.columns:
+                    # add synonyms column if it doesn't exist
+                    df["synonyms"] = None
                 return _standardize_scientific_name(df)
         else:
             return super()._load_df()

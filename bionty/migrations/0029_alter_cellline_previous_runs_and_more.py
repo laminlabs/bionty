@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("bionty", "0028_squashed"),
+        ("bionty", "0028_artifactcellline_created_at_and_more"),
     ]
 
     operations = [

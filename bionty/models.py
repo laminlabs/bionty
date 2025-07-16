@@ -171,7 +171,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
     class Meta:
         abstract = True
 
-    source = ForeignKey(Source, PROTECT, null=True, related_name="+")
+    source: Source = ForeignKey(Source, PROTECT, null=True, related_name="+")
     """:class:`~bionty.Source` this record associates with."""
 
     def __init__(self, *args, **kwargs):
@@ -250,14 +250,16 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
         Args:
             source: Source record to import records from.
             update_records: If True, update existing records with the new source.
+
                 - If a record has the same metadata in the new source, link the record to the new source.
                 - If a record has no artifacts associated, update it's metadata and link to the new source.
                 - If a record associated artifacts, but different name in the new source, create a new record with the new source.
+
             organism: Organism name or record.
                 Required for entities with a required organism foreign key when no source is passed.
             ignore_conflicts: Whether to ignore conflicts during bulk record creation.
 
-        Example::
+        Examples::
 
             import bionty as bt
 
@@ -300,7 +302,47 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
         version: str | None = None,
         organism: str | None = None,
     ) -> Source:
-        """Link a source record to the entity with a reference DataFrame."""
+        """Link a source record to the entity with a reference DataFrame.
+
+        Creates or retrieves a Source record for the entity and optionally associates
+        it with a DataFrame artifact containing the ontology data. If the source
+        already exists with a dataframe artifact, returns the existing source.
+
+        Args:
+            source: Source specification. Can be:
+
+                - Source record: Existing :class:`bionty.Source` instance
+                - PublicOntology: PublicOntology object with source metadata
+                - str: Source name (e.g., "mondo", "cl", "go")
+
+            df: Optional DataFrame containing ontology data to store as Artifact.
+                If None and source is a PublicOntology, uses the ontology's DataFrame.
+            version: Source version string. Required when source is str and no existing source found.
+                Examples: "2025-06-03", "v1.0", "release-112"
+            organism: Organism identifier. Required for organism-specific entities when source is str.
+                Use "all" for cross-organism ontologies.
+
+        Examples:
+            Add a source by name with version and organism::
+
+                import bionty as bt
+                source = bt.Disease.add_source("mondo", version="2025-06-03", organism="all")
+
+            Add a source with custom DataFrame::
+
+                import pandas as pd
+                df = pd.DataFrame({"name": ["disease1"], "ontology_id": ["MONDO:123"]})
+                source = bt.Disease.add_source("custom", version="1.0", organism="all", df=df)
+
+            Add from existing PublicOntology::
+
+                pub_ont = bt.Disease.public()
+                source = bt.Disease.add_source(pub_ont)
+
+            Add organism-specific source::
+
+                source = bt.Gene.add_source("ensembl", version="release-112", organism="human")
+        """
         import lamindb as ln
 
         from bionty.base._public_ontology import encode_filenames
@@ -398,6 +440,10 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
         """The corresponding :class:`docs:bionty.base.PublicOntology` object.
 
         Note that the source is auto-configured and tracked via :class:`docs:bionty.Source`.
+
+        Args:
+            organism: Organism name or record to filter by
+            source: Source record to use instead of default
 
         See Also:
             :doc:`docs:public-ontologies`
@@ -563,7 +609,6 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:organism`.
 
-
     Example::
 
         import bionty as bt
@@ -720,7 +765,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
     organism: Organism = ForeignKey(
         Organism, PROTECT, default=None, related_name="genes"
     )
-    """:class:`~bionty.Organism` this gene associates with."""
+    """:class:`~bionty.Organism` of the gene."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactGene", related_name="genes"
     )
@@ -732,7 +777,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
     schemas: Schema = models.ManyToManyField(
         Schema, through="SchemaGene", related_name="genes"
     )
-    """Featuresets linked to this gene."""
+    """Schemas linked to this gene."""
 
     @overload
     def __init__(
@@ -2359,47 +2404,44 @@ class ArtifactEthnicity(BaseSQLRecord, IsLink, TracksRun):
 
 class RecordOrganism(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(Record, CASCADE, related_name="links_organism")
-    organism: Organism = ForeignKey("Organism", PROTECT, related_name="links_record")
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_organism")
+    value: Organism = ForeignKey("Organism", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recordorganism"
     )
 
     class Meta:
-        unique_together = ("record", "organism", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordGene(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(Record, CASCADE, related_name="links_gene")
-    gene: Gene = ForeignKey("Gene", PROTECT, related_name="links_record")
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_gene")
+    value: Gene = ForeignKey("Gene", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recordgene"
     )
 
     class Meta:
-        unique_together = ("record", "gene", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordProtein(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(Record, CASCADE, related_name="links_protein")
-    protein: Protein = ForeignKey("Protein", PROTECT, related_name="links_record")
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_protein")
+    value: Protein = ForeignKey("Protein", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recordprotein"
     )
 
     class Meta:
-        unique_together = ("record", "protein", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordCellMarker(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(Record, CASCADE, related_name="links_cell_marker")
-    # follow the .lower() convention in link models
-    cellmarker: CellMarker = ForeignKey(
-        "CellMarker", PROTECT, related_name="links_record"
-    )
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_cell_marker")
+    value: CellMarker = ForeignKey("CellMarker", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature,
         PROTECT,
@@ -2409,63 +2451,61 @@ class RecordCellMarker(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "cellmarker", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordTissue(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(Record, CASCADE, related_name="links_tissue")
-    tissue: Tissue = ForeignKey("Tissue", PROTECT, related_name="links_record")
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_tissue")
+    value: Tissue = ForeignKey("Tissue", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recordtissue"
     )
 
     class Meta:
-        unique_together = ("record", "tissue", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordCellType(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(Record, CASCADE, related_name="links_cell_type")
-    # follow the .lower() convention in link models
-    celltype: CellType = ForeignKey("CellType", PROTECT, related_name="links_record")
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_cell_type")
+    value: CellType = ForeignKey("CellType", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recordcelltype"
     )
 
     class Meta:
-        unique_together = ("record", "celltype", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordDisease(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(Record, CASCADE, related_name="links_disease")
-    disease: Disease = ForeignKey("Disease", PROTECT, related_name="links_record")
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_disease")
+    value: Disease = ForeignKey("Disease", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recorddisease"
     )
 
     class Meta:
-        unique_together = ("record", "disease", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordCellLine(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(Record, CASCADE, related_name="links_cell_line")
-    # follow the .lower() convention in link models
-    cellline: CellLine = ForeignKey("CellLine", PROTECT, related_name="links_record")
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_cell_line")
+    value: CellLine = ForeignKey("CellLine", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recordcellline"
     )
 
     class Meta:
-        unique_together = ("record", "cellline", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordPhenotype(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(Record, CASCADE, related_name="links_phenotype")
-    phenotype: Phenotype = ForeignKey("Phenotype", PROTECT, related_name="links_record")
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_phenotype")
+    value: Phenotype = ForeignKey("Phenotype", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature,
         PROTECT,
@@ -2475,27 +2515,27 @@ class RecordPhenotype(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "phenotype", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordPathway(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(Record, CASCADE, related_name="links_pathway")
-    pathway: Pathway = ForeignKey("Pathway", PROTECT, related_name="links_record")
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_pathway")
+    value: Pathway = ForeignKey("Pathway", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_recordpathway"
     )
 
     class Meta:
-        unique_together = ("record", "pathway", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordExperimentalFactor(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     record: Record = ForeignKey(
-        Record, CASCADE, related_name="links_experimental_factor"
+        Record, CASCADE, related_name="values_experimental_factor"
     )
-    experimentalfactor: ExperimentalFactor = ForeignKey(
+    value: ExperimentalFactor = ForeignKey(
         "ExperimentalFactor", PROTECT, related_name="links_record"
     )
     feature: Feature = ForeignKey(
@@ -2507,16 +2547,15 @@ class RecordExperimentalFactor(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "experimentalfactor", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordDevelopmentalStage(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     record: Record = ForeignKey(
-        Record, CASCADE, related_name="links_developmental_stage"
+        Record, CASCADE, related_name="values_developmental_stage"
     )
-    # follow the .lower() convention in link models
-    developmentalstage: DevelopmentalStage = ForeignKey(
+    value: DevelopmentalStage = ForeignKey(
         "DevelopmentalStage", PROTECT, related_name="links_record"
     )
     feature: Feature = ForeignKey(
@@ -2528,13 +2567,13 @@ class RecordDevelopmentalStage(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "developmentalstage", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 class RecordEthnicity(BaseSQLRecord, IsLink, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    record: Record = ForeignKey(Record, CASCADE, related_name="links_ethnicity")
-    ethnicity: Ethnicity = ForeignKey("Ethnicity", PROTECT, related_name="links_record")
+    record: Record = ForeignKey(Record, CASCADE, related_name="values_ethnicity")
+    value: Ethnicity = ForeignKey("Ethnicity", PROTECT, related_name="links_record")
     feature: Feature = ForeignKey(
         Feature,
         PROTECT,
@@ -2544,7 +2583,7 @@ class RecordEthnicity(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
-        unique_together = ("record", "ethnicity", "feature")
+        unique_together = ("record", "value", "feature")
 
 
 # backward compat
