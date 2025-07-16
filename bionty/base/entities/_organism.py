@@ -14,7 +14,10 @@ from bionty.base.entities._shared_docstrings import organism_removed
 class Organism(PublicOntology):
     """Organism.
 
-    1. Organism ontology
+    1. NCBItaxon Ontology
+    https://github.com/obophenotype/ncbitaxon
+
+    2. Organism ontology
     https://www.ensembl.org/index.html
 
     Args:
@@ -30,8 +33,10 @@ class Organism(PublicOntology):
         source: Literal["ensembl", "ncbitaxon"] | None = None,
         version: (
             Literal[
+                # NCBITaxon
                 "2025-03-13",
                 "2023-06-20",
+                # Ensembl
                 "release-112",
                 "release-57",
             ]
@@ -78,10 +83,14 @@ class Organism(PublicOntology):
                         [x.split("_")[0].capitalize()] + x.split("_")[1:]
                     )
                 )
+                df["synonyms"] = None
                 df.to_parquet(self._local_parquet_path)
                 return df
             else:
                 df = pd.read_parquet(self._local_parquet_path)
+                if "synonyms" not in df.columns:
+                    # add synonyms column if it doesn't exist
+                    df["synonyms"] = None
                 return _standardize_scientific_name(df)
         else:
             return super()._load_df()

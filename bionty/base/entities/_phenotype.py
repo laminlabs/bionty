@@ -15,8 +15,14 @@ class Phenotype(PublicOntology):
     1. Human Phenotype Ontology
     https://hpo.jax.org/app/
 
-    4.Phecodes ICD10 map
+    2. PATO - the Phenotype And Trait Ontology
+    https://github.com/pato-ontology/pato
+
+    3.Phecodes ICD10 map
     https://phewascatalog.org/phecodes_icd10
+
+    3. PATO - Phenotype And Trait Ontology
+    https://obofoundry.org/ontology/pato.html
 
     Args:
         {doc_entities}
@@ -27,21 +33,18 @@ class Phenotype(PublicOntology):
         organism: Literal["human", "all"] | None = None,
         source: Literal["hp", "phe", "pato"] | None = None,
         version: Literal[
-            "2025-05-14",
+            # HP
             "2025-05-06",
-            "2024-06-18",
             "2024-04-26",
-            "2024-04-18",
-            "2024-03-28",
             "2024-03-06",
-            "2024-02-07",
-            "2024-01-22",
             "2023-06-17",
-            "2023-05-31",
-            "2023-05-18",
             "2023-04-05",
             "2023-01-27",
-            "2022-12-17",
+            # Pato
+            "2025-05-14",
+            "2024-03-28",
+            "2023-05-18",
+            # Phe
             "1.2",
         ]
         | None = None,

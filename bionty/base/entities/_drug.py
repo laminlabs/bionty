@@ -28,11 +28,13 @@ class Drug(PublicOntology):
         organism: Literal["all"] | None = None,
         source: Literal["dron", "chebi"] | None = None,
         version: Literal[
+            # DRON
             "2025-04-18",
             "2024-08-05",
+            "2023-03-10",
+            # CHEBI
             "2024-07-27",
             "2024-03-02",
-            "2023-03-10",
         ]
         | None = None,
         **kwargs,
