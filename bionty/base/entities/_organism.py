@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, overload
+from typing import Literal
 
 import pandas as pd
 
@@ -8,10 +8,6 @@ from bionty.base._public_ontology import PublicOntology
 from bionty.base.dev._doc_util import _doc_params
 from bionty.base.dev._io import s3_bionty_assets
 from bionty.base.entities._shared_docstrings import organism_removed
-
-EnsemblVersions = Literal["release-112", "release-57"]
-
-NCBITaxonVersions = Literal["2025-03-13", "2023-06-20"]
 
 
 @_doc_params(doc_entities=organism_removed)
@@ -25,26 +21,6 @@ class Organism(PublicOntology):
         {doc_entities}
     """
 
-    @overload
-    def __init__(
-        self,
-        taxa: (
-            Literal["vertebrates", "bacteria", "fungi", "metazoa", "plants"] | None
-        ) = None,
-        source: Literal["ensembl"] = None,
-        version: EnsemblVersions | None = None,
-        **kwargs,
-    ) -> None: ...
-
-    @overload
-    def __init__(
-        self,
-        taxa: (Literal["all"] | None) = None,
-        source: Literal["ncbitaxon"] = None,
-        version: NCBITaxonVersions | None = None,
-        **kwargs,
-    ) -> None: ...
-
     def __init__(
         self,
         taxa: (
@@ -52,7 +28,15 @@ class Organism(PublicOntology):
             | None
         ) = None,
         source: Literal["ensembl", "ncbitaxon"] | None = None,
-        version: EnsemblVersions | NCBITaxonVersions | None = None,
+        version: (
+            Literal[
+                "2025-03-13",
+                "2023-06-20",
+                "release-112",
+                "release-57",
+            ]
+            | None
+        ) = None,
         **kwargs,
     ):
         # To support the organism kwarg being passed in getattr access in other parts of the code

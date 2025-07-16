@@ -1,22 +1,11 @@
 from __future__ import annotations
 
-from typing import Literal, overload
+from typing import Literal
 
 from bionty.base._public_ontology import PublicOntology
 from bionty.base.dev._doc_util import _doc_params
 
 from ._shared_docstrings import doc_entites
-
-DRONVersions = Literal[
-    "2025-04-18",
-    "2024-08-05",
-    "2023-03-10",
-]
-
-CHEBIVersions = Literal[
-    "2024-07-27",
-    "2024-03-02",
-]
 
 
 @_doc_params(doc_entities=doc_entites)
@@ -34,29 +23,18 @@ class Drug(PublicOntology):
         {doc_entities}
     """
 
-    @overload
-    def __init__(
-        self,
-        organism: Literal["all"] | None = None,
-        source: Literal["dron"] = None,
-        version: DRONVersions | None = None,
-        **kwargs,
-    ) -> None: ...
-
-    @overload
-    def __init__(
-        self,
-        organism: Literal["all"] | None = None,
-        source: Literal["chebi"] = None,
-        version: CHEBIVersions | None = None,
-        **kwargs,
-    ) -> None: ...
-
     def __init__(
         self,
         organism: Literal["all"] | None = None,
         source: Literal["dron", "chebi"] | None = None,
-        version: DRONVersions | CHEBIVersions | None = None,
+        version: Literal[
+            "2025-04-18",
+            "2024-08-05",
+            "2024-07-27",
+            "2024-03-02",
+            "2023-03-10",
+        ]
+        | None = None,
         **kwargs,
     ) -> None:
         super().__init__(
