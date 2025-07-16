@@ -277,7 +277,19 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             bt.CellType.import_source(source, update_records=True)
         """
         if isinstance(source, str):
-            raise TypeError("import_source() expects a `bt.Source` object, not a str.")
+            raise TypeError(
+                "import_source() expects a `bionty.Source` object, you passed a str."
+            )
+
+        if source:
+            entity = cls.__get_name_with_module__()
+            if entity != source.entity:
+                raise ValueError(f"please pass a source of the same entity: {entity}")
+        else:
+            from ._source import get_source_record
+
+            source = get_source_record(cls, organism=organism)
+            logger.important(f"no source provided, using default source: {source}")
 
         if update_records:
             from .core._source import update_records_to_source
