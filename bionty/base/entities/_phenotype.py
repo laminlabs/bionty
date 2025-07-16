@@ -21,6 +21,9 @@ class Phenotype(PublicOntology):
     3.Phecodes ICD10 map
     https://phewascatalog.org/phecodes_icd10
 
+    3. PATO - Phenotype And Trait Ontology
+    https://obofoundry.org/ontology/pato.html
+
     Args:
         {doc_entities}
     """

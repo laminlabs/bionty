@@ -6,7 +6,6 @@
 
 ./guide/concepts
 ./guide/config
-./guide/extend
 ```
 
 ```{toctree}
