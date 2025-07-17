@@ -80,7 +80,14 @@ def url_download(
         return localpath
 
     except requests.exceptions.HTTPError as err:
-        raise err
+        if err.response.status_code == 404:
+            raise requests.exceptions.HTTPError(
+                f"URL not found (404): '{url}'. Check for typos."
+            ) from err
+        else:
+            raise requests.exceptions.HTTPError(
+                f"HTTP error ({err.response.status_code}): {url}."
+            ) from err
 
 
 def s3_bionty_assets(
