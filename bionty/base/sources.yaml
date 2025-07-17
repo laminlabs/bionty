@@ -73,7 +73,7 @@ CellLine:
 CellType:
   cl:
     all:
-      latest-version: 2024-08-16
+      latest-version: 2025-04-10
       url: http://purl.obolibrary.org/obo/cl/releases/{version}/cl.owl
     name: Cell Ontology
     website: https://obophenotype.github.io/cell-ontology

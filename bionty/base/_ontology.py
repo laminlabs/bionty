@@ -53,12 +53,21 @@ try:
             prefix: str = "",
         ) -> None:
             self._prefix = prefix
-            super().__init__(
-                handle=handle,
-                import_depth=import_depth,
-                timeout=timeout,
-                threads=threads,
-            )
+            try:
+                logger.debug(f"Attempting to parse ontology file: {handle}")
+                super().__init__(
+                    handle=handle,
+                    import_depth=import_depth,
+                    timeout=timeout,
+                    threads=threads,
+                )
+                logger.debug("Ontology parsing successful")
+            except Exception as e:
+                if "ParseError" in str(type(e).__name__) or "unclosed token" in str(e):
+                    logger.warning(f"Skipping corrupted ontology file: {handle}")
+                    raise ValueError(f"Corrupted ontology file: {str(e)}") from e
+                else:
+                    raise
 
         def get_term(self, term):
             """Search an ontology by its id."""
