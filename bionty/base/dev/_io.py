@@ -86,10 +86,8 @@ def url_download(
             )
         else:
             raise requests.exceptions.HTTPError(
-                f"HTTP error {err.response.status_code}: {url}"
+                f"HTTP error ({err.response.status_code}): {url}."
             )
-    except requests.exceptions.ConnectionError:
-        raise requests.exceptions.ConnectionError(f"Connection failed: '{url}'")
 
 
 def s3_bionty_assets(
