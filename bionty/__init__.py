@@ -89,7 +89,7 @@ Submodules:
 
 """
 
-__version__ = "1.6.0"
+__version__ = "1.6.1rc1"
 
 from lamindb_setup._check_setup import _check_instance_setup
 
