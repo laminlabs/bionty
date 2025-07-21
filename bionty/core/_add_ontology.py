@@ -145,18 +145,15 @@ def check_source_in_db(
 
 def add_ontology_from_df(
     registry: type[BioRecord],
+    source: Source,
     ontology_ids: list[str] | None = None,
     organism: str | Organism | None = None,
-    source: Source | None = None,
     ignore_conflicts: bool = True,
 ) -> None:
     """Add ontology records from source to the database based on ontology ids."""
     import lamindb as ln
 
-    from bionty._source import get_source_record
-
-    source_record = get_source_record(registry, organism=organism, source=source)
-    public = registry.public(source=source_record)
+    public = registry.public(source=source)
     df = prepare_dataframe(public.df())
 
     if ontology_ids is None:
@@ -180,24 +177,24 @@ def add_ontology_from_df(
         raise ValueError("No valid records to add!")
 
     # all records of the source in the database
-    all_records = registry.filter(source=source_record).all()
+    all_records = registry.filter(source=source).all()
     n_in_db = all_records.count()
 
     check_source_in_db(
         registry=registry,
-        source=source_record,
+        source=source,
         n_all=n_all,
         n_in_db=n_in_db,
     )
 
-    records = create_records(registry, df_new, source_record, organism)
+    records = create_records(registry, df_new, source, organism)
     new_records = [r for r in records if r._state.adding]
     if ontology_ids is None:
         logger.info(f"adding {len(new_records)} new records")
     ln.save(new_records, ignore_conflicts=ignore_conflicts)
 
     all_records = registry.filter(
-        source=source_record
+        source=source
     ).all()  # need to update all_records after bulk_create
     if hasattr(registry, "parents"):
         source_has_parents = (
@@ -213,8 +210,8 @@ def add_ontology_from_df(
 
     if ontology_ids is None:
         logger.success("import is completed!")
-        source_record.in_db = True
-        source_record.save()
+        source.in_db = True
+        source.save()
 
 
 # used in save() to bulk save parents
@@ -233,6 +230,10 @@ def add_ontology(
     ):
         organism = organism or records[0].organism
     ontology_ids = [r.ontology_id for r in records]
+    if source is None:
+        from bionty._source import get_source_record
+
+        source = get_source_record(registry=registry, organism=organism)
     add_ontology_from_df(
         registry=registry,
         ontology_ids=ontology_ids,
