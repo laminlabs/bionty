@@ -432,7 +432,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             new_source.save()
 
         logger.success(
-            f"Added source {new_source.name} of version {new_source.version} for organism {new_source.organism}"
+            f"Added source '{new_source.name}' of version '{new_source.version}' for organism '{new_source.organism}'."
         )
         return new_source
 
