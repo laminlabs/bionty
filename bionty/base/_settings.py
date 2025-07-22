@@ -1,6 +1,5 @@
 from functools import wraps
 from pathlib import Path
-from typing import Union
 
 HOME_DIR = Path(f"{Path.home()}/.lamin/bionty").resolve()
 ROOT_DIR = Path(__file__).parent.resolve()

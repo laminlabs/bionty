@@ -1,7 +1,5 @@
-import os
 import shutil
 from pathlib import Path
-from typing import Union
 
 import requests  # type:ignore
 import yaml  # type:ignore

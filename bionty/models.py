@@ -306,7 +306,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
 
         Creates or retrieves a Source record for the entity and optionally associates
         it with a DataFrame artifact containing the ontology data. If the source
-        already exists with a dataframe artifact, returns the existing source.
+        already exists with a DataFrame artifact, returns the existing source.
 
         Args:
             source: Source specification. Can be:
@@ -431,7 +431,9 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             new_source.dataframe_artifact = df_artifact
             new_source.save()
 
-        logger.important("source added!")
+        logger.success(
+            f"Added source {new_source.name} of version {new_source.version} for organism {new_source.organism}"
+        )
         return new_source
 
     @classmethod
