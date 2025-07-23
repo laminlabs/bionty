@@ -328,11 +328,17 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                 import bionty as bt
                 source = bt.Disease.add_source("mondo", version="2025-06-03", organism="all")
 
-            Add a source with custom DataFrame::
+            Add a source to an entity with a custom DataFrame::
 
                 import pandas as pd
                 df = pd.DataFrame({"name": ["disease1"], "ontology_id": ["MONDO:123"]})
-                source = bt.Disease.add_source("custom", version="1.0", organism="all", df=df)
+                source = bt.Source(
+                    entity="bionty.Disease",
+                    name="new mondo",
+                    version="99.999",
+                    organism="human",
+                )
+                source = bt.Disease.add_source(source=source, df=df)
 
             Add from existing PublicOntology::
 
