@@ -29,6 +29,7 @@ from lamindb.models import (
     TracksRun,
     TracksUpdates,
 )
+from lamindb.models.sqlrecord import generate_indexes
 
 import bionty.base as bt_base
 from bionty.base.dev._doc_util import _doc_params
@@ -741,24 +742,33 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        indexes = generate_indexes(
+            app_name="bionty",
+            model_name="gene",
+            trigram_fields=[
+                "uid",
+                "symbol",
+                "ensembl_gene_id",
+                "description",
+                "synonyms",
+            ],
+        )
 
     _name_field: str = "symbol"
     _ontology_id_field: str = "ensembl_gene_id"
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=12, db_index=True, default=ids.gene)
+    uid: str = CharField(unique=True, max_length=12, default=ids.gene)
     """A universal id (base62-encoded hash of defining fields)."""
-    symbol: str | None = CharField(
-        max_length=64, db_index=True, null=True, default=None
-    )
+    symbol: str | None = CharField(max_length=64, null=True, default=None)
     """A unique short form of gene name."""
     stable_id: str | None = CharField(
         max_length=64, db_index=True, null=True, default=None, unique=True
     )
     """Stable ID of a gene that doesn't have ensembl_gene_id, e.g. a yeast gene."""
     ensembl_gene_id: str | None = CharField(
-        max_length=64, db_index=True, null=True, default=None, unique=True
+        max_length=64, null=True, default=None, unique=True
     )
     """Ensembl gene stable ID, in the form ENS[organism prefix][feature type prefix][a unique eleven digit number]."""
     ncbi_gene_ids: str | None = TextField(null=True, db_index=True, default=None)
@@ -769,9 +779,9 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         max_length=64, db_index=True, null=True, default=None
     )
     """Type of the gene."""
-    synonyms: str | None = TextField(null=True, db_index=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this gene."""
-    description: str | None = TextField(null=True, db_index=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the gene."""
     organism: Organism = ForeignKey(
         Organism, PROTECT, default=None, related_name="genes"
