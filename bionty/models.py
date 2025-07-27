@@ -894,29 +894,39 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        indexes = generate_indexes(
+            app_name="bionty",
+            model_name="protein",
+            trigram_fields=[
+                "uid",
+                "name",
+                "uniprotkb_id",
+                "synonyms",
+                "description",
+                "gene_symbol",
+            ],
+        )
 
     _name_field: str = "name"
     _ontology_id_field: str = "uniprotkb_id"
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=12, db_index=True, default=ids.protein)
+    uid: str = CharField(unique=True, max_length=12, default=ids.protein)
     """A universal id (base62-encoded hash of defining fields)."""
-    name: str | None = CharField(max_length=256, db_index=True, null=True, default=None)
+    name: str | None = CharField(max_length=256, null=True, default=None)
     """Unique name of a protein."""
     uniprotkb_id: str | None = CharField(
-        max_length=10, db_index=True, null=True, default=None, unique=True
+        max_length=10, null=True, default=None, unique=True
     )
     """UniProt protein ID, 6 alphanumeric characters, possibly suffixed by 4 more."""
-    synonyms: str | None = TextField(null=True, db_index=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this protein."""
-    description: str | None = TextField(null=True, db_index=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the protein."""
     length: int | None = BigIntegerField(db_index=True, null=True)
     """Length of the protein sequence."""
-    gene_symbol: str | None = CharField(
-        max_length=256, db_index=True, null=True, default=None
-    )
+    gene_symbol: str | None = CharField(max_length=256, null=True, default=None)
     """The primary gene symbol corresponds to this protein."""
     ensembl_gene_ids: str | None = TextField(null=True, default=None)
     """Bar-separated (|) Ensembl Gene IDs that correspond to this protein."""
