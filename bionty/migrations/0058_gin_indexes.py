@@ -13,7 +13,7 @@ import bionty.uids
 class Migration(migrations.Migration):
     dependencies = [
         ("bionty", "0057_alter_cellline_description_alter_cellline_synonyms_and_more"),
-        ("lamindb", "0118_gin_indexes"),
+        ("lamindb", "0119_gin_indexes"),
     ]
 
     operations = [
@@ -501,7 +501,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_organism_uid_tgmidx",
+            name="bionty_organis_uid_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -515,7 +515,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_organism_name_tgmidx",
+            name="bionty_organis_name_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -529,7 +529,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_organism_ontology_id_tgmidx",
+            name="bionty_organis_ontolog_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -543,7 +543,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_organism_scientific_name_tgmidx",
+            name="bionty_organis_scienti_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -557,7 +557,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_organism_synonyms_tgmidx",
+            name="bionty_organis_synonym_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -571,7 +571,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_organism_description_tgmidx",
+            name="bionty_organis_descrip_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -613,7 +613,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_gene_ensembl_gene_id_tgmidx",
+            name="bionty_gene_ensembl_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -627,7 +627,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_gene_description_tgmidx",
+            name="bionty_gene_descrip_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -641,7 +641,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_gene_synonyms_tgmidx",
+            name="bionty_gene_synonym_tgmidx",
         ),
     ),
     # Protein indexes
@@ -684,7 +684,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_protein_uniprotkb_id_tgmidx",
+            name="bionty_protein_uniprot_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -698,7 +698,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_protein_synonyms_tgmidx",
+            name="bionty_protein_synonym_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -712,7 +712,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_protein_description_tgmidx",
+            name="bionty_protein_descrip_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -726,7 +726,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_protein_gene_symbol_tgmidx",
+            name="bionty_protein_gene_sy_tgmidx",
         ),
     ),
     # CellMarker indexes
@@ -741,7 +741,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_cellmarker_uid_tgmidx",
+            name="bionty_cellmar_uid_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -755,7 +755,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_cellmarker_name_tgmidx",
+            name="bionty_cellmar_name_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -769,7 +769,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_cellmarker_synonyms_tgmidx",
+            name="bionty_cellmar_synonym_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -783,7 +783,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_cellmarker_description_tgmidx",
+            name="bionty_cellmar_descrip_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -797,7 +797,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_cellmarker_gene_symbol_tgmidx",
+            name="bionty_cellmar_gene_sy_tgmidx",
         ),
     ),
     # Tissue indexes
@@ -840,7 +840,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_tissue_ontology_id_tgmidx",
+            name="bionty_tissue_ontolog_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -868,7 +868,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_tissue_synonyms_tgmidx",
+            name="bionty_tissue_synonym_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -882,7 +882,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_tissue_description_tgmidx",
+            name="bionty_tissue_descrip_tgmidx",
         ),
     ),
     # CellType indexes
@@ -897,7 +897,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_celltype_uid_tgmidx",
+            name="bionty_celltyp_uid_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -911,7 +911,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_celltype_name_tgmidx",
+            name="bionty_celltyp_name_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -925,7 +925,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_celltype_ontology_id_tgmidx",
+            name="bionty_celltyp_ontolog_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -939,7 +939,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_celltype_abbr_tgmidx",
+            name="bionty_celltyp_abbr_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -953,7 +953,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_celltype_synonyms_tgmidx",
+            name="bionty_celltyp_synonym_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -967,7 +967,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_celltype_description_tgmidx",
+            name="bionty_celltyp_descrip_tgmidx",
         ),
     ),
     # Disease indexes
@@ -1010,7 +1010,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_disease_ontology_id_tgmidx",
+            name="bionty_disease_ontolog_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1038,7 +1038,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_disease_synonyms_tgmidx",
+            name="bionty_disease_synonym_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1052,7 +1052,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_disease_description_tgmidx",
+            name="bionty_disease_descrip_tgmidx",
         ),
     ),
     # CellLine indexes
@@ -1067,7 +1067,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_cellline_uid_tgmidx",
+            name="bionty_celllin_uid_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1081,7 +1081,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_cellline_name_tgmidx",
+            name="bionty_celllin_name_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1095,7 +1095,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_cellline_ontology_id_tgmidx",
+            name="bionty_celllin_ontolog_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1109,7 +1109,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_cellline_abbr_tgmidx",
+            name="bionty_celllin_abbr_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1123,7 +1123,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_cellline_synonyms_tgmidx",
+            name="bionty_celllin_synonym_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1137,7 +1137,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_cellline_description_tgmidx",
+            name="bionty_celllin_descrip_tgmidx",
         ),
     ),
     # Phenotype indexes
@@ -1152,7 +1152,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_phenotype_uid_tgmidx",
+            name="bionty_phenoty_uid_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1166,7 +1166,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_phenotype_name_tgmidx",
+            name="bionty_phenoty_name_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1180,7 +1180,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_phenotype_ontology_id_tgmidx",
+            name="bionty_phenoty_ontolog_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1194,7 +1194,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_phenotype_abbr_tgmidx",
+            name="bionty_phenoty_abbr_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1208,7 +1208,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_phenotype_synonyms_tgmidx",
+            name="bionty_phenoty_synonym_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1222,7 +1222,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_phenotype_description_tgmidx",
+            name="bionty_phenoty_descrip_tgmidx",
         ),
     ),
     # Pathway indexes
@@ -1265,7 +1265,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_pathway_ontology_id_tgmidx",
+            name="bionty_pathway_ontolog_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1293,7 +1293,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_pathway_synonyms_tgmidx",
+            name="bionty_pathway_synonym_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1307,7 +1307,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_pathway_description_tgmidx",
+            name="bionty_pathway_descrip_tgmidx",
         ),
     ),
     # ExperimentalFactor indexes
@@ -1322,7 +1322,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_experimentalfactor_uid_tgmidx",
+            name="bionty_experim_uid_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1336,7 +1336,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_experimentalfactor_name_tgmidx",
+            name="bionty_experim_name_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1350,7 +1350,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_experimentalfactor_ontology_id_tgmidx",
+            name="bionty_experim_ontolog_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1364,7 +1364,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_experimentalfactor_abbr_tgmidx",
+            name="bionty_experim_abbr_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1378,7 +1378,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_experimentalfactor_synonyms_tgmidx",
+            name="bionty_experim_synonym_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1392,7 +1392,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_experimentalfactor_description_tgmidx",
+            name="bionty_experim_descrip_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1406,7 +1406,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_experimentalfactor_molecule_tgmidx",
+            name="bionty_experim_molecul_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1420,7 +1420,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_experimentalfactor_instrument_tgmidx",
+            name="bionty_experim_instrum_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1434,7 +1434,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_experimentalfactor_measurement_tgmidx",
+            name="bionty_experim_measure_tgmidx",
         ),
     ),
     # DevelopmentalStage indexes
@@ -1449,7 +1449,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_developmentalstage_uid_tgmidx",
+            name="bionty_develop_uid_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1463,7 +1463,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_developmentalstage_name_tgmidx",
+            name="bionty_develop_name_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1477,7 +1477,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_developmentalstage_ontology_id_tgmidx",
+            name="bionty_develop_ontolog_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1491,7 +1491,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_developmentalstage_abbr_tgmidx",
+            name="bionty_develop_abbr_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1505,7 +1505,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_developmentalstage_synonyms_tgmidx",
+            name="bionty_develop_synonym_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1519,7 +1519,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_developmentalstage_description_tgmidx",
+            name="bionty_develop_descrip_tgmidx",
         ),
     ),
     # Ethnicity indexes
@@ -1534,7 +1534,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_ethnicity_uid_tgmidx",
+            name="bionty_ethnici_uid_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1548,7 +1548,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_ethnicity_name_tgmidx",
+            name="bionty_ethnici_name_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1562,7 +1562,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_ethnicity_ontology_id_tgmidx",
+            name="bionty_ethnici_ontolog_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1576,7 +1576,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_ethnicity_abbr_tgmidx",
+            name="bionty_ethnici_abbr_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1590,7 +1590,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_ethnicity_synonyms_tgmidx",
+            name="bionty_ethnici_synonym_tgmidx",
         ),
     ),
     migrations.AddIndex(
@@ -1604,7 +1604,7 @@ POSTGRES_OPERATIONS = [
                 ),
                 name="gin_trgm_ops",
             ),
-            name="bionty_ethnicity_description_tgmidx",
+            name="bionty_ethnici_descrip_tgmidx",
         ),
     ),
 ]
@@ -1620,142 +1620,112 @@ SQLITE_OPERATIONS = [
     ),
     migrations.AddIndex(
         model_name="gene",
-        index=models.Index(
-            fields=["ensembl_gene_id"], name="bionty_gene_ensembl_gene_id_idx"
-        ),
+        index=models.Index(fields=["ensembl_gene_id"], name="bionty_gene_ensembl_idx"),
     ),
     migrations.AddIndex(
         model_name="gene",
-        index=models.Index(
-            fields=["description"], name="bionty_gene_description_idx"
-        ),
+        index=models.Index(fields=["description"], name="bionty_gene_descrip_idx"),
     ),
     migrations.AddIndex(
         model_name="gene",
-        index=models.Index(fields=["synonyms"], name="bionty_gene_synonyms_idx"),
+        index=models.Index(fields=["synonyms"], name="bionty_gene_synonym_idx"),
     ),
     migrations.AddIndex(
         model_name="cellline",
-        index=models.Index(fields=["uid"], name="bionty_cellline_uid_idx"),
+        index=models.Index(fields=["uid"], name="bionty_celllin_uid_idx"),
     ),
     migrations.AddIndex(
         model_name="cellline",
-        index=models.Index(fields=["name"], name="bionty_cellline_name_idx"),
+        index=models.Index(fields=["name"], name="bionty_celllin_name_idx"),
     ),
     migrations.AddIndex(
         model_name="cellline",
-        index=models.Index(
-            fields=["ontology_id"], name="bionty_cellline_ontology_id_idx"
-        ),
+        index=models.Index(fields=["ontology_id"], name="bionty_celllin_ontolog_idx"),
     ),
     migrations.AddIndex(
         model_name="cellline",
-        index=models.Index(fields=["abbr"], name="bionty_cellline_abbr_idx"),
+        index=models.Index(fields=["abbr"], name="bionty_celllin_abbr_idx"),
     ),
     migrations.AddIndex(
         model_name="cellline",
-        index=models.Index(
-            fields=["synonyms"], name="bionty_cellline_synonyms_idx"
-        ),
+        index=models.Index(fields=["synonyms"], name="bionty_celllin_synonym_idx"),
     ),
     migrations.AddIndex(
         model_name="cellline",
-        index=models.Index(
-            fields=["description"], name="bionty_cellline_description_idx"
-        ),
+        index=models.Index(fields=["description"], name="bionty_celllin_descrip_idx"),
     ),
     migrations.AddIndex(
         model_name="cellmarker",
-        index=models.Index(fields=["uid"], name="bionty_cellmarker_uid_idx"),
+        index=models.Index(fields=["uid"], name="bionty_cellmar_uid_idx"),
     ),
     migrations.AddIndex(
         model_name="cellmarker",
-        index=models.Index(fields=["name"], name="bionty_cellmarker_name_idx"),
+        index=models.Index(fields=["name"], name="bionty_cellmar_name_idx"),
     ),
     migrations.AddIndex(
         model_name="cellmarker",
-        index=models.Index(
-            fields=["synonyms"], name="bionty_cellmarker_synonyms_idx"
-        ),
+        index=models.Index(fields=["synonyms"], name="bionty_cellmar_synonym_idx"),
     ),
     migrations.AddIndex(
         model_name="cellmarker",
-        index=models.Index(
-            fields=["description"], name="bionty_cellmarker_description_idx"
-        ),
+        index=models.Index(fields=["description"], name="bionty_cellmar_descrip_idx"),
     ),
     migrations.AddIndex(
         model_name="cellmarker",
-        index=models.Index(
-            fields=["gene_symbol"], name="bionty_cellmarker_gene_symbol_idx"
-        ),
+        index=models.Index(fields=["gene_symbol"], name="bionty_cellmar_gene_sy_idx"),
     ),
     migrations.AddIndex(
         model_name="celltype",
-        index=models.Index(fields=["uid"], name="bionty_celltype_uid_idx"),
+        index=models.Index(fields=["uid"], name="bionty_celltyp_uid_idx"),
     ),
     migrations.AddIndex(
         model_name="celltype",
-        index=models.Index(fields=["name"], name="bionty_celltype_name_idx"),
+        index=models.Index(fields=["name"], name="bionty_celltyp_name_idx"),
     ),
     migrations.AddIndex(
         model_name="celltype",
-        index=models.Index(
-            fields=["ontology_id"], name="bionty_celltype_ontology_id_idx"
-        ),
+        index=models.Index(fields=["ontology_id"], name="bionty_celltyp_ontolog_idx"),
     ),
     migrations.AddIndex(
         model_name="celltype",
-        index=models.Index(fields=["abbr"], name="bionty_celltype_abbr_idx"),
+        index=models.Index(fields=["abbr"], name="bionty_celltyp_abbr_idx"),
     ),
     migrations.AddIndex(
         model_name="celltype",
-        index=models.Index(
-            fields=["synonyms"], name="bionty_celltype_synonyms_idx"
-        ),
+        index=models.Index(fields=["synonyms"], name="bionty_celltyp_synonym_idx"),
     ),
     migrations.AddIndex(
         model_name="celltype",
-        index=models.Index(
-            fields=["description"], name="bionty_celltype_description_idx"
-        ),
+        index=models.Index(fields=["description"], name="bionty_celltyp_descrip_idx"),
     ),
     migrations.AddIndex(
         model_name="developmentalstage",
-        index=models.Index(
-            fields=["uid"], name="bionty_developmentalstage_uid_idx"
-        ),
+        index=models.Index(fields=["uid"], name="bionty_develop_uid_idx"),
     ),
     migrations.AddIndex(
         model_name="developmentalstage",
-        index=models.Index(
-            fields=["name"], name="bionty_developmentalstage_name_idx"
-        ),
+        index=models.Index(fields=["name"], name="bionty_develop_name_idx"),
     ),
     migrations.AddIndex(
         model_name="developmentalstage",
         index=models.Index(
             fields=["ontology_id"],
-            name="bionty_developmentalstage_ontology_id_idx",
+            name="bionty_develop_ontolog_idx",
         ),
     ),
     migrations.AddIndex(
         model_name="developmentalstage",
-        index=models.Index(
-            fields=["abbr"], name="bionty_developmentalstage_abbr_idx"
-        ),
+        index=models.Index(fields=["abbr"], name="bionty_develop_abbr_idx"),
     ),
     migrations.AddIndex(
         model_name="developmentalstage",
-        index=models.Index(
-            fields=["synonyms"], name="bionty_developmentalstage_synonyms_idx"
-        ),
+        index=models.Index(fields=["synonyms"], name="bionty_develop_synonym_idx"),
     ),
     migrations.AddIndex(
         model_name="developmentalstage",
         index=models.Index(
             fields=["description"],
-            name="bionty_developmentalstage_description_idx",
+            name="bionty_develop_descrip_idx",
         ),
     ),
     migrations.AddIndex(
@@ -1768,9 +1738,7 @@ SQLITE_OPERATIONS = [
     ),
     migrations.AddIndex(
         model_name="disease",
-        index=models.Index(
-            fields=["ontology_id"], name="bionty_disease_ontology_id_idx"
-        ),
+        index=models.Index(fields=["ontology_id"], name="bionty_disease_ontolog_idx"),
     ),
     migrations.AddIndex(
         model_name="disease",
@@ -1778,134 +1746,110 @@ SQLITE_OPERATIONS = [
     ),
     migrations.AddIndex(
         model_name="disease",
-        index=models.Index(fields=["synonyms"], name="bionty_disease_synonyms_idx"),
+        index=models.Index(fields=["synonyms"], name="bionty_disease_synonym_idx"),
     ),
     migrations.AddIndex(
         model_name="disease",
-        index=models.Index(
-            fields=["description"], name="bionty_disease_description_idx"
-        ),
+        index=models.Index(fields=["description"], name="bionty_disease_descrip_idx"),
     ),
     migrations.AddIndex(
         model_name="ethnicity",
-        index=models.Index(fields=["uid"], name="bionty_ethnicity_uid_idx"),
+        index=models.Index(fields=["uid"], name="bionty_ethnici_uid_idx"),
     ),
     migrations.AddIndex(
         model_name="ethnicity",
-        index=models.Index(fields=["name"], name="bionty_ethnicity_name_idx"),
+        index=models.Index(fields=["name"], name="bionty_ethnici_name_idx"),
     ),
     migrations.AddIndex(
         model_name="ethnicity",
-        index=models.Index(
-            fields=["ontology_id"], name="bionty_ethnicity_ontology_id_idx"
-        ),
+        index=models.Index(fields=["ontology_id"], name="bionty_ethnici_ontolog_idx"),
     ),
     migrations.AddIndex(
         model_name="ethnicity",
-        index=models.Index(fields=["abbr"], name="bionty_ethnicity_abbr_idx"),
+        index=models.Index(fields=["abbr"], name="bionty_ethnici_abbr_idx"),
     ),
     migrations.AddIndex(
         model_name="ethnicity",
-        index=models.Index(
-            fields=["synonyms"], name="bionty_ethnicity_synonyms_idx"
-        ),
+        index=models.Index(fields=["synonyms"], name="bionty_ethnici_synonym_idx"),
     ),
     migrations.AddIndex(
         model_name="ethnicity",
-        index=models.Index(
-            fields=["description"], name="bionty_ethnicity_description_idx"
-        ),
+        index=models.Index(fields=["description"], name="bionty_ethnici_descrip_idx"),
     ),
     migrations.AddIndex(
         model_name="experimentalfactor",
-        index=models.Index(
-            fields=["uid"], name="bionty_experimentalfactor_uid_idx"
-        ),
+        index=models.Index(fields=["uid"], name="bionty_experim_uid_idx"),
     ),
     migrations.AddIndex(
         model_name="experimentalfactor",
-        index=models.Index(
-            fields=["name"], name="bionty_experimentalfactor_name_idx"
-        ),
+        index=models.Index(fields=["name"], name="bionty_experim_name_idx"),
     ),
     migrations.AddIndex(
         model_name="experimentalfactor",
         index=models.Index(
             fields=["ontology_id"],
-            name="bionty_experimentalfactor_ontology_id_idx",
+            name="bionty_experim_ontolog_idx",
         ),
     ),
     migrations.AddIndex(
         model_name="experimentalfactor",
-        index=models.Index(
-            fields=["abbr"], name="bionty_experimentalfactor_abbr_idx"
-        ),
+        index=models.Index(fields=["abbr"], name="bionty_experim_abbr_idx"),
     ),
     migrations.AddIndex(
         model_name="experimentalfactor",
-        index=models.Index(
-            fields=["synonyms"], name="bionty_experimentalfactor_synonyms_idx"
-        ),
+        index=models.Index(fields=["synonyms"], name="bionty_experim_synonym_idx"),
     ),
     migrations.AddIndex(
         model_name="experimentalfactor",
         index=models.Index(
             fields=["description"],
-            name="bionty_experimentalfactor_description_idx",
+            name="bionty_experim_descrip_idx",
         ),
     ),
     migrations.AddIndex(
         model_name="experimentalfactor",
-        index=models.Index(
-            fields=["molecule"], name="bionty_experimentalfactor_molecule_idx"
-        ),
+        index=models.Index(fields=["molecule"], name="bionty_experim_molecul_idx"),
     ),
     migrations.AddIndex(
         model_name="experimentalfactor",
         index=models.Index(
             fields=["instrument"],
-            name="bionty_experimentalfactor_instrument_idx",
+            name="bionty_experim_instrum_idx",
         ),
     ),
     migrations.AddIndex(
         model_name="experimentalfactor",
         index=models.Index(
             fields=["measurement"],
-            name="bionty_experimentalfactor_measurement_idx",
+            name="bionty_experim_measure_idx",
         ),
     ),
     migrations.AddIndex(
         model_name="organism",
-        index=models.Index(fields=["uid"], name="bionty_organism_uid_idx"),
+        index=models.Index(fields=["uid"], name="bionty_organis_uid_idx"),
     ),
     migrations.AddIndex(
         model_name="organism",
-        index=models.Index(fields=["name"], name="bionty_organism_name_idx"),
+        index=models.Index(fields=["name"], name="bionty_organis_name_idx"),
     ),
     migrations.AddIndex(
         model_name="organism",
-        index=models.Index(
-            fields=["ontology_id"], name="bionty_organism_ontology_id_idx"
-        ),
+        index=models.Index(fields=["ontology_id"], name="bionty_organis_ontolog_idx"),
     ),
     migrations.AddIndex(
         model_name="organism",
         index=models.Index(
             fields=["scientific_name"],
-            name="bionty_organism_scientific_name_idx",
+            name="bionty_organis_scienti_idx",
         ),
     ),
     migrations.AddIndex(
         model_name="organism",
-        index=models.Index(
-            fields=["synonyms"], name="bionty_organism_synonyms_idx"
-        ),
+        index=models.Index(fields=["synonyms"], name="bionty_organis_synonym_idx"),
     ),
     migrations.AddIndex(
         model_name="organism",
-        index=models.Index(
-            fields=["description"], name="bionty_organism_description_idx"
-        ),
+        index=models.Index(fields=["description"], name="bionty_organis_descrip_idx"),
     ),
     migrations.AddIndex(
         model_name="pathway",
@@ -1917,9 +1861,7 @@ SQLITE_OPERATIONS = [
     ),
     migrations.AddIndex(
         model_name="pathway",
-        index=models.Index(
-            fields=["ontology_id"], name="bionty_pathway_ontology_id_idx"
-        ),
+        index=models.Index(fields=["ontology_id"], name="bionty_pathway_ontolog_idx"),
     ),
     migrations.AddIndex(
         model_name="pathway",
@@ -1927,43 +1869,35 @@ SQLITE_OPERATIONS = [
     ),
     migrations.AddIndex(
         model_name="pathway",
-        index=models.Index(fields=["synonyms"], name="bionty_pathway_synonyms_idx"),
+        index=models.Index(fields=["synonyms"], name="bionty_pathway_synonym_idx"),
     ),
     migrations.AddIndex(
         model_name="pathway",
-        index=models.Index(
-            fields=["description"], name="bionty_pathway_description_idx"
-        ),
+        index=models.Index(fields=["description"], name="bionty_pathway_descrip_idx"),
     ),
     migrations.AddIndex(
         model_name="phenotype",
-        index=models.Index(fields=["uid"], name="bionty_phenotype_uid_idx"),
+        index=models.Index(fields=["uid"], name="bionty_phenoty_uid_idx"),
     ),
     migrations.AddIndex(
         model_name="phenotype",
-        index=models.Index(fields=["name"], name="bionty_phenotype_name_idx"),
+        index=models.Index(fields=["name"], name="bionty_phenoty_name_idx"),
     ),
     migrations.AddIndex(
         model_name="phenotype",
-        index=models.Index(
-            fields=["ontology_id"], name="bionty_phenotype_ontology_id_idx"
-        ),
+        index=models.Index(fields=["ontology_id"], name="bionty_phenoty_ontolog_idx"),
     ),
     migrations.AddIndex(
         model_name="phenotype",
-        index=models.Index(fields=["abbr"], name="bionty_phenotype_abbr_idx"),
+        index=models.Index(fields=["abbr"], name="bionty_phenoty_abbr_idx"),
     ),
     migrations.AddIndex(
         model_name="phenotype",
-        index=models.Index(
-            fields=["synonyms"], name="bionty_phenotype_synonyms_idx"
-        ),
+        index=models.Index(fields=["synonyms"], name="bionty_phenoty_synonym_idx"),
     ),
     migrations.AddIndex(
         model_name="phenotype",
-        index=models.Index(
-            fields=["description"], name="bionty_phenotype_description_idx"
-        ),
+        index=models.Index(fields=["description"], name="bionty_phenoty_descrip_idx"),
     ),
     migrations.AddIndex(
         model_name="protein",
@@ -1975,25 +1909,19 @@ SQLITE_OPERATIONS = [
     ),
     migrations.AddIndex(
         model_name="protein",
-        index=models.Index(
-            fields=["uniprotkb_id"], name="bionty_protein_uniprotkb_id_idx"
-        ),
+        index=models.Index(fields=["uniprotkb_id"], name="bionty_protein_uniprot_idx"),
     ),
     migrations.AddIndex(
         model_name="protein",
-        index=models.Index(fields=["synonyms"], name="bionty_protein_synonyms_idx"),
+        index=models.Index(fields=["synonyms"], name="bionty_protein_synonym_idx"),
     ),
     migrations.AddIndex(
         model_name="protein",
-        index=models.Index(
-            fields=["description"], name="bionty_protein_description_idx"
-        ),
+        index=models.Index(fields=["description"], name="bionty_protein_descrip_idx"),
     ),
     migrations.AddIndex(
         model_name="protein",
-        index=models.Index(
-            fields=["gene_symbol"], name="bionty_protein_gene_symbol_idx"
-        ),
+        index=models.Index(fields=["gene_symbol"], name="bionty_protein_gene_sy_idx"),
     ),
     migrations.AddIndex(
         model_name="tissue",
@@ -2005,9 +1933,7 @@ SQLITE_OPERATIONS = [
     ),
     migrations.AddIndex(
         model_name="tissue",
-        index=models.Index(
-            fields=["ontology_id"], name="bionty_tissue_ontology_id_idx"
-        ),
+        index=models.Index(fields=["ontology_id"], name="bionty_tissue_ontolog_idx"),
     ),
     migrations.AddIndex(
         model_name="tissue",
@@ -2015,13 +1941,11 @@ SQLITE_OPERATIONS = [
     ),
     migrations.AddIndex(
         model_name="tissue",
-        index=models.Index(fields=["synonyms"], name="bionty_tissue_synonyms_idx"),
+        index=models.Index(fields=["synonyms"], name="bionty_tissue_synonym_idx"),
     ),
     migrations.AddIndex(
         model_name="tissue",
-        index=models.Index(
-            fields=["description"], name="bionty_tissue_description_idx"
-        ),
+        index=models.Index(fields=["description"], name="bionty_tissue_descrip_idx"),
     ),
 ]
 
