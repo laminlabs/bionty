@@ -1028,31 +1028,41 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
         unique_together = (("name", "organism"),)
+        indexes = generate_indexes(
+            app_name="bionty",
+            model_name="cellmarker",
+            trigram_fields=[
+                "uid",
+                "name",
+                "synonyms",
+                "description",
+                "gene_symbol",
+            ],
+        )
 
     _name_field: str = "name"
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(
-        unique=True, max_length=12, db_index=True, default=ids.cellmarker
-    )
+    uid: str = CharField(unique=True, max_length=12, default=ids.cellmarker)
     """A universal id (base62-encoded hash of defining fields)."""
-    name: str = CharField(max_length=64, db_index=True)
+    name: str = CharField(max_length=64)
     """Unique name of the cell marker."""
-    synonyms: str | None = TextField(null=True, db_index=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this cell marker."""
-    description: str | None = TextField(null=True, db_index=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the cell marker."""
-    gene_symbol: str | None = CharField(
-        max_length=64, db_index=True, null=True, default=None
-    )
+    gene_symbol: str | None = CharField(max_length=64, null=True, default=None)
     """Gene symbol that corresponds to this cell marker."""
     ncbi_gene_id: str | None = CharField(
-        max_length=32, db_index=True, null=True, default=None
+        max_length=32, null=True, default=None, db_index=True
     )
     """NCBI gene id that corresponds to this cell marker."""
     uniprotkb_id: str | None = CharField(
-        max_length=10, db_index=True, null=True, default=None
+        max_length=10,
+        null=True,
+        default=None,
+        db_index=True,
     )
     """Uniprotkb id that corresponds to this cell marker."""
     organism: Organism = ForeignKey(
@@ -1158,27 +1168,35 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
         unique_together = (("name", "ontology_id"),)
+        indexes = generate_indexes(
+            app_name="bionty",
+            model_name="tissue",
+            trigram_fields=[
+                "uid",
+                "name",
+                "ontology_id",
+                "abbr",
+                "synonyms",
+                "description",
+            ],
+        )
 
     _name_field: str = "name"
     _ontology_id_field: str = "ontology_id"
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
     """A universal id (base62-encoded hash of defining fields)."""
-    name: str = CharField(max_length=256, db_index=True)
+    name: str = CharField(max_length=256)
     """Name of the tissue."""
-    ontology_id: str | None = CharField(
-        max_length=32, db_index=True, null=True, default=None
-    )
+    ontology_id: str | None = CharField(max_length=32, null=True, default=None)
     """Ontology ID of the tissue."""
-    abbr: str | None = CharField(
-        max_length=32, db_index=True, unique=True, null=True, default=None
-    )
+    abbr: str | None = CharField(max_length=32, unique=True, null=True, default=None)
     """A unique abbreviation of tissue."""
-    synonyms: str | None = TextField(null=True, db_index=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this tissue."""
-    description: str | None = TextField(null=True, db_index=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the tissue."""
     parents: Tissue = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
