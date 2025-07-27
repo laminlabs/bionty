@@ -12,8 +12,8 @@ import bionty.uids
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("bionty", "0057_squashed"),
-        ("lamindb", "0117_squashed"),
+        ("bionty", "0057_alter_cellline_description_alter_cellline_synonyms_and_more"),
+        ("lamindb", "0117_fix_artifact_storage_hash_unique_constraints"),
     ]
 
     operations = [
