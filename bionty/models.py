@@ -630,27 +630,39 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        indexes = generate_indexes(
+            app_name="bionty",
+            model_name="organism",
+            trigram_fields=[
+                "uid",
+                "name",
+                "ontology_id",
+                "scientific_name",
+                "synonyms",
+                "description",
+            ],
+        )
 
     _name_field: str = "name"
     _ontology_id_field: str = "ontology_id"
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
     """A universal id (base62-encoded hash of defining fields)."""
-    name: str = CharField(max_length=64, db_index=True, default=None, unique=True)
+    name: str = CharField(max_length=64, default=None, unique=True)
     """Name of a organism, required field."""
     ontology_id: str | None = CharField(
-        max_length=32, unique=True, db_index=True, null=True, default=None
+        max_length=32, unique=True, null=True, default=None
     )
     """NCBI Taxon ID."""
     scientific_name: str | None = CharField(
-        max_length=64, db_index=True, unique=True, null=True, default=None
+        max_length=64, unique=True, null=True, default=None
     )
     """Scientific name of a organism."""
-    synonyms: str | None = TextField(null=True, db_index=True, default=None)
+    synonyms: str | None = TextField(null=True, default=None)
     """Bar-separated (|) synonyms that correspond to this organism."""
-    description: str | None = TextField(null=True, db_index=True, default=None)
+    description: str | None = TextField(null=True, default=None)
     """Description of the organism."""
     parents: Organism = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
