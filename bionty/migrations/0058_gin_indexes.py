@@ -489,77 +489,6 @@ class Migration(migrations.Migration):
 
 
 POSTGRES_OPERATIONS = [
-    # Gene indexes
-    migrations.AddIndex(
-        model_name="gene",
-        index=django.contrib.postgres.indexes.GinIndex(
-            django.contrib.postgres.indexes.OpClass(
-                django.db.models.functions.text.Lower(
-                    django.db.models.functions.comparison.Coalesce(
-                        models.F("uid"), models.Value("")
-                    )
-                ),
-                name="gin_trgm_ops",
-            ),
-            name="bionty_gene_uid_trgm_idx",
-        ),
-    ),
-    migrations.AddIndex(
-        model_name="gene",
-        index=django.contrib.postgres.indexes.GinIndex(
-            django.contrib.postgres.indexes.OpClass(
-                django.db.models.functions.text.Lower(
-                    django.db.models.functions.comparison.Coalesce(
-                        models.F("symbol"), models.Value("")
-                    )
-                ),
-                name="gin_trgm_ops",
-            ),
-            name="bionty_gene_symbol_trgm_idx",
-        ),
-    ),
-    migrations.AddIndex(
-        model_name="gene",
-        index=django.contrib.postgres.indexes.GinIndex(
-            django.contrib.postgres.indexes.OpClass(
-                django.db.models.functions.text.Lower(
-                    django.db.models.functions.comparison.Coalesce(
-                        models.F("ensembl_gene_id"), models.Value("")
-                    )
-                ),
-                name="gin_trgm_ops",
-            ),
-            name="bionty_gene_ensembl_gene_id_trgm_idx",
-        ),
-    ),
-    migrations.AddIndex(
-        model_name="gene",
-        index=django.contrib.postgres.indexes.GinIndex(
-            django.contrib.postgres.indexes.OpClass(
-                django.db.models.functions.text.Lower(
-                    django.db.models.functions.comparison.Coalesce(
-                        models.F("description"), models.Value("")
-                    )
-                ),
-                name="gin_trgm_ops",
-            ),
-            name="bionty_gene_description_trgm_idx",
-        ),
-    ),
-    migrations.AddIndex(
-        model_name="gene",
-        index=django.contrib.postgres.indexes.GinIndex(
-            django.contrib.postgres.indexes.OpClass(
-                django.db.models.functions.text.Lower(
-                    django.db.models.functions.comparison.Coalesce(
-                        models.F("synonyms"), models.Value("")
-                    )
-                ),
-                name="gin_trgm_ops",
-            ),
-            name="bionty_gene_synonyms_trgm_idx",
-        ),
-    ),
     # Organism indexes
     migrations.AddIndex(
         model_name="organism",
@@ -643,6 +572,76 @@ POSTGRES_OPERATIONS = [
                 name="gin_trgm_ops",
             ),
             name="bionty_organism_description_trgm_idx",
+        ),
+    ),
+    migrations.AddIndex(
+        model_name="gene",
+        index=django.contrib.postgres.indexes.GinIndex(
+            django.contrib.postgres.indexes.OpClass(
+                django.db.models.functions.text.Lower(
+                    django.db.models.functions.comparison.Coalesce(
+                        models.F("uid"), models.Value("")
+                    )
+                ),
+                name="gin_trgm_ops",
+            ),
+            name="bionty_gene_uid_trgm_idx",
+        ),
+    ),
+    migrations.AddIndex(
+        model_name="gene",
+        index=django.contrib.postgres.indexes.GinIndex(
+            django.contrib.postgres.indexes.OpClass(
+                django.db.models.functions.text.Lower(
+                    django.db.models.functions.comparison.Coalesce(
+                        models.F("symbol"), models.Value("")
+                    )
+                ),
+                name="gin_trgm_ops",
+            ),
+            name="bionty_gene_symbol_trgm_idx",
+        ),
+    ),
+    migrations.AddIndex(
+        model_name="gene",
+        index=django.contrib.postgres.indexes.GinIndex(
+            django.contrib.postgres.indexes.OpClass(
+                django.db.models.functions.text.Lower(
+                    django.db.models.functions.comparison.Coalesce(
+                        models.F("ensembl_gene_id"), models.Value("")
+                    )
+                ),
+                name="gin_trgm_ops",
+            ),
+            name="bionty_gene_ensembl_gene_id_trgm_idx",
+        ),
+    ),
+    migrations.AddIndex(
+        model_name="gene",
+        index=django.contrib.postgres.indexes.GinIndex(
+            django.contrib.postgres.indexes.OpClass(
+                django.db.models.functions.text.Lower(
+                    django.db.models.functions.comparison.Coalesce(
+                        models.F("description"), models.Value("")
+                    )
+                ),
+                name="gin_trgm_ops",
+            ),
+            name="bionty_gene_description_trgm_idx",
+        ),
+    ),
+    migrations.AddIndex(
+        model_name="gene",
+        index=django.contrib.postgres.indexes.GinIndex(
+            django.contrib.postgres.indexes.OpClass(
+                django.db.models.functions.text.Lower(
+                    django.db.models.functions.comparison.Coalesce(
+                        models.F("synonyms"), models.Value("")
+                    )
+                ),
+                name="gin_trgm_ops",
+            ),
+            name="bionty_gene_synonyms_trgm_idx",
         ),
     ),
     # Protein indexes
