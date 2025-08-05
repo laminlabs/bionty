@@ -17,7 +17,7 @@ def lint(session: nox.Session) -> None:
 @nox.parametrize("group", ["bionty-base", "bionty-core", "bionty-docs"])
 def build(session: nox.Session, group: str):
     branch = (
-        "main" if IS_PR else "main"
+        "main" if IS_PR else "release"
     )  # point to "main" for PRs, to "release" for main
     install_lamindb(session, branch=branch)
     run(session, "uv pip install --system wetlab")
