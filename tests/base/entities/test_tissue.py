@@ -13,7 +13,7 @@ def test_uberon_tissue_inspect_ontology_id():
         ]
     )
 
-    ts = bt_base.Tissue(source="uberon", version="2024-08-07")
+    ts = bt_base.Tissue(source="uberon", version="2025-05-28")
     inspected_df = ts.inspect(df.index, ts.ontology_id, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
