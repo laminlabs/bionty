@@ -80,7 +80,7 @@ CellType:
 Tissue:
   uberon:
     all:
-      latest-version: 2024-08-07
+      latest-version: 2025-05-28
       url: http://purl.obolibrary.org/obo/uberon/releases/{version}/uberon.owl
     name: Uberon multi-species anatomy ontology
     website: http://obophenotype.github.io/uberon
