@@ -128,9 +128,9 @@ def s3_bionty_assets(
         remote_stat = remote_path.stat()
     except (FileNotFoundError, PermissionError):
         return localpath
-    # this is needed unfortunately because s3://bionty-assets doesn't have ListObjectsV2
-    # for anonymous users. And ListObjectsV2 is triggred inside .synchronize if no cache is present
-    # todo: check if this is still needed
+    # this is needed unfortunately because s3://bionty-assets doesn't have ListObjectsV2 for anonymous users.
+    # Moreover, ListObjectsV2 is triggered inside .synchronize if no cache is present.
+    # TODO: check if this is still needed
     parent_path = remote_path.parent.path.rstrip("/")
     remote_path.fs.dircache[parent_path] = [remote_stat.as_info()]
     # synchronize the remote path
