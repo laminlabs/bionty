@@ -34,11 +34,9 @@ def test_ncbitaxon_organism_inspect_name():
     )
 
     sp = bt_base.Organism(source="ncbitaxon")
-
     inspected_df = sp.inspect(df.index, field=sp.name, return_df=True)
 
     inspect = inspected_df["__validated__"].reset_index(drop=True)
-
     expected_series = pd.Series([True, True, True, True, False])
 
     assert inspect.equals(expected_series)
