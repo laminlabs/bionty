@@ -26,13 +26,12 @@ def test_ncbitaxon_organism_inspect_name():
     df = pd.DataFrame(
         index=[
             "human",
-            "Ancylobacter aquaticus",
-            "platyfish",
-            "Calamagrostis varia",
+            "ancylobacter aquaticus",
+            "microbacterium sp. 6.11-vpa",
+            "calamagrostis varia",
             "This organism does not exist",
         ]
     )
-
     sp = bt_base.Organism(source="ncbitaxon")
     inspected_df = sp.inspect(df.index, field=sp.name, return_df=True)
 
