@@ -67,7 +67,7 @@ def test_add_source():
     assert new_source.entity == "bionty.Phenotype"
     assert new_source.name == "oba"
     assert bt.Phenotype.add_source("oba", version=new_source.version) == new_source
-    public_df = bt.Phenotype.public(source=new_source).df()
+    public_df = bt.Phenotype.public(source=new_source).to_dataframe()
     assert all(public_df.index.str.startswith("OBA:"))  # restrict_to_prefix
 
 
@@ -75,7 +75,7 @@ def test_base_gene_register_source_in_lamindb():
     bt.Organism.filter().delete()
     assert not bt.Source.filter(organism="rabbit").exists()
     gene = bt.base.Gene(source="ensembl", organism="rabbit", version="release-112")
-    assert gene.df().shape[0] > 10000
+    assert gene.to_dataframe().shape[0] > 10000
     gene.register_source_in_lamindb()
     assert bt.Organism.filter(name="rabbit").exists()
     rabbit_gene_source = bt.Source.get(organism="rabbit")
@@ -160,7 +160,7 @@ def test_add_custom_source():
     ).save()
 
     # without a dataframe artifact
-    assert bt.Gene.public(source=bt.Source.get(name="internal")).df().empty
+    assert bt.Gene.public(source=bt.Source.get(name="internal")).to_dataframe().empty
     records = bt.Gene.from_values(
         ["ENSOCUG00000017195"],
         field=bt.Gene.ensembl_gene_id,

@@ -42,16 +42,16 @@ def test_ncbitaxon_organism_inspect_name():
 
 
 def test_ensembl_organism_version():
-    df = bt_base.Organism(version="release-108").df()
+    df = bt_base.Organism(version="release-108").to_dataframe()
     assert df.shape[0] == 315
 
 
 def test_ensembl_organism_taxa():
     for sp in ["bacteria", "plants", "fungi", "metazoa"]:
-        df = bt_base.Organism(taxa=sp).df()
+        df = bt_base.Organism(taxa=sp).to_dataframe()
         assert df.shape[0] > 10
 
 
 def test_ncbitaxon_organism():
-    df = bt_base.Organism(source="ncbitaxon").df()
+    df = bt_base.Organism(source="ncbitaxon").to_dataframe()
     assert df.shape[0] > 10

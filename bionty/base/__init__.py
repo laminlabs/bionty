@@ -12,7 +12,7 @@ Access public ontologies:
 
 Get a DataFrame of all available values:
 
->>> genes.df()
+>>> genes.to_dataframe()
 
 Entities
 ========

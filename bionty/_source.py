@@ -103,6 +103,8 @@ def filter_public_df_columns(
         model_field_names = {i.name for i in model._meta.fields}
         # parents needs to be added here as relationships aren't in fields
         model_field_names.add("parents")
-        bionty_df = _prepare_public_df(model, public_ontology.df().reset_index())
+        bionty_df = _prepare_public_df(
+            model, public_ontology.to_dataframe().reset_index()
+        )
         bionty_df = bionty_df.loc[:, bionty_df.columns.isin(model_field_names)]
     return bionty_df
