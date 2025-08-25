@@ -92,7 +92,7 @@ def test_import_source():
     assert parent in record.parents.list()
 
     # bulk import should fill in gaps of missing parents
-    parent.delete()
+    parent.delete(permanent=True)
     bt.Ethnicity.import_source()
     parent = bt.Ethnicity.get(ontology_id="HANCESTRO:0004")
     assert parent in record.parents.list()
@@ -197,13 +197,15 @@ def test_sync_public_sources():
     source_gene_release_111.save()
     assert not bt.Source.get(source_gene_latest.uid).currently_used
 
-    bt.Source.get(entity="bionty.CellType", name="cl", currently_used=True).delete()
+    bt.Source.get(entity="bionty.CellType", name="cl", currently_used=True).delete(
+        permanent=True
+    )
     source_ct_2024_05_15 = bt.CellType.add_source(source="cl", version="2024-05-15")
     source_ct_2024_05_15.currently_used = True
     source_ct_2024_05_15.save()
 
     # update_currently_used=False
-    source_gene_latest.delete()
+    source_gene_latest.delete(permanent=True)
     bt.core.sync_public_sources()
     source_gene_latest = bt.Source.get(
         entity="bionty.Gene", name="ensembl", organism="mouse", currently_used=True
