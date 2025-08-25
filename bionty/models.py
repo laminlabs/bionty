@@ -306,7 +306,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
 
         Creates or retrieves a Source record for the entity and optionally associates
         it with a DataFrame artifact containing the ontology data. If the source
-        already exists with a dataframe artifact, returns the existing source.
+        already exists with a DataFrame artifact, returns the existing source.
 
         Args:
             source: Source specification. Can be:
@@ -328,11 +328,17 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                 import bionty as bt
                 source = bt.Disease.add_source("mondo", version="2025-06-03", organism="all")
 
-            Add a source with custom DataFrame::
+            Add a source to an entity with a custom DataFrame::
 
                 import pandas as pd
                 df = pd.DataFrame({"name": ["disease1"], "ontology_id": ["MONDO:123"]})
-                source = bt.Disease.add_source("custom", version="1.0", organism="all", df=df)
+                source = bt.Source(
+                    entity="bionty.Disease",
+                    name="new mondo",
+                    version="99.999",
+                    organism="human",
+                )
+                source = bt.Disease.add_source(source=source, df=df)
 
             Add from existing PublicOntology::
 
@@ -431,7 +437,9 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             new_source.dataframe_artifact = df_artifact
             new_source.save()
 
-        logger.important("source added!")
+        logger.success(
+            f"Added source '{new_source.name}' of version '{new_source.version}' for organism '{new_source.organism}'."
+        )
         return new_source
 
     @classmethod
@@ -627,7 +635,7 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ids.ontology)
     """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=64, db_index=True, default=None, unique=True)
     """Name of a organism, required field."""
@@ -639,9 +647,9 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
         max_length=64, db_index=True, unique=True, null=True, default=None
     )
     """Scientific name of a organism."""
-    synonyms: str | None = TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, db_index=True, default=None)
     """Bar-separated (|) synonyms that correspond to this organism."""
-    description: str | None = TextField(null=True, default=None)
+    description: str | None = TextField(null=True, db_index=True, default=None)
     """Description of the organism."""
     parents: Organism = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -739,7 +747,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=12, default=ids.gene)
+    uid: str = CharField(unique=True, max_length=12, db_index=True, default=ids.gene)
     """A universal id (base62-encoded hash of defining fields)."""
     symbol: str | None = CharField(
         max_length=64, db_index=True, null=True, default=None
@@ -753,7 +761,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         max_length=64, db_index=True, null=True, default=None, unique=True
     )
     """Ensembl gene stable ID, in the form ENS[organism prefix][feature type prefix][a unique eleven digit number]."""
-    ncbi_gene_ids: str | None = TextField(null=True, default=None)
+    ncbi_gene_ids: str | None = TextField(null=True, db_index=True, default=None)
     """Bar-separated (|) NCBI Gene IDs that correspond to this Ensembl Gene ID.
     NCBI Gene ID, also known as Entrez Gene ID, in the form of numeric string, 1 to 9 digits.
     """
@@ -761,9 +769,9 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         max_length=64, db_index=True, null=True, default=None
     )
     """Type of the gene."""
-    synonyms: str | None = TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, db_index=True, default=None)
     """Bar-separated (|) synonyms that correspond to this gene."""
-    description: str | None = TextField(null=True, default=None)
+    description: str | None = TextField(null=True, db_index=True, default=None)
     """Description of the gene."""
     organism: Organism = ForeignKey(
         Organism, PROTECT, default=None, related_name="genes"
@@ -870,7 +878,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=12, default=ids.protein)
+    uid: str = CharField(unique=True, max_length=12, db_index=True, default=ids.protein)
     """A universal id (base62-encoded hash of defining fields)."""
     name: str | None = CharField(max_length=256, db_index=True, null=True, default=None)
     """Unique name of a protein."""
@@ -878,9 +886,9 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
         max_length=10, db_index=True, null=True, default=None, unique=True
     )
     """UniProt protein ID, 6 alphanumeric characters, possibly suffixed by 4 more."""
-    synonyms: str | None = TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, db_index=True, default=None)
     """Bar-separated (|) synonyms that correspond to this protein."""
-    description: str | None = TextField(null=True, default=None)
+    description: str | None = TextField(null=True, db_index=True, default=None)
     """Description of the protein."""
     length: int | None = BigIntegerField(db_index=True, null=True)
     """Length of the protein sequence."""
@@ -993,13 +1001,15 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=12, default=ids.cellmarker)
+    uid: str = CharField(
+        unique=True, max_length=12, db_index=True, default=ids.cellmarker
+    )
     """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=64, db_index=True)
     """Unique name of the cell marker."""
-    synonyms: str | None = TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, db_index=True, default=None)
     """Bar-separated (|) synonyms that correspond to this cell marker."""
-    description: str | None = TextField(null=True, default=None)
+    description: str | None = TextField(null=True, db_index=True, default=None)
     """Description of the cell marker."""
     gene_symbol: str | None = CharField(
         max_length=64, db_index=True, null=True, default=None
@@ -1122,7 +1132,7 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ids.ontology)
     """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the tissue."""
@@ -1134,9 +1144,9 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of tissue."""
-    synonyms: str | None = TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, db_index=True, default=None)
     """Bar-separated (|) synonyms that correspond to this tissue."""
-    description: str | None = TextField(null=True, default=None)
+    description: str | None = TextField(null=True, db_index=True, default=None)
     """Description of the tissue."""
     parents: Tissue = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -1234,7 +1244,7 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ids.ontology)
     """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the cell type."""
@@ -1246,9 +1256,9 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of cell type."""
-    synonyms: str | None = TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, db_index=True, default=None)
     """Bar-separated (|) synonyms that correspond to this cell type."""
-    description: str | None = TextField(null=True, default=None)
+    description: str | None = TextField(null=True, db_index=True, default=None)
     """Description of the cell type."""
     parents: CellType = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -1349,7 +1359,7 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ids.ontology)
     """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the disease."""
@@ -1361,9 +1371,9 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of disease."""
-    synonyms: str | None = TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, db_index=True, default=None)
     """Bar-separated (|) synonyms that correspond to this disease."""
-    description: str | None = TextField(null=True, default=None)
+    description: str | None = TextField(null=True, db_index=True, default=None)
     """Description of the disease."""
     parents: Disease = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -1463,7 +1473,7 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ids.ontology)
     """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the cell line."""
@@ -1475,9 +1485,9 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of cell line."""
-    synonyms: str | None = TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, db_index=True, default=None)
     """Bar-separated (|) synonyms that correspond to this cell line."""
-    description: str | None = TextField(null=True, default=None)
+    description: str | None = TextField(null=True, db_index=True, default=None)
     """Description of the cell line."""
     parents: CellLine = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -1578,7 +1588,7 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ids.ontology)
     """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the phenotype."""
@@ -1590,9 +1600,9 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of phenotype."""
-    synonyms: str | None = TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, db_index=True, default=None)
     """Bar-separated (|) synonyms that correspond to this phenotype."""
-    description: str | None = TextField(null=True, default=None)
+    description: str | None = TextField(null=True, db_index=True, default=None)
     """Description of the phenotype."""
     parents: Phenotype = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -1691,7 +1701,7 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ids.ontology)
     """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the pathway."""
@@ -1703,9 +1713,9 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of pathway."""
-    synonyms: str | None = TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, db_index=True, default=None)
     """Bar-separated (|) synonyms that correspond to this pathway."""
-    description: str | None = TextField(null=True, default=None)
+    description: str | None = TextField(null=True, db_index=True, default=None)
     """Description of the pathway."""
     parents: Pathway = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -1810,7 +1820,7 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ids.ontology)
     """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the experimental factor."""
@@ -1822,9 +1832,9 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of experimental factor."""
-    synonyms: str | None = TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, db_index=True, default=None)
     """Bar-separated (|) synonyms that correspond to this experimental factor."""
-    description: str | None = TextField(null=True, default=None)
+    description: str | None = TextField(null=True, db_index=True, default=None)
     """Description of the experimental factor."""
     molecule: str | None = TextField(null=True, default=None, db_index=True)
     """Molecular experimental factor, parsed from EFO."""
@@ -1933,7 +1943,7 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ids.ontology)
     """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the developmental stage."""
@@ -1945,9 +1955,9 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of developmental stage."""
-    synonyms: str | None = TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, db_index=True, default=None)
     """Bar-separated (|) synonyms that correspond to this developmental stage."""
-    description: str | None = TextField(null=True, default=None)
+    description: str | None = TextField(null=True, db_index=True, default=None)
     """Description of the developmental stage."""
     parents: str | None = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -2049,7 +2059,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=8, default=ids.ontology)
+    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ids.ontology)
     """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=256, db_index=True)
     """Name of the ethnicity."""
@@ -2061,9 +2071,9 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation of ethnicity."""
-    synonyms: str | None = TextField(null=True, default=None)
+    synonyms: str | None = TextField(null=True, db_index=True, default=None)
     """Bar-separated (|) synonyms that correspond to this ethnicity."""
-    description: str | None = TextField(null=True, default=None)
+    description: str | None = TextField(null=True, db_index=True, default=None)
     """Description of the ethnicity."""
     parents: Ethnicity = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
