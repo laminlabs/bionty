@@ -31,4 +31,4 @@ def build(session: nox.Session, group: str):
     elif group == "bionty-docs":
         session.run(*f"pytest -s {coverage_args} ./docs/guide".split())
         run(session, "lamin init --storage ./docsbuild --modules bionty")
-        build_docs(session, strict=False)
+        build_docs(session, strict=True)
