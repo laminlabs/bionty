@@ -72,7 +72,7 @@ def test_add_source():
 
 
 def test_base_gene_register_source_in_lamindb():
-    bt.Organism.filter().delete(permanent=True)
+    bt.Organism.filter().delete()
     assert not bt.Source.filter(organism="rabbit").exists()
     gene = bt.base.Gene(source="ensembl", organism="rabbit", version="release-112")
     assert gene.df().shape[0] > 10000
@@ -135,7 +135,7 @@ def test_import_source():
 
 
 def test_add_ontology_from_values():
-    bt.Ethnicity.filter().delete(permanent=True)
+    bt.Ethnicity.filter().delete()
     # .save() calls add_ontology() under the hood
     bt.Ethnicity.from_values(
         [
