@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 from typing import TYPE_CHECKING, BinaryIO
 
 import pandas as pd
@@ -17,7 +18,11 @@ def import_pronto():
         import pronto  # type: ignore
 
         if logger._verbosity <= 3:
-            warnings.filterwarnings("ignore", category=pronto.warnings.ProntoWarning)
+            # Only apply if not building docs - leads to 'category is not a class' warnings otherwise
+            if "sphinx" not in sys.modules:
+                warnings.filterwarnings(
+                    "ignore", category=pronto.warnings.ProntoWarning
+                )
 
         return pronto
     except ImportError as exc:
