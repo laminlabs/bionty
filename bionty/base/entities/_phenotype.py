@@ -55,10 +55,10 @@ class Phenotype(PublicOntology):
             version=version,
             organism=organism,
             include_id_prefixes={
-                "hp:": ["HP"],
-                "mp:": ["MP"],  # mp might require an exclusion prefix for mpath
-                "zp:": ["ZP"],
-                "pato:": ["PATO"],
+                "hp": ["HP:"],
+                "mp": ["MP:"],  # mp might require an exclusion prefix for mpath
+                "zp": ["ZP:"],
+                "pato": ["PATO:"],
             },
             **kwargs,
         )

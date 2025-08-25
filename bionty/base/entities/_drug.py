@@ -43,6 +43,6 @@ class Drug(PublicOntology):
             source=source,
             version=version,
             organism=organism,
-            include_id_prefixes={"dron:": ["DRON"]},
+            include_id_prefixes={"dron": ["DRON:"]},
             **kwargs,
         )

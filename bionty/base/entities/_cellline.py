@@ -40,6 +40,6 @@ class CellLine(PublicOntology):
             source=source,
             version=version,
             organism=organism,
-            include_id_prefixes={"clo:": ["CLO"]},
+            include_id_prefixes={"clo": ["CLO:"]},
             **kwargs,
         )

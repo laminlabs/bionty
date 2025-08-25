@@ -42,7 +42,7 @@ class Tissue(PublicOntology):
             source=source,
             version=version,
             organism=organism,
-            include_id_prefixes={"uberon": ["UBERON"]},
+            include_id_prefixes={"uberon": ["UBERON:"]},
             include_rel="part_of",
             **kwargs,
         )
