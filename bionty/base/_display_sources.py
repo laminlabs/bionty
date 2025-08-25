@@ -42,7 +42,7 @@ def display_currently_used_sources(mute: bool = False) -> pd.DataFrame:
         if not mute:
             logger.error(
                 "You have a LaminDB instance loaded, please run the following to check default sources:\n"
-                "    → bt.Source.filter(currently_used=True).df()"
+                "    → bt.Source.filter(currently_used=True).to_dataframe()"
             )
 
     versions = parse_currently_used_sources(settings.public_sources)

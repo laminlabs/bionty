@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Literal
 
 import pandas as pd
+from lamindb_setup.core import deprecated
 
 from bionty.base._public_ontology import PublicOntology
 from bionty.base.dev._doc_util import _doc_params
@@ -95,7 +96,7 @@ class Organism(PublicOntology):
         else:
             return super()._load_df()
 
-    def df(self) -> pd.DataFrame:
+    def to_dataframe(self) -> pd.DataFrame:
         """Pandas DataFrame of the ontology.
 
         Returns:
@@ -105,9 +106,13 @@ class Organism(PublicOntology):
 
             import bionty.base as bionty_base
 
-            bt.Organism().df()
+            bt.Organism().to_dataframe()
         """
         return self._df.set_index("name")
+
+    @deprecated("to_dataframe")
+    def df(self) -> pd.DataFrame:
+        return self.to_dataframe()
 
 
 def _standardize_scientific_name(df: pd.DataFrame) -> pd.DataFrame:

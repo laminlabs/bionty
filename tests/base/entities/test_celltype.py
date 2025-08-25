@@ -25,4 +25,4 @@ def test_cl_celltype_inspect_name():
 def test_cl_celltype_version():
     # old version, not in s3://bionty-assets
     ct = bt_base.CellType(version="2020-05-20")
-    assert ct.df().shape[0] == 2355
+    assert ct.to_dataframe().shape[0] == 2355

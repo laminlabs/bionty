@@ -264,13 +264,13 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             import bionty as bt
 
             # import all records from a default source
-            default_sources = bt.Source.filter(entity="bionty.CellType", currently_used=True).df()
+            default_sources = bt.Source.filter(entity="bionty.CellType", currently_used=True).to_dataframe()
             bt.CellType.import_source()
 
             # import all records from a specific source
             source = bt.Source.get(entity="bionty.CellType", source="cl", version="2022-08-16")
             bt.CellType.import_source(source)
-            bt.CellType.df()  # all records from the source are now in the registry
+            bt.CellType.to_dataframe()  # all records from the source are now in the registry
 
             # update existing records with a new source (version update)
             source = bt.Source.get(entity="bionty.CellType", source="cl", version="2024-08-16")
@@ -424,10 +424,10 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             # for bionty-assets, we do not create dataframe artifact here but with register_source_in_bionty_assets
             ln.setup.settings.instance.slug != "laminlabs/bionty-assets"
             and isinstance(source, PublicOntology)
-            and not source.df().empty
+            and not source.to_dataframe().empty
         ):
             df_artifact = ln.Artifact.from_df(
-                source.df(), key=parquet_filename, run=False
+                source.to_dataframe(), key=parquet_filename, run=False
             )
 
         # Save dataframe artifact and update source

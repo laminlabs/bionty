@@ -26,4 +26,4 @@ def test_efo_shape():
     """We observed issues with new EFO versions not including all records."""
     # 3.78.0 is the latest version where had initially observed this issue
     # If this works well, we may unpin the fixed version
-    assert bt_base.ExperimentalFactor(version="3.78.0").df().shape[0] > 18000
+    assert bt_base.ExperimentalFactor(version="3.78.0").to_dataframe().shape[0] > 18000

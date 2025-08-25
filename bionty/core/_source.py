@@ -55,7 +55,7 @@ def sync_public_sources(update_currently_used: bool = False) -> None:
 
     if update_currently_used:
         logger.info("setting the latest version as currently_used...")
-        df = records.df()
+        df = records.to_dataframe()
         for (_, _, _), df_group in df.groupby(["entity", "organism", "name"]):
             if df_group.currently_used.sum() == 0:
                 continue
