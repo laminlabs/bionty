@@ -417,7 +417,10 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
         # Create dataframe artifact if needed
         df_artifact = None
         if isinstance(df, pd.DataFrame):
-            df_artifact = ln.Artifact.from_df(df, key=parquet_filename, run=False)
+            # backwards compatible
+            df_artifact = getattr(ln.Artifact, "from_dataframe", ln.Artifact.from_df)(
+                df, key=parquet_filename, run=False
+            )
         elif source_record.url and source_record.url.startswith("s3://bionty-assets/"):
             df_artifact = ln.Artifact(new_source.url, run=False)
         elif (
@@ -426,7 +429,8 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             and isinstance(source, PublicOntology)
             and not source.to_dataframe().empty
         ):
-            df_artifact = ln.Artifact.from_df(
+            # backwards compatible
+            df_artifact = getattr(ln.Artifact, "from_dataframe", ln.Artifact.from_df)(
                 source.to_dataframe(), key=parquet_filename, run=False
             )
 
