@@ -89,13 +89,13 @@ def test_import_source():
     # when adding a single record, it's parents are also added
     record = bt.Ethnicity.from_source(ontology_id="HANCESTRO:0005").save()
     parent = bt.Ethnicity.get(ontology_id="HANCESTRO:0004")
-    assert parent in record.parents.to_list()
+    assert parent in record.parents.filter().to_list()
 
     # bulk import should fill in gaps of missing parents
     parent.delete(permanent=True)
     bt.Ethnicity.import_source()
     parent = bt.Ethnicity.get(ontology_id="HANCESTRO:0004")
-    assert parent in record.parents.to_list()
+    assert parent in record.parents.filter().to_list()
     record = bt.Ethnicity.get("7RNCY3yC")
     assert record.parents.count() > 0
     # the source.in_db should be set to True since we imported all the records
