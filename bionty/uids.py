@@ -5,7 +5,6 @@ Entity-related generators:
 .. autosummary::
    :toctree: .
 
-   organism
    gene
    protein
    cellmarker
