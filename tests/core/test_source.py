@@ -197,7 +197,9 @@ def test_sync_public_sources():
     source_gene_release_111.save()
     assert not bt.Source.get(source_gene_latest.uid).currently_used
 
-    bt.Source.get(entity="bionty.CellType", name="cl", currently_used=True).delete()
+    bt.Source.get(entity="bionty.CellType", name="cl", currently_used=True).delete(
+        permanent=True
+    )
     source_ct_2024_05_15 = bt.CellType.add_source(source="cl", version="2024-05-15")
     source_ct_2024_05_15.currently_used = True
     source_ct_2024_05_15.save()
