@@ -86,14 +86,15 @@ Submodules:
 
    core
    base
+   uids
 
 """
 
-__version__ = "1.6.1"
+__version__ = "1.7a1"
 
 from lamindb_setup._check_setup import _check_instance_setup
 
-from . import _biorecord, base, ids
+from . import _biorecord, base, uids
 
 _check_instance_setup(from_module="bionty")
 
@@ -114,3 +115,28 @@ from .models import (
     Source,
     Tissue,
 )
+
+__all__ = [
+    # registries
+    "CellLine",
+    "CellMarker",
+    "CellType",
+    "DevelopmentalStage",
+    "Disease",
+    "Ethnicity",
+    "ExperimentalFactor",
+    "Gene",
+    "Organism",
+    "Pathway",
+    "Phenotype",
+    "Protein",
+    "Source",
+    "Tissue",
+    # modules
+    "settings",
+    "base",
+    "core",
+    "uids",
+]
+
+ids = uids  # backward compat
