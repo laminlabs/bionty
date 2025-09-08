@@ -80,6 +80,7 @@ class Source(SQLRecord, TracksRun, TracksUpdates):
 
     class Meta(SQLRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        app_label = "bionty"
         unique_together = (("entity", "name", "organism", "version"),)
 
     id: int = models.AutoField(primary_key=True)
@@ -170,6 +171,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
 
     class Meta:
         abstract = True
+        app_label = "bionty"
 
     source: Source = ForeignKey(Source, PROTECT, null=True, related_name="+")
     """:class:`~bionty.Source` this record associates with."""
@@ -633,6 +635,7 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        app_label = "bionty"
 
     _name_field: str = "name"
     _ontology_id_field: str = "ontology_id"
@@ -745,6 +748,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        app_label = "bionty"
 
     _name_field: str = "symbol"
     _ontology_id_field: str = "ensembl_gene_id"
@@ -876,6 +880,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        app_label = "bionty"
 
     _name_field: str = "name"
     _ontology_id_field: str = "uniprotkb_id"
@@ -999,6 +1004,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        app_label = "bionty"
         unique_together = (("name", "organism"),)
 
     _name_field: str = "name"
@@ -1129,6 +1135,7 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        app_label = "bionty"
         unique_together = (("name", "ontology_id"),)
 
     _name_field: str = "name"
@@ -1241,6 +1248,7 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        app_label = "bionty"
         unique_together = (("name", "ontology_id"),)
 
     _name_field: str = "name"
@@ -1356,6 +1364,7 @@ class Disease(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        app_label = "bionty"
         unique_together = (("name", "ontology_id"),)
 
     _name_field: str = "name"
@@ -1470,6 +1479,7 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        app_label = "bionty"
         unique_together = (("name", "ontology_id"),)
 
     _name_field: str = "name"
@@ -1585,6 +1595,7 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        app_label = "bionty"
         unique_together = (("name", "ontology_id"),)
 
     _name_field: str = "name"
@@ -1698,6 +1709,7 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        app_label = "bionty"
         unique_together = (("name", "ontology_id"),)
 
     _name_field: str = "name"
@@ -1817,6 +1829,7 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        app_label = "bionty"
         unique_together = (("name", "ontology_id"),)
 
     _name_field: str = "name"
@@ -1940,6 +1953,7 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        app_label = "bionty"
         unique_together = (("name", "ontology_id"),)
 
     _name_field: str = "name"
@@ -2056,6 +2070,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
 
     class Meta(BioRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
+        app_label = "bionty"
         unique_together = (("name", "ontology_id"),)
 
     _name_field: str = "name"
@@ -2162,6 +2177,7 @@ class SchemaGene(BaseSQLRecord, IsLink):
     gene: Gene = ForeignKey("Gene", PROTECT, related_name="links_schema")
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("schema", "gene")
 
 
@@ -2172,6 +2188,7 @@ class SchemaProtein(BaseSQLRecord, IsLink):
     protein: Protein = ForeignKey("Protein", PROTECT, related_name="links_schema")
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("schema", "protein")
 
 
@@ -2186,6 +2203,7 @@ class SchemaCellMarker(BaseSQLRecord, IsLink):
     )
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("schema", "cellmarker")
 
 
@@ -2196,6 +2214,7 @@ class SchemaPathway(BaseSQLRecord, IsLink):
     pathway: Pathway = ForeignKey("Pathway", PROTECT, related_name="links_schema")
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("schema", "pathway")
 
 
@@ -2210,6 +2229,7 @@ class ArtifactOrganism(BaseSQLRecord, IsLink, TracksRun):
     feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("artifact", "organism", "feature")
 
 
@@ -2224,6 +2244,7 @@ class ArtifactGene(BaseSQLRecord, IsLink, TracksRun):
     feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("artifact", "gene", "feature")
 
 
@@ -2238,6 +2259,7 @@ class ArtifactProtein(BaseSQLRecord, IsLink, TracksRun):
     feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("artifact", "protein", "feature")
 
 
@@ -2259,6 +2281,7 @@ class ArtifactCellMarker(BaseSQLRecord, IsLink, TracksRun):
     feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("artifact", "cellmarker", "feature")
 
 
@@ -2273,6 +2296,7 @@ class ArtifactTissue(BaseSQLRecord, IsLink, TracksRun):
     feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("artifact", "tissue", "feature")
 
 
@@ -2288,6 +2312,7 @@ class ArtifactCellType(BaseSQLRecord, IsLink, TracksRun):
     feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("artifact", "celltype", "feature")
 
 
@@ -2302,6 +2327,7 @@ class ArtifactDisease(BaseSQLRecord, IsLink, TracksRun):
     feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("artifact", "disease", "feature")
 
 
@@ -2317,6 +2343,7 @@ class ArtifactCellLine(BaseSQLRecord, IsLink, TracksRun):
     feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("artifact", "cellline", "feature")
 
 
@@ -2337,6 +2364,7 @@ class ArtifactPhenotype(BaseSQLRecord, IsLink, TracksRun):
     feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("artifact", "phenotype", "feature")
 
 
@@ -2351,6 +2379,7 @@ class ArtifactPathway(BaseSQLRecord, IsLink, TracksRun):
     feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("artifact", "pathway", "feature")
 
 
@@ -2373,6 +2402,7 @@ class ArtifactExperimentalFactor(BaseSQLRecord, IsLink, TracksRun):
     feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("artifact", "experimentalfactor", "feature")
 
 
@@ -2396,6 +2426,7 @@ class ArtifactDevelopmentalStage(BaseSQLRecord, IsLink, TracksRun):
     feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("artifact", "developmentalstage", "feature")
 
 
@@ -2416,6 +2447,7 @@ class ArtifactEthnicity(BaseSQLRecord, IsLink, TracksRun):
     feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("artifact", "ethnicity", "feature")
 
 
@@ -2428,6 +2460,7 @@ class RecordOrganism(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("record", "value", "feature")
 
 
@@ -2440,6 +2473,7 @@ class RecordGene(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("record", "value", "feature")
 
 
@@ -2452,6 +2486,7 @@ class RecordProtein(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("record", "value", "feature")
 
 
@@ -2468,6 +2503,7 @@ class RecordCellMarker(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("record", "value", "feature")
 
 
@@ -2480,6 +2516,7 @@ class RecordTissue(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("record", "value", "feature")
 
 
@@ -2492,6 +2529,7 @@ class RecordCellType(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("record", "value", "feature")
 
 
@@ -2504,6 +2542,7 @@ class RecordDisease(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("record", "value", "feature")
 
 
@@ -2516,6 +2555,7 @@ class RecordCellLine(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("record", "value", "feature")
 
 
@@ -2532,6 +2572,7 @@ class RecordPhenotype(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("record", "value", "feature")
 
 
@@ -2544,6 +2585,7 @@ class RecordPathway(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("record", "value", "feature")
 
 
@@ -2564,6 +2606,7 @@ class RecordExperimentalFactor(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("record", "value", "feature")
 
 
@@ -2584,6 +2627,7 @@ class RecordDevelopmentalStage(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("record", "value", "feature")
 
 
@@ -2600,6 +2644,7 @@ class RecordEthnicity(BaseSQLRecord, IsLink, TracksRun):
     )
 
     class Meta:
+        app_label = "bionty"
         unique_together = ("record", "value", "feature")
 
 
