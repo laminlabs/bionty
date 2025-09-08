@@ -171,7 +171,6 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
 
     class Meta:
         abstract = True
-        app_label = "bionty"
 
     source: Source = ForeignKey(Source, PROTECT, null=True, related_name="+")
     """:class:`~bionty.Source` this record associates with."""
