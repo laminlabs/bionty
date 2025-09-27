@@ -166,7 +166,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
         For more info, see tutorials:
 
         - :doc:`docs:bionty`
-        - :doc:`docs:bio-registries`
+        - :doc:`docs:manage-ontologies`
     """
 
     class Meta:
@@ -623,7 +623,7 @@ class Organism(BioRecord, TracksRun, TracksUpdates):
     """Organism - `NCBI Taxonomy <https://www.ncbi.nlm.nih.gov/taxonomy/>`__, `Ensembl Organism <https://useast.ensembl.org/info/about/species.html>`__.
 
     Notes:
-        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:organism`.
+        For more info, see tutorials :doc:`docs:manage-ontologies` and :doc:`docs:organism`.
 
     Example::
 
@@ -729,7 +729,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
     """Genes - `Ensembl <https://ensembl.org/>`__, `NCBI Gene <https://www.ncbi.nlm.nih.gov/gene/>`__.
 
     Notes:
-        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:gene`.
+        For more info, see tutorials :doc:`docs:manage-ontologies` and :doc:`docs:gene`.
 
         Bulk create Gene records via `.from_values()`.
         Map legacy ensembl IDs to current ensembl IDs using :meth:`bionty.base.Gene.map_legacy_ids`.
@@ -865,7 +865,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
     """Proteins - `Uniprot <https://www.uniprot.org/>`__.
 
     Notes:
-        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:protein`.
+        For more info, see tutorials :doc:`docs:manage-ontologies` and :doc:`docs:protein`.
 
         Bulk create records via :meth:`.from_values`.
 
@@ -990,7 +990,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
     """Cell markers - `CellMarker <http://xteam.xbio.top/CellMarker>`__.
 
     Notes:
-        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:cell_marker`.
+        For more info, see tutorials :doc:`docs:manage-ontologies` and :doc:`docs:cell_marker`.
 
         Bulk create CellMarker records via :meth:`.from_values`.
 
@@ -1121,7 +1121,7 @@ class Tissue(BioRecord, TracksRun, TracksUpdates):
     """Tissues - `Uberon <http://obophenotype.github.io/uberon/>`__.
 
     Notes:
-        For more info, see tutorials :doc:`docs:bio-registries` :doc:`docs:tissue`.
+        For more info, see tutorials :doc:`docs:manage-ontologies` :doc:`docs:tissue`.
 
         Bulk create Tissue records via :meth:`.from_values`.
 
@@ -1234,7 +1234,7 @@ class CellType(BioRecord, TracksRun, TracksUpdates):
     """Cell types - `Cell Ontology <https://obophenotype.github.io/cell-ontology/>`__.
 
     Notes:
-        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:cell_type`.
+        For more info, see tutorials :doc:`docs:manage-ontologies` and :doc:`docs:cell_type`.
 
         Bulk create CellType records via :meth:`.from_values`.
 
@@ -1464,7 +1464,7 @@ class CellLine(BioRecord, TracksRun, TracksUpdates):
     """Cell lines - `Cell Line Ontology <https://github.com/CLO-ontology/CLO>`__.
 
     Notes:
-        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:cell_line`.
+        For more info, see tutorials :doc:`docs:manage-ontologies` and :doc:`docs:cell_line`.
 
         Bulk create CellLine records via :meth:`.from_values`.
 
@@ -1581,7 +1581,7 @@ class Phenotype(BioRecord, TracksRun, TracksUpdates):
     `Zebrafish Phenotype <http://obofoundry.org/ontology/zp.html>`__.
 
     Notes:
-        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:phenotype`.
+        For more info, see tutorials :doc:`docs:manage-ontologies` and :doc:`docs:phenotype`.
 
         Bulk create Phenotype records via :meth:`.from_values`.
 
@@ -1695,7 +1695,7 @@ class Pathway(BioRecord, TracksRun, TracksUpdates):
     `Pathway Ontology <https://bioportal.bioontology.org/ontologies/PW>`__.
 
     Notes:
-        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:pathway`.
+        For more info, see tutorials :doc:`docs:manage-ontologies` and :doc:`docs:pathway`.
 
         Bulk create Pathway records via :meth:`.from_values`.
 
@@ -1814,7 +1814,7 @@ class ExperimentalFactor(BioRecord, TracksRun, TracksUpdates):
     """Experimental factors - `Experimental Factor Ontology <https://www.ebi.ac.uk/ols/ontologies/efo>`__.
 
     Notes:
-        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:experimental_factor`.
+        For more info, see tutorials :doc:`docs:manage-ontologies` and :doc:`docs:experimental_factor`.
 
         Bulk create ExperimentalFactor records via :meth:`.from_values`.
 
@@ -1939,7 +1939,7 @@ class DevelopmentalStage(BioRecord, TracksRun, TracksUpdates):
     `Mouse Developmental Stages <https://github.com/obophenotype/developmental-stage-ontologies/wiki/MmusDv>`__.  # noqa.
 
     Notes:
-        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:developmental_stage`.
+        For more info, see tutorials :doc:`docs:manage-ontologies` and :doc:`docs:developmental_stage`.
 
         Bulk create DevelopmentalStage records via :meth:`.from_values`.
 
@@ -2056,7 +2056,7 @@ class Ethnicity(BioRecord, TracksRun, TracksUpdates):
     """Ethnicity - `Human Ancestry Ontology <https://github.com/EBISPOT/hancestro>`__.
 
     Notes:
-        For more info, see tutorials :doc:`docs:bio-registries` and :doc:`docs:ethnicity`.
+        For more info, see tutorials :doc:`docs:manage-ontologies` and :doc:`docs:ethnicity`.
 
         Bulk create Ethnicity records via :meth:`.from_values`.
 

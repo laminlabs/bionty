@@ -44,7 +44,7 @@ Manage synonyms:
 Detailed guides:
 
 - :doc:`docs:public-ontologies`
-- :doc:`docs:bio-registries`
+- :doc:`docs:manage-ontologies`
 
 Registries:
 
