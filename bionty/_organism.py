@@ -25,7 +25,7 @@ def create_or_get_organism_record(
         from .models import Organism
 
         if organism is None and settings.organism is not None:
-            logger.warning(f"using default organism = {settings.organism.name}")
+            logger.debug(f"using default organism = {settings.organism.name}")
             return settings.organism
 
         if isinstance(organism, Organism):
