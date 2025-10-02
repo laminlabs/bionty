@@ -32,5 +32,5 @@ def test_from_values_organism():
 
     # clean up
     bt.settings._organism = None
-    bt.Organism.filter().delete()
-    bt.Gene.filter().delete()
+    bt.Organism.filter().delete(permanent=True)
+    bt.Gene.filter().delete(permanent=True)
