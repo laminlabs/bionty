@@ -135,7 +135,7 @@ def test_import_source():
 
 
 def test_add_ontology_from_values():
-    bt.Ethnicity.filter().delete()
+    bt.Ethnicity.filter().delete(permanent=True)
     # .save() calls add_ontology() under the hood
     bt.Ethnicity.from_values(
         [
