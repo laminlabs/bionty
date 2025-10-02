@@ -72,7 +72,7 @@ def test_add_source():
 
 
 def test_base_gene_register_source_in_lamindb():
-    bt.Organism.filter().delete()
+    bt.Organism.filter().delete(permanent=True)
     assert not bt.Source.filter(organism="rabbit").exists()
     gene = bt.base.Gene(source="ensembl", organism="rabbit", version="release-112")
     assert gene.to_dataframe().shape[0] > 10000
