@@ -7,7 +7,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("bionty", "0057_squashed"),
+        ("bionty", "0057_alter_cellline_description_alter_cellline_synonyms_and_more"),
         ("lamindb", "0124_page_artifact_page_collection_page_feature_page_and_more"),
     ]
 
