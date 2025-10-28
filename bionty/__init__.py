@@ -6,40 +6,39 @@
 - Use `.synonyms` and `.abbr` to manage synonyms.
 - Manage ontology versions.
 
-Install and mount `bionty` in a new instance:
+Mount `bionty` in a new instance::
 
->>> pip install 'bionty'
->>> lamin init --storage <path_to_storage_location> --modules bionty
+   lamin init --storage <path_to_storage_location> --modules bionty
 
-Import the package:
+Import the package::
 
->>> import bionty as bt
+    import bionty as bt
 
-Access public ontologies:
+Access public ontologies::
 
->>> genes = bt.Gene.public()
->>> genes.validate(["BRCA1", "TCF7"], field="symbol")
+    genes = bt.Gene.public()
+    genes.validate(["BRCA1", "TCF7"], field="symbol")
 
-Create records from public ontologies:
+Create records from public ontologies::
 
->>> cell_type = bt.CellType.from_source(ontology_id="CL:0000037")
->>> cell_type.save()
+   cell_type = bt.CellType.from_source(ontology_id="CL:0000037")
+   cell_type.save()
 
-View ontological hierarchy:
+View ontological hierarchy::
 
->>> cell_type.view_parents()
+   cell_type.view_parents()
 
-Create in-house ontologies:
+Create your own records::
 
->>> cell_type_new = bt.CellType(name="my new cell type")
->>> cell_type_new.save()
->>> cell_type_new.parents.add(cell_type)
->>> cell_type_new.view_parents()
+   cell_type_new = bt.CellType(name="my new cell type")
+   cell_type_new.save()
+   cell_type_new.parents.add(cell_type)
+   cell_type_new.view_parents()
 
-Manage synonyms:
+Manage synonyms::
 
->>> cell_type_new.add_synonyms(["my cell type", "my cell"])
->>> cell_type_new.set_abbr("MCT")
+   cell_type_new.add_synonyms(["my cell type", "my cell"])
+   cell_type_new.set_abbr("MCT")
 
 Detailed guides:
 
