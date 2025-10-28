@@ -2,14 +2,11 @@
 
 Entity-related generators:
 
-.. autosummary::
-   :toctree: .
-
-   gene
-   protein
-   cellmarker
-   ontology
-   source
+.. autofunction:: gene
+.. autofunction:: protein
+.. autofunction:: cellmarker
+.. autofunction:: ontology
+.. autofunction:: source
 
 """
 

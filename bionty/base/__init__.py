@@ -2,63 +2,54 @@
 
 `bionty.base` is the read-only interface for public ontology that underlies bionty and doesn't require a lamindb instance.
 
-Import the package:
+Import the package::
 
->>> import bionty.base as bt_base
+   import bionty.base as bt_base
 
-Access public ontologies:
+Access public ontologies::
 
->>> genes = bt_base.Gene()
+   genes = bt_base.Gene()
 
-Get a DataFrame of all available values:
+Get a DataFrame of all available values::
 
->>> genes.to_dataframe()
+   genes.to_dataframe()
 
 Entities
 ========
 
 Bionty base provides access to several entities, most of which are also supported by Bionty.
 
-.. autosummary::
-   :toctree: .
-
-   Organism
-   Gene
-   Protein
-   CellMarker
-   CellType
-   CellLine
-   Tissue
-   Disease
-   Phenotype
-   Pathway
-   ExperimentalFactor
-   DevelopmentalStage
-   Drug
-   Ethnicity
-   BFXPipeline
-   BioSample
+.. autoclass:: Organism
+.. autoclass:: Gene
+.. autoclass:: Protein
+.. autoclass:: CellMarker
+.. autoclass:: CellType
+.. autoclass:: CellLine
+.. autoclass:: Tissue
+.. autoclass:: Disease
+.. autoclass:: Phenotype
+.. autoclass:: Pathway
+.. autoclass:: ExperimentalFactor
+.. autoclass:: DevelopmentalStage
+.. autoclass:: Drug
+.. autoclass:: Ethnicity
+.. autoclass:: BFXPipeline
+.. autoclass:: BioSample
 
 Base class
 ----------
 
 `Pronto Ontology objects <https://pronto.readthedocs.io/en/stable/api/pronto.Ontology.html>`__ can be accessed via `{entity}.to_pronto()`.
 
-.. autosummary::
-   :toctree: .
-
-   PublicOntology
-   PublicOntologyField
+.. autoclass:: PublicOntology
+.. autoclass:: PublicOntologyField
 
 Ontology sources
 ----------------
 
-.. autosummary::
-   :toctree: .
-
-   display_sources
-   display_currently_used_sources
-   settings
+.. autofunction:: display_sources
+.. autofunction:: display_currently_used_sources
+.. autodata:: settings
 
 """
 
