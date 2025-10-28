@@ -14,10 +14,23 @@ Get a DataFrame of all available values::
 
    genes.to_dataframe()
 
-Entities
-========
+Sources & settings
+------------------
 
-Bionty base provides access to several entities, most of which are also supported by Bionty.
+.. autofunction:: display_sources
+.. autofunction:: display_currently_used_sources
+.. autodata:: settings
+
+Base class
+----------
+
+`Pronto Ontology objects <https://pronto.readthedocs.io/en/stable/api/pronto.Ontology.html>`__ can be accessed via `{entity}.to_pronto()`.
+
+.. autoclass:: PublicOntology
+.. autoclass:: PublicOntologyField
+
+Entities
+--------
 
 .. autoclass:: Organism
 .. autoclass:: Gene
@@ -35,21 +48,6 @@ Bionty base provides access to several entities, most of which are also supporte
 .. autoclass:: Ethnicity
 .. autoclass:: BFXPipeline
 .. autoclass:: BioSample
-
-Base class
-----------
-
-`Pronto Ontology objects <https://pronto.readthedocs.io/en/stable/api/pronto.Ontology.html>`__ can be accessed via `{entity}.to_pronto()`.
-
-.. autoclass:: PublicOntology
-.. autoclass:: PublicOntologyField
-
-Ontology sources
-----------------
-
-.. autofunction:: display_sources
-.. autofunction:: display_currently_used_sources
-.. autodata:: settings
 
 """
 
