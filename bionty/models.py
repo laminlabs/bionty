@@ -562,6 +562,9 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             # Create a record by passing a field value:
             record = bt.Gene.from_source(symbol="TCF7", organism="human")
 
+            # Create a record by passing a synonym:
+            record = bt.Gene.from_source("TCF-1", organism="human")
+
             # Create a record from non-default source:
             source = bt.Source.get(entity="CellType", source="cl", version="2022-08-16")
             record = bt.CellType.from_source(name="T cell", source=source)
@@ -595,11 +598,23 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                 if existing_records.exists():
                     results = existing_records.list()
                 else:
-                    from lamindb.models._from_values import create_records_from_source
+                    from lamindb.models._from_values import (
+                        create_records_from_source,
+                        get_organism_record_from_field,
+                    )
+
+                    field = getattr(cls, key)
+
+                    # get the organism record
+                    organism_record = get_organism_record_from_field(
+                        field, kwargs.get("organism"), values=[value]
+                    )
+                    if organism_record is not None:
+                        kwargs["organism"] = organism_record
 
                     results, _ = create_records_from_source(
                         pd.Index([value]),
-                        field=getattr(cls, key),
+                        field=field,
                         **kwargs,
                         inspect_synonyms=False,
                     )
