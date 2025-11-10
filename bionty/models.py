@@ -546,7 +546,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
 
     @classmethod
     def from_source(
-        cls, *, mute: bool = False, **kwargs
+        cls, *args, mute: bool = False, **kwargs
     ) -> BioRecord | list[BioRecord] | None:
         """Create a record or records from source based on a single field value.
 
@@ -567,30 +567,52 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             record = bt.CellType.from_source(name="T cell", source=source)
 
         """
-        # non-relationship kwargs
-        kv = {
-            k: v
-            for k, v in kwargs.items()
-            if k not in [i.name for i in cls._meta.fields if i.is_relation]
-        }
-        if len(kv) > 1:
-            raise InvalidArgument(
-                "Only one field can be passed to generate records from source"
-            )
-        elif len(kv) == 0:
-            raise InvalidArgument("No field passed to generate records from source")
+        # handle positional argument if provided
+        # this will also try to create from synonyms
+        if args:
+            if len(args) > 1:
+                raise InvalidArgument("Only one positional argument allowed")
+            value = args[0]
+            results = cls.from_values([value], mute=mute, **kwargs)
+            error_msg = f"'{value}'"
         else:
-            k = next(iter(kv))
-            v = kwargs.pop(k)
-            results = cls.from_values([v], field=getattr(cls, k), mute=mute, **kwargs)
-            if len(results) == 1:
-                return results[0]
-            elif len(results) == 0:
-                raise DoesNotExist(
-                    "No record found in source for the given field value"
+            # handles keyword arguments
+            kv = {
+                k: v
+                for k, v in kwargs.items()
+                if k not in [i.name for i in cls._meta.fields if i.is_relation]
+            }  # non-relationship kwargs
+            if len(kv) > 1:
+                raise InvalidArgument(
+                    "Only one field can be passed to generate records from source"
                 )
+            elif len(kv) == 0:
+                raise InvalidArgument("No field passed to generate records from source")
             else:
-                return results
+                key = next(iter(kv))
+                value = kwargs.pop(key)
+                existing_records = cls.filter(**{key: value})
+                if existing_records.exists():
+                    results = existing_records.list()
+                else:
+                    from lamindb.models._from_values import create_records_from_source
+
+                    results, _ = create_records_from_source(
+                        pd.Index([value]),
+                        field=getattr(cls, key),
+                        **kwargs,
+                        inspect_synonyms=False,
+                    )
+                error_msg = f"{key}='{value}'"
+
+        if len(results) == 1:
+            return results[0]
+        elif len(results) == 0:
+            raise DoesNotExist(
+                f"no {cls.__name__} found in source for the given field value: {error_msg}"
+            )
+        else:
+            return results
 
     def save(self, *args, **kwargs) -> BioRecord:
         """Save the record and its parents recursively.
