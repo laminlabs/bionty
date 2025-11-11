@@ -546,7 +546,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
 
     @classmethod
     def from_source(
-        cls, *args, mute: bool = False, **kwargs
+        cls, string: str = None, *, mute: bool = False, **kwargs
     ) -> BioRecord | list[BioRecord] | None:
         """Create a record or records from source based on a single field value.
 
@@ -570,16 +570,12 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             record = bt.CellType.from_source(name="T cell", source=source)
 
         """
-        # handle positional argument if provided
         # this will also try to create from synonyms
-        if args:
-            if len(args) > 1:
-                raise InvalidArgument("Only one positional argument allowed")
-            value = args[0]
-            results = cls.from_values([value], mute=mute, **kwargs)
-            error_msg = f"'{value}'"
+        if string is not None:
+            results = cls.from_values([string], mute=mute, **kwargs)
+            error_msg = f"'{string}'"
         else:
-            # handles keyword arguments
+            # handles keyword arguments, this requires perfect match of one field value
             kv = {
                 k: v
                 for k, v in kwargs.items()
