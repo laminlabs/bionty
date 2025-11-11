@@ -6,24 +6,39 @@ from bionty.models import DoesNotExist, InvalidArgument
 
 
 def test_from_source():
+    # test passing organism
     record = bt.Gene.from_source(symbol="BRCA2", organism="human")
     assert record.ensembl_gene_id == "ENSG00000139618"
 
+    # name is not found
     with pytest.raises(
-        DoesNotExist, match=r"No record found in source for the given field value"
+        DoesNotExist,
+        match=r"no CellType found in source for the given field value: name='T-cellx'",
     ):
         bt.CellType.from_source(name="T-cellx")
 
+    # multiple fields passed
     with pytest.raises(
         InvalidArgument,
         match=r"Only one field can be passed to generate records from source",
     ):
         bt.CellType.from_source(name="T cell", ontology_id="CL:0000084")
 
+    # no field passed
     with pytest.raises(
         InvalidArgument, match=r"No field passed to generate records from source"
     ):
         bt.CellType.from_source()
+
+    # passing a synonym via name= doesn't work
+    with pytest.raises(
+        DoesNotExist,
+        match=r"no CellType found in source for the given field value: name='T-cell'",
+    ):
+        bt.CellType.from_source(name="T-cell")
+
+    # passing a synonym as positional argument works
+    bt.CellType.from_source("T-cell")
 
 
 def test_get_source_record():
