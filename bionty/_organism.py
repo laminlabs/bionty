@@ -98,7 +98,7 @@ def organism_from_ensembl_id(id: str, using_key: str | None) -> Organism | None:
         using_key = None if using_key == "default" else using_key
 
         organism_record = (
-            bt.Organism.using(using_key).filter(name=organism_name).one_or_none()
+            bt.Organism.connect(using_key).filter(name=organism_name).one_or_none()
         )
         if organism_record is None:
             organisms = bt.Organism.from_values([organism_name])
