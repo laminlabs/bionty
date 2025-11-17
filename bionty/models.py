@@ -592,7 +592,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                 value = kwargs.pop(key)
                 existing_records = cls.filter(**{key: value})
                 if existing_records.exists():
-                    results = existing_records.list()
+                    results = existing_records.to_list()
                 else:
                     from lamindb.models._from_values import (
                         create_records_from_source,
