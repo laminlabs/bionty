@@ -12,11 +12,11 @@ class Settings:
     """
 
     def __init__(self):
-        self._organism = "human"
+        self._organism = None
 
     @property
     def organism(self) -> Organism | None:
-        """Default organism argument (default `"human"`).
+        """Default organism argument (default `None`).
 
         Default organism to use in cases of ambiguity. For instance, gene symbols are duplicated across organisms and need to be disambiguated.
 
@@ -31,7 +31,10 @@ class Settings:
         return self._organism
 
     @organism.setter
-    def organism(self, name: str | Organism):
+    def organism(self, name: str | Organism | None):
+        if name is None:
+            self._organism = None
+            return
         if isinstance(name, Organism):
             self._organism = name
         else:
