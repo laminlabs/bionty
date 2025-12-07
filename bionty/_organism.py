@@ -88,6 +88,7 @@ def organism_from_ensembl_id(id: str, using_key: str | None) -> Organism | None:
     prefix = (
         re.search(r"^[A-Za-z]+", id).group(0) if re.search(r"^[A-Za-z]+", id) else id
     )
+    print("prefix:", prefix)
     if prefix in ensembl_prefixes.index:
         organism_name = ensembl_prefixes.loc[prefix, "name"].lower()
 
@@ -97,7 +98,12 @@ def organism_from_ensembl_id(id: str, using_key: str | None) -> Organism | None:
             bt.Organism.connect(using_key).filter(name=organism_name).one_or_none()
         )
         if organism_record is None:
-            organisms = bt.Organism.from_values([organism_name])
+            organisms = bt.Organism.from_values(
+                [organism_name],
+                source=bt.Source.filter(
+                    entity="bionty.Organism", currently_used=True
+                ).first(),
+            )
             if len(organisms) > 0:
                 organism_record = organisms[0]
                 organism_record.save(using=using_key)

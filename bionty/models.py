@@ -547,7 +547,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
     @classmethod
     def from_source(
         cls, string: str = None, *, mute: bool = False, **kwargs
-    ) -> BioRecord | list[BioRecord] | None:
+    ) -> BioRecord | list[BioRecord]:
         """Create a record or records from source based on a single field value.
 
         Notes:

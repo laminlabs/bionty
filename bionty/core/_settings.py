@@ -38,17 +38,11 @@ class Settings:
         if isinstance(name, Organism):
             self._organism = name
         else:
-            import lamindb as ln
-
-            organisms = Organism.from_values([name], mute=True)
-            if len(organisms) == 0:
-                raise ValueError(
-                    f"No organism with name='{name}' is found, please create a organism record!"
-                )
-            else:
-                organism = organisms[0]
-            if organism._state.adding:  # type:ignore
-                organism.save()  # type:ignore
+            organism = Organism.from_source(name=name, mute=True)
+            if isinstance(organism, list):
+                organism = organism[0]
+            if organism._state.adding:
+                organism.save()
             self._organism = organism
 
 
