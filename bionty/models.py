@@ -592,7 +592,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                 value = kwargs.pop(key)
                 existing_records = cls.filter(**{key: value})
                 if existing_records.exists():
-                    results = existing_records.list()
+                    results = existing_records.to_list()
                 else:
                     from lamindb.models._from_values import (
                         create_records_from_source,
@@ -765,7 +765,6 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         For more info, see tutorials :doc:`docs:manage-ontologies` and :doc:`docs:gene`.
 
         Bulk create Gene records via `.from_values()`.
-        Map legacy ensembl IDs to current ensembl IDs using :meth:`bionty.base.Gene.map_legacy_ids`.
 
         We discourage validating gene symbols and to work with unique identifiers such as ENSEMBL IDs instead.
         For more details, see :doc:`docs:faq/symbol-mapping`.

@@ -89,7 +89,7 @@ Submodules:
 
 """
 
-__version__ = "1.9.0"
+__version__ = "1.9.1"
 
 from lamindb_setup._check_setup import _check_instance_setup
 
@@ -116,7 +116,6 @@ from .models import (
 )
 
 __all__ = [
-    # registries
     "CellLine",
     "CellMarker",
     "CellType",
