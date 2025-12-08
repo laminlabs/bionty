@@ -116,7 +116,6 @@ from .models import (
 )
 
 __all__ = [
-    # registries
     "CellLine",
     "CellMarker",
     "CellType",
