@@ -3,6 +3,7 @@ import re
 import pandas as pd
 from django.core.exceptions import FieldDoesNotExist, ObjectDoesNotExist
 from lamin_utils import logger
+from lamindb.base.types import FieldAttr
 
 from .models import BioRecord, Organism
 
@@ -14,7 +15,9 @@ class OrganismNotSet(SystemExit):
 
 
 def create_or_get_organism_record(
-    organism: str | Organism | None, registry: type[BioRecord], field: str | None = None
+    organism: str | Organism | None,
+    registry: type[BioRecord],
+    field: FieldAttr | None = None,
 ) -> Organism | None:
     """Create or get an organism record.
 
@@ -25,7 +28,7 @@ def create_or_get_organism_record(
     """
     # also returns None if a registry doesn't require organism field
     organism_record = None
-    if is_organism_required(registry):
+    if is_organism_required(registry=registry, field=field):
         from .core._settings import settings
         from .models import Organism
 
@@ -43,21 +46,33 @@ def create_or_get_organism_record(
     return organism_record
 
 
-def is_organism_required(registry: type[BioRecord]) -> bool:
+def is_organism_required(
+    registry: type[BioRecord], field: FieldAttr | None = None
+) -> bool:
     """Check if the registry has an organism field and is required.
 
     Returns:
         True if the registry has an organism field and is required, False otherwise.
     """
+    required = True
+
+    # first we determine the requireness based on the registry.organism FK field
     try:
         organism_field = registry._meta.get_field("organism")
         # organism is not required or not a relation
         if organism_field.null or not organism_field.is_relation:
-            return False
+            required = False
         else:
-            return True
+            required = True
     except FieldDoesNotExist:
-        return False
+        required = False
+
+    # field of the registry is used to determine if organism is required to create record in the registry
+    if field is not None:
+        is_simple_field_unique = field.field.unique and not field.field.is_relation
+        required = required and not is_simple_field_unique
+
+    return required
 
 
 def get_or_create_organism_from_name(
@@ -84,7 +99,9 @@ def get_or_create_organism_from_name(
     return organism_record
 
 
-def organism_from_ensembl_id(id: str, using_key: str | None = None) -> Organism | None:
+def infer_organism_from_ensembl_id(
+    id: str, using_key: str | None = None
+) -> Organism | None:
     """Get organism record from ensembl id."""
     import bionty as bt
     from bionty.base.dev._io import s3_bionty_assets

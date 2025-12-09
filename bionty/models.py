@@ -612,7 +612,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                         pd.Index([value]),
                         field=field,
                         **kwargs,
-                        inspect_synonyms=False,
+                        standardize=False,
                     )
                 error_msg = f"{key}='{value}'"
 
