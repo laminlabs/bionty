@@ -3,7 +3,11 @@ from lamindb.models import SQLRecord
 
 import bionty.base as bt_base
 
-from ._organism import create_or_get_organism_record
+from ._organism import (
+    OrganismNotSet,
+    create_or_get_organism_record,
+    is_organism_required,
+)
 
 
 def get_source_record(
@@ -20,6 +24,10 @@ def get_source_record(
     organism_record = create_or_get_organism_record(
         organism=organism, registry=registry
     )
+    if organism_record is None and is_organism_required(registry):
+        raise OrganismNotSet(
+            f"`organism` is required to get Source record for {registry.__name__}!"
+        )
 
     entity_name = registry.__get_name_with_module__()
     filter_kwargs = {"entity": entity_name}
