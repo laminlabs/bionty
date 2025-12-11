@@ -213,7 +213,9 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                 if settings.organism is not None:
                     kwargs["organism"] = settings.organism
                 else:
-                    raise RuntimeError("please pass a organism!")
+                    raise RuntimeError(
+                        f"please pass `organism` to create a {self.__class__.__name__} record!"
+                    )
             elif kwargs.get("organism") is not None:
                 if not isinstance(kwargs.get("organism"), Organism):
                     raise TypeError("organism must be a `bionty.Organism` record.")
