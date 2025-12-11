@@ -192,9 +192,16 @@ def register_source_in_bionty_assets(
 
     Example::
 
+        import bionty as bt
         from bionty.core import register_source_in_bionty_assets
 
-        source = Source.filter(entity="bionty.Gene", organism="human", name="ensembl", version="release-112").save()
+        source = bt.Source(
+            entity="bionty.Gene",
+            organism="human",
+            name="ensembl",
+            version="release-112",
+            description="Ensembl Genes Release 112",
+        ).save()
 
         source_artifact = register_source_in_bionty_assets(
             "path/to/source.parquet",
@@ -226,7 +233,10 @@ def register_source_in_bionty_assets(
         else:
             artifact.replace(filepath)
     else:
-        artifact = ln.Artifact(filepath, key=filepath.name)
+        if is_dataframe:
+            artifact = ln.Artifact.from_dataframe(filepath, key=filepath.name)
+        else:
+            artifact = ln.Artifact(filepath, key=filepath.name)
         # NOTE: we use non-virtual keys for bionty-assets artifacts
         artifact._key_is_virtual = False
     artifact.save()

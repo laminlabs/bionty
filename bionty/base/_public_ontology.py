@@ -413,6 +413,7 @@ class PublicOntology:
         values: Iterable,
         field: PublicOntologyField,
         *,
+        standardize: bool = True,
         mute: bool = False,
         **kwargs,
     ) -> InspectResult:
@@ -450,6 +451,7 @@ class PublicOntology:
             identifiers=values,
             field=str(field),
             mute=mute,
+            standardize=standardize,
             **kwargs,
         )
 
