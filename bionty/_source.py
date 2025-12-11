@@ -3,11 +3,7 @@ from lamindb.models import SQLRecord
 
 import bionty.base as bt_base
 
-from ._organism import (
-    OrganismNotSet,
-    create_or_get_organism_record,
-    is_organism_required,
-)
+from ._organism import create_or_get_organism_record
 
 
 def get_source_record(
@@ -21,22 +17,14 @@ def get_source_record(
     if source is not None:
         return source
 
-    organism_record = create_or_get_organism_record(
-        organism=organism, registry=registry
-    )
-    if organism_record is None and is_organism_required(registry):
-        raise OrganismNotSet(
-            f"`organism` is required to get Source record for {registry.__name__}!"
-        )
+    organism_record = create_or_get_organism_record(organism, registry)
 
     entity_name = registry.__get_name_with_module__()
     filter_kwargs = {"entity": entity_name}
     if isinstance(organism_record, SQLRecord):
         filter_kwargs["organism"] = organism_record.name
     elif isinstance(organism, str):
-        filter_kwargs["organism"] = (
-            organism  # e.g. organism can be "all" for bionty.CellType
-        )
+        filter_kwargs["organism"] = organism
 
     sources = Source.filter(**filter_kwargs).all()
     if len(sources) == 0:
@@ -49,7 +37,7 @@ def get_source_record(
         return current_sources.first()
     elif len(current_sources) > 1:
         if organism is None:
-            # for bionty.Organism, in most cases we load from the vertebrates source because ncbitaxon is too big
+            # for Organism, in most cases we load from the vertebrates source because ncbitaxon is too big
             if entity_name == "bionty.Organism":
                 current_sources_vertebrates = current_sources.filter(
                     organism="vertebrates"
@@ -70,15 +58,15 @@ def get_source_record(
 
 
 def filter_public_df_columns(
-    registry: type[SQLRecord], public_ontology: bt_base.PublicOntology
+    model: type[SQLRecord], public_ontology: bt_base.PublicOntology
 ) -> pd.DataFrame:
-    """Filter columns of public ontology to match the registry fields."""
+    """Filter columns of public ontology to match the model fields."""
 
-    def _prepare_public_df(registry: type[SQLRecord], bionty_df: pd.DataFrame):
-        """Prepare the bionty DataFrame to match the registry fields."""
+    def _prepare_public_df(model: type[SQLRecord], bionty_df: pd.DataFrame):
+        """Prepare the bionty DataFrame to match the model fields."""
         if bionty_df.empty:
             return bionty_df
-        if registry.__get_name_with_module__() == "bionty.Gene":
+        if model.__get_name_with_module__() == "bionty.Gene":
             # groupby ensembl_gene_id and concat ncbi_gene_ids
             groupby_id_col = (
                 "ensembl_gene_id" if "ensembl_gene_id" in bionty_df else "stable_id"
@@ -112,11 +100,11 @@ def filter_public_df_columns(
 
     bionty_df = pd.DataFrame()
     if public_ontology is not None:
-        registry_field_names = {i.name for i in registry._meta.fields}
+        model_field_names = {i.name for i in model._meta.fields}
         # parents needs to be added here as relationships aren't in fields
-        registry_field_names.add("parents")
+        model_field_names.add("parents")
         bionty_df = _prepare_public_df(
-            registry, public_ontology.to_dataframe().reset_index()
+            model, public_ontology.to_dataframe().reset_index()
         )
-        bionty_df = bionty_df.loc[:, bionty_df.columns.isin(registry_field_names)]
+        bionty_df = bionty_df.loc[:, bionty_df.columns.isin(model_field_names)]
     return bionty_df

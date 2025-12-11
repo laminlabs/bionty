@@ -12,11 +12,11 @@ class Settings:
     """
 
     def __init__(self):
-        self._organism = None
+        self._organism = "human"
 
     @property
     def organism(self) -> Organism | None:
-        """Default organism argument (default `None`).
+        """Default organism argument (default `"human"`).
 
         Default organism to use in cases of ambiguity. For instance, gene symbols are duplicated across organisms and need to be disambiguated.
 
@@ -31,18 +31,21 @@ class Settings:
         return self._organism
 
     @organism.setter
-    def organism(self, name: str | Organism | None):
-        if name is None:
-            self._organism = None
-            return
+    def organism(self, name: str | Organism):
         if isinstance(name, Organism):
             self._organism = name
         else:
-            organism = Organism.from_source(name=name, mute=True)
-            if isinstance(organism, list):
-                organism = organism[0]
-            if organism._state.adding:
-                organism.save()
+            import lamindb as ln
+
+            organisms = Organism.from_values([name], mute=True)
+            if len(organisms) == 0:
+                raise ValueError(
+                    f"No organism with name='{name}' is found, please create a organism record!"
+                )
+            else:
+                organism = organisms[0]
+            if organism._state.adding:  # type:ignore
+                organism.save()  # type:ignore
             self._organism = organism
 
 

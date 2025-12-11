@@ -208,15 +208,12 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
         # raise error if no organism is passed
         if hasattr(self.__class__, "organism_id"):
             if kwargs.get("organism") is None and kwargs.get("organism_id") is None:
-                from ._organism import OrganismNotSet
                 from .core._settings import settings
 
                 if settings.organism is not None:
                     kwargs["organism"] = settings.organism
                 else:
-                    raise OrganismNotSet(
-                        f"`organism` is required to create new {self.__class__.__name__} records!"
-                    )
+                    raise RuntimeError("please pass a organism!")
             elif kwargs.get("organism") is not None:
                 if not isinstance(kwargs.get("organism"), Organism):
                     raise TypeError("organism must be a `bionty.Organism` record.")
@@ -550,7 +547,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
     @classmethod
     def from_source(
         cls, string: str = None, *, mute: bool = False, **kwargs
-    ) -> BioRecord | list[BioRecord]:
+    ) -> BioRecord | list[BioRecord] | None:
         """Create a record or records from source based on a single field value.
 
         Notes:
@@ -614,8 +611,8 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                     results, _ = create_records_from_source(
                         pd.Index([value]),
                         field=field,
-                        standardize=False,
                         **kwargs,
+                        inspect_synonyms=False,
                     )
                 error_msg = f"{key}='{value}'"
 
