@@ -106,7 +106,7 @@ Disease:
 ExperimentalFactor:
   efo:
     all:
-      latest-version: 3.70.0
+      latest-version: 3.78.0
       url: http://www.ebi.ac.uk/efo/releases/v{version}/efo.owl
     name: The Experimental Factor Ontology
     website: https://bioportal.bioontology.org/ontologies/EFO
