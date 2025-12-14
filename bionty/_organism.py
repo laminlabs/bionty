@@ -28,7 +28,9 @@ def create_or_get_organism_record(
     """
     # also returns None if a registry doesn't require organism field
     organism_record = None
-    if is_organism_required(registry=registry, field=field) or organism is not None:
+    if is_organism_required(registry=registry, field=field) or isinstance(
+        organism, BioRecord
+    ):
         from .core._settings import settings
         from .models import Organism
 
