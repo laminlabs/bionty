@@ -35,3 +35,7 @@ def test_from_values_organism():
     # clean up
     bt.Organism.filter().delete(permanent=True)
     bt.Gene.filter().delete(permanent=True)
+
+
+def test_organism_all():
+    assert bt.CellLine.public(organism="all")

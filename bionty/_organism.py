@@ -28,7 +28,8 @@ def create_or_get_organism_record(
     """
     # also returns None if a registry doesn't require organism field
     organism_record = None
-    if is_organism_required(registry=registry, field=field) or organism is not None:
+    required = is_organism_required(registry=registry, field=field)
+    if required or organism is not None:
         from .core._settings import settings
         from .models import Organism
 
@@ -41,7 +42,10 @@ def create_or_get_organism_record(
         if isinstance(organism, Organism):
             organism_record = organism
         elif isinstance(organism, str):
-            organism_record = get_or_create_organism_from_name(name=organism)
+            # not error if organism isn't required, for instance passing organism="all" for CellLine
+            organism_record = get_or_create_organism_from_name(
+                name=organism, error=required
+            )
 
     return organism_record
 
@@ -76,7 +80,7 @@ def is_organism_required(
 
 
 def get_or_create_organism_from_name(
-    name: str, using_key: str | None = None
+    name: str, using_key: str | None = None, error: bool = True
 ) -> Organism:
     """Create organism record if not exists."""
     import bionty as bt
@@ -93,9 +97,13 @@ def get_or_create_organism_from_name(
             )  # here assumes the default source is ensembl vertebrates
             organism_record.save(using=using_key)
         except DoesNotExist:
-            raise OrganismNotSet(
-                f"Organism {name} can't be created from the source, check your spelling or create it manually."
-            ) from None
+            if error:
+                raise OrganismNotSet(
+                    f"Organism {name} can't be created from the source, check your spelling or create it manually."
+                ) from None
+            else:
+                # for instance, organism="all" for CellLine should pass
+                pass
     return organism_record
 
 
