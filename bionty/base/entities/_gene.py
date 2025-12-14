@@ -165,7 +165,7 @@ class EnsemblGene:
         )
 
         # Determine port based on taxa
-        self._port = 4157 if taxa == "plants" else 3306
+        self._port = 5306 if taxa == "plants" else 3306
         self._host = "ensembldb.ensembl.org"
         self._db = self._organism.core_db
         self._conn = None
@@ -246,8 +246,9 @@ class EnsemblGene:
         """
 
         # Query for the basic gene annotations
+        logger.info("fetching core gene records from Ensembl...")
         results_core = self._execute_query(query_core)
-        logger.info("fetching records from the core DB...")
+        logger.success(f"fetched {results_core.shape[0]} records from the core DB...")
 
         # Aggregate metadata based on ensembl stable_id
         results_core_group = results_core.groupby("stable_id").agg(
@@ -260,8 +261,11 @@ class EnsemblGene:
         )
 
         # Query for external ids
+        logger.info("fetching external database records from Ensembl...")
         results_external = self._execute_query(query_external)
-        logger.info("fetching records from the external DBs...")
+        logger.success(
+            f"fetched {results_external.shape[0]} records from the external DBs..."
+        )
 
         def add_external_db_column(
             df: pd.DataFrame, ext_db: str, df_col: str
