@@ -145,7 +145,7 @@ class EnsemblGene:
         organism: str,
         version: str,
         taxa: Literal[
-            "vertebrates", "bacteria", "fungi", "metazoa", "plants", "all"
+            "vertebrates", "bacteria", "fungi", "metazoa", "plants"
         ] = "vertebrates",
     ) -> None:
         """Ensembl Gene using direct PyMySQL connection.
@@ -165,7 +165,7 @@ class EnsemblGene:
         )
 
         # Determine port based on taxa
-        self._port = 5306 if taxa == "plants" else 3306
+        self._port = 5306 if taxa == "vertebrates" else 4157
         self._host = "ensembldb.ensembl.org"
         self._db = self._organism.core_db
         self._conn = None
