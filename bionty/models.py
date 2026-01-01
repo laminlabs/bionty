@@ -646,7 +646,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             # here parents is still a list of ontology ids
             parents = self._parents
             # bulk create parent records
-            parents_records = self.from_values(
+            parents_records = self.__class__.from_values(
                 parents, self.__class__.ontology_id, source=self.source
             )
             ln.save(parents_records)
