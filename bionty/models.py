@@ -2259,8 +2259,6 @@ class ArtifactOrganism(BaseSQLRecord, IsLink, TracksRun):
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactorganism"
     )
-    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
         app_label = "bionty"
@@ -2274,8 +2272,6 @@ class ArtifactGene(BaseSQLRecord, IsLink, TracksRun):
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactgene"
     )
-    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
         app_label = "bionty"
@@ -2289,8 +2285,6 @@ class ArtifactProtein(BaseSQLRecord, IsLink, TracksRun):
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactprotein"
     )
-    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
         app_label = "bionty"
@@ -2311,8 +2305,6 @@ class ArtifactCellMarker(BaseSQLRecord, IsLink, TracksRun):
         default=None,
         related_name="links_artifactcellmarker",
     )
-    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
         app_label = "bionty"
@@ -2326,8 +2318,6 @@ class ArtifactTissue(BaseSQLRecord, IsLink, TracksRun):
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifacttissue"
     )
-    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
         app_label = "bionty"
@@ -2342,8 +2332,6 @@ class ArtifactCellType(BaseSQLRecord, IsLink, TracksRun):
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactcelltype"
     )
-    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
         app_label = "bionty"
@@ -2357,8 +2345,6 @@ class ArtifactDisease(BaseSQLRecord, IsLink, TracksRun):
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactdisease"
     )
-    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
         app_label = "bionty"
@@ -2373,8 +2359,6 @@ class ArtifactCellLine(BaseSQLRecord, IsLink, TracksRun):
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactcellline"
     )
-    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
         app_label = "bionty"
@@ -2394,8 +2378,6 @@ class ArtifactPhenotype(BaseSQLRecord, IsLink, TracksRun):
         default=None,
         related_name="links_artifactphenotype",
     )
-    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
         app_label = "bionty"
@@ -2409,8 +2391,6 @@ class ArtifactPathway(BaseSQLRecord, IsLink, TracksRun):
     feature: Feature = ForeignKey(
         Feature, PROTECT, null=True, default=None, related_name="links_artifactpathway"
     )
-    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
         app_label = "bionty"
@@ -2432,8 +2412,6 @@ class ArtifactExperimentalFactor(BaseSQLRecord, IsLink, TracksRun):
         default=None,
         related_name="links_artifactexperimentalfactor",
     )
-    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
         app_label = "bionty"
@@ -2456,8 +2434,6 @@ class ArtifactDevelopmentalStage(BaseSQLRecord, IsLink, TracksRun):
         default=None,
         related_name="links_artifactdevelopmentalstage",
     )
-    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
         app_label = "bionty"
@@ -2477,8 +2453,6 @@ class ArtifactEthnicity(BaseSQLRecord, IsLink, TracksRun):
         default=None,
         related_name="links_artifactethnicity",
     )
-    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
         app_label = "bionty"
