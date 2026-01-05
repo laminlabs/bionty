@@ -5,6 +5,46 @@ import lamindb.base.fields
 from django.db import migrations
 
 
+def rename_branch_columns(apps, schema_editor):
+    """Rename _branch_code to branch_id across all models."""
+    tables = [
+        "bionty_cellline",
+        "bionty_cellmarker",
+        "bionty_celltype",
+        "bionty_developmentalstage",
+        "bionty_disease",
+        "bionty_ethnicity",
+        "bionty_experimentalfactor",
+        "bionty_gene",
+        "bionty_organism",
+        "bionty_pathway",
+        "bionty_phenotype",
+        "bionty_protein",
+        "bionty_source",
+        "bionty_tissue",
+    ]
+
+    with schema_editor.connection.cursor() as cursor:
+        if schema_editor.connection.vendor == "postgresql":
+            for table in tables:
+                cursor.execute(
+                    f"ALTER TABLE {table} RENAME COLUMN _branch_code TO branch_id;"
+                )
+
+        elif schema_editor.connection.vendor == "sqlite":
+            # SQLite 3.25.0+ supports ALTER TABLE RENAME COLUMN
+            for table in tables:
+                try:
+                    cursor.execute(
+                        f"ALTER TABLE {table} RENAME COLUMN _branch_code TO branch_id;"
+                    )
+                except Exception as error:
+                    raise NotImplementedError(
+                        "This migration requires SQLite 3.25.0 or newer. "
+                        "Please upgrade SQLite or manually recreate the tables."
+                    ) from error
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("bionty", "0061_remove_cellline_page_remove_cellmarker_page_and_more"),
@@ -12,6 +52,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        # Rename the columns at the database level
+        migrations.RunPython(
+            rename_branch_columns,
+            migrations.RunPython.noop,
+        ),
         migrations.RemoveField(
             model_name="artifactcellline",
             name="feature_ref_is_name",
