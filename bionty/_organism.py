@@ -1,7 +1,6 @@
 import re
 
 import pandas as pd
-from django.core.exceptions import FieldDoesNotExist, ObjectDoesNotExist
 from lamin_utils import logger
 from lamindb.base.types import FieldAttr
 
@@ -28,7 +27,7 @@ def create_or_get_organism_record(
     """
     # also returns None if a registry doesn't require organism field
     organism_record = None
-    required = is_organism_required(registry=registry, field=field)
+    required = registry.require_organism(field=field)
     if required or organism is not None:
         from .core._settings import settings
         from .models import Organism
@@ -48,35 +47,6 @@ def create_or_get_organism_record(
             )
 
     return organism_record
-
-
-def is_organism_required(
-    registry: type[BioRecord], field: FieldAttr | None = None
-) -> bool:
-    """Check if the registry has an organism field and is required.
-
-    Returns:
-        True if the registry has an organism field and is required, False otherwise.
-    """
-    required = True
-
-    # first we determine the requireness based on the registry.organism FK field
-    try:
-        organism_field = registry._meta.get_field("organism")
-        # organism is not required or not a relation
-        if organism_field.null or not organism_field.is_relation:
-            required = False
-        else:
-            required = True
-    except FieldDoesNotExist:
-        required = False
-
-    # field of the registry is used to determine if organism is required to create record in the registry
-    if field is not None:
-        is_simple_field_unique = field.field.unique and not field.field.is_relation
-        required = required and not is_simple_field_unique
-
-    return required
 
 
 def get_or_create_organism_from_name(

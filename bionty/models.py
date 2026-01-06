@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import functools
-from typing import overload
+from typing import TYPE_CHECKING, overload
 
 import numpy as np
 import pandas as pd
+from django.core.exceptions import FieldDoesNotExist
 from django.db import models
 from django.db.models import CASCADE, PROTECT
 from lamin_utils import logger
@@ -38,6 +39,9 @@ from ._biorecord import encode_uid, lookup2kwargs
 from ._shared_docstrings import doc_from_source
 from .base import PublicOntology
 from .base._public_ontology import InvalidParamError
+
+if TYPE_CHECKING:
+    from lamindb.base.types import FieldAttr
 
 
 class StaticReference(PublicOntology):
@@ -206,7 +210,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                 args = ()
 
         # raise error if no organism is passed
-        if hasattr(self.__class__, "organism_id"):
+        if self.__class__.require_organism():
             if kwargs.get("organism") is None and kwargs.get("organism_id") is None:
                 from ._organism import OrganismNotSet
                 from .core._settings import settings
@@ -217,9 +221,10 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                     raise OrganismNotSet(
                         f"`organism` is required to create new {self.__class__.__name__} records!"
                     )
-            elif kwargs.get("organism") is not None:
-                if not isinstance(kwargs.get("organism"), Organism):
-                    raise TypeError("organism must be a `bionty.Organism` record.")
+            elif kwargs.get("organism") is not None and not isinstance(
+                kwargs.get("organism"), Organism
+            ):
+                raise TypeError("organism must be a `bionty.Organism` record.")
 
         kwargs = encode_uid(registry=self.__class__, kwargs=kwargs)
 
@@ -357,8 +362,6 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
 
         from bionty.base._public_ontology import encode_filenames
 
-        from ._organism import is_organism_required
-
         # wetlab.Compound, bionty.CellType, etc.
         entity_name = cls.__get_name_with_module__()
         source_record = source if isinstance(source, Source) else None
@@ -395,7 +398,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
         }
 
         # Register organism if required
-        if is_organism_required(cls):
+        if cls.require_organism():
             Organism.from_source(name=source_record.organism).save()
 
         # Get existing or create new source
@@ -627,6 +630,33 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
             )
         else:
             return results
+
+    @classmethod
+    def require_organism(cls, field: FieldAttr | None = None) -> bool:
+        """Check if the registry has an organism field and is required.
+
+        Returns:
+            True if the registry has an organism field and is required, False otherwise.
+        """
+        required = True
+
+        # first we determine the requireness based on the registry.organism FK field
+        try:
+            organism_field = cls._meta.get_field("organism")
+            # organism is not required or not a relation
+            if organism_field.null or not organism_field.is_relation:
+                required = False
+            else:
+                required = True
+        except FieldDoesNotExist:
+            required = False
+
+        # field of the registry is used to determine if organism is required to create record in the registry
+        if field is not None:
+            is_simple_field_unique = field.field.unique and not field.field.is_relation
+            required = required and not is_simple_field_unique
+
+        return required
 
     def save(self, *args, **kwargs) -> BioRecord:
         """Save the record and its parents recursively.
