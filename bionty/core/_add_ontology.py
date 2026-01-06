@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from lamin_utils import logger
 
-from bionty._organism import create_or_get_organism_record, is_organism_required
+from bionty._organism import create_or_get_organism_record
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -65,7 +65,7 @@ def create_records(
 
     df_records = df.to_dict(orient="records")
 
-    if organism is None and is_organism_required(registry):
+    if organism is None and registry.require_organism():
         organism = source_record.organism
 
     organism = create_or_get_organism_record(organism=organism, registry=registry)
