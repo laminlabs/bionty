@@ -70,7 +70,7 @@ def encode_uid(registry, kwargs: dict):
         # if uid is passed, no encoding is needed
         return kwargs
     name = registry.__name__.lower()
-    if registry.__base__.__name__ == "BioRecord" and registry.requires_organism():
+    if registry.__base__.__name__ == "BioRecord" and registry.require_organism():
         organism = kwargs.get("organism")
         if organism is None:
             organism_id = kwargs.get("organism_id")
