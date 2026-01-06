@@ -210,7 +210,7 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                 args = ()
 
         # raise error if no organism is passed
-        if hasattr(self.__class__, "organism_id"):
+        if self.__class__.require_organism():
             if kwargs.get("organism") is None and kwargs.get("organism_id") is None:
                 from ._organism import OrganismNotSet
                 from .core._settings import settings
@@ -221,9 +221,10 @@ class BioRecord(SQLRecord, HasParents, CanCurate):
                     raise OrganismNotSet(
                         f"`organism` is required to create new {self.__class__.__name__} records!"
                     )
-            elif kwargs.get("organism") is not None:
-                if not isinstance(kwargs.get("organism"), Organism):
-                    raise TypeError("organism must be a `bionty.Organism` record.")
+            elif kwargs.get("organism") is not None and not isinstance(
+                kwargs.get("organism"), Organism
+            ):
+                raise TypeError("organism must be a `bionty.Organism` record.")
 
         kwargs = encode_uid(registry=self.__class__, kwargs=kwargs)
 
