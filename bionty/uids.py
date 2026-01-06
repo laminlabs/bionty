@@ -60,7 +60,7 @@ def source(input_id: str | None = None):
     return hash_id(input_id, n_char=8)
 
 
-def encode_uid(registry: type, kwargs: dict):
+def encode_uid(registry, kwargs: dict):
     """The type passed needs to be a subclass of BioRecord."""
     from lamindb.models import SQLRecord
 
@@ -70,13 +70,14 @@ def encode_uid(registry: type, kwargs: dict):
         # if uid is passed, no encoding is needed
         return kwargs
     name = registry.__name__.lower()
-    if hasattr(registry, "organism_id"):
+    if registry.requires_organism():
         organism = kwargs.get("organism")
         if organism is None:
-            if kwargs.get("organism_id") is not None:
+            organism_id = kwargs.get("organism_id")
+            if organism_id is not None:
                 from .models import Organism
 
-                organism = Organism.get(kwargs.get("organism_id")).name
+                organism = Organism.get(id=organism_id).name
         elif isinstance(organism, SQLRecord):
             organism = organism.name
     else:
@@ -105,7 +106,7 @@ def encode_uid(registry: type, kwargs: dict):
                 f"must provide {ontology_id_field}, stable_id or {name_field}"
             )
     else:
-        str_to_encode = kwargs.get(ontology_id_field)
+        str_to_encode = kwargs.get(ontology_id_field)  # default to encode ontology_id
         if str_to_encode is None or str_to_encode == "":
             str_to_encode = f"{kwargs.get(name_field)}{organism}"  # name + organism
         if str_to_encode is None or str_to_encode == "":
