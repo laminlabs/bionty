@@ -160,11 +160,11 @@ class Source(SQLRecord, TracksRun, TracksUpdates):
         return self
 
 
-class StandardOntology(SQLRecord, HasParents):
-    """StandardOntology - base class for standard ontologies.
+class HasOntologyId(models.Model, HasParents):
+    """HasOntologyId - base class for standard ontologies.
 
     This class is inherited by all standard ontology registries in bionty.
-    It provides common fields and methods for these registries.
+    It provides common fields `name`, `ontology_id`, and `parents`.
     """
 
     class Meta:
@@ -184,100 +184,17 @@ class StandardOntology(SQLRecord, HasParents):
     """Parent records."""
 
 
-class BioRecord(SQLRecord, CanCurate):
-    """Base SQLRecord of bionty.
+class HasSource(models.Model):
+    """HasSource - base class for records with a source foreign key.
 
-    BioRecord inherits all methods from :class:`~lamindb.models.SQLRecord` and provides additional methods
-    including :meth:`~bionty.core.BioRecord.public` and :meth:`~bionty.core.BioRecord.from_source`.
-
-    Notes:
-        For more info, see tutorials:
-
-        - :doc:`docs:bionty`
-        - :doc:`docs:manage-ontologies`
+    Provides :meth:`~bionty.core.BioRecord.public` and :meth:`~bionty.core.BioRecord.from_source`.
     """
 
     class Meta:
         abstract = True
 
-    id: int = models.AutoField(primary_key=True)
-    """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ontology)
-    """A universal id (base62-encoded hash of defining fields)."""
-    abbr: str | None = CharField(
-        max_length=32, db_index=True, unique=True, null=True, default=None
-    )
-    """A unique abbreviation, maximum length 32 characters."""
-    synonyms: str | None = TextField(null=True, db_index=True, default=None)
-    """Bar-separated (|) synonyms of this biorecord."""
-    description: str | None = TextField(null=True, db_index=True, default=None)
-    """Description of the biorecord."""
     source: Source = ForeignKey(Source, PROTECT, null=True, related_name="+")
     """:class:`~bionty.Source` this record associates with."""
-
-    def __init__(self, *args, **kwargs):
-        # DB-facing constructor
-        if len(args) == len(self._meta.concrete_fields):
-            super().__init__(*args, **kwargs)
-            return None
-
-        # passing lookup result from bionty, which is a Tuple or List
-        if (
-            args
-            and len(args) == 1
-            and isinstance(args[0], tuple | list)
-            and len(args[0]) > 0
-        ):
-            if isinstance(args[0], list) and len(args[0]) > 1:
-                logger.warning(
-                    "multiple lookup/search results were passed. Only returning record from the first entry."
-                )
-            result = lookup2kwargs(self, *args, **kwargs)  # type:ignore
-            # exclude "parents" from query arguments
-            query_kwargs = {k: v for k, v in result.items() if k != "parents"}
-            existing_record = self.__class__.filter(**query_kwargs).one_or_none()
-            if existing_record is not None:
-                from lamindb.models.sqlrecord import init_self_from_db
-
-                init_self_from_db(self, existing_record)
-                return None
-            else:
-                kwargs = result  # result already has encoded id
-                args = ()
-
-        # raise error if no organism is passed
-        if self.__class__.require_organism():
-            if kwargs.get("organism") is None and kwargs.get("organism_id") is None:
-                from ._organism import OrganismNotSet
-                from .core._settings import settings
-
-                if settings.organism is not None:
-                    kwargs["organism"] = settings.organism
-                else:
-                    raise OrganismNotSet(
-                        f"`organism` is required to create new {self.__class__.__name__} records!"
-                    )
-            elif kwargs.get("organism") is not None and not isinstance(
-                kwargs.get("organism"), Organism
-            ):
-                raise TypeError("organism must be a `bionty.Organism` record.")
-
-        kwargs = encode_uid(registry=self.__class__, kwargs=kwargs)
-
-        # now continue with the user-facing constructor
-        # set the direct parents as a private attribute
-        # this is a list of strings that store the ontology id
-        if "parents" in kwargs:
-            parents = kwargs.pop("parents")
-            # this checks if we receive a np.ndarray from pandas
-            if isinstance(parents, list | np.ndarray) and len(parents) > 0:
-                if not isinstance(parents[0], str):
-                    raise ValueError(
-                        "Invalid parents kwarg passed. Provide a list of ontology ids."
-                    )
-                self._parents = parents
-
-        super().__init__(*args, **kwargs)
 
     @classmethod
     def import_source(
@@ -667,6 +584,99 @@ class BioRecord(SQLRecord, CanCurate):
         else:
             return results
 
+
+class BioRecord(SQLRecord, HasSource, CanCurate):
+    """Base SQLRecord of bionty.
+
+    BioRecord inherits all methods from :class:`~lamindb.models.SQLRecord` and :meth:`~lamindb.models.CanCurate`.
+
+    Notes:
+        For more info, see tutorials:
+
+        - :doc:`docs:bionty`
+        - :doc:`docs:manage-ontologies`
+    """
+
+    class Meta(SQLRecord.Meta, HasSource.Meta):
+        abstract = True
+
+    id: int = models.AutoField(primary_key=True)
+    """Internal id, valid only in one DB instance."""
+    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ontology)
+    """A universal id (base62-encoded hash of defining fields)."""
+    abbr: str | None = CharField(
+        max_length=32, db_index=True, unique=True, null=True, default=None
+    )
+    """A unique abbreviation, maximum length 32 characters."""
+    synonyms: str | None = TextField(null=True, db_index=True, default=None)
+    """Bar-separated (|) synonyms of this biorecord."""
+    description: str | None = TextField(null=True, db_index=True, default=None)
+    """Description of the biorecord."""
+
+    def __init__(self, *args, **kwargs):
+        # DB-facing constructor
+        if len(args) == len(self._meta.concrete_fields):
+            super().__init__(*args, **kwargs)
+            return None
+
+        # passing lookup result from bionty, which is a Tuple or List
+        if (
+            args
+            and len(args) == 1
+            and isinstance(args[0], tuple | list)
+            and len(args[0]) > 0
+        ):
+            if isinstance(args[0], list) and len(args[0]) > 1:
+                logger.warning(
+                    "multiple lookup/search results were passed. Only returning record from the first entry."
+                )
+            result = lookup2kwargs(self, *args, **kwargs)  # type:ignore
+            # exclude "parents" from query arguments
+            query_kwargs = {k: v for k, v in result.items() if k != "parents"}
+            existing_record = self.__class__.filter(**query_kwargs).one_or_none()
+            if existing_record is not None:
+                from lamindb.models.sqlrecord import init_self_from_db
+
+                init_self_from_db(self, existing_record)
+                return None
+            else:
+                kwargs = result  # result already has encoded id
+                args = ()
+
+        # raise error if no organism is passed
+        if self.__class__.require_organism():
+            if kwargs.get("organism") is None and kwargs.get("organism_id") is None:
+                from ._organism import OrganismNotSet
+                from .core._settings import settings
+
+                if settings.organism is not None:
+                    kwargs["organism"] = settings.organism
+                else:
+                    raise OrganismNotSet(
+                        f"`organism` is required to create new {self.__class__.__name__} records!"
+                    )
+            elif kwargs.get("organism") is not None and not isinstance(
+                kwargs.get("organism"), Organism
+            ):
+                raise TypeError("organism must be a `bionty.Organism` record.")
+
+        kwargs = encode_uid(registry=self.__class__, kwargs=kwargs)
+
+        # now continue with the user-facing constructor
+        # set the direct parents as a private attribute
+        # this is a list of strings that store the ontology id
+        if "parents" in kwargs:
+            parents = kwargs.pop("parents")
+            # this checks if we receive a np.ndarray from pandas
+            if isinstance(parents, list | np.ndarray) and len(parents) > 0:
+                if not isinstance(parents[0], str):
+                    raise ValueError(
+                        "Invalid parents kwarg passed. Provide a list of ontology ids."
+                    )
+                self._parents = parents
+
+        super().__init__(*args, **kwargs)
+
     @classmethod
     def require_organism(cls, field: FieldAttr | None = None) -> bool:
         """Check if the registry has an organism field and is required.
@@ -721,7 +731,7 @@ class BioRecord(SQLRecord, CanCurate):
         return self
 
 
-class Organism(BioRecord, StandardOntology, TracksRun, TracksUpdates):
+class Organism(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
     """Organism - `NCBI Taxonomy <https://www.ncbi.nlm.nih.gov/taxonomy/>`__, `Ensembl Organism <https://useast.ensembl.org/info/about/species.html>`__.
 
     Notes:
@@ -734,9 +744,7 @@ class Organism(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         record = bt.Organism.from_source(name="rabbit")
     """
 
-    class Meta(
-        BioRecord.Meta, StandardOntology.Meta, TracksRun.Meta, TracksUpdates.Meta
-    ):
+    class Meta(BioRecord.Meta, HasOntologyId.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
         app_label = "bionty"
 
@@ -1179,7 +1187,7 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         pass
 
 
-class Tissue(BioRecord, StandardOntology, TracksRun, TracksUpdates):
+class Tissue(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
     """Tissues - `Uberon <http://obophenotype.github.io/uberon/>`__.
 
     Notes:
@@ -1194,9 +1202,7 @@ class Tissue(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         record = bt.Tissue.from_source(name="brain")
     """
 
-    class Meta(
-        BioRecord.Meta, StandardOntology.Meta, TracksRun.Meta, TracksUpdates.Meta
-    ):
+    class Meta(BioRecord.Meta, HasOntologyId.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
         app_label = "bionty"
 
@@ -1268,7 +1274,7 @@ class Tissue(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         pass
 
 
-class CellType(BioRecord, StandardOntology, TracksRun, TracksUpdates):
+class CellType(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
     """Cell types - `Cell Ontology <https://obophenotype.github.io/cell-ontology/>`__.
 
     Notes:
@@ -1283,9 +1289,7 @@ class CellType(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         record = bt.CellType.from_source(name="T cell")
     """
 
-    class Meta(
-        BioRecord.Meta, StandardOntology.Meta, TracksRun.Meta, TracksUpdates.Meta
-    ):
+    class Meta(BioRecord.Meta, HasOntologyId.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
         app_label = "bionty"
 
@@ -1360,7 +1364,7 @@ class CellType(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         pass
 
 
-class Disease(BioRecord, StandardOntology, TracksRun, TracksUpdates):
+class Disease(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
     """Diseases - `Mondo <https://mondo.monarchinitiative.org/>`__, `Human Disease <https://disease-ontology.org/>`__.
 
     Notes:
@@ -1375,9 +1379,7 @@ class Disease(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         record = bt.Disease.from_source(name="Alzheimer disease")
     """
 
-    class Meta(
-        BioRecord.Meta, StandardOntology.Meta, TracksRun.Meta, TracksUpdates.Meta
-    ):
+    class Meta(BioRecord.Meta, HasOntologyId.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
         app_label = "bionty"
 
@@ -1450,7 +1452,7 @@ class Disease(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         pass
 
 
-class CellLine(BioRecord, StandardOntology, TracksRun, TracksUpdates):
+class CellLine(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
     """Cell lines - `Cell Line Ontology <https://github.com/CLO-ontology/CLO>`__.
 
     Notes:
@@ -1466,9 +1468,7 @@ class CellLine(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         record = bt.CellLine.from_source(name=standard_name)
     """
 
-    class Meta(
-        BioRecord.Meta, StandardOntology.Meta, TracksRun.Meta, TracksUpdates.Meta
-    ):
+    class Meta(BioRecord.Meta, HasOntologyId.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
         app_label = "bionty"
 
@@ -1540,7 +1540,7 @@ class CellLine(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         pass
 
 
-class Phenotype(BioRecord, StandardOntology, TracksRun, TracksUpdates):
+class Phenotype(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
     """Phenotypes - `Human Phenotype <https://hpo.jax.org/app/>`__,
     `Phecodes <https://phewascatalog.org/phecodes_icd10>`__,
     `Mammalian Phenotype <http://obofoundry.org/ontology/mp.html>`__,
@@ -1558,9 +1558,7 @@ class Phenotype(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         record = bt.Phenotype.from_source(name="Arachnodactyly")
     """
 
-    class Meta(
-        BioRecord.Meta, StandardOntology.Meta, TracksRun.Meta, TracksUpdates.Meta
-    ):
+    class Meta(BioRecord.Meta, HasOntologyId.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
         app_label = "bionty"
 
@@ -1632,7 +1630,7 @@ class Phenotype(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         pass
 
 
-class Pathway(BioRecord, StandardOntology, TracksRun, TracksUpdates):
+class Pathway(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
     """Pathways - `Gene Ontology <https://bioportal.bioontology.org/ontologies/GO>`__,
     `Pathway Ontology <https://bioportal.bioontology.org/ontologies/PW>`__.
 
@@ -1648,9 +1646,7 @@ class Pathway(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         record = bt.Pathway.from_source(ontology_id="GO:1903353")
     """
 
-    class Meta(
-        BioRecord.Meta, StandardOntology.Meta, TracksRun.Meta, TracksUpdates.Meta
-    ):
+    class Meta(BioRecord.Meta, HasOntologyId.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
         app_label = "bionty"
 
@@ -1728,7 +1724,7 @@ class Pathway(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         pass
 
 
-class ExperimentalFactor(BioRecord, StandardOntology, TracksRun, TracksUpdates):
+class ExperimentalFactor(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
     """Experimental factors - `Experimental Factor Ontology <https://www.ebi.ac.uk/ols/ontologies/efo>`__.
 
     Notes:
@@ -1744,9 +1740,7 @@ class ExperimentalFactor(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         record = bt.ExperimentalFactor.from_source(name=standard_name)
     """
 
-    class Meta(
-        BioRecord.Meta, StandardOntology.Meta, TracksRun.Meta, TracksUpdates.Meta
-    ):
+    class Meta(BioRecord.Meta, HasOntologyId.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
         app_label = "bionty"
 
@@ -1822,7 +1816,7 @@ class ExperimentalFactor(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         pass
 
 
-class DevelopmentalStage(BioRecord, StandardOntology, TracksRun, TracksUpdates):
+class DevelopmentalStage(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
     """Developmental stages - `Human Developmental Stages <https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv>`__,
     `Mouse Developmental Stages <https://github.com/obophenotype/developmental-stage-ontologies/wiki/MmusDv>`__.  # noqa.
 
@@ -1838,9 +1832,7 @@ class DevelopmentalStage(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         record = bt.DevelopmentalStage.from_source(name="neurula stage")
     """
 
-    class Meta(
-        BioRecord.Meta, StandardOntology.Meta, TracksRun.Meta, TracksUpdates.Meta
-    ):
+    class Meta(BioRecord.Meta, HasOntologyId.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
         app_label = "bionty"
 
@@ -1916,7 +1908,7 @@ class DevelopmentalStage(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         pass
 
 
-class Ethnicity(BioRecord, StandardOntology, TracksRun, TracksUpdates):
+class Ethnicity(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
     """Ethnicity - `Human Ancestry Ontology <https://github.com/EBISPOT/hancestro>`__.
 
     Notes:
@@ -1931,9 +1923,7 @@ class Ethnicity(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         record = bt.Ethnicity.from_source(name="European")
     """
 
-    class Meta(
-        BioRecord.Meta, StandardOntology.Meta, TracksRun.Meta, TracksUpdates.Meta
-    ):
+    class Meta(BioRecord.Meta, HasOntologyId.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
         app_label = "bionty"
 
