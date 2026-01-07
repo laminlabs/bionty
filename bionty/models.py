@@ -91,13 +91,13 @@ class Source(SQLRecord, TracksRun, TracksUpdates):
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=8, default=source)
     """A universal id (base62-encoded hash of defining fields)."""
-    entity: str = CharField(max_length=256, db_index=True)
+    entity: str = CharField(db_index=True)
     """Entity class name with schema, e.g. bionty.CellType."""
-    organism: str = CharField(max_length=256, db_index=True)
+    organism: str = CharField(db_index=True)
     """Organism name, use 'all' if unknown or none applied."""
-    name: str = CharField(max_length=64, db_index=True)
+    name: str = CharField(db_index=True)
     """Source name, short form, CURIE prefix for ontologies."""
-    version: str = CharField(max_length=256, db_index=True)
+    version: str = CharField(db_index=True)
     """Version of the source."""
     in_db: bool = BooleanField(default=False, db_index=True)
     """Whether this ontology has been added to the database."""
@@ -174,11 +174,9 @@ class StandardOntology(SQLRecord, HasParents):
     _name_field: str = "name"
     _ontology_id_field: str = "ontology_id"
 
-    name: str = CharField(max_length=256, db_index=True)
+    name: str = CharField(db_index=True)
     """Name of the record."""
-    ontology_id: str | None = CharField(
-        max_length=64, db_index=True, null=True, default=None
-    )
+    ontology_id: str | None = CharField(db_index=True, null=True, default=None)
     """Ontology ID of the record."""
     parents: BioRecord = models.ManyToManyField(
         "self", symmetrical=False, related_name="children"
@@ -743,7 +741,7 @@ class Organism(BioRecord, StandardOntology, TracksRun, TracksUpdates):
         app_label = "bionty"
 
     scientific_name: str | None = CharField(
-        max_length=256, db_index=True, unique=True, null=True, default=None
+        db_index=True, unique=True, null=True, default=None
     )
     """Scientific name of a organism."""
     artifacts: Artifact = models.ManyToManyField(
@@ -843,7 +841,7 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
     )
     """A unique short form of gene name."""
     stable_id: str | None = CharField(
-        max_length=64, db_index=True, null=True, default=None, unique=True
+        db_index=True, null=True, default=None, unique=True
     )
     """Stable ID of a gene that doesn't have ensembl_gene_id, e.g. a yeast gene."""
     ensembl_gene_id: str | None = CharField(
@@ -962,9 +960,11 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
     _name_field: str = "name"
     _ontology_id_field: str = "uniprotkb_id"
 
+    id: int = models.BigAutoField(primary_key=True)
+    """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=12, db_index=True, default=protein)
     """A universal id (base62-encoded hash of defining fields)."""
-    name: str | None = CharField(max_length=256, db_index=True, null=True, default=None)
+    name: str | None = CharField(db_index=True, null=True, default=None)
     """Unique name of a protein."""
     uniprotkb_id: str | None = CharField(
         max_length=10, db_index=True, null=True, default=None, unique=True
@@ -972,9 +972,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
     """UniProt protein ID, 6 alphanumeric characters, possibly suffixed by 4 more."""
     length: int | None = BigIntegerField(db_index=True, null=True)
     """Length of the protein sequence."""
-    gene_symbol: str | None = CharField(
-        max_length=256, db_index=True, null=True, default=None
-    )
+    gene_symbol: str | None = CharField(db_index=True, null=True, default=None)
     """The primary gene symbol corresponds to this protein."""
     ensembl_gene_ids: str | None = TextField(null=True, default=None)
     """Bar-separated (|) Ensembl Gene IDs that correspond to this protein."""
