@@ -160,7 +160,7 @@ class Source(SQLRecord, TracksRun, TracksUpdates):
         return self
 
 
-class HasOntologyId(models.Model, HasParents):
+class HasOntologyId(HasParents):
     """HasOntologyId - base class for standard ontologies.
 
     This class is inherited by all standard ontology registries in bionty.
@@ -178,10 +178,6 @@ class HasOntologyId(models.Model, HasParents):
     """Name of the record."""
     ontology_id: str | None = CharField(db_index=True, null=True, default=None)
     """Ontology ID of the record."""
-    parents: BioRecord = models.ManyToManyField(
-        "self", symmetrical=False, related_name="children"
-    )
-    """Parent records."""
 
 
 class HasSource(models.Model):
