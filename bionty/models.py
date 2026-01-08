@@ -968,7 +968,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
     _name_field: str = "name"
     _ontology_id_field: str = "uniprotkb_id"
 
-    id: int = models.BigAutoField(primary_key=True)
+    id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=12, db_index=True, default=protein)
     """A universal id (base62-encoded hash of defining fields)."""
