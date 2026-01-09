@@ -6,12 +6,241 @@ from django.db import migrations
 import bionty.uids
 
 
+def re_encode_uids(apps, schema_editor):
+    """Re-encode UIDs for all bionty models in batches of 10k using raw SQL."""
+    batch_size = 10000
+    connection = schema_editor.connection
+    db_vendor = connection.vendor
+
+    # Create a SQL function to do base62 encoding from hash
+    if db_vendor == "postgresql":
+        # Create the base62 encoding function in PostgreSQL
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                CREATE OR REPLACE FUNCTION hash_to_base62(input_text TEXT, n_char INTEGER)
+                RETURNS TEXT AS $$
+                DECLARE
+                    alphabet TEXT := '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+                    hash_bytes BYTEA;
+                    num BIGINT;
+                    result TEXT := '';
+                    remainder INTEGER;
+                BEGIN
+                    -- Get SHA256 hash
+                    hash_bytes := digest(input_text, 'sha256');
+
+                    -- Convert first 8 bytes to bigint
+                    num := ('x' || encode(substring(hash_bytes, 1, 8), 'hex'))::bit(64)::bigint;
+
+                    -- Convert to base62
+                    WHILE num > 0 AND length(result) < n_char LOOP
+                        remainder := num % 62;
+                        result := substring(alphabet, remainder + 1, 1) || result;
+                        num := num / 62;
+                    END LOOP;
+
+                    -- Pad with zeros if needed
+                    WHILE length(result) < n_char LOOP
+                        result := '0' || result;
+                    END LOOP;
+
+                    RETURN substring(result, 1, n_char);
+                END;
+                $$ LANGUAGE plpgsql IMMUTABLE;
+            """)
+    elif db_vendor == "sqlite":
+        # SQLite doesn't have the same functions, we'll need a different approach
+        # For SQLite, we'll fall back to Python-based updates in smaller batches
+        print("SQLite detected - using Python-based encoding")
+        re_encode_uids_python(apps, schema_editor)
+        return
+
+    # Define models with their specific configurations
+    # Format: (model_name, ontology_id_field, name_field, has_organism)
+    models_config = [
+        ("CellLine", "ontology_id", "name", False),
+        ("CellMarker", "ontology_id", "name", True),
+        ("CellType", "ontology_id", "name", False),
+        ("DevelopmentalStage", "ontology_id", "name", False),
+        ("Disease", "ontology_id", "name", False),
+        ("Ethnicity", "ontology_id", "name", False),
+        ("ExperimentalFactor", "ontology_id", "name", False),
+        ("Gene", "ensembl_gene_id", "symbol", True),
+        ("Organism", "ontology_id", "name", False),
+        ("Pathway", "ontology_id", "name", False),
+        ("Phenotype", "ontology_id", "name", False),
+        ("Protein", "uniprotkb_id", "name", True),
+        ("Tissue", "ontology_id", "name", False),
+    ]
+
+    for model_name, ontology_id_field, name_field, has_organism in models_config:
+        Model = apps.get_model("bionty", model_name)
+        table_name = Model._meta.db_table
+
+        # Get min and max IDs
+        with connection.cursor() as cursor:
+            cursor.execute(f"SELECT COUNT(*), MIN(id), MAX(id) FROM {table_name}")
+            count, min_id, max_id = cursor.fetchone()
+
+            if count == 0 or min_id is None:
+                continue
+
+            print(f"Re-encoding UIDs for {model_name}: {count} records")
+
+        # Process in batches
+        current_id = min_id
+        while current_id <= max_id:
+            next_id = current_id + batch_size
+
+            with connection.cursor() as cursor:
+                if has_organism:
+                    if model_name == "Gene":
+                        # Gene has special logic with multiple ID fields (ensembl_gene_id OR stable_id)
+                        cursor.execute(
+                            f"""
+                            UPDATE {table_name} t
+                            SET uid = CASE
+                                WHEN t.ensembl_gene_id IS NOT NULL AND t.ensembl_gene_id != ''
+                                    THEN hash_to_base62(t.ensembl_gene_id, 14)
+                                WHEN t.stable_id IS NOT NULL AND t.stable_id != ''
+                                    THEN hash_to_base62(t.stable_id, 14)
+                                WHEN t.{name_field} IS NOT NULL AND t.{name_field} != ''
+                                    THEN hash_to_base62(
+                                        t.{name_field} || COALESCE((SELECT name FROM bionty_organism WHERE id = t.organism_id), ''),
+                                        14
+                                    )
+                                ELSE t.uid
+                            END
+                            WHERE t.id >= %s AND t.id < %s
+                        """,
+                            [current_id, next_id],
+                        )
+                    else:
+                        cursor.execute(
+                            f"""
+                            UPDATE {table_name} t
+                            SET uid = CASE
+                                WHEN t.{ontology_id_field} IS NOT NULL AND t.{ontology_id_field} != ''
+                                    THEN hash_to_base62(t.{ontology_id_field}, 14)
+                                WHEN t.{name_field} IS NOT NULL AND t.{name_field} != ''
+                                    THEN hash_to_base62(
+                                        t.{name_field} || COALESCE((SELECT name FROM bionty_organism WHERE id = t.organism_id), ''),
+                                        14
+                                    )
+                                ELSE t.uid
+                            END
+                            WHERE t.id >= %s AND t.id < %s
+                        """,
+                            [current_id, next_id],
+                        )
+                else:
+                    cursor.execute(
+                        f"""
+                        UPDATE {table_name}
+                        SET uid = CASE
+                            WHEN {ontology_id_field} IS NOT NULL AND {ontology_id_field} != ''
+                                THEN hash_to_base62({ontology_id_field}, 14)
+                            WHEN {name_field} IS NOT NULL AND {name_field} != ''
+                                THEN hash_to_base62({name_field}, 14)
+                            ELSE uid
+                        END
+                        WHERE id >= %s AND id < %s
+                    """,
+                        [current_id, next_id],
+                    )
+
+            print(f"  Processed up to ID {min(next_id, max_id)}")
+            current_id = next_id
+
+    # Clean up the temporary function
+    if db_vendor == "postgresql":
+        with connection.cursor() as cursor:
+            cursor.execute("DROP FUNCTION IF EXISTS hash_to_base62(TEXT, INTEGER)")
+
+
+def re_encode_uids_python(apps, schema_editor):
+    """Fallback Python implementation for databases without the necessary SQL functions."""
+    from django.db import transaction
+
+    from bionty.uids import ontology
+
+    batch_size = 10000
+
+    models_config = [
+        ("CellLine", "ontology_id", "name", False),
+        ("CellMarker", "ontology_id", "name", True),
+        ("CellType", "ontology_id", "name", False),
+        ("DevelopmentalStage", "ontology_id", "name", False),
+        ("Disease", "ontology_id", "name", False),
+        ("Ethnicity", "ontology_id", "name", False),
+        ("ExperimentalFactor", "ontology_id", "name", False),
+        ("Gene", "ensembl_gene_id", "symbol", True),
+        ("Organism", "ontology_id", "name", False),
+        ("Pathway", "ontology_id", "name", False),
+        ("Phenotype", "ontology_id", "name", False),
+        ("Protein", "uniprotkb_id", "name", True),
+        ("Tissue", "ontology_id", "name", False),
+    ]
+
+    for model_name, ontology_id_field, name_field, has_organism in models_config:
+        Model = apps.get_model("bionty", model_name)
+
+        total_count = Model.objects.count()
+        if total_count == 0:
+            continue
+
+        print(f"Re-encoding UIDs for {model_name}: {total_count} records")
+
+        offset = 0
+        while offset < total_count:
+            with transaction.atomic():
+                records = Model.objects.select_related(
+                    "organism" if has_organism else None
+                ).all()[offset : offset + batch_size]
+
+                updates = []
+                for record in records:
+                    organism = ""
+                    if has_organism and hasattr(record, "organism") and record.organism:
+                        organism = record.organism.name
+
+                    str_to_encode = ""
+                    if model_name == "Gene":
+                        # Try ensembl_gene_id first, then stable_id, then name+organism
+                        str_to_encode = getattr(record, "ensembl_gene_id", "") or ""
+                        if not str_to_encode:
+                            str_to_encode = getattr(record, "stable_id", "") or ""
+                        if not str_to_encode:
+                            str_to_encode = (
+                                f"{getattr(record, name_field, '')}{organism}"
+                            )
+                    else:
+                        str_to_encode = getattr(record, ontology_id_field, "") or ""
+                        if not str_to_encode:
+                            str_to_encode = (
+                                f"{getattr(record, name_field, '')}{organism}"
+                            )
+
+                    if str_to_encode:
+                        new_uid = ontology(str_to_encode)
+                        if new_uid != record.uid:
+                            record.uid = new_uid
+                            updates.append(record)
+
+                if updates:
+                    Model.objects.bulk_update(updates, ["uid"], batch_size=1000)
+
+            offset += batch_size
+            print(f"  Processed {min(offset, total_count)}/{total_count} records")
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("bionty", "0063_remove_experimentalfactor_instrument_and_more"),
     ]
 
     operations = [
+        # First, alter the field definitions to allow 14 characters
         migrations.AlterField(
             model_name="cellline",
             name="uid",
@@ -155,4 +384,6 @@ class Migration(migrations.Migration):
                 unique=True,
             ),
         ),
+        # Then, run the data migration to re-encode existing UIDs
+        migrations.RunPython(re_encode_uids),
     ]

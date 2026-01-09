@@ -108,7 +108,8 @@ def encode_uid(registry, kwargs: dict):
             raise AssertionError(f"must provide {ontology_id_field} or {name_field}")
 
     if len(str_to_encode) > 0:
-        kwargs["uid"] = ontology(str_to_encode)
+        id_encoder = source if registry_name == "bionty.Source" else ontology
+        kwargs["uid"] = id_encoder(str_to_encode)
     return kwargs
 
 
@@ -151,5 +152,6 @@ def encode_uid_for_hub(registry_name: str, registry_schema_json: dict, kwargs: d
             raise AssertionError(f"must provide {ontology_id_field} or {name_field}")
 
     if len(str_to_encode) > 0:
-        kwargs["uid"] = ontology(str_to_encode)
+        id_encoder = source if name == "source" else ontology
+        kwargs["uid"] = id_encoder(str_to_encode)
     return kwargs
