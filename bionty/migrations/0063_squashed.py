@@ -58,6 +58,8 @@ class Migration(migrations.Migration):
         ("bionty", "0059_cellline_is_locked_cellmarker_is_locked_and_more"),
         ("bionty", "0060_alter_cellline_is_locked_alter_cellmarker_is_locked_and_more"),
         ("bionty", "0061_remove_cellline_page_remove_cellmarker_page_and_more"),
+        ("bionty", "0062_remove_artifactcellline_feature_ref_is_name_and_more"),
+        ("bionty", "0063_remove_experimentalfactor_instrument_and_more"),
     ]
 
     dependencies = [
