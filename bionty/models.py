@@ -38,7 +38,7 @@ from ._biorecord import encode_uid, lookup2kwargs
 from ._shared_docstrings import doc_from_source
 from .base import PublicOntology
 from .base._public_ontology import InvalidParamError
-from .ids import cellmarker, gene, ontology, protein, source
+from .uids import ontology, source
 
 if TYPE_CHECKING:
     from lamindb.base.types import FieldAttr
@@ -602,7 +602,7 @@ class BioRecord(SQLRecord, HasSource, CanCurate):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ontology)
+    uid: str = CharField(unique=True, max_length=14, db_index=True, default=ontology)
     """A universal id (base62-encoded hash of defining fields)."""
     abbr: str | None = CharField(
         max_length=32, db_index=True, unique=True, null=True, default=None
@@ -842,8 +842,6 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
     _name_field: str = "symbol"
     _ontology_id_field: str = "ensembl_gene_id"
 
-    uid: str = CharField(unique=True, max_length=12, db_index=True, default=gene)
-    """A universal id (base62-encoded hash of defining fields)."""
     symbol: str | None = CharField(
         max_length=64, db_index=True, null=True, default=None
     )
@@ -968,10 +966,6 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
     _name_field: str = "name"
     _ontology_id_field: str = "uniprotkb_id"
 
-    id: int = models.AutoField(primary_key=True)
-    """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=12, db_index=True, default=protein)
-    """A universal id (base62-encoded hash of defining fields)."""
     name: str | None = CharField(db_index=True, null=True, default=None)
     """Unique name of a protein."""
     uniprotkb_id: str | None = CharField(
@@ -1086,8 +1080,6 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
 
     _name_field: str = "name"
 
-    uid: str = CharField(unique=True, max_length=12, db_index=True, default=cellmarker)
-    """A universal id (base62-encoded hash of defining fields)."""
     name: str = CharField(max_length=64, db_index=True)
     """Unique name of the cell marker."""
     gene_symbol: str | None = CharField(
