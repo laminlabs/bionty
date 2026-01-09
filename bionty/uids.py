@@ -90,11 +90,11 @@ def encode_uid(registry, kwargs: dict):
         str_to_encode = f"{kwargs.get('entity', '')}{kwargs.get('name', '')}{kwargs.get('organism', '')}{kwargs.get('version', '')}"
     elif registry_name == "bionty.Gene":  # gene has multiple id fields
         str_to_encode = kwargs.get(ontology_id_field, "")
-        if len(str_to_encode) == 0:
+        if not str_to_encode:
             str_to_encode = kwargs.get("stable_id", "")
-        if len(str_to_encode) == 0:
+        if not str_to_encode:
             str_to_encode = f"{kwargs.get(name_field, '')}{organism}"  # name + organism
-        if len(str_to_encode) == 0:
+        if not str_to_encode:
             raise AssertionError(
                 f"must provide {ontology_id_field}, stable_id or {name_field}"
             )
@@ -102,12 +102,12 @@ def encode_uid(registry, kwargs: dict):
         str_to_encode = kwargs.get(
             ontology_id_field, ""
         )  # default to encode ontology_id
-        if len(str_to_encode) == 0:
+        if not str_to_encode:
             str_to_encode = f"{kwargs.get(name_field, '')}{organism}"  # name + organism
-        if len(str_to_encode) == 0:
+        if not str_to_encode:
             raise AssertionError(f"must provide {ontology_id_field} or {name_field}")
 
-    if len(str_to_encode) > 0:
+    if str_to_encode:
         id_encoder = source if registry_name == "bionty.Source" else ontology
         kwargs["uid"] = id_encoder(str_to_encode)
     return kwargs
@@ -136,22 +136,22 @@ def encode_uid_for_hub(registry_name: str, registry_schema_json: dict, kwargs: d
         str_to_encode = f"{kwargs.get('entity', '')}{kwargs.get('name', '')}{kwargs.get('organism', '')}{kwargs.get('version', '')}"
     elif name == "gene":  # gene has multiple id fields
         str_to_encode = kwargs.get(ontology_id_field, "")
-        if len(str_to_encode) == 0:
+        if not str_to_encode:
             str_to_encode = kwargs.get("stable_id", "")
-        if len(str_to_encode) == 0:
+        if not str_to_encode:
             str_to_encode = f"{kwargs.get(name_field, '')}{organism}"  # name + organism
-        if len(str_to_encode) == 0:
+        if not str_to_encode:
             raise AssertionError(
                 f"must provide {ontology_id_field}, stable_id or {name_field}"
             )
     else:
         str_to_encode = kwargs.get(ontology_id_field, "")
-        if len(str_to_encode) == 0:
+        if not str_to_encode:
             str_to_encode = f"{kwargs.get(name_field, '')}{organism}"  # name + organism
-        if len(str_to_encode) == 0:
+        if not str_to_encode:
             raise AssertionError(f"must provide {ontology_id_field} or {name_field}")
 
-    if len(str_to_encode) > 0:
+    if str_to_encode:
         id_encoder = source if name == "source" else ontology
         kwargs["uid"] = id_encoder(str_to_encode)
     return kwargs
