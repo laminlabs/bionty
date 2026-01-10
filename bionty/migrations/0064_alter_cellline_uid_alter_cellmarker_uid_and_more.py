@@ -7,168 +7,19 @@ import bionty.uids
 
 
 def re_encode_uids(apps, schema_editor):
-    """Re-encode UIDs for all bionty models in batches of 10k using raw SQL."""
-    batch_size = 10000
-    connection = schema_editor.connection
-    db_vendor = connection.vendor
-
-    # Create a SQL function to do base62 encoding from hash
-    if db_vendor == "postgresql":
-        # Create the base62 encoding function in PostgreSQL
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                CREATE OR REPLACE FUNCTION hash_to_base62(input_text TEXT, n_char INTEGER)
-                RETURNS TEXT AS $$
-                DECLARE
-                    alphabet TEXT := '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-                    hash_bytes BYTEA;
-                    num BIGINT;
-                    result TEXT := '';
-                    remainder INTEGER;
-                BEGIN
-                    -- Get SHA256 hash
-                    hash_bytes := digest(input_text, 'sha256');
-
-                    -- Convert first 8 bytes to bigint
-                    num := ('x' || encode(substring(hash_bytes, 1, 8), 'hex'))::bit(64)::bigint;
-
-                    -- Convert to base62
-                    WHILE num > 0 AND length(result) < n_char LOOP
-                        remainder := num % 62;
-                        result := substring(alphabet, remainder + 1, 1) || result;
-                        num := num / 62;
-                    END LOOP;
-
-                    -- Pad with zeros if needed
-                    WHILE length(result) < n_char LOOP
-                        result := '0' || result;
-                    END LOOP;
-
-                    RETURN substring(result, 1, n_char);
-                END;
-                $$ LANGUAGE plpgsql IMMUTABLE;
-            """)
-    elif db_vendor == "sqlite":
-        # SQLite doesn't have the same functions, we'll need a different approach
-        # For SQLite, we'll fall back to Python-based updates in smaller batches
-        print("SQLite detected - using Python-based encoding")
-        re_encode_uids_python(apps, schema_editor)
-        return
-
-    # Define models with their specific configurations
-    # Format: (model_name, ontology_id_field, name_field, has_organism)
-    models_config = [
-        ("CellLine", "ontology_id", "name", False),
-        ("CellMarker", "ontology_id", "name", True),
-        ("CellType", "ontology_id", "name", False),
-        ("DevelopmentalStage", "ontology_id", "name", False),
-        ("Disease", "ontology_id", "name", False),
-        ("Ethnicity", "ontology_id", "name", False),
-        ("ExperimentalFactor", "ontology_id", "name", False),
-        ("Gene", "ensembl_gene_id", "symbol", True),
-        ("Organism", "ontology_id", "name", False),
-        ("Pathway", "ontology_id", "name", False),
-        ("Phenotype", "ontology_id", "name", False),
-        ("Protein", "uniprotkb_id", "name", True),
-        ("Tissue", "ontology_id", "name", False),
-    ]
-
-    for model_name, ontology_id_field, name_field, has_organism in models_config:
-        Model = apps.get_model("bionty", model_name)
-        table_name = Model._meta.db_table
-
-        # Get min and max IDs
-        with connection.cursor() as cursor:
-            cursor.execute(f"SELECT COUNT(*), MIN(id), MAX(id) FROM {table_name}")
-            count, min_id, max_id = cursor.fetchone()
-
-            if count == 0 or min_id is None:
-                continue
-
-            print(f"Re-encoding UIDs for {model_name}: {count} records")
-
-        # Process in batches
-        current_id = min_id
-        while current_id <= max_id:
-            next_id = current_id + batch_size
-
-            with connection.cursor() as cursor:
-                if has_organism:
-                    if model_name == "Gene":
-                        # Gene has special logic with multiple ID fields (ensembl_gene_id OR stable_id)
-                        cursor.execute(
-                            f"""
-                            UPDATE {table_name} t
-                            SET uid = CASE
-                                WHEN t.ensembl_gene_id IS NOT NULL AND t.ensembl_gene_id != ''
-                                    THEN hash_to_base62(t.ensembl_gene_id, 14)
-                                WHEN t.stable_id IS NOT NULL AND t.stable_id != ''
-                                    THEN hash_to_base62(t.stable_id, 14)
-                                WHEN t.{name_field} IS NOT NULL AND t.{name_field} != ''
-                                    THEN hash_to_base62(
-                                        t.{name_field} || COALESCE((SELECT name FROM bionty_organism WHERE id = t.organism_id), ''),
-                                        14
-                                    )
-                                ELSE t.uid
-                            END
-                            WHERE t.id >= %s AND t.id < %s
-                        """,
-                            [current_id, next_id],
-                        )
-                    else:
-                        cursor.execute(
-                            f"""
-                            UPDATE {table_name} t
-                            SET uid = CASE
-                                WHEN t.{ontology_id_field} IS NOT NULL AND t.{ontology_id_field} != ''
-                                    THEN hash_to_base62(t.{ontology_id_field}, 14)
-                                WHEN t.{name_field} IS NOT NULL AND t.{name_field} != ''
-                                    THEN hash_to_base62(
-                                        t.{name_field} || COALESCE((SELECT name FROM bionty_organism WHERE id = t.organism_id), ''),
-                                        14
-                                    )
-                                ELSE t.uid
-                            END
-                            WHERE t.id >= %s AND t.id < %s
-                        """,
-                            [current_id, next_id],
-                        )
-                else:
-                    cursor.execute(
-                        f"""
-                        UPDATE {table_name}
-                        SET uid = CASE
-                            WHEN {ontology_id_field} IS NOT NULL AND {ontology_id_field} != ''
-                                THEN hash_to_base62({ontology_id_field}, 14)
-                            WHEN {name_field} IS NOT NULL AND {name_field} != ''
-                                THEN hash_to_base62({name_field}, 14)
-                            ELSE uid
-                        END
-                        WHERE id >= %s AND id < %s
-                    """,
-                        [current_id, next_id],
-                    )
-
-            print(f"  Processed up to ID {min(next_id, max_id)}")
-            current_id = next_id
-
-    # Clean up the temporary function
-    if db_vendor == "postgresql":
-        with connection.cursor() as cursor:
-            cursor.execute("DROP FUNCTION IF EXISTS hash_to_base62(TEXT, INTEGER)")
-
-
-def re_encode_uids_python(apps, schema_editor):
-    """Fallback Python implementation for databases without the necessary SQL functions."""
+    """Re-encode UIDs for all bionty models in batches of 10k using Python."""
     from django.db import transaction
 
     from bionty.uids import ontology
 
     batch_size = 10000
 
+    # Define models with their specific configurations
+    # Format: (model_name, ontology_id_field, name_field, has_organism)
+    # ontology_id_field can be None if the model only has name
     models_config = [
         ("CellLine", "ontology_id", "name", False),
-        ("CellMarker", "ontology_id", "name", True),
+        ("CellMarker", None, "name", True),
         ("CellType", "ontology_id", "name", False),
         ("DevelopmentalStage", "ontology_id", "name", False),
         ("Disease", "ontology_id", "name", False),
@@ -189,49 +40,146 @@ def re_encode_uids_python(apps, schema_editor):
         if total_count == 0:
             continue
 
+        print(f"\n{'=' * 60}")
         print(f"Re-encoding UIDs for {model_name}: {total_count} records")
 
-        offset = 0
-        while offset < total_count:
-            with transaction.atomic():
-                records = Model.objects.select_related(
-                    "organism" if has_organism else None
-                ).all()[offset : offset + batch_size]
+        # Build the fields to fetch
+        fields_to_fetch = ["id", "uid", name_field]
+        if ontology_id_field:
+            fields_to_fetch.append(ontology_id_field)
+        if model_name == "Gene":
+            fields_to_fetch.extend(["ensembl_gene_id", "stable_id"])
+        if has_organism:
+            fields_to_fetch.append("organism__name")
 
-                updates = []
-                for record in records:
-                    organism = ""
-                    if has_organism and hasattr(record, "organism") and record.organism:
-                        organism = record.organism.name
+        # Get all IDs upfront to avoid issues with changing data during updates
+        all_ids = list(Model.objects.values_list("id", flat=True).order_by("id"))
 
-                    str_to_encode = ""
-                    if model_name == "Gene":
-                        # Try ensembl_gene_id first, then stable_id, then name+organism
-                        str_to_encode = getattr(record, "ensembl_gene_id", "") or ""
-                        if not str_to_encode:
-                            str_to_encode = getattr(record, "stable_id", "") or ""
-                        if not str_to_encode:
+        total_updated = 0
+        total_skipped = 0
+
+        for offset in range(0, len(all_ids), batch_size):
+            batch_ids = all_ids[offset : offset + batch_size]
+
+            # Fetch all data as dictionaries for this batch of IDs
+            records = list(
+                Model.objects.filter(id__in=batch_ids).values(*fields_to_fetch)
+            )
+
+            if not records:
+                break
+
+            # First pass: calculate new UIDs and detect duplicates within batch
+            new_uid_map = {}
+            duplicate_uids = set()
+            record_uid_mapping = {}  # Store mapping of record_id -> new_uid
+
+            for record_dict in records:
+                organism = record_dict.get("organism__name", "") or ""
+
+                str_to_encode = ""
+                if model_name == "Gene":
+                    # Try ensembl_gene_id first, then stable_id, then name+organism
+                    str_to_encode = record_dict.get("ensembl_gene_id", "") or ""
+                    if not str_to_encode:
+                        str_to_encode = record_dict.get("stable_id", "") or ""
+                    if not str_to_encode:
+                        name_val = record_dict.get(name_field, "") or ""
+                        if name_val:
+                            str_to_encode = f"{name_val}{organism}"
+                elif ontology_id_field is None:
+                    # Model only has name field
+                    name_val = record_dict.get(name_field, "") or ""
+                    if name_val:
+                        str_to_encode = (
+                            f"{name_val}{organism}" if has_organism else name_val
+                        )
+                else:
+                    # Try ontology_id first, then name
+                    str_to_encode = record_dict.get(ontology_id_field, "") or ""
+                    if not str_to_encode:
+                        name_val = record_dict.get(name_field, "") or ""
+                        if name_val:
                             str_to_encode = (
-                                f"{getattr(record, name_field, '')}{organism}"
-                            )
-                    else:
-                        str_to_encode = getattr(record, ontology_id_field, "") or ""
-                        if not str_to_encode:
-                            str_to_encode = (
-                                f"{getattr(record, name_field, '')}{organism}"
+                                f"{name_val}{organism}" if has_organism else name_val
                             )
 
-                    if str_to_encode:
-                        new_uid = ontology(str_to_encode)
-                        if new_uid != record.uid:
-                            record.uid = new_uid
-                            updates.append(record)
+                # Calculate new UID
+                if str_to_encode:
+                    new_uid = ontology(str_to_encode)
+                    if new_uid != record_dict["uid"]:
+                        record_uid_mapping[record_dict["id"]] = new_uid
+                        # Check for duplicates within batch
+                        if new_uid in new_uid_map:
+                            duplicate_uids.add(new_uid)
+                        else:
+                            new_uid_map[new_uid] = record_dict["id"]
 
-                if updates:
-                    Model.objects.bulk_update(updates, ["uid"], batch_size=1000)
+            # Check against existing UIDs in database (excluding current batch)
+            if new_uid_map:
+                existing_uids = set(
+                    Model.objects.filter(uid__in=list(new_uid_map.keys()))
+                    .exclude(id__in=batch_ids)
+                    .values_list("uid", flat=True)
+                )
+                duplicate_uids.update(existing_uids)
 
-            offset += batch_size
-            print(f"  Processed {min(offset, total_count)}/{total_count} records")
+            # Second pass: build updates excluding duplicates
+            updates = []
+            for record_dict in records:
+                record_id = record_dict["id"]
+                if record_id in record_uid_mapping:
+                    new_uid = record_uid_mapping[record_id]
+                    if new_uid not in duplicate_uids:
+                        updates.append({"id": record_id, "uid": new_uid})
+
+            # Bulk update
+            if updates:
+                with transaction.atomic():
+                    # Use bulk update with case/when for efficiency
+                    from django.db.models import Case, CharField, Value, When
+
+                    Model.objects.filter(id__in=[u["id"] for u in updates]).update(
+                        uid=Case(
+                            *[When(id=u["id"], then=Value(u["uid"])) for u in updates],
+                            output_field=CharField(),
+                        )
+                    )
+                total_updated += len(updates)
+
+            batch_skipped = len(record_uid_mapping) - len(updates)
+            total_skipped += batch_skipped
+
+            if batch_skipped > 0:
+                print(
+                    f"  Processed {min(offset + batch_size, len(all_ids))}/{len(all_ids)} (skipped {batch_skipped} duplicates)"
+                )
+            else:
+                print(
+                    f"  Processed {min(offset + batch_size, len(all_ids))}/{len(all_ids)}"
+                )
+
+        print(f"  Total updated: {total_updated}")
+        if total_skipped > 0:
+            print(f"  Total skipped due to duplicates: {total_skipped}")
+
+        # Count UIDs by length
+        from django.db.models import CharField
+        from django.db.models.functions import Length
+
+        uid_lengths = Model.objects.annotate(uid_len=Length("uid")).values_list(
+            "uid_len", flat=True
+        )
+        from collections import Counter
+
+        length_counts = Counter(uid_lengths)
+
+        print("  UID length distribution:")
+        for length in sorted(length_counts.keys()):
+            print(f"    {length} chars: {length_counts[length]} records")
+
+        if 14 not in length_counts or length_counts[14] < total_count:
+            print("  ⚠️  WARNING: Not all records have 14-char UIDs!")
 
 
 class Migration(migrations.Migration):
