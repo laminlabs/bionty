@@ -318,6 +318,16 @@ class HasSource(models.Model):
         # wetlab.Compound, bionty.CellType, etc.
         entity_name = cls.__get_name_with_module__()
         source_record = source if isinstance(source, Source) else None
+        if cls.require_organism():
+            if organism is None:
+                if source_record:
+                    organism = source_record.organism
+                else:
+                    raise ValueError(
+                        "organism must be provided for organism-specific entities."
+                    )
+            if organism:
+                organism = Organism.from_source(name=organism).save().name
         parquet_filename = None
 
         # Process source input and get source_record
@@ -328,9 +338,17 @@ class HasSource(models.Model):
             if organism:
                 filter_kwargs["organism"] = organism
 
+            # if source already exists in the instance
+            existing_sources = Source.filter(**filter_kwargs)
+            if existing_sources.count() > 1:
+                raise ValueError(
+                    f"multiple existing sources found in the database for {filter_kwargs}, please specify `version`."
+                )
+            elif existing_sources.count() == 1:
+                source_record = existing_sources.one()
+
             # if source is new and hasn't been registered in the instance yet
             # try to download the source via PublicOntology
-            source_record = Source.filter(**filter_kwargs).first()
             if not source_record:
                 source = PublicOntology(
                     source=source,
@@ -350,10 +368,6 @@ class HasSource(models.Model):
             "organism": source_record.organism,
         }
 
-        # Register organism if required
-        if cls.require_organism():
-            Organism.from_source(name=source_record.organism).save()
-
         # Get existing or create new source
         new_source = Source.filter(**unique_kwargs).one_or_none()
         if not new_source:
@@ -367,7 +381,7 @@ class HasSource(models.Model):
             ).save()
 
         # Return early if artifact already exists
-        if new_source.dataframe_artifact_id:
+        if new_source.dataframe_artifact_id and df is None:
             return new_source
 
         # Generate filename if not already created
@@ -389,8 +403,7 @@ class HasSource(models.Model):
             and isinstance(source, PublicOntology)
             and not source.to_dataframe().empty
         ):
-            # backwards compatible
-            df_artifact = getattr(ln.Artifact, "from_dataframe", ln.Artifact.from_df)(
+            df_artifact = ln.Artifact.from_dataframe(
                 source.to_dataframe(), key=parquet_filename, run=False
             )
 
