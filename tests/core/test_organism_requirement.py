@@ -13,12 +13,12 @@ def test_from_values_organism():
     result = bt.Gene.from_values(
         ["ENSMUSG00000102862", "ENSMUSG00000000003"], field=bt.Gene.ensembl_gene_id
     )
+    assert len(result) == 2
 
     source = bt.Source.filter(
         entity="bionty.Gene", organism="saccharomyces cerevisiae", currently_used=True
     ).one()
     bt.Gene.import_source(source=source, organism="saccharomyces cerevisiae")
-    assert len(result) == 2
     result = bt.Gene.from_values(
         ["HRA1", "ETS1-1"], field=bt.Gene.stable_id, organism="saccharomyces cerevisiae"
     )
