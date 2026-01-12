@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from lamin_utils import logger
 
-from bionty._organism import create_or_get_organism_record, is_organism_required
+from bionty._organism import create_or_get_organism_record
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -65,7 +65,7 @@ def create_records(
 
     df_records = df.to_dict(orient="records")
 
-    if organism is None and is_organism_required(registry):
+    if organism is None and registry.require_organism():
         organism = source_record.organism
 
     organism = create_or_get_organism_record(organism=organism, registry=registry)
@@ -131,7 +131,7 @@ def check_source_in_db(
     if not hasattr(registry, "source_id"):
         logger.warning(f"no `source` field in the registry {registry.__name__}!")
     else:
-        n_all = n_all or registry.public(source=source).df().shape[0]
+        n_all = n_all or registry.public(source=source).to_dataframe().shape[0]
         # all records of the source in the database
         n_in_db = n_in_db or registry.filter(source=source).count()
         if n_in_db >= n_all:
@@ -152,9 +152,11 @@ def add_ontology_from_df(
 ) -> None:
     """Add ontology records from source to the database based on ontology ids."""
     import lamindb as ln
+    from bionty._source import get_source_record
 
-    public = registry.public(source=source)
-    df = prepare_dataframe(public.df())
+    source_record = get_source_record(registry, organism=organism, source=source)
+    public = registry.public(source=source_record)
+    df = prepare_dataframe(public.to_dataframe())
 
     if ontology_ids is None:
         logger.info(

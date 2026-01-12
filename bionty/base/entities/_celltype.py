@@ -42,6 +42,6 @@ class CellType(PublicOntology):
             source=source,
             version=version,
             organism=organism,
-            include_id_prefixes={"cl:": ["CL"]},
+            include_id_prefixes={"cl": ["CL:"]},
             **kwargs,
         )

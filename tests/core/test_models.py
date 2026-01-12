@@ -8,7 +8,7 @@ def test_public_synonym_mapping():
     assert bt_result.synonyms_mapper == {"ABC1": "HEATR6"}
 
     bt_result = bt.Gene.public(organism="human").inspect(
-        ["ABC1", "TNFRSF4"], field="symbol", inspect_synonyms=False
+        ["ABC1", "TNFRSF4"], field="symbol", standardize=False
     )
     assert bt_result.synonyms_mapper == {}
 
@@ -18,45 +18,36 @@ def test_encode_uids():
         ontology_id="CL:0000084",
         _skip_validation=True,
     )
-    assert cell_type.uid == "22LvKd01"
+    assert cell_type.uid == "22LvKd01YyNA1a"
 
     organism = bt.Organism(
         ontology_id="NCBITaxon:9606",
         name="human",
         _skip_validation=True,
     )
-    assert organism.uid == "1dpCL6Td"
+    assert organism.uid == "1dpCL6TduFJ3AP"
 
-    bt.settings.organism = "human"
+    human = bt.Organism.from_source(name="human").save()
     cell_marker = bt.CellMarker(
         name="test",
-        organism=bt.settings.organism,
+        organism=human,
         _skip_validation=True,
     )
-    assert cell_marker.uid == "2dZ52W9noUDK"
+    assert cell_marker.uid == "2dZ52W9noUDKVE"
 
     gene = bt.Gene(
         ensembl_gene_id="ENSG00000081059",
         symbol="TCF7",
-        organism=bt.settings.organism,  # required
+        organism=human,  # required
         _skip_validation=True,
     )
-    assert gene.uid == "7IkHKPl0ScQR"
+    assert gene.uid == "7IkHKPl0ScQRSB"
 
-    disease = bt.Source(
+    source = bt.Source(
         entity="bionty.Disease",
         name="mondo",
         version="2023-04-04",
         organism="all",
         _skip_validation=True,
     )
-    assert disease.uid == "Hgw08Vk3"
-
-    phenotype = bt.Source(
-        entity="bionty.Phenotype",
-        name="hp",
-        version="2023-06-17",
-        organism="human",
-        _skip_validation=True,
-    )
-    assert phenotype.uid == "451W7iJS"
+    assert source.uid == "Hgw08Vk3"

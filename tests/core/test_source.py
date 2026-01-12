@@ -6,24 +6,39 @@ from bionty.models import DoesNotExist, InvalidArgument
 
 
 def test_from_source():
+    # test passing organism
     record = bt.Gene.from_source(symbol="BRCA2", organism="human")
     assert record.ensembl_gene_id == "ENSG00000139618"
 
+    # name is not found
     with pytest.raises(
-        DoesNotExist, match=r"No record found in source for the given field value"
+        DoesNotExist,
+        match=r"no CellType found in source for the given field value: name='T-cellx'",
     ):
         bt.CellType.from_source(name="T-cellx")
 
+    # multiple fields passed
     with pytest.raises(
         InvalidArgument,
         match=r"Only one field can be passed to generate records from source",
     ):
         bt.CellType.from_source(name="T cell", ontology_id="CL:0000084")
 
+    # no field passed
     with pytest.raises(
         InvalidArgument, match=r"No field passed to generate records from source"
     ):
         bt.CellType.from_source()
+
+    # passing a synonym via name= doesn't work
+    with pytest.raises(
+        DoesNotExist,
+        match=r"no CellType found in source for the given field value: name='T-cell'",
+    ):
+        bt.CellType.from_source(name="T-cell")
+
+    # passing a synonym as positional argument works
+    bt.CellType.from_source("T-cell")
 
 
 def test_get_source_record():
@@ -67,15 +82,15 @@ def test_add_source():
     assert new_source.entity == "bionty.Phenotype"
     assert new_source.name == "oba"
     assert bt.Phenotype.add_source("oba", version=new_source.version) == new_source
-    public_df = bt.Phenotype.public(source=new_source).df()
+    public_df = bt.Phenotype.public(source=new_source).to_dataframe()
     assert all(public_df.index.str.startswith("OBA:"))  # restrict_to_prefix
 
 
 def test_base_gene_register_source_in_lamindb():
-    bt.Organism.filter().delete()
+    bt.Organism.filter().delete(permanent=True)
     assert not bt.Source.filter(organism="rabbit").exists()
     gene = bt.base.Gene(source="ensembl", organism="rabbit", version="release-112")
-    assert gene.df().shape[0] > 10000
+    assert gene.to_dataframe().shape[0] > 10000
     gene.register_source_in_lamindb()
     assert bt.Organism.filter(name="rabbit").exists()
     rabbit_gene_source = bt.Source.get(organism="rabbit")
@@ -89,23 +104,23 @@ def test_import_source():
     # when adding a single record, it's parents are also added
     record = bt.Ethnicity.from_source(ontology_id="HANCESTRO:0005").save()
     parent = bt.Ethnicity.get(ontology_id="HANCESTRO:0004")
-    assert parent in record.parents.list()
+    assert parent in record.parents.filter().to_list()
 
     # bulk import should fill in gaps of missing parents
-    parent.delete()
+    parent.delete(permanent=True)
     bt.Ethnicity.import_source()
     parent = bt.Ethnicity.get(ontology_id="HANCESTRO:0004")
-    assert parent in record.parents.list()
+    assert parent in record.parents.filter().to_list()
     record = bt.Ethnicity.get("7RNCY3yC")
     assert record.parents.count() > 0
     # the source.in_db should be set to True since we imported all the records
     assert record.source.in_db is True
 
     # organism is required
-    bt.settings._organism = None
+    assert bt.settings.organism is None
     with pytest.raises(
         OrganismNotSet,
-        match=r"CellMarker requires to specify a organism name via `organism=` or `bionty\.settings\.organism=`!",
+        match=r"`organism` is required to get Source record for CellMarker!",
     ):
         bt.CellMarker.import_source()
     bt.CellMarker.import_source(organism="mouse")
@@ -135,7 +150,7 @@ def test_import_source():
 
 
 def test_add_ontology_from_values():
-    bt.Ethnicity.filter().delete()
+    bt.Ethnicity.filter().delete(permanent=True)
     # .save() calls add_ontology() under the hood
     bt.Ethnicity.from_values(
         [
@@ -160,7 +175,7 @@ def test_add_custom_source():
     ).save()
 
     # without a dataframe artifact
-    assert bt.Gene.public(source=bt.Source.get(name="internal")).df().empty
+    assert bt.Gene.public(source=bt.Source.get(name="internal")).to_dataframe().empty
     records = bt.Gene.from_values(
         ["ENSOCUG00000017195"],
         field=bt.Gene.ensembl_gene_id,
@@ -197,13 +212,15 @@ def test_sync_public_sources():
     source_gene_release_111.save()
     assert not bt.Source.get(source_gene_latest.uid).currently_used
 
-    bt.Source.get(entity="bionty.CellType", name="cl", currently_used=True).delete()
+    bt.Source.get(entity="bionty.CellType", name="cl", currently_used=True).delete(
+        permanent=True
+    )
     source_ct_2024_05_15 = bt.CellType.add_source(source="cl", version="2024-05-15")
     source_ct_2024_05_15.currently_used = True
     source_ct_2024_05_15.save()
 
     # update_currently_used=False
-    source_gene_latest.delete()
+    source_gene_latest.delete(permanent=True)
     bt.core.sync_public_sources()
     source_gene_latest = bt.Source.get(
         entity="bionty.Gene", name="ensembl", organism="mouse", currently_used=True

@@ -88,9 +88,26 @@ def test_old_ensembl_version():
     gene_ontology_102 = bt_base.Gene(
         source="ensembl", organism="mouse", version="release-102"
     )
-    assert "ENSMUSG00000021745" in gene_ontology_102.df()["ensembl_gene_id"].values
+    assert (
+        "ENSMUSG00000021745"
+        in gene_ontology_102.to_dataframe()["ensembl_gene_id"].values
+    )
 
     gene_ontology_112 = bt_base.Gene(
         source="ensembl", organism="mouse", version="release-112"
     )
-    assert "ENSMUSG00000021745" not in gene_ontology_112.df()["ensembl_gene_id"].values
+    assert (
+        "ENSMUSG00000021745"
+        not in gene_ontology_112.to_dataframe()["ensembl_gene_id"].values
+    )
+
+
+def test_ensemblgene_plants():
+    from bionty.base.entities._gene import EnsemblGene
+
+    ensembl_gene = EnsemblGene(
+        organism="arabidopsis thaliana", version="release-62", taxa="plants"
+    )
+    df = ensembl_gene.download_df()
+    assert df.shape[0] == 33137
+    assert "stable_id" in df.columns

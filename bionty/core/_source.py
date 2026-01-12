@@ -31,7 +31,7 @@ def sync_public_sources(update_currently_used: bool = False) -> None:
     import bionty as bt
     from bionty._biorecord import list_biorecord_models
 
-    records = bt.Source.filter().all()
+    records = bt.Source.objects.filter().all()
     df_sources = bt_base.display_sources().reset_index()
     bionty_models = list_biorecord_models(bt)
     for kwargs in df_sources.to_dict(orient="records"):
@@ -49,16 +49,21 @@ def sync_public_sources(update_currently_used: bool = False) -> None:
         else:
             # update metadata fields
             record.update(**kwargs)
+            # if the record is in the trash, restore it
+            record.update(branch_id=1)
             logger.success(f"updated source: {record.one()}")
 
     if update_currently_used:
         logger.info("setting the latest version as currently_used...")
-        df = records.df()
+        # backwards compatible
+        df = (
+            records.to_dataframe() if hasattr(records, "to_dataframe") else records.df()
+        )
         for (_, _, _), df_group in df.groupby(["entity", "organism", "name"]):
             if df_group.currently_used.sum() == 0:
                 continue
             latest_uid = df_group.sort_values("version", ascending=False).uid.iloc[0]
-            latest_record = records.get(latest_uid)
+            latest_record = records.get(uid=latest_uid)
             latest_record.currently_used = True
             latest_record.save()
 
@@ -183,9 +188,16 @@ def register_source_in_bionty_assets(
 
     Example::
 
+        import bionty as bt
         from bionty.core import register_source_in_bionty_assets
 
-        source = Source.filter(entity="bionty.Gene", organism="human", name="ensembl", version="release-112").save()
+        source = bt.Source(
+            entity="bionty.Gene",
+            organism="human",
+            name="ensembl",
+            version="release-112",
+            description="Ensembl Genes Release 112",
+        ).save()
 
         source_artifact = register_source_in_bionty_assets(
             "path/to/source.parquet",
@@ -217,7 +229,10 @@ def register_source_in_bionty_assets(
         else:
             artifact.replace(filepath)
     else:
-        artifact = ln.Artifact(filepath, key=filepath.name)
+        if is_dataframe:
+            artifact = ln.Artifact.from_dataframe(filepath, key=filepath.name)
+        else:
+            artifact = ln.Artifact(filepath, key=filepath.name)
         # NOTE: we use non-virtual keys for bionty-assets artifacts
         artifact._key_is_virtual = False
     artifact.save()

@@ -1,7 +1,5 @@
-import os
 import shutil
 from pathlib import Path
-from typing import Union
 
 import requests  # type:ignore
 import yaml  # type:ignore
@@ -80,7 +78,14 @@ def url_download(
         return localpath
 
     except requests.exceptions.HTTPError as err:
-        raise err
+        if err.response.status_code == 404:
+            raise requests.exceptions.HTTPError(
+                f"URL not found (404): '{url}'. Check for typos."
+            ) from err
+        else:
+            raise requests.exceptions.HTTPError(
+                f"HTTP error ({err.response.status_code}): {url}."
+            ) from err
 
 
 def s3_bionty_assets(
@@ -123,9 +128,9 @@ def s3_bionty_assets(
         remote_stat = remote_path.stat()
     except (FileNotFoundError, PermissionError):
         return localpath
-    # this is needed unfortunately because s3://bionty-assets doesn't have ListObjectsV2
-    # for anonymous users. And ListObjectsV2 is triggred inside .synchronize if no cache is present
-    # todo: check if this is still needed
+    # this is needed unfortunately because s3://bionty-assets doesn't have ListObjectsV2 for anonymous users.
+    # Moreover, ListObjectsV2 is triggered inside .synchronize if no cache is present.
+    # TODO: check if this is still needed
     parent_path = remote_path.parent.path.rstrip("/")
     remote_path.fs.dircache[parent_path] = [remote_stat.as_info()]
     # synchronize the remote path

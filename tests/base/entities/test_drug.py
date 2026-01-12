@@ -44,4 +44,4 @@ def test_chebi_drug_inspect_name():
 
 def test_chebi_chembl_id():
     dt = bt_base.Drug(source="chebi")
-    assert "CHEMBL500609" in dt.df()["chembl_id"].values
+    assert "CHEMBL500609" in dt.to_dataframe()["chembl_id"].values

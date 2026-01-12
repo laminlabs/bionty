@@ -22,17 +22,36 @@ def test_ensembl_organism_inspect_name():
     assert inspect.equals(expected_series)
 
 
+def test_ncbitaxon_organism_inspect_name():
+    df = pd.DataFrame(
+        index=[
+            "human",
+            "ancylobacter aquaticus",
+            "microbacterium sp. 6.11-vpa",
+            "calamagrostis varia",
+            "This organism does not exist",
+        ]
+    )
+    sp = bt_base.Organism(source="ncbitaxon")
+    inspected_df = sp.inspect(df.index, field=sp.name, return_df=True)
+
+    inspect = inspected_df["__validated__"].reset_index(drop=True)
+    expected_series = pd.Series([True, True, True, True, False])
+
+    assert inspect.equals(expected_series)
+
+
 def test_ensembl_organism_version():
-    df = bt_base.Organism(version="release-108").df()
+    df = bt_base.Organism(version="release-108").to_dataframe()
     assert df.shape[0] == 315
 
 
 def test_ensembl_organism_taxa():
     for sp in ["bacteria", "plants", "fungi", "metazoa"]:
-        df = bt_base.Organism(taxa=sp).df()
+        df = bt_base.Organism(taxa=sp).to_dataframe()
         assert df.shape[0] > 10
 
 
 def test_ncbitaxon_organism():
-    df = bt_base.Organism(source="ncbitaxon").df()
+    df = bt_base.Organism(source="ncbitaxon").to_dataframe()
     assert df.shape[0] > 10

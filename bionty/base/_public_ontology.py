@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from lamin_utils import logger
 from lamin_utils._lookup import Lookup
+from lamindb_setup.core import deprecated
 
 from ._settings import check_datasetdir_exists, check_dynamicdir_exists, settings
 from .dev._handle_sources import LAMINDB_INSTANCE_LOADED
@@ -328,7 +329,7 @@ class PublicOntology:
             )
             return Ontology(handle=self._local_ontology_path)
 
-    def df(self) -> pd.DataFrame:
+    def to_dataframe(self) -> pd.DataFrame:
         """Pandas DataFrame of the ontology.
 
         Returns:
@@ -338,7 +339,7 @@ class PublicOntology:
 
             import bionty.base as bt_base
 
-            bt_base.Gene().df()
+            bt_base.Gene().to_dataframe()
         """
         if "ontology_id" in self._df.columns:
             if self._filter_prefix:
@@ -353,6 +354,10 @@ class PublicOntology:
             return self._df.set_index("ontology_id")
         else:
             return self._df
+
+    @deprecated("to_dataframe")
+    def df(self) -> pd.DataFrame:
+        return self.to_dataframe()
 
     def validate(
         self,
@@ -408,6 +413,7 @@ class PublicOntology:
         values: Iterable,
         field: PublicOntologyField,
         *,
+        standardize: bool = True,
         mute: bool = False,
         **kwargs,
     ) -> InspectResult:
@@ -445,6 +451,7 @@ class PublicOntology:
             identifiers=values,
             field=str(field),
             mute=mute,
+            standardize=standardize,
             **kwargs,
         )
 
@@ -623,21 +630,25 @@ class PublicOntology:
                 return arr
 
         for bt_obj in [self, compare_to]:
-            for column in bt_obj.df().columns:
-                if any(isinstance(val, np.ndarray) for val in bt_obj.df()[column]):
-                    bt_obj._df[column] = bt_obj.df()[column].apply(
+            for column in bt_obj.to_dataframe().columns:
+                if any(
+                    isinstance(val, np.ndarray) for val in bt_obj.to_dataframe()[column]
+                ):
+                    bt_obj._df[column] = bt_obj.to_dataframe()[column].apply(
                         _convert_arrays_to_tuples
                     )
 
         # New entries
-        new_entries = pd.concat([self.df(), compare_to.df()]).drop_duplicates(
-            keep=False
-        )
+        new_entries = pd.concat(
+            [self.to_dataframe(), compare_to.to_dataframe()]
+        ).drop_duplicates(keep=False)
 
         # Changes in existing entries
-        common_index = self.df().index.intersection(compare_to.df().index)
-        self_df_common = self.df().loc[common_index]
-        compare_to_df_common = compare_to.df().loc[common_index]
+        common_index = self.to_dataframe().index.intersection(
+            compare_to.to_dataframe().index
+        )
+        self_df_common = self.to_dataframe().loc[common_index]
+        compare_to_df_common = compare_to.to_dataframe().loc[common_index]
         modified_entries = self_df_common.compare(compare_to_df_common, **kwargs)
 
         logging.info(f"{len(new_entries)} new entries were added.")

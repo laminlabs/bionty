@@ -1,17 +1,20 @@
 """Developer API.
 
+Classes
+-------
+
 .. autosummary::
    :toctree: .
 
    BioRecord
    StaticReference
    Settings
-   sync_public_sources
+
+Functions
+---------
+
+... autofunction:: sync_public_sources
 """
-
-from lamindb_setup._check_setup import _check_instance_setup
-
-_check_instance_setup(from_module="bionty")
 
 from bionty.models import BioRecord, StaticReference
 

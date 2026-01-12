@@ -19,11 +19,13 @@ def test_from_values_organism():
     )
     assert len(result) == 2
 
+    # test global organism setting
     bt.settings.organism = "human"
     values = ["ABC1"]
     standardized_values = bt.Gene.public().standardize(values)
     records = bt.Gene.from_values(standardized_values, bt.Gene.symbol)
     assert records[0].ensembl_gene_id == "ENSG00000068097"
+    bt.settings._organism = None
 
     # TODO: Gene.public() should raise error if organism is not provided
     standardized_values = bt.Gene.public(organism="mouse").standardize(values)
@@ -31,6 +33,9 @@ def test_from_values_organism():
     assert records[0].ensembl_gene_id == "ENSMUSG00000015243"
 
     # clean up
-    bt.settings._organism = None
-    bt.Organism.filter().delete()
-    bt.Gene.filter().delete()
+    bt.Organism.filter().delete(permanent=True)
+    bt.Gene.filter().delete(permanent=True)
+
+
+def test_organism_all():
+    assert bt.CellLine.public(organism="all")

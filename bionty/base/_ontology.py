@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 from typing import TYPE_CHECKING, BinaryIO
 
 import pandas as pd
@@ -17,7 +18,11 @@ def import_pronto():
         import pronto  # type: ignore
 
         if logger._verbosity <= 3:
-            warnings.filterwarnings("ignore", category=pronto.warnings.ProntoWarning)
+            # Only apply if not building docs - leads to 'category is not a class' warnings otherwise
+            if "sphinx" not in sys.modules:
+                warnings.filterwarnings(
+                    "ignore", category=pronto.warnings.ProntoWarning
+                )
 
         return pronto
     except ImportError as exc:
@@ -53,12 +58,21 @@ try:
             prefix: str = "",
         ) -> None:
             self._prefix = prefix
-            super().__init__(
-                handle=handle,
-                import_depth=import_depth,
-                timeout=timeout,
-                threads=threads,
-            )
+            try:
+                logger.debug(f"Attempting to parse ontology file: {handle}")
+                super().__init__(
+                    handle=handle,
+                    import_depth=import_depth,
+                    timeout=timeout,
+                    threads=threads,
+                )
+                logger.debug("Ontology parsing successful")
+            except Exception as e:
+                if "ParseError" in str(type(e).__name__) or "unclosed token" in str(e):
+                    logger.warning(f"Skipping corrupted ontology file: {handle}")
+                    raise ValueError(f"Corrupted ontology file: {str(e)}") from e
+                else:
+                    raise
 
         def get_term(self, term):
             """Search an ontology by its id."""
