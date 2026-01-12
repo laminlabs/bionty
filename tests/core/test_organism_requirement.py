@@ -11,7 +11,7 @@ def test_from_values_organism():
     result = bt.Gene.from_values(["ENSG00000068097"], bt.Gene.ensembl_gene_id)
     assert len(result) == 1
     result = bt.Gene.from_values(
-        ["ENSMUSG00000102862", "ENSMUSG00000084826"], field=bt.Gene.ensembl_gene_id
+        ["ENSMUSG00000102862", "ENSMUSG00000000003"], field=bt.Gene.ensembl_gene_id
     )
     assert len(result) == 2
     result = bt.Gene.from_values(
