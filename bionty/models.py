@@ -326,7 +326,7 @@ class HasSource(models.Model):
                     raise ValueError(
                         "organism must be provided for organism-specific entities."
                     )
-            else:
+            if organism:
                 organism = Organism.from_source(name=organism).save().name
         parquet_filename = None
 
