@@ -391,8 +391,7 @@ class HasSource(models.Model):
         # Create dataframe artifact if needed
         df_artifact = None
         if isinstance(df, pd.DataFrame):
-            # backwards compatible
-            df_artifact = getattr(ln.Artifact, "from_dataframe", ln.Artifact.from_df)(
+            df_artifact = ln.Artifact.from_dataframe(
                 df, key=parquet_filename, run=False
             )
         elif (
