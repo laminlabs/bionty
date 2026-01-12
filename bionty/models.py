@@ -317,14 +317,17 @@ class HasSource(models.Model):
 
         # wetlab.Compound, bionty.CellType, etc.
         entity_name = cls.__get_name_with_module__()
+        source_record = source if isinstance(source, Source) else None
         if cls.require_organism():
             if organism is None:
-                raise ValueError(
-                    "organism must be provided for organism-specific entities."
-                )
+                if source_record:
+                    organism = source_record.organism
+                else:
+                    raise ValueError(
+                        "organism must be provided for organism-specific entities."
+                    )
             else:
                 organism = Organism.from_source(name=organism).save().name
-        source_record = source if isinstance(source, Source) else None
         parquet_filename = None
 
         # Process source input and get source_record
