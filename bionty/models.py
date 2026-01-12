@@ -267,8 +267,8 @@ class HasSource(models.Model):
         """Link a source record to the entity with a reference DataFrame.
 
         Creates or retrieves a Source record for the entity and optionally associates
-        it with a DataFrame artifact containing the ontology data. If the source
-        already exists with a DataFrame artifact, returns the existing source.
+        it with a DataFrame artifact containing the ontology data.
+        If the source already exists with a DataFrame artifact, returns the existing source.
 
         Args:
             source: Source specification. Can be:
@@ -394,7 +394,11 @@ class HasSource(models.Model):
             df_artifact = ln.Artifact.from_dataframe(
                 df, key=parquet_filename, run=False
             )
-        elif source_record.url and source_record.url.startswith("s3://bionty-assets/"):
+        elif (
+            source_record.url
+            and source_record.url.startswith("s3://bionty-assets/")
+            and ln.setup.settings.instance.slug != "laminlabs/bionty-assets"
+        ):
             df_artifact = ln.Artifact(new_source.url, run=False)
         elif (
             # for bionty-assets, we do not create dataframe artifact here but with register_source_in_bionty_assets

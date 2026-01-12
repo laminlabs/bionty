@@ -5,7 +5,9 @@ def test_public_synonym_mapping():
     bt_result = bt.Gene.public(organism="human").inspect(
         ["ABC1", "TNFRSF4"], field="symbol"
     )
-    assert bt_result.synonyms_mapper == {"ABC1": "HEATR6"}
+    # ABC1 is a synonym for both ABCA1 and HEATR6; accept either
+    assert "ABC1" in bt_result.synonyms_mapper
+    assert bt_result.synonyms_mapper["ABC1"] in ("ABCA1", "HEATR6")
 
     bt_result = bt.Gene.public(organism="human").inspect(
         ["ABC1", "TNFRSF4"], field="symbol", standardize=False
