@@ -27,13 +27,13 @@ Organism:
 Gene:
   ensembl:
     human:
-      latest-version: release-114
+      latest-version: release-112
       url: s3://bionty-assets/df_human__ensembl__{version}__Gene.parquet
     mouse:
-      latest-version: release-114
+      latest-version: release-112
       url: s3://bionty-assets/df_mouse__ensembl__{version}__Gene.parquet
     saccharomyces cerevisiae:
-      latest-version: release-114
+      latest-version: release-112
       url: s3://bionty-assets/df_saccharomyces cerevisiae__ensembl__{version}__Gene.parquet
     name: Ensembl
     website: https://www.ensembl.org
