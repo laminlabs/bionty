@@ -34,6 +34,7 @@ class Phenotype(PublicOntology):
         source: Literal["hp", "phe", "pato"] | None = None,
         version: Literal[
             # HP
+            "2026-01-08",
             "2025-05-06",
             "2024-04-26",
             "2024-03-06",
