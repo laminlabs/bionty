@@ -15,10 +15,6 @@ def test_from_values_organism():
     )
     assert len(result) == 2
 
-    source = bt.Source.filter(
-        entity="bionty.Gene", organism="saccharomyces cerevisiae", currently_used=True
-    ).one()
-    bt.Gene.import_source(source=source, organism="saccharomyces cerevisiae")
     result = bt.Gene.from_values(
         ["HRA1", "ETS1-1"], field=bt.Gene.stable_id, organism="saccharomyces cerevisiae"
     )
@@ -30,8 +26,11 @@ def test_from_values_organism():
     standardized_values = bt.Gene.public().standardize(values)
     records = bt.Gene.from_values(standardized_values, bt.Gene.symbol)
     assert records[0].ensembl_gene_id in ("ENSG00000068097", "ENSG00000165029")
+    bt.settings._organism = None
 
-    # TODO: Gene.public() should raise error if organism is not provided
+    # Gene.public() should raise error if organism is not provided
+    with pytest.raises(OrganismNotSet):
+        bt.Gene.public().standardize(values)
     standardized_values = bt.Gene.public(organism="mouse").standardize(values)
     records = bt.Gene.from_values(standardized_values, bt.Gene.symbol, organism="mouse")
     assert records[0].ensembl_gene_id == "ENSMUSG00000015243"
@@ -39,7 +38,6 @@ def test_from_values_organism():
     # clean up
     bt.Gene.filter().delete(permanent=True)
     bt.Organism.filter().delete(permanent=True)
-    bt.settings._organism = None
 
 
 def test_organism_all():
