@@ -24,6 +24,7 @@ class CellType(PublicOntology):
         organism: Literal["all"] | None = None,
         source: Literal["cl"] | None = None,
         version: Literal[
+            "2025-12-17",
             "2025-04-10",
             "2024-08-16",
             "2024-05-15",
