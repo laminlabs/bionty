@@ -310,6 +310,7 @@ class PublicOntology:
     def clear_cache(self) -> None:
         """Clear cached ontology files."""
         import bionty.base as bt_base
+
         if self._local_parquet_path.exists():
             self._local_parquet_path.unlink()
             logger.success(f"deleted cached parquet file: {self._local_parquet_path}")
