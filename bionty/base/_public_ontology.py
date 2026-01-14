@@ -309,12 +309,14 @@ class PublicOntology:
 
     def clear_cache(self) -> None:
         """Clear cached ontology files."""
+        import bionty.base as bt_base
         if self._local_parquet_path.exists():
             self._local_parquet_path.unlink()
             logger.success(f"deleted cached parquet file: {self._local_parquet_path}")
         if self._local_ontology_path and self._local_ontology_path.exists():
             self._local_ontology_path.unlink()
             logger.success(f"deleted cached ontology file: {self._local_ontology_path}")
+        importlib.reload(bt_base)
 
     def to_pronto(self, mute: bool = False) -> Ontology:  # type:ignore
         """The Pronto Ontology object.

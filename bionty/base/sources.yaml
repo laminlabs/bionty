@@ -2,7 +2,7 @@ version: "0.3.0"
 Organism:
   ensembl:
     vertebrates:
-      latest-version: release-112
+      latest-version: release-114
       url: https://ftp.ensembl.org/pub/{version}/species_EnsemblVertebrates.txt
     bacteria:
       latest-version: release-57
@@ -20,7 +20,7 @@ Organism:
     website: https://www.ensembl.org
   ncbitaxon:
     all:
-      latest-version: 2025-03-13
+      latest-version: 2025-12-03
       url: http://purl.obolibrary.org/obo/ncbitaxon/{version}/ncbitaxon.owl
     name: NCBItaxon Ontology
     website: https://github.com/obophenotype/ncbitaxon
