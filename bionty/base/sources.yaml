@@ -58,6 +58,12 @@ CellMarker:
     name: CellMarker
     website: http://bio-bigdata.hrbmu.edu.cn/CellMarker
 CellLine:
+  cellosaurus:
+    all:
+      latest-version: 53.0
+      url: s3://bionty-assets/df_all__cellosaurus__{version}__CellLine.parquet
+    name: Cellosaurus
+    website: https://www.cellosaurus.org/
   clo:
     all:
       latest-version: 2022-03-21
