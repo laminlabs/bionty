@@ -55,6 +55,8 @@ class PublicOntology:
         self._entity = entity or self.__class__.__name__
         self._ols_supported = ols_supported
         self._filter_prefix = filter_prefix
+        self.include_id_prefixes = include_id_prefixes
+        self.include_rel = include_rel
 
         # search in all available sources to get url
         try:
@@ -80,8 +82,6 @@ class PublicOntology:
 
         self._get_url()
         self._set_file_paths()
-        self.include_id_prefixes = include_id_prefixes
-        self.include_rel = include_rel
 
         # df is only read into memory at the init to improve performance
         df = self._load_df()
