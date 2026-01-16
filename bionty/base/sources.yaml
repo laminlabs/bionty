@@ -2,7 +2,7 @@ version: "0.3.0"
 Organism:
   ensembl:
     vertebrates:
-      latest-version: release-112
+      latest-version: release-114
       url: https://ftp.ensembl.org/pub/{version}/species_EnsemblVertebrates.txt
     bacteria:
       latest-version: release-57
@@ -20,20 +20,20 @@ Organism:
     website: https://www.ensembl.org
   ncbitaxon:
     all:
-      latest-version: 2023-06-20
+      latest-version: 2025-12-03
       url: http://purl.obolibrary.org/obo/ncbitaxon/{version}/ncbitaxon.owl
     name: NCBItaxon Ontology
     website: https://github.com/obophenotype/ncbitaxon
 Gene:
   ensembl:
     human:
-      latest-version: release-112
+      latest-version: release-114
       url: s3://bionty-assets/df_human__ensembl__{version}__Gene.parquet
     mouse:
-      latest-version: release-112
+      latest-version: release-114
       url: s3://bionty-assets/df_mouse__ensembl__{version}__Gene.parquet
     saccharomyces cerevisiae:
-      latest-version: release-112
+      latest-version: release-114
       url: s3://bionty-assets/df_saccharomyces cerevisiae__ensembl__{version}__Gene.parquet
     name: Ensembl
     website: https://www.ensembl.org
@@ -58,6 +58,12 @@ CellMarker:
     name: CellMarker
     website: http://bio-bigdata.hrbmu.edu.cn/CellMarker
 CellLine:
+  cellosaurus:
+    all:
+      latest-version: 53.0
+      url: s3://bionty-assets/df_all__cellosaurus__{version}__CellLine.parquet
+    name: Cellosaurus
+    website: https://www.cellosaurus.org/
   clo:
     all:
       latest-version: 2022-03-21
@@ -73,27 +79,27 @@ CellLine:
 CellType:
   cl:
     all:
-      latest-version: 2025-04-10
+      latest-version: 2025-12-17
       url: http://purl.obolibrary.org/obo/cl/releases/{version}/cl.owl
     name: Cell Ontology
     website: https://obophenotype.github.io/cell-ontology
 Tissue:
   uberon:
     all:
-      latest-version: 2025-05-28
+      latest-version: 2025-12-04
       url: http://purl.obolibrary.org/obo/uberon/releases/{version}/uberon.owl
     name: Uberon multi-species anatomy ontology
     website: http://obophenotype.github.io/uberon
 Disease:
   mondo:
     all:
-      latest-version: 2025-06-03
+      latest-version: 2026-01-06
       url: http://purl.obolibrary.org/obo/mondo/releases/{version}/mondo.owl
     name: Mondo Disease Ontology
     website: https://mondo.monarchinitiative.org
   doid:
     human:
-      latest-version: 2024-05-29
+      latest-version: 2025-12-23
       url: http://purl.obolibrary.org/obo/doid/releases/{version}/doid.obo
     name: Human Disease Ontology
     website: https://disease-ontology.org
@@ -106,20 +112,20 @@ Disease:
 ExperimentalFactor:
   efo:
     all:
-      latest-version: 3.78.0
+      latest-version: 3.85.0
       url: http://www.ebi.ac.uk/efo/releases/v{version}/efo.owl
     name: The Experimental Factor Ontology
     website: https://bioportal.bioontology.org/ontologies/EFO
 Phenotype:
   pato:
     all:
-      latest-version: 2024-03-28
+      latest-version: 2025-05-14
       url: http://purl.obolibrary.org/obo/pato/releases/{version}/pato.owl
     name: Phenotype And Trait Ontology
     website: https://github.com/pato-ontology/pato
   hp:
     human:
-      latest-version: 2024-04-26
+      latest-version: 2026-01-08
       url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v{version}/hp.owl
     name: Human Phenotype Ontology
     website: https://hpo.jax.org
@@ -132,13 +138,13 @@ Phenotype:
 Pathway:
   go:
     all:
-      latest-version: 2024-06-17
+      latest-version: 2025-10-10
       url: http://purl.obolibrary.org/obo/go/releases/{version}/extensions/go-plus.owl
     name: Gene Ontology
     website: http://geneontology.org
   pw:
     all:
-      latest-version: 7.84
+      latest-version: 7.96
       url: http://purl.obolibrary.org/obo/pw/{version}/pw.owl
     name: Pathway Ontology
     website: https://www.ebi.ac.uk/ols/ontologies/pw
@@ -165,20 +171,20 @@ Drug:
 DevelopmentalStage:
   hsapdv:
     human:
-      latest-version: 2024-05-28
+      latest-version: 2025-01-23
       url: https://github.com/obophenotype/developmental-stage-ontologies/releases/download/v{version}/hsapdv.owl
     name: Human Developmental Stages
     website: https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv
   mmusdv:
     mouse:
-      latest-version: 2024-05-28
+      latest-version: 2025-01-23
       url: https://github.com/obophenotype/developmental-stage-ontologies/releases/download/v{version}/mmusdv.owl
     name: Mouse Developmental Stages
     website: https://github.com/obophenotype/developmental-stage-ontologies/wiki/MmusDv
 Ethnicity:
   hancestro:
     human:
-      latest-version: 3.0
+      latest-version: 2025-10-14
       url: http://purl.obolibrary.org/obo/hancestro/releases/{version}/hancestro.owl
     name: Human Ancestry Ontology
     website: https://github.com/EBISPOT/hancestro

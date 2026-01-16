@@ -223,7 +223,7 @@ def register_source_in_bionty_assets(
     ).one_or_none()
     if artifact is not None:
         if not update:
-            raise ValueError(
+            logger.warning(
                 f"artifact already exists: {artifact}\n   → pass `update=True` to update it"
             )
         else:

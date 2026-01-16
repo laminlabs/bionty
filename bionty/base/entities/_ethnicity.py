@@ -23,7 +23,7 @@ class Ethnicity(PublicOntology):
         self,
         organism: Literal["human"] | None = None,
         source: Literal["hancestro"] | None = None,
-        version: Literal["3.0", "2025-04-01"] | None = None,
+        version: Literal["2025-10-14", "3.0", "2025-04-01"] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(

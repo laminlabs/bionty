@@ -55,6 +55,8 @@ class PublicOntology:
         self._entity = entity or self.__class__.__name__
         self._ols_supported = ols_supported
         self._filter_prefix = filter_prefix
+        self.include_id_prefixes = include_id_prefixes
+        self.include_rel = include_rel
 
         # search in all available sources to get url
         try:
@@ -80,8 +82,6 @@ class PublicOntology:
 
         self._get_url()
         self._set_file_paths()
-        self.include_id_prefixes = include_id_prefixes
-        self.include_rel = include_rel
 
         # df is only read into memory at the init to improve performance
         df = self._load_df()
@@ -306,6 +306,18 @@ class PublicOntology:
             # Loading the parquet file resets the index
             return pd.read_parquet(self._local_parquet_path)
         return pd.DataFrame()
+
+    def clear_cache(self) -> None:
+        """Clear cached ontology files."""
+        import bionty.base as bt_base
+
+        if self._local_parquet_path.exists():
+            self._local_parquet_path.unlink()
+            logger.success(f"deleted cached parquet file: {self._local_parquet_path}")
+        if self._local_ontology_path and self._local_ontology_path.exists():
+            self._local_ontology_path.unlink()
+            logger.success(f"deleted cached ontology file: {self._local_ontology_path}")
+        importlib.reload(bt_base)
 
     def to_pronto(self, mute: bool = False) -> Ontology:  # type:ignore
         """The Pronto Ontology object.

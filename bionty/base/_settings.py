@@ -1,7 +1,7 @@
+import os
 from functools import wraps
 from pathlib import Path
 
-HOME_DIR = Path(f"{Path.home()}/.lamin/bionty").resolve()
 ROOT_DIR = Path(__file__).parent.resolve()
 
 
@@ -26,12 +26,26 @@ def check_dynamicdir_exists(f):
 class Settings:
     def __init__(
         self,
-        datasetdir: str | Path = ROOT_DIR / "data/",
-        dynamicdir: str | Path = ROOT_DIR / "_dynamic/",
+        datasetdir: str | Path | None = None,
+        dynamicdir: str | Path | None = None,
     ):
         # setters convert to Path and resolve:
-        self.datasetdir = datasetdir
-        self.dynamicdir = dynamicdir
+        self.datasetdir = (
+            Path(datasetdir) if datasetdir is not None else (self.root_dir / "data/")
+        )
+        self.dynamicdir = (
+            Path(dynamicdir)
+            if dynamicdir is not None
+            else (self.root_dir / "_dynamic/")
+        )
+
+    @property
+    def root_dir(self):
+        """Root directory for bionty."""
+        root_dir_env = os.getenv("BIONTY_ROOT_DIR")
+        if root_dir_env not in {None, ""}:
+            return Path(root_dir_env).resolve()
+        return ROOT_DIR
 
     @property
     def datasetdir(self):
@@ -53,7 +67,7 @@ class Settings:
 
     @property
     def public_sources(self):
-        return ROOT_DIR / "sources.yaml"
+        return self.root_dir / "sources.yaml"
 
 
 settings = Settings()
