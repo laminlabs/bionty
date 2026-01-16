@@ -31,10 +31,12 @@ class Settings:
     ):
         # setters convert to Path and resolve:
         self.datasetdir = (
-            datasetdir if datasetdir is not None else (self.root_dir / "data/")
+            Path(datasetdir) if datasetdir is not None else (self.root_dir / "data/")
         )
         self.dynamicdir = (
-            dynamicdir if dynamicdir is not None else (self.root_dir / "_dynamic/")
+            Path(dynamicdir)
+            if dynamicdir is not None
+            else (self.root_dir / "_dynamic/")
         )
 
     @property
