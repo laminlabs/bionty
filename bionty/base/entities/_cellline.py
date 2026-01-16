@@ -12,10 +12,13 @@ from ._shared_docstrings import doc_entites
 class CellLine(PublicOntology):
     """Cell line.
 
-    1. Cell Line Ontology
+    1. Cellosaurus
+    https://cellosaurus.org
+
+    2. Cell Line Ontology
     https://github.com/CLO-ontology/CLO
 
-    2. DepMap
+    3. DepMap
     https://depmap.org
 
     Args:
@@ -25,12 +28,14 @@ class CellLine(PublicOntology):
     def __init__(
         self,
         organism: Literal["all"] | None = None,
-        source: Literal["clo", "depmap"] | None = None,
+        source: Literal["cellosaurus", "clo", "depmap"] | None = None,
         version: Literal[
-            # Cell Line Ontology
+            # cellosaurus
+            "53.0",
+            # clo
             "2023-03-28",
             "2022-03-21"
-            # DepMap
+            # depmap
             "2024-Q2",
         ]
         | None = None,
