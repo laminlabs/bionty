@@ -20,7 +20,7 @@ def build(session: nox.Session, group: str):
         "main" if IS_PR else "main"
     )  # point to "main" for PRs, to "release" for main
     install_lamindb(session, branch=branch)
-    run(session, "uv pip install --system wetlab")
+    run(session, "uv pip install --system pertdb")
     session.run(*"uv pip install --system -e .[dev]".split())
 
     coverage_args = "--cov=bionty --cov-append --cov-report=term-missing"

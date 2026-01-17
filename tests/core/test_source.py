@@ -55,18 +55,18 @@ def test_get_source_record():
 
 
 def test_add_source():
-    import wetlab as wl
+    import pertdb
 
     # pass a source record from another entity
     with pytest.raises(ValueError):
-        wl.Compound.import_source()
+        pertdb.Compound.import_source()
     chebi_source = bt.Source.get(name="chebi", version="2024-07-27")
-    new_source = wl.Compound.add_source(chebi_source)
-    assert new_source.entity == "wetlab.Compound"
+    new_source = pertdb.Compound.add_source(chebi_source)
+    assert new_source.entity == "pertdb.Compound"
     assert new_source.name == "chebi"
     assert new_source.version == "2024-07-27"
     assert new_source.dataframe_artifact is not None
-    public_ontology = wl.Compound.public()
+    public_ontology = pertdb.Compound.public()
     assert public_ontology.__class__.__name__ == "StaticReference"
 
     # pass a PublicOntology object

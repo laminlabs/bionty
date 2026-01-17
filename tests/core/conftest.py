@@ -5,7 +5,7 @@ import pytest
 
 
 def pytest_sessionstart():
-    ln_setup.init(storage="./testdb", modules="bionty,wetlab")
+    ln_setup.init(storage="./testdb", modules="bionty,pertdb")
 
 
 def pytest_sessionfinish(session: pytest.Session):

@@ -315,7 +315,7 @@ class HasSource(models.Model):
 
         from bionty.base._public_ontology import encode_filenames
 
-        # wetlab.Compound, bionty.CellType, etc.
+        # pertdb.Compound, bionty.CellType, etc.
         entity_name = cls.__get_name_with_module__()
         source_record = source if isinstance(source, Source) else None
         if cls.require_organism():
