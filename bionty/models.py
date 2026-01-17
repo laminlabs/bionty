@@ -1,3 +1,11 @@
+"""Models library.
+
+.. autoclass:: BioRecord
+.. autoclass:: HasOntologyId
+.. autoclass:: HasSource
+
+"""
+
 from __future__ import annotations
 
 import functools

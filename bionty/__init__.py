@@ -85,6 +85,7 @@ Submodules:
 
    core
    base
+   models
    uids
 
 """
