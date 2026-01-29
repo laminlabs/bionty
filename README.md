@@ -1,7 +1,7 @@
 [![Stars](https://img.shields.io/github/stars/laminlabs/bionty?logo=GitHub&color=yellow)](https://github.com/laminlabs/bionty)
 [![pypi](https://img.shields.io/pypi/v/bionty?color=blue&label=pypi%20package)](https://pypi.org/project/bionty)
 
-# bionty: Access & manage biological ontologies
+# bionty: Registries for biological ontologies
 
 - Access >20 public ontologies such as Gene, Protein, CellMarker, ExperimentalFactor, CellType, CellLine, Tissue, …
 - Create records from entries in public ontologies using `.from_source()`.
