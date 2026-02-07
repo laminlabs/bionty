@@ -2,20 +2,21 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal, NamedTuple
 
-import pandas as pd
 from lamin_utils import logger
 
 from bionty.base._public_ontology import PublicOntology
 from bionty.base._settings import settings
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from pandas import DataFrame
 from bionty.base.dev._doc_util import _doc_params
 from bionty.base.dev._handle_sources import LAMINDB_INSTANCE_LOADED
 from bionty.base.dev._io import s3_bionty_assets
 
 from ._organism import Organism
 from ._shared_docstrings import doc_entites
-
-if TYPE_CHECKING:
-    from collections.abc import Iterable
 
 
 class MappingResult(NamedTuple):
@@ -134,6 +135,8 @@ class Gene(PublicOntology):
             localpath=legacy_df_localpath,
         )
         try:
+            import pandas as pd
+
             results = pd.read_parquet(legacy_df_localpath)
         except FileNotFoundError:
             raise NotImplementedError from None
@@ -195,8 +198,10 @@ class EnsemblGene:
             )
         return self._conn
 
-    def _execute_query(self, query: str) -> pd.DataFrame:
+    def _execute_query(self, query: str) -> DataFrame:
         """Execute a SQL query using PyMySQL and return results as DataFrame."""
+        import pandas as pd
+
         conn = self._get_connection()
         try:
             with conn.cursor() as cursor:
@@ -210,13 +215,11 @@ class EnsemblGene:
             self._conn = None
             raise e
 
-    def external_dbs(self) -> pd.DataFrame:
+    def external_dbs(self) -> DataFrame:
         """Get all external database information."""
         return self._execute_query("SELECT * FROM external_db")
 
-    def download_df(
-        self, external_db_names: dict[str, str] | None = None
-    ) -> pd.DataFrame:
+    def download_df(self, external_db_names: dict[str, str] | None = None) -> DataFrame:
         """Fetch gene table from Ensembl database.
 
         Args:
@@ -249,6 +252,8 @@ class EnsemblGene:
 
         # Query for the basic gene annotations
         logger.info("fetching core gene records from Ensembl...")
+        import pandas as pd
+
         results_core = self._execute_query(query_core)
         logger.success(f"fetched {results_core.shape[0]} records from the core DB...")
 
@@ -270,8 +275,8 @@ class EnsemblGene:
         )
 
         def add_external_db_column(
-            df: pd.DataFrame, ext_db: str, df_col: str
-        ) -> pd.DataFrame:
+            df: DataFrame, ext_db: str, df_col: str
+        ) -> DataFrame:
             # Filter by the external database name
             ext = (
                 results_external[results_external["db_name"] == ext_db]
@@ -358,8 +363,8 @@ class EnsemblGene:
         return df_res
 
     def download_legacy_ids_df(
-        self, df: pd.DataFrame, col: str | None = None
-    ) -> pd.DataFrame:
+        self, df: DataFrame, col: str | None = None
+    ) -> DataFrame:
         """Download legacy Ensembl gene IDs for the current IDs.
 
         Args:
@@ -376,6 +381,8 @@ class EnsemblGene:
 
         # Handle empty list case
         if not valid_ids:
+            import pandas as pd
+
             logger.warning(
                 "No valid IDs found in the specified column. Returning empty DataFrame."
             )
@@ -399,11 +406,13 @@ class EnsemblGene:
             logger.info(f"Downloaded {len(results)} legacy ID mappings")
             return results
         except Exception as e:
+            import pandas as pd
+
             logger.error(f"Error querying legacy IDs: {e}")
             # Return an empty DataFrame rather than failing
             return pd.DataFrame()
 
-    def map_legacy_ids(self, values: Iterable, df: pd.DataFrame) -> MappingResult:
+    def map_legacy_ids(self, values: Iterable, df: DataFrame) -> MappingResult:
         """Maps legacy gene IDs to current Ensembl gene IDs.
 
         Takes legacy gene IDs and maps them to current Ensembl IDs by querying the Ensembl database.
@@ -467,7 +476,7 @@ class EnsemblGene:
 
     def _process_convert_result(
         self,
-        results: pd.DataFrame,
+        results: DataFrame,
         values: Iterable,
     ) -> MappingResult:
         """Process the results of a legacy ID mapping query.
