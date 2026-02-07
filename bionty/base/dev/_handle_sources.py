@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pandas as pd
-
 from bionty.base._settings import settings
 from bionty.base.dev._io import load_yaml
 
@@ -20,7 +18,7 @@ def LAMINDB_INSTANCE_LOADED():
 def parse_sources_yaml(
     filepath: str | Path = settings.public_sources,
     url_pattern: bool = False,
-) -> pd.DataFrame:
+):
     """Parse values from sources yaml file into a DataFrame.
 
     Args:
@@ -52,6 +50,8 @@ def parse_sources_yaml(
                 row = (entity, source, organism, latest_version, url, name, website)
                 all_rows.append(row)
 
+    import pandas as pd
+
     return pd.DataFrame(
         all_rows,
         columns=[
@@ -68,6 +68,8 @@ def parse_sources_yaml(
 
 def parse_currently_used_sources(yaml: str | Path | list[dict]) -> dict:
     """Parse out the most recent versions from yaml."""
+    import pandas as pd
+
     if isinstance(yaml, str | Path):
         df = parse_sources_yaml(yaml)
         df_current = (

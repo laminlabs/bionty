@@ -12,7 +12,6 @@ import functools
 from typing import TYPE_CHECKING, overload
 
 import numpy as np
-import pandas as pd
 from django.core.exceptions import FieldDoesNotExist
 from django.db import models
 from django.db.models import CASCADE, PROTECT
@@ -50,6 +49,7 @@ from .uids import ontology, source
 
 if TYPE_CHECKING:
     from lamindb.base.types import FieldAttr
+    from pandas import DataFrame
 
 
 class StaticReference(PublicOntology):
@@ -61,7 +61,9 @@ class StaticReference(PublicOntology):
             organism=source_record.organism,
         )
 
-    def _load_df(self) -> pd.DataFrame:
+    def _load_df(self) -> DataFrame:
+        import pandas as pd
+
         if self._source_record.dataframe_artifact_id:
             self._filter_prefix = False
             return self._source_record.dataframe_artifact.load(is_run_input=False)
@@ -268,7 +270,7 @@ class HasSource(models.Model):
         cls,
         source: Source | PublicOntology | str,
         *,
-        df: pd.DataFrame | None = None,
+        df: DataFrame | None = None,
         version: str | None = None,
         organism: str | None = None,
     ) -> Source:
@@ -397,6 +399,8 @@ class HasSource(models.Model):
             parquet_filename, _ = encode_filenames(**unique_kwargs)
 
         # Create dataframe artifact if needed
+        import pandas as pd
+
         df_artifact = None
         if isinstance(df, pd.DataFrame):
             df_artifact = ln.Artifact.from_dataframe(
@@ -590,6 +594,8 @@ class HasSource(models.Model):
                     )
                     if organism_record is not None:
                         kwargs["organism"] = organism_record
+
+                    import pandas as pd
 
                     results, _ = create_records_from_source(
                         pd.Index([value]),

@@ -3,7 +3,6 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING, BinaryIO
 
-import pandas as pd
 from lamin_utils import logger
 
 if TYPE_CHECKING:
@@ -200,6 +199,8 @@ try:
                 processed_count += 1
 
             logger.success(f"processed {processed_count} terms")
+
+            import pandas as pd
 
             df = pd.DataFrame(
                 df_values,

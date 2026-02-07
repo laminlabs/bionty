@@ -1,4 +1,3 @@
-import pandas as pd
 from lamin_utils import logger
 from lamindb_setup.core import deprecated
 
@@ -8,7 +7,7 @@ from ._settings import settings
 from .dev._handle_sources import parse_currently_used_sources
 
 
-def display_sources() -> pd.DataFrame:
+def display_sources():
     """Displays all available sources.
 
     Example::
@@ -22,7 +21,7 @@ def display_sources() -> pd.DataFrame:
     return parse_sources_yaml(settings.public_sources).set_index("entity")  # type: ignore
 
 
-def display_currently_used_sources(mute: bool = False) -> pd.DataFrame:
+def display_currently_used_sources(mute: bool = False):
     """Displays all currently used sources.
 
     Active version is unique for entity + organism.
@@ -54,5 +53,7 @@ def display_currently_used_sources(mute: bool = False) -> pd.DataFrame:
                         "version": version,
                     }
                 )
+
+    import pandas as pd
 
     return pd.DataFrame(df_rows).set_index("entity")

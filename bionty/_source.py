@@ -1,12 +1,16 @@
-import pandas as pd
-from lamindb.models import SQLRecord
+from __future__ import annotations
 
-import bionty.base as bt_base
+from typing import TYPE_CHECKING
+
+from lamindb.models import SQLRecord
 
 from ._organism import (
     OrganismNotSet,
     create_or_get_organism_record,
 )
+
+if TYPE_CHECKING:
+    import bionty.base as bt_base
 
 
 def get_source_record(
@@ -70,10 +74,11 @@ def get_source_record(
 
 def filter_public_df_columns(
     registry: type[SQLRecord], public_ontology: bt_base.PublicOntology
-) -> pd.DataFrame:
+):
     """Filter columns of public ontology to match the registry fields."""
+    import pandas as pd
 
-    def _prepare_public_df(registry: type[SQLRecord], bionty_df: pd.DataFrame):
+    def _prepare_public_df(registry: type[SQLRecord], bionty_df):
         """Prepare the bionty DataFrame to match the registry fields."""
         if bionty_df.empty:
             return bionty_df
@@ -111,7 +116,7 @@ def filter_public_df_columns(
             bionty_df.rename(columns={"definition": "description"}, inplace=True)
         return bionty_df
 
-    bionty_df = pd.DataFrame()
+    bionty_df: pd.DataFrame = pd.DataFrame()
     if public_ontology is not None:
         registry_field_names = {i.name for i in registry._meta.fields}
         # parents needs to be added here as relationships aren't in fields
