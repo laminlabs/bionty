@@ -1,13 +1,20 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from lamin_utils import logger
 from lamindb_setup.core import deprecated
 
 from bionty.base.dev._handle_sources import LAMINDB_INSTANCE_LOADED
 
 from ._settings import settings
+
+if TYPE_CHECKING:
+    from pandas import DataFrame
 from .dev._handle_sources import parse_currently_used_sources
 
 
-def display_sources():
+def display_sources() -> DataFrame:
     """Displays all available sources.
 
     Example::
@@ -21,7 +28,7 @@ def display_sources():
     return parse_sources_yaml(settings.public_sources).set_index("entity")  # type: ignore
 
 
-def display_currently_used_sources(mute: bool = False):
+def display_currently_used_sources(mute: bool = False) -> DataFrame:
     """Displays all currently used sources.
 
     Active version is unique for entity + organism.

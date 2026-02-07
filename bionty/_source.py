@@ -10,6 +10,8 @@ from ._organism import (
 )
 
 if TYPE_CHECKING:
+    from pandas import DataFrame
+
     import bionty.base as bt_base
 
 
@@ -74,11 +76,13 @@ def get_source_record(
 
 def filter_public_df_columns(
     registry: type[SQLRecord], public_ontology: bt_base.PublicOntology
-):
+) -> DataFrame:
     """Filter columns of public ontology to match the registry fields."""
     import pandas as pd
 
-    def _prepare_public_df(registry: type[SQLRecord], bionty_df):
+    def _prepare_public_df(
+        registry: type[SQLRecord], bionty_df: DataFrame
+    ) -> DataFrame:
         """Prepare the bionty DataFrame to match the registry fields."""
         if bionty_df.empty:
             return bionty_df
@@ -116,7 +120,7 @@ def filter_public_df_columns(
             bionty_df.rename(columns={"definition": "description"}, inplace=True)
         return bionty_df
 
-    bionty_df: pd.DataFrame = pd.DataFrame()
+    bionty_df: DataFrame = pd.DataFrame()
     if public_ontology is not None:
         registry_field_names = {i.name for i in registry._meta.fields}
         # parents needs to be added here as relationships aren't in fields

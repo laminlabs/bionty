@@ -1,8 +1,12 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from bionty.base._settings import settings
+
+if TYPE_CHECKING:
+    from pandas import DataFrame
 from bionty.base.dev._io import load_yaml
 
 
@@ -18,7 +22,7 @@ def LAMINDB_INSTANCE_LOADED():
 def parse_sources_yaml(
     filepath: str | Path = settings.public_sources,
     url_pattern: bool = False,
-):
+) -> DataFrame:
     """Parse values from sources yaml file into a DataFrame.
 
     Args:
