@@ -5,7 +5,6 @@ import logging
 from typing import TYPE_CHECKING, Literal
 
 import numpy as np
-import pandas as pd
 from lamin_utils import logger
 from lamin_utils._lookup import Lookup
 from lamindb_setup.core import deprecated
@@ -17,6 +16,8 @@ from .dev._io import s3_bionty_assets, url_download
 if TYPE_CHECKING:
     from collections.abc import Iterable
     from pathlib import Path
+
+    import pandas as pd
 
     from bionty.base._ontology import Ontology
 
@@ -282,6 +283,8 @@ class PublicOntology:
         return field
 
     def _load_df(self) -> pd.DataFrame:
+        import pandas as pd
+
         if self._parquet_filename is None:
             self._url_download(self._url, self._local_parquet_path)
         else:
@@ -651,6 +654,8 @@ class PublicOntology:
                     )
 
         # New entries
+        import pandas as pd
+
         new_entries = pd.concat(
             [self.to_dataframe(), compare_to.to_dataframe()]
         ).drop_duplicates(keep=False)

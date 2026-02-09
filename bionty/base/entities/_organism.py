@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
-import pandas as pd
 from lamindb_setup.core import deprecated
 
 from bionty.base._public_ontology import PublicOntology
 from bionty.base.dev._doc_util import _doc_params
+
+if TYPE_CHECKING:
+    from pandas import DataFrame
 from bionty.base.dev._io import s3_bionty_assets
 from bionty.base.entities._shared_docstrings import organism_removed
 
@@ -54,7 +56,9 @@ class Organism(PublicOntology):
             taxa = kwargs.pop("organism")
         super().__init__(organism=taxa, source=source, version=version, **kwargs)
 
-    def _load_df(self) -> pd.DataFrame:
+    def _load_df(self) -> DataFrame:
+        import pandas as pd
+
         if self.source == "ensembl":
             if not self._local_parquet_path.exists():
                 # try to download from s3
@@ -99,7 +103,7 @@ class Organism(PublicOntology):
         else:
             return super()._load_df()
 
-    def to_dataframe(self) -> pd.DataFrame:
+    def to_dataframe(self) -> DataFrame:
         """Pandas DataFrame of the ontology.
 
         Returns:
@@ -114,11 +118,11 @@ class Organism(PublicOntology):
         return self._df.set_index("name")
 
     @deprecated("to_dataframe")
-    def df(self) -> pd.DataFrame:
+    def df(self) -> DataFrame:
         return self.to_dataframe()
 
 
-def _standardize_scientific_name(df: pd.DataFrame) -> pd.DataFrame:
+def _standardize_scientific_name(df: DataFrame) -> DataFrame:
     """Standardize scientific name following NCBITaxon convention.
 
     homo_sapiens -> Homo sapiens
