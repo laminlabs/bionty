@@ -90,15 +90,31 @@ Submodules:
 
 """
 
-import importlib
-
 __version__ = "2.1.0"
 
 from lamindb_setup._check_setup import _check_instance_setup
 
-from . import _biorecord, uids
+from . import _biorecord, base, uids
 
 _check_instance_setup(from_module="bionty")
+
+from .core._settings import settings
+from .models import (
+    CellLine,
+    CellMarker,
+    CellType,
+    DevelopmentalStage,
+    Disease,
+    Ethnicity,
+    ExperimentalFactor,
+    Gene,
+    Organism,
+    Pathway,
+    Phenotype,
+    Protein,
+    Source,
+    Tissue,
+)
 
 __all__ = [
     "CellLine",
@@ -123,35 +139,3 @@ __all__ = [
 ]
 
 ids = uids  # backward compat
-
-_MODEL_NAMES = (
-    "CellLine",
-    "CellMarker",
-    "CellType",
-    "DevelopmentalStage",
-    "Disease",
-    "Ethnicity",
-    "ExperimentalFactor",
-    "Gene",
-    "Organism",
-    "Pathway",
-    "Phenotype",
-    "Protein",
-    "Source",
-    "Tissue",
-)
-
-
-def __getattr__(name: str):
-    """Lazy-import to avoid loading pandas/pyarrow at package import."""
-    if name == "base":
-        return importlib.import_module(".base", "bionty")
-    if name == "settings":
-        from .core._settings import settings
-
-        return settings
-    if name in _MODEL_NAMES:
-        from . import models
-
-        return getattr(models, name)
-    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
