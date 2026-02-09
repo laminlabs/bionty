@@ -1,6 +1,5 @@
 import re
 
-import pandas as pd
 from lamin_utils import logger
 from lamindb.base.types import FieldAttr
 
@@ -81,6 +80,8 @@ def infer_organism_from_ensembl_id(
     id: str, using_key: str | None = None
 ) -> Organism | None:
     """Get organism record from ensembl id."""
+    import pandas as pd
+
     import bionty as bt
     from bionty.base.dev._io import s3_bionty_assets
 
