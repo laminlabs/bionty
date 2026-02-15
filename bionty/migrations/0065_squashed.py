@@ -61,6 +61,7 @@ class Migration(migrations.Migration):
         ("bionty", "0062_remove_artifactcellline_feature_ref_is_name_and_more"),
         ("bionty", "0063_remove_experimentalfactor_instrument_and_more"),
         ("bionty", "0064_alter_cellline_uid_alter_cellmarker_uid_and_more"),
+        ("bionty", "0065_lamindb_v2_2"),
     ]
 
     dependencies = [
