@@ -7,7 +7,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("bionty", "0064_alter_cellline_uid_alter_cellmarker_uid_and_more"),
+        ("bionty", "0064_squashed"),
         ("lamindb", "0178_v2_2"),
     ]
 
