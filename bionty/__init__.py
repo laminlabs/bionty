@@ -93,9 +93,14 @@ Submodules:
 __version__ = "2.2.1"
 
 from lamindb_setup._check_setup import _check_instance_setup
+from lamindb_setup.lazy_import import enable_lazy_imports
 
 from . import _biorecord, base, uids
 
+enable_lazy_imports(
+    "bionty.models",
+    on_load=lambda mod, attr: _check_instance_setup(from_module="bionty"),
+)
 _check_instance_setup(from_module="bionty")
 
 from .core._settings import settings
