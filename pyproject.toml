@@ -16,9 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
-    "lamindb>=2.0a1",
-    "lamindb_setup>=0.81.2",
-    "lamin_utils>=0.16.2",
+    "lamindb-core>=2.3a1",
     "requests",
     "pyyaml",
 ]
