@@ -49,6 +49,10 @@ def test_infer_organism_from_ensembl_id():
 
     # Test with a rat Ensembl ID, which has duplicate entries in the ensembl_prefixes parquet
     # (e.g., "ENSRNOG") and would return a Series from .loc if not handled correctly.
+    organism_source = bt.Source.get(name="ncbitaxon")
+    bt.Organism.from_source(
+        ontology_id="NCBITaxon:10116", source=organism_source
+    ).save()
     organism = infer_organism_from_ensembl_id("ENSRNOG00000001284")
     assert organism is not None
     assert organism.name == "rat"
