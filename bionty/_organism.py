@@ -98,6 +98,15 @@ def infer_organism_from_ensembl_id(
 
     # for ensembl vertebrates, we infer organism from the ensembl prefix
     if prefix in ensembl_prefixes.index:
-        organism_name = ensembl_prefixes.loc[prefix, "name"].lower()
+        organism_name = ensembl_prefixes.loc[prefix, "name"]
+        # ensembl_prefixes can have duplicate index entries for a given prefix
+        # (e.g., "ENSRNOG" for rat might appear multiple times).
+        # In this case, loc returns a Series. The first match (iloc[0]) is safe to use here
+        # because the duplicate entries for a given prefix (like ENSRNOG) all map to the same
+        # base organism name (e.g., rat), they just represent different assemblies or strains
+        # in the source data.
+        if isinstance(organism_name, pd.Series):
+            organism_name = organism_name.iloc[0]
+        organism_name = organism_name.lower()
         return get_or_create_organism_from_name(name=organism_name, using_key=using_key)
     return None

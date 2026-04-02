@@ -42,3 +42,13 @@ def test_from_values_organism():
 
 def test_organism_all():
     assert bt.CellLine.public(organism="all")
+
+
+def test_infer_organism_from_ensembl_id():
+    from bionty._organism import infer_organism_from_ensembl_id
+
+    # Test with a rat Ensembl ID, which has duplicate entries in the ensembl_prefixes parquet
+    # (e.g., "ENSRNOG") and would return a Series from .loc if not handled correctly.
+    organism = infer_organism_from_ensembl_id("ENSRNOG00000001284")
+    assert organism is not None
+    assert organism.name == "rat"
