@@ -104,16 +104,22 @@ def infer_organism_from_ensembl_id(
         # In this case, loc returns a Series. We prefer names without " - " because
         # Ensembl uses that delimiter to append strain/assembly qualifiers
         # (for instance "Rat - SHR/Utx ..."), while the canonical species name stays
-        # unsuffixed (for instance "Rat"). If every entry is qualified, we fall back
-        # to the first value to keep inference resilient.
+        # unsuffixed (for instance "Rat"). If every entry is qualified, we take the
+        # shared base name before " - " when all variants agree; otherwise we fall
+        # back to the first value to keep inference resilient.
         if isinstance(organism_name, pd.Series):
             organism_names = organism_name.dropna().astype(str).str.lower()
             canonical_names = organism_names[~organism_names.str.contains(r" - ")]
-            organism_name = (
-                canonical_names.iloc[0]
-                if len(canonical_names) > 0
-                else organism_names.iloc[0]
-            )
+            if len(canonical_names) > 0:
+                organism_name = canonical_names.iloc[0]
+            else:
+                base_names = organism_names.str.split(" - ", n=1).str[0].str.strip()
+                unique_base_names = base_names.drop_duplicates()
+                organism_name = (
+                    unique_base_names.iloc[0]
+                    if len(unique_base_names) == 1
+                    else organism_names.iloc[0]
+                )
         else:
             organism_name = str(organism_name).lower()
         return get_or_create_organism_from_name(name=organism_name, using_key=using_key)
