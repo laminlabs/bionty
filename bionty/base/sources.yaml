@@ -40,10 +40,10 @@ Gene:
 Protein:
   uniprot:
     human:
-      latest-version: 2024-03
+      latest-version: 2026-01
       url: s3://bionty-assets/df_human__uniprot__{version}__Protein.parquet
     mouse:
-      latest-version: 2024-03
+      latest-version: 2026-01
       url: s3://bionty-assets/df_mouse__uniprot__{version}__Protein.parquet
     name: Uniprot
     website: https://www.uniprot.org
