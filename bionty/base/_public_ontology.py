@@ -246,7 +246,7 @@ class PublicOntology:
         """Sets local file paths."""
         # parquet file name, ontology source file name
         self._parquet_filename, self._ontology_filename = encode_filenames(
-            organism=self.organism,
+            organism=self.organism or "",
             name=self.source,
             version=self.version,
             entity=self._entity,
