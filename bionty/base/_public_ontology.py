@@ -163,7 +163,7 @@ class PublicOntology:
         # Build filter conditions from non-None parameters
         conditions = {}
         if organism is not None:
-            conditions["organism"] = organism
+            conditions["organism"] = organism.lower()
         if name is not None:
             conditions["name"] = name
 
