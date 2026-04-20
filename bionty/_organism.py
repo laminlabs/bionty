@@ -77,13 +77,19 @@ def get_or_create_organism_from_name(
                     )
                 organism_record.save(using=using_key)
             except DoesNotExist:
-                if error:
-                    raise OrganismNotSet(
-                        f"Organism {name} can't be created from the source, check your spelling or create it manually."
-                    ) from None
-                else:
-                    # for instance, organism="all" for CellLine should pass
-                    pass
+                try:
+                    organism_record = bt.Organism.from_source(
+                        scientific_name=name, source=source
+                    )
+                    organism_record.save(using=using_key)
+                except DoesNotExist:
+                    if error:
+                        raise OrganismNotSet(
+                            f"Organism {name} can't be created from the source, check your spelling or create it manually."
+                        ) from None
+                    else:
+                        # for instance, organism="all" for CellLine should pass
+                        pass
     return organism_record
 
 
