@@ -24,14 +24,15 @@ def test_uniprot_protein_inspect_uniprotkb_id():
 
 def test_uniprot_protein_organism_from_scientific_name():
     TEST_PROTEINS = {
-        "mouse-ear cress": "A0A022RI21",
-        "bovine": "A0A023J7X0",
-        "dog": "A0A023SFI1",
-        "chinese hamster": "A0A061HTA4",
-        "e. coli": "A0A023I6S3",
-        "long-tailed macaque": "A0A023JBW5",
-        "saccharomyces cerevisiae s288c": "A0A023IRJ6",
-        "pig": "A0A023I2Y2",
+        "rattus norvegicus": "B4F769",
+        "arabidopsis thaliana": "A0MES8",
+        "canis lupus": "O97626",
+        "macaca fascicularis": "P61258",
+        "sus scrofa": "O02840",
+        "cricetulus griseus": "P23174",
+        "escherichia coli": "P02359",
+        "bos taurus": "A0JNH9",
+        "saccharomyces cerevisiae": "P00360",
     }
     for organism, valid_id in TEST_PROTEINS.items():
         pr = bt_base.Protein(organism=organism, source="uniprot")

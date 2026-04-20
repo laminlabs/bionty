@@ -59,8 +59,10 @@ def test_infer_organism_from_ensembl_id():
 
 
 def test_pass_scientific_name_as_organism():
+    bt.Organism.filter().delete(permanent=True)
     # check organism rat doesn't yet exist in the database
     assert bt.Organism.filter(scientific_name="Rattus norvegicus").one_or_none() is None
+    # registering a protein with organism rat should also register the organism
     protein = bt.Protein.from_source(
         uniprotkb_id="B4F769", organism="Rattus norvegicus"
     )

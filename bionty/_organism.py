@@ -64,20 +64,16 @@ def get_or_create_organism_from_name(
         )
         if organism_record is None:
             from lamindb.errors import DoesNotExist
-            from lamindb.models.query_set import SQLRecordList
 
-            # try to create from ncbitaxon source
             try:
-                source = bt.Source.filter(name="ncbitaxon").first()
-                organism_record = bt.Organism.from_source(name, source=source)
-                if isinstance(organism_record, SQLRecordList):
-                    organism_record = organism_record[0]
-                    logger.warning(
-                        f"Multiple organisms found for {name}, saving the first one: {organism_record}"
-                    )
+                organism_record = bt.Organism.from_source(
+                    name=name
+                )  # using default source
                 organism_record.save(using=using_key)
             except DoesNotExist:
                 try:
+                    # try to create from ncbitaxon source
+                    source = bt.Source.filter(name="ncbitaxon").first()
                     organism_record = bt.Organism.from_source(
                         scientific_name=name, source=source
                     )
