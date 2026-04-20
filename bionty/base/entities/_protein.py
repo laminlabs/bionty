@@ -21,9 +21,9 @@ class Protein(PublicOntology):
 
     def __init__(
         self,
-        organism: Literal["human", "mouse"] | None = None,
+        organism: Literal["human", "mouse", "mouse-ear cress", "bovine", "dog", "chinese hamster", "e. coli", "long-tailed macaque", "saccharomyces cerevisiae s288c", "pig"] | None = None,
         source: Literal["uniprot"] | None = None,
-        version: Literal["2026-01", "2024-03", "2023-03", "2023-02"] | None = None,
+        version: Literal["2026-01", "2024-03", "2023-03", "2023-02", "2025-04-10"] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(

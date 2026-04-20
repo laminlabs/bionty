@@ -45,8 +45,39 @@ Protein:
     mouse:
       latest-version: 2026-01
       url: s3://bionty-assets/df_mouse__uniprot__{version}__Protein.parquet
-    name: Uniprot
-    website: https://www.uniprot.org
+    mouse-ear cress:
+      latest-version: 2026_04_10
+      url: s3://bionty-assets/df_mouse-ear-cress__uniprot__{version}__Protein.parquet
+    bovine:
+      latest-version: 2026_04_10
+      url: s3://bionty-assets/df_bovine__uniprot__{version}__Protein.parquet
+    dog:
+      latest-version: 2026_04_10
+      url: s3://bionty-assets/df_dog__uniprot__{version}__Protein.parquet
+    chinese hamster:
+      latest-version: 2026_04_10
+      url: s3://bionty-assets/df_chinese-hamster__uniprot__{version}__Protein.parquet
+    e. coli:
+      latest-version: 2026_04_10
+      url: s3://bionty-assets/df_e.-coli__uniprot__{version}__Protein.parquet
+    long-tailed macaque:
+      latest-version: 2026_04_10
+      url: s3://bionty-assets/df_long-tailed-macaque__uniprot__{version}__Protein.parquet
+    norway rat:
+      latest-version: 2026_04_10
+      url: s3://bionty-assets/df_norway-rat__uniprot__{version}__Protein.parquet
+    saccharomyces cerevisiae s288c:
+      latest-version: 2026_04_10
+      url: s3://bionty-assets/df_saccharomyces-cerevisiae-s288c__uniprot__{version}__Protein.parquet
+    pig:
+      latest-version: 2026_04_10
+      url: s3://bionty-assets/df_pig__uniprot__{version}__Protein.parquet
+  mouse:
+    latest-version: 2026-01
+    url: s3://bionty-assets/df_mouse__uniprot__{version}__Protein.parquet
+  name: UniProt
+  website: https://www.uniprot.org
+
 CellMarker:
   cellmarker:
     human:
