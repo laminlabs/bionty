@@ -45,35 +45,35 @@ Protein:
     mouse:
       latest-version: 2026-01
       url: s3://bionty-assets/df_mouse__uniprot__{version}__Protein.parquet
-    mouse-ear cress:
-      latest-version: 2026_04_10
-      url: s3://bionty-assets/df_mouse-ear-cress__uniprot__{version}__Protein.parquet
-    bovine:
-      latest-version: 2026_04_10
-      url: s3://bionty-assets/df_bovine__uniprot__{version}__Protein.parquet
-    dog:
-      latest-version: 2026_04_10
-      url: s3://bionty-assets/df_dog__uniprot__{version}__Protein.parquet
-    chinese hamster:
-      latest-version: 2026_04_10
-      url: s3://bionty-assets/df_chinese-hamster__uniprot__{version}__Protein.parquet
-    e. coli:
-      latest-version: 2026_04_10
-      url: s3://bionty-assets/df_e.-coli__uniprot__{version}__Protein.parquet
-    long-tailed macaque:
-      latest-version: 2026_04_10
-      url: s3://bionty-assets/df_long-tailed-macaque__uniprot__{version}__Protein.parquet
-    norway rat:
-      latest-version: 2026_04_10
-      url: s3://bionty-assets/df_norway-rat__uniprot__{version}__Protein.parquet
-    saccharomyces cerevisiae s288c:
-      latest-version: 2026_04_10
-      url: s3://bionty-assets/df_saccharomyces-cerevisiae-s288c__uniprot__{version}__Protein.parquet
-    pig:
-      latest-version: 2026_04_10
-      url: s3://bionty-assets/df_pig__uniprot__{version}__Protein.parquet
-  name: UniProt
-  website: https://www.uniprot.org
+    rattus norvegicus:
+      latest-version: 2026-01
+      url: s3://bionty-assets/df_rattus-norvegicus__uniprot__{version}__Protein.parquet
+    canis lupus:
+      latest-version: 2026-01
+      url: s3://bionty-assets/df_canis-lupus__uniprot__{version}__Protein.parquet
+    macaca fascicularis:
+      latest-version: 2026-01
+      url: s3://bionty-assets/df_macaca-fascicularis__uniprot__{version}__Protein.parquet
+    sus scrofa:
+      latest-version: 2026-01
+      url: s3://bionty-assets/df_sus-scrofa__uniprot__{version}__Protein.parquet
+    cricetulus griseus:
+      latest-version: 2026-01
+      url: s3://bionty-assets/df_cricetulus-griseus__uniprot__{version}__Protein.parquet
+    escherichia coli:
+      latest-version: 2026-01
+      url: s3://bionty-assets/df_escherichia-coli__uniprot__{version}__Protein.parquet
+    arabidopsis thaliana:
+      latest-version: 2026-01
+      url: s3://bionty-assets/df_arabidopsis-thaliana__uniprot__{version}__Protein.parquet
+    saccharomyces cerevisiae:
+      latest-version: 2026-01
+      url: s3://bionty-assets/df_saccharomyces-cerevisiae__uniprot__{version}__Protein.parquet
+    bos taurus:
+      latest-version: 2026-01
+      url: s3://bionty-assets/df_bos-taurus__uniprot__{version}__Protein.parquet
+    name: UniProt
+    website: https://www.uniprot.org
 
 CellMarker:
   cellmarker:

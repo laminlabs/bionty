@@ -30,9 +30,9 @@ def encode_filenames(
     """Encode names of the cached files."""
     # Paths are often passed as `bionty.Entity` but we only need the entity here
     entity_name = entity.split(".")[-1] if "." in entity else entity
-    parquet_filename = f"df_{organism}__{name}__{version}__{entity_name}.parquet"
-    ontology_filename = (
-        f"ontology_{organism}__{name}__{version}__{entity_name}".replace(" ", "_")
+    parquet_filename = f"df_{organism.lower().replace(' ', '-')}__{name}__{version}__{entity_name}.parquet"
+    ontology_filename = f"ontology_{organism.lower().replace(' ', '-')}__{name}__{version}__{entity_name}".replace(
+        " ", "_"
     )
 
     return parquet_filename, ontology_filename
