@@ -72,9 +72,6 @@ Protein:
     pig:
       latest-version: 2026_04_10
       url: s3://bionty-assets/df_pig__uniprot__{version}__Protein.parquet
-  mouse:
-    latest-version: 2026-01
-    url: s3://bionty-assets/df_mouse__uniprot__{version}__Protein.parquet
   name: UniProt
   website: https://www.uniprot.org
 
