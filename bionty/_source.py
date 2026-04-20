@@ -45,7 +45,14 @@ def get_source_record(
 
     sources = Source.filter(**filter_kwargs).all()
     if len(sources) == 0:
-        raise ValueError(f"No source record found for filter {filter_kwargs}")
+        if isinstance(organism_record, SQLRecord):
+            # try to match organism by scientific name
+            filter_kwargs["organism"] = organism_record.scientific_name
+            sources = Source.filter(**filter_kwargs).all()
+            if len(sources) == 0:
+                raise ValueError(f"No source record found for filter {filter_kwargs}")
+        else:
+            raise ValueError(f"No source record found for filter {filter_kwargs}")
     if len(sources) == 1:
         return sources.one()
 
