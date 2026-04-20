@@ -245,7 +245,7 @@ def register_source_in_bionty_assets(
         organism, source_name, version, entity = filepath.stem.removeprefix(
             "df_"
         ).split("__")
-        assert organism == source.organism
+        assert organism == source.organism.lower().replace(" ", "-")
         assert source_name == source.name
         assert version == source.version
         assert entity == source.entity.split(".")[-1]
