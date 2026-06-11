@@ -141,7 +141,7 @@ ExperimentalFactor:
   efo:
     all:
       latest-version: 3.85.0
-      url: http://www.ebi.ac.uk/efo/releases/v{version}/efo.owl
+      url: https://github.com/EBISPOT/efo/releases/download/v{version}/efo.owl
     name: The Experimental Factor Ontology
     website: https://bioportal.bioontology.org/ontologies/EFO
 Phenotype:
