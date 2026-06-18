@@ -103,8 +103,8 @@ class Source(SQLRecord, TracksRun, TracksUpdates):
         url: URL of the source file.
         md5: Hash md5 of the source file.
         source_website: Website of the source.
-        branch: The branch of the record. If `None`, uses the current branch.
-        space: The space of the record. If `None`, uses the default space.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
     """
 
     class Meta(SQLRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -788,8 +788,8 @@ class Organism(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         name: Common name of the organism.
         ontology_id: NCBI Taxon ID of the organism.
         scientific_name: Scientific name of the organism.
-        branch: The branch of the record. If `None`, uses the current branch.
-        space: The space of the record. If `None`, uses the default space.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
 
     Example::
 
@@ -893,8 +893,8 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         synonyms: Bar-separated (|) synonyms.
         organism: The :class:`~bionty.Organism` of the gene.
         source: The :class:`~bionty.Source` of the record.
-        branch: The branch of the record. If `None`, uses the current branch.
-        space: The space of the record. If `None`, uses the default space.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
 
     Example::
 
@@ -1031,8 +1031,8 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
         ensembl_gene_ids: Bar-separated (|) Ensembl Gene IDs that correspond to this protein.
         organism: The :class:`~bionty.Organism` this protein associates with.
         source: The :class:`~bionty.Source` of the record.
-        branch: The branch of the record. If `None`, uses the current branch.
-        space: The space of the record. If `None`, uses the default space.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
 
     Example::
 
@@ -1159,8 +1159,8 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         uniprotkb_id: Uniprotkb id that corresponds to this cell marker.
         organism: The :class:`~bionty.Organism` this cell marker associates with.
         source: The :class:`~bionty.Source` of the record.
-        branch: The branch of the record. If `None`, uses the current branch.
-        space: The space of the record. If `None`, uses the default space.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
 
     Example::
 
@@ -1293,8 +1293,8 @@ class Tissue(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: Description of the record.
         parents: A list of parent record ontology ids.
         source: The :class:`~bionty.Source` of the record.
-        branch: The branch of the record. If `None`, uses the current branch.
-        space: The space of the record. If `None`, uses the default space.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
 
     Example::
 
@@ -1393,8 +1393,8 @@ class CellType(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: Description of the record.
         parents: A list of parent record ontology ids.
         source: The :class:`~bionty.Source` of the record.
-        branch: The branch of the record. If `None`, uses the current branch.
-        space: The space of the record. If `None`, uses the default space.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
 
     Example::
 
@@ -1496,8 +1496,8 @@ class Disease(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: Description of the record.
         parents: A list of parent record ontology ids.
         source: The :class:`~bionty.Source` of the record.
-        branch: The branch of the record. If `None`, uses the current branch.
-        space: The space of the record. If `None`, uses the default space.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
 
     Example::
 
@@ -1597,8 +1597,8 @@ class CellLine(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: Description of the record.
         parents: A list of parent record ontology ids.
         source: The :class:`~bionty.Source` of the record.
-        branch: The branch of the record. If `None`, uses the current branch.
-        space: The space of the record. If `None`, uses the default space.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
 
     Example::
 
@@ -1701,8 +1701,8 @@ class Phenotype(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: Description of the record.
         parents: A list of parent record ontology ids.
         source: The :class:`~bionty.Source` of the record.
-        branch: The branch of the record. If `None`, uses the current branch.
-        space: The space of the record. If `None`, uses the default space.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
 
     Example::
 
@@ -1802,8 +1802,8 @@ class Pathway(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: Description of the record.
         parents: A list of parent record ontology ids.
         source: The :class:`~bionty.Source` of the record.
-        branch: The branch of the record. If `None`, uses the current branch.
-        space: The space of the record. If `None`, uses the default space.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
 
     Example::
 
@@ -1908,8 +1908,8 @@ class ExperimentalFactor(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: Description of the record.
         parents: A list of parent record ontology ids.
         source: The :class:`~bionty.Source` of the record.
-        branch: The branch of the record. If `None`, uses the current branch.
-        space: The space of the record. If `None`, uses the default space.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
 
     Example::
 
@@ -2014,8 +2014,8 @@ class DevelopmentalStage(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: Description of the record.
         parents: A list of parent record ontology ids.
         source: The :class:`~bionty.Source` of the record.
-        branch: The branch of the record. If `None`, uses the current branch.
-        space: The space of the record. If `None`, uses the default space.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
 
     Example::
 
@@ -2118,8 +2118,8 @@ class Ethnicity(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: Description of the record.
         parents: A list of parent record ontology ids.
         source: The :class:`~bionty.Source` of the record.
-        branch: The branch of the record. If `None`, uses the current branch.
-        space: The space of the record. If `None`, uses the default space.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
 
     Example::
 
