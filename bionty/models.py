@@ -197,7 +197,7 @@ class HasOntologyId(models.Model, HasParents):
 class HasSource(models.Model):
     """HasSource - base class for records with a source foreign key.
 
-    Provides :meth:`~bionty.core.BioRecord.public` and :meth:`~bionty.core.BioRecord.from_source`.
+    Provides `.public()` and `.from_source()` methods for `BioRecord`.
     """
 
     class Meta:
@@ -540,7 +540,7 @@ class HasSource(models.Model):
         Notes:
             For more info, see tutorial :doc:`docs:bionty`
 
-            Bulk create records via :meth:`.from_values`.
+            Bulk create records via `.from_values()`.
 
         Example::
 
