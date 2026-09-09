@@ -178,6 +178,7 @@ def register_source_in_bionty_assets(
     source: SQLRecord,
     is_dataframe: bool = True,
     update: bool = False,
+    assert_entity: bool = True,
 ) -> Artifact:
     """Register a new source in the laminlabs/bionty-assets instance.
 
@@ -213,7 +214,7 @@ def register_source_in_bionty_assets(
 
     # assert ln.setup.settings.instance.slug == "laminlabs/bionty-assets"
 
-    if "." not in source.entity:
+    if assert_entity and "." not in source.entity:
         raise ValueError(
             "source entity must be in form of 'module.ClassName', e.g. 'bionty.Gene'"
         )
@@ -248,7 +249,8 @@ def register_source_in_bionty_assets(
         assert organism == source.organism.lower().replace(" ", "-")
         assert source_name == source.name
         assert version == source.version
-        assert entity == source.entity.split(".")[-1]
+        if assert_entity:
+            assert entity == source.entity.split(".")[-1]
         source.dataframe_artifact = artifact
         source.save()
         logger.print(
