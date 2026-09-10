@@ -1,8 +1,8 @@
-version: "0.3.1"
+version: "0.4.0"
 Organism:
   ensembl:
     vertebrates:
-      latest-version: release-114
+      latest-version: release-116
       url: https://ftp.ensembl.org/pub/{version}/species_EnsemblVertebrates.txt
     bacteria:
       latest-version: release-57
@@ -20,20 +20,20 @@ Organism:
     website: https://www.ensembl.org
   ncbitaxon:
     all:
-      latest-version: 2025-12-03
+      latest-version: 2026-07-12
       url: http://purl.obolibrary.org/obo/ncbitaxon/{version}/ncbitaxon.owl
     name: NCBItaxon Ontology
     website: https://github.com/obophenotype/ncbitaxon
 Gene:
   ensembl:
     human:
-      latest-version: release-114
+      latest-version: release-116
       url: s3://bionty-assets/df_human__ensembl__{version}__Gene.parquet
     mouse:
-      latest-version: release-114
+      latest-version: release-116
       url: s3://bionty-assets/df_mouse__ensembl__{version}__Gene.parquet
     saccharomyces cerevisiae:
-      latest-version: release-114
+      latest-version: release-116
       url: s3://bionty-assets/df_saccharomyces-cerevisiae__ensembl__{version}__Gene.parquet
     name: Ensembl
     website: https://www.ensembl.org

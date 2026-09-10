@@ -59,6 +59,9 @@ class Gene(PublicOntology):
         organism: Literal["human", "mouse", "saccharomyces cerevisiae"] | None = None,
         source: Literal["ensembl"] | None = None,
         version: Literal[
+            # Ensembl
+            "release-116",
+            "release-115",
             "release-114",
             "release-113",
             "release-112",

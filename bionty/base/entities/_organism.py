@@ -37,10 +37,13 @@ class Organism(PublicOntology):
         version: (
             Literal[
                 # NCBITaxon
+                "2026-07-12",
                 "2025-12-03",
                 "2025-03-13",
                 "2023-06-20",
                 # Ensembl
+                "release-116",
+                "release-115",
                 "release-114",
                 "release-113",
                 "release-112",
