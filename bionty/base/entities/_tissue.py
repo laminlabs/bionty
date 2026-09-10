@@ -24,6 +24,7 @@ class Tissue(PublicOntology):
         organism: Literal["all"] | None = None,
         source: Literal["uberon"] | None = None,
         version: Literal[
+            "2026-06-23",
             "2025-12-04",
             "2025-05-28",
             "2024-08-07",

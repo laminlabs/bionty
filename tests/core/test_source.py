@@ -60,11 +60,11 @@ def test_add_source():
     # pass a source record from another entity
     with pytest.raises(ValueError):
         pertdb.Compound.import_source()
-    chebi_source = bt.Source.get(name="chebi", version="2024-07-27")
+    chebi_source = bt.Source.get(name="chebi", version="2026-09-01")
     new_source = pertdb.Compound.add_source(chebi_source)
     assert new_source.entity == "pertdb.Compound"
     assert new_source.name == "chebi"
-    assert new_source.version == "2024-07-27"
+    assert new_source.version == "2026-09-01"
     assert new_source.dataframe_artifact is not None
     public_ontology = pertdb.Compound.public()
     assert public_ontology.__class__.__name__ == "StaticReference"

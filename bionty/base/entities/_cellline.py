@@ -31,6 +31,7 @@ class CellLine(PublicOntology):
         source: Literal["cellosaurus", "clo", "depmap"] | None = None,
         version: Literal[
             # cellosaurus
+            "56.0",
             "53.0",
             # clo
             "2023-03-28",

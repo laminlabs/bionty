@@ -26,6 +26,7 @@ class ExperimentalFactor(PublicOntology):
         organism: Literal["all"] | None = None,
         source: Literal["efo"] | None = None,
         version: Literal[
+            "3.93.0",
             "3.85.0",
             "3.78.0",
             "3.70.0",

@@ -34,6 +34,7 @@ class Disease(PublicOntology):
         source: Literal["mondo", "doid", "icd"] | None = None,
         version: Literal[
             # Mondo
+            "2026-09-01",
             "2026-01-06",
             "2025-06-03",
             "2024-08-06",
@@ -47,6 +48,7 @@ class Disease(PublicOntology):
             "2022-10-11",
             "2023-04-04",
             # DOID
+            "2026-08-31",
             "2025-12-23",
             "2025-05-30",
             "2024-05-29",
