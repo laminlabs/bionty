@@ -34,7 +34,7 @@ Gene:
       url: s3://bionty-assets/df_mouse__ensembl__{version}__Gene.parquet
     saccharomyces cerevisiae:
       latest-version: release-114
-      url: s3://bionty-assets/df_saccharomyces cerevisiae__ensembl__{version}__Gene.parquet
+      url: s3://bionty-assets/df_saccharomyces-cerevisiae__ensembl__{version}__Gene.parquet
     name: Ensembl
     website: https://www.ensembl.org
 Protein:
