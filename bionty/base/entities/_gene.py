@@ -34,6 +34,11 @@ class MappingResult(NamedTuple):
     unmapped: list[str]
 
 
+def _join_synonyms(values) -> str:
+    """Join unique synonym strings, skipping NULL/NaN from Ensembl."""
+    return "|".join(i for i in set(values) if isinstance(i, str) and i)
+
+
 @_doc_params(doc_entities=doc_entites)
 class Gene(PublicOntology):
     """Gene.
@@ -263,7 +268,7 @@ class EnsemblGene:
                 "display_label": "first",
                 "biotype": "first",
                 "description": "first",
-                "synonym": lambda x: "|".join([i for i in set(x) if i is not None]),
+                "synonym": _join_synonyms,
             }
         )
 

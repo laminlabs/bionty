@@ -1,7 +1,7 @@
 import bionty.base as bt_base
 import pandas as pd
 import pytest
-from bionty.base.entities._gene import MappingResult
+from bionty.base.entities._gene import MappingResult, _join_synonyms
 
 
 @pytest.fixture(scope="module")
@@ -32,6 +32,22 @@ def test_gene_ensembl_inspect_hgnc_id(genes):
     expected_series = pd.Series([True, True, True, False])
 
     assert inspect.equals(expected_series)
+
+
+def test_join_synonyms_skips_nulls():
+    joined = _join_synonyms(["ABC", float("nan"), None, "ABC", "DEF", "", pd.NA])
+    assert set(joined.split("|")) == {"ABC", "DEF"}
+    assert _join_synonyms([float("nan"), None, "", pd.NA]) == ""
+
+    df = pd.DataFrame(
+        {
+            "stable_id": ["g1", "g1", "g2"],
+            "synonym": ["ABC", float("nan"), None],
+        }
+    )
+    result = df.groupby("stable_id").agg({"synonym": _join_synonyms})
+    assert result.loc["g1", "synonym"] == "ABC"
+    assert result.loc["g2", "synonym"] == ""
 
 
 def test_ensemblgene_download():
