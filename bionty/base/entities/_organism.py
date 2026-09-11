@@ -103,8 +103,7 @@ class Organism(PublicOntology):
                     # add synonyms column if it doesn't exist
                     df["synonyms"] = None
                 return _standardize_scientific_name(df)
-        else:
-            return super()._load_df()
+        return super()._load_df()
 
     def to_dataframe(self) -> DataFrame:
         """Pandas DataFrame of the ontology.
@@ -125,12 +124,15 @@ class Organism(PublicOntology):
         return self.to_dataframe()
 
 
-def _standardize_scientific_name(df: DataFrame) -> DataFrame:
-    """Standardize scientific name following NCBITaxon convention.
+def _format_scientific_name(value):
+    """Standardize Ensembl species names: homo_sapiens -> Homo sapiens."""
+    if not isinstance(value, str) or "_" not in value:
+        return value
+    parts = value.split("_")
+    return " ".join([parts[0].capitalize(), *parts[1:]])
 
-    homo_sapiens -> Homo sapiens
-    """
-    df["scientific_name"] = df["scientific_name"].apply(
-        lambda x: " ".join([x.split("_")[0].capitalize()] + x.split("_")[1:])
-    )
+
+def _standardize_scientific_name(df: DataFrame) -> DataFrame:
+    """Standardize scientific name following NCBITaxon convention."""
+    df["scientific_name"] = df["scientific_name"].apply(_format_scientific_name)
     return df
