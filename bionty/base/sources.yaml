@@ -1,8 +1,8 @@
-version: "0.3.0"
+version: "0.4.0"
 Organism:
   ensembl:
     vertebrates:
-      latest-version: release-114
+      latest-version: release-116
       url: https://ftp.ensembl.org/pub/{version}/species_EnsemblVertebrates.txt
     bacteria:
       latest-version: release-57
@@ -20,21 +20,21 @@ Organism:
     website: https://www.ensembl.org
   ncbitaxon:
     all:
-      latest-version: 2025-12-03
+      latest-version: 2026-07-12
       url: http://purl.obolibrary.org/obo/ncbitaxon/{version}/ncbitaxon.owl
     name: NCBItaxon Ontology
     website: https://github.com/obophenotype/ncbitaxon
 Gene:
   ensembl:
     human:
-      latest-version: release-114
+      latest-version: release-116
       url: s3://bionty-assets/df_human__ensembl__{version}__Gene.parquet
     mouse:
-      latest-version: release-114
+      latest-version: release-116
       url: s3://bionty-assets/df_mouse__ensembl__{version}__Gene.parquet
     saccharomyces cerevisiae:
-      latest-version: release-114
-      url: s3://bionty-assets/df_saccharomyces cerevisiae__ensembl__{version}__Gene.parquet
+      latest-version: release-116
+      url: s3://bionty-assets/df_saccharomyces-cerevisiae__ensembl__{version}__Gene.parquet
     name: Ensembl
     website: https://www.ensembl.org
 Protein:
@@ -88,7 +88,7 @@ CellMarker:
 CellLine:
   cellosaurus:
     all:
-      latest-version: 53.0
+      latest-version: 56.0
       url: s3://bionty-assets/df_all__cellosaurus__{version}__CellLine.parquet
     name: Cellosaurus
     website: https://www.cellosaurus.org/
@@ -107,27 +107,27 @@ CellLine:
 CellType:
   cl:
     all:
-      latest-version: 2025-12-17
+      latest-version: 2026-06-08
       url: http://purl.obolibrary.org/obo/cl/releases/{version}/cl.owl
     name: Cell Ontology
     website: https://obophenotype.github.io/cell-ontology
 Tissue:
   uberon:
     all:
-      latest-version: 2025-12-04
-      url: http://purl.obolibrary.org/obo/uberon/releases/{version}/uberon.owl
+      latest-version: 2026-06-23
+      url: https://github.com/obophenotype/uberon/releases/download/v{version}/uberon.owl
     name: Uberon multi-species anatomy ontology
     website: http://obophenotype.github.io/uberon
 Disease:
   mondo:
     all:
-      latest-version: 2026-01-06
+      latest-version: 2026-09-01
       url: http://purl.obolibrary.org/obo/mondo/releases/{version}/mondo.owl
     name: Mondo Disease Ontology
     website: https://mondo.monarchinitiative.org
   doid:
     human:
-      latest-version: 2025-12-23
+      latest-version: 2026-08-31
       url: http://purl.obolibrary.org/obo/doid/releases/{version}/doid.obo
     name: Human Disease Ontology
     website: https://disease-ontology.org
@@ -140,7 +140,7 @@ Disease:
 ExperimentalFactor:
   efo:
     all:
-      latest-version: 3.85.0
+      latest-version: 3.93.0
       url: https://github.com/EBISPOT/efo/releases/download/v{version}/efo.owl
     name: The Experimental Factor Ontology
     website: https://bioportal.bioontology.org/ontologies/EFO
@@ -153,7 +153,7 @@ Phenotype:
     website: https://github.com/pato-ontology/pato
   hp:
     human:
-      latest-version: 2026-01-08
+      latest-version: 2026-09-01
       url: https://github.com/obophenotype/human-phenotype-ontology/releases/download/v{version}/hp.owl
     name: Human Phenotype Ontology
     website: https://hpo.jax.org
@@ -172,7 +172,7 @@ Pathway:
     website: http://geneontology.org
   pw:
     all:
-      latest-version: 7.96
+      latest-version: 2026-05-16
       url: http://purl.obolibrary.org/obo/pw/{version}/pw.owl
     name: Pathway Ontology
     website: https://www.ebi.ac.uk/ols/ontologies/pw
@@ -184,18 +184,18 @@ BFXPipeline:
     name: Bioinformatics Pipeline
     website: https://lamin.ai
 Drug:
+  chebi:
+    all:
+      latest-version: 2026-09-01
+      url: s3://bionty-assets/df_all__chebi__{version}__Drug.parquet
+    name: Chemical Entities of Biological Interest
+    website: https://www.ebi.ac.uk/chebi/
   dron:
     all:
       latest-version: 2024-08-05
       url: http://purl.obolibrary.org/obo/dron/releases/{version}/dron.owl
     name: Drug Ontology
     website: https://bioportal.bioontology.org/ontologies/DRON
-  chebi:
-    all:
-      latest-version: 2024-07-27
-      url: s3://bionty-assets/df_all__chebi__{version}__Drug.parquet
-    name: Chemical Entities of Biological Interest
-    website: https://www.ebi.ac.uk/chebi/
 DevelopmentalStage:
   hsapdv:
     human:

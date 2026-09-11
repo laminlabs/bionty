@@ -28,6 +28,7 @@ class Pathway(PublicOntology):
         source: Literal["go", "pw"] | None = None,
         version: Literal[
             # Gene Ontology
+            "2026-05-16",
             "2025-10-10",
             "2024-11-03",
             "2024-06-17",

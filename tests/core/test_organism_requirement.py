@@ -55,7 +55,8 @@ def test_infer_organism_from_ensembl_id():
     ).save()
     organism = infer_organism_from_ensembl_id("ENSRNOG00000001284")
     assert organism is not None
-    assert organism.name == "rat"
+    # Common names change across Ensembl/NCBITaxon versions; ontology_id does not.
+    assert organism.ontology_id == "NCBITaxon:10116"
 
 
 def test_pass_scientific_name_as_organism():
