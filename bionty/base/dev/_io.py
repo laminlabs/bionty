@@ -1,7 +1,7 @@
 import shutil
 from pathlib import Path
 
-import requests  # type:ignore
+import httpx
 import yaml  # type:ignore
 from lamindb_setup.core.upath import UPath
 from rich.progress import Progress
@@ -38,7 +38,7 @@ def url_download(
         url: The URL to download.
         localpath: The path to download the file to.
         block_size: Buffer size in bytes for sending a file-like message body.
-        **kwargs: Keyword arguments are passed to 'requests'
+        **kwargs: Keyword arguments are passed to `httpx.stream`
 
     Returns:
         The localpath file is downloaded to
@@ -50,42 +50,51 @@ def url_download(
         url = url.split("file://")[-1]
         shutil.copy(url, localpath)
         return localpath
+    follow_redirects = kwargs.pop("allow_redirects", True)
     try:
-        response = requests.get(url, stream=True, allow_redirects=True, **kwargs)
-        response.raise_for_status()
+        with httpx.stream(
+            "GET",
+            url,
+            follow_redirects=follow_redirects,
+            **kwargs,
+        ) as response:
+            response.raise_for_status()
 
-        total_content_length = int(response.headers.get("content-length", 0))
-        if localpath is None:
-            localpath = url.split("/")[-1]
+            total_content_length = int(response.headers.get("content-length", 0))
+            if localpath is None:
+                localpath = url.split("/")[-1]
 
-        if total_content_length > 5000000:
-            with Progress(refresh_per_second=10, transient=True) as progress:
-                task = progress.add_task(
-                    "[red]downloading...", total=total_content_length
-                )
+            if total_content_length > 5000000:
+                with Progress(refresh_per_second=10, transient=True) as progress:
+                    task = progress.add_task(
+                        "[red]downloading...", total=total_content_length
+                    )
 
+                    with open(localpath, "wb") as file:
+                        for data in response.iter_bytes(chunk_size=block_size):
+                            file.write(data)
+                            progress.update(task, advance=block_size)
+                    # force the progress bar to 100% at the end
+                    progress.update(task, completed=total_content_length, refresh=True)
+            else:
                 with open(localpath, "wb") as file:
-                    for data in response.iter_content(block_size):
+                    for data in response.iter_bytes(chunk_size=block_size):
                         file.write(data)
-                        progress.update(task, advance=block_size)
-                # force the progress bar to 100% at the end
-                progress.update(task, completed=total_content_length, refresh=True)
-        else:
-            with open(localpath, "wb") as file:
-                for data in response.iter_content(block_size):
-                    file.write(data)
 
-        return localpath
+            return localpath
 
-    except requests.exceptions.HTTPError as err:
+    except httpx.HTTPStatusError as err:
         if err.response.status_code == 404:
-            raise requests.exceptions.HTTPError(
-                f"URL not found (404): '{url}'. Check for typos."
+            raise httpx.HTTPStatusError(
+                f"URL not found (404): '{url}'. Check for typos.",
+                request=err.request,
+                response=err.response,
             ) from err
-        else:
-            raise requests.exceptions.HTTPError(
-                f"HTTP error ({err.response.status_code}): {url}."
-            ) from err
+        raise httpx.HTTPStatusError(
+            f"HTTP error ({err.response.status_code}): {url}.",
+            request=err.request,
+            response=err.response,
+        ) from err
 
 
 def s3_bionty_assets(

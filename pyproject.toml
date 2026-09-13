@@ -10,7 +10,7 @@ readme = "README.md"
 dynamic = ["version", "description"]
 dependencies = [
     "lamindb-core>=2.3a1",
-    "requests",
+    "httpx",
     "pyyaml",
 ]
 

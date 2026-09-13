@@ -1,6 +1,6 @@
 from functools import lru_cache
 
-import requests
+import httpx
 
 
 def import_bioregistry():
@@ -92,12 +92,13 @@ def _prefix_exists(prefix: str) -> bool:
 
     # Check OLS4
     try:
-        response = requests.head(
-            f"https://www.ebi.ac.uk/ols4/api/ontologies/{prefix.lower()}", timeout=5
+        response = httpx.head(
+            f"https://www.ebi.ac.uk/ols4/api/ontologies/{prefix.lower()}",
+            timeout=5,
         )
         if response.status_code < 400:
             return True
-    except requests.RequestException:
+    except httpx.RequestError:
         pass
 
     return False
@@ -106,9 +107,9 @@ def _prefix_exists(prefix: str) -> bool:
 def _url_exists(url: str) -> bool:
     """Check if a URL exists and returns a valid response."""
     try:
-        response = requests.head(url, timeout=5, allow_redirects=True)
+        response = httpx.head(url, timeout=5, follow_redirects=True)
         return response.status_code >= 200 and response.status_code < 400
-    except requests.RequestException:
+    except httpx.RequestError:
         return False
 
 
@@ -149,7 +150,7 @@ def _get_specific_version(prefix: str, version: str) -> tuple[str | None, str | 
 def _get_latest_from_ols4(prefix: str) -> tuple[str | None, str | None]:
     """Get the latest version information from OLS4."""
     try:
-        response = requests.get(
+        response = httpx.get(
             f"https://www.ebi.ac.uk/ols4/api/ontologies/{prefix.lower()}", timeout=30
         )
         if response.status_code != 200:
@@ -181,5 +182,5 @@ def _get_latest_from_ols4(prefix: str) -> tuple[str | None, str | None]:
         # No valid URLs found
         return None, None
 
-    except requests.RequestException:
+    except httpx.RequestError:
         return None, None
