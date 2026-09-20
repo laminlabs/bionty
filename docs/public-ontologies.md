@@ -1,8 +1,9 @@
 # Public biological ontologies
 
-The following guides show how to access public biological ontologies.
+Bionty makes it easy to access different public ontologies with a single API and high-availablity.
+Some of the original ontology services suffer from outages or high latency of their REST services; bionty pulls public ontologies from AWS S3 with high availability and low latency.
 
-For managing in-house ontologies, see {doc}`docs:manage-ontologies`.
+To extend public ontologies with in-house terms, see {doc}`docs:manage-ontologies`.
 
 You'll need a lamindb instance with the `bionty` schema module mounted.
 
@@ -10,7 +11,7 @@ You'll need a lamindb instance with the `bionty` schema module mounted.
 lamin init --modules bionty
 ```
 
-The guides cover the following entities.
+The guides cover the following entity types:
 
 - {doc}`docs:gene` - [Ensembl](https://ensembl.org), [NCBI Gene](https://www.ncbi.nlm.nih.gov/gene)
 - {doc}`docs:protein` - [Uniprot](https://www.uniprot.org/)
