@@ -4,7 +4,7 @@ execute_via: python
 
 # CellMarker
 
-Bionty provides access to the following {doc}`~bionty.CellMarker` ontologies:
+Bionty provides access to the following {class}`~bionty.CellMarker` ontologies:
 
 1. [CellMarker](http://xteam.xbio.top/CellMarker)
 
