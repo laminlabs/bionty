@@ -13,7 +13,8 @@ repos:
         exclude: |
           (?x)(
             docs/changelog.md|
-            entity_generation
+            entity_generation|
+            docs/(protein|organism|cell_line|cell_type|tissue|disease|phenotype|pathway|experimental_factor|developmental_stage|ethnicity)\.md
           )
   - repo: https://github.com/kynan/nbstripout
     rev: 0.6.1
