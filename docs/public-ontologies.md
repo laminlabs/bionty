@@ -1,10 +1,10 @@
 # Public biological ontologies
 
-Bionty makes it easy to access public ontologies with a single API. Bionty serves them with high availablity and low latency from AWS S3 as some of the original ontology services are hosted via unreliable web services.
+Bionty gives you a single API for public ontologies, served from AWS S3 with high availability and low latency given some of the original ontology services are unreliable.
 
 ## Modeling public ontologies
 
-In Bionty, a biological entity type (e.g., `Organism`) is a variable that takes values from a vocabulary of terms with biological meaning:
+A biological entity type (e.g., `Organism`) is a variable that takes values from a vocabulary of terms with biological meaning:
 
 1. There are different roughly equivalent vocabularies for the same entity type. For example, one can describe organism with the vocabulary of the scientific names, the vocabulary of the common names, or the vocabulary of ontology IDs for the same organism.
 2. There are different versions & sources of these vocabularies.

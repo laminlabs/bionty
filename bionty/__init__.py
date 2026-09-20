@@ -1,5 +1,6 @@
 """Manage biological ontologies [`source <https://github.com/laminlabs/bionty/blob/main/bionty/models.py>`__].
 
+- Access public ontologies through a single API, served from AWS S3 with high availability and low latency given some of the original ontology services are unreliable.
 - Create records from public ontologies using `.from_source()`.
 - Access public ontologies via `.public()` to search & bulk-create records.
 - Use hierarchical relationships among records (`.parents`).
