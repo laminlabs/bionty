@@ -1,6 +1,6 @@
 # Public biological ontologies
 
-Bionty makes it easy to access different public ontologies with a single API, served with high availablity and low latency from AWS S3.[^outages]
+Bionty makes it easy to access public ontologies with a single API. Bionty serves them with high availablity and low latency from AWS S3 as some of the original ontology services suffer from outages or high latency of their web services.
 
 ## Modeling public ontologies
 
@@ -12,12 +12,11 @@ In Bionty, a biological entity type (e.g., `Organism`) is a variable that takes 
 
 Often, vocabularies are based on a given version of a public reference ontology, but contain additional “custom” terms corresponding to "new knowledge" absent from reference ontologies. For example, new cell types or states, or new synthetic genes. If you face this situation, read how to extend public ontologies with in-house terms: {doc}`docs:manage-ontologies`.
 
-The central class {class}`~bionty.base.PublicOntology` models 3 of the 4 above-mentioned properties of biological entity types:
+The central {class}`~bionty.base.PublicOntology` class models 3 of the 4 above-mentioned properties of biological entity types:
 
 1. Every `PublicOntology` object comes with a table of terms in which each column corresponds to an alternative vocabulary for the entity.
 2. Every table is versioned & has a tracked reference source (typically, a public ontology).
 3. Most tables have a children column that allows mapping hierarchies.
-4. Adding user-defined records amounts to managing manage-ontologies through Bionty's SQL models.
 
 ## Public ontology guides
 
@@ -57,5 +56,3 @@ experimental_factor
 developmental_stage
 ethnicity
 ```
-
-[^outages]: Some of the original ontology services suffer from outages or high latency of their REST services.
