@@ -16,7 +16,7 @@
 # # {{ cookiecutter.entity }}
 
 # %% [markdown]
-# Bionty provides access to the following public {doc}`~bionty.{{ cookiecutter.entity }}` ontologies through [bionty](https://lamin.ai/docs/bionty):
+# Bionty provides access to the following public {class}`~bionty.{{ cookiecutter.entity }}` ontologies:
 #{% set sources = cookiecutter.sources.split(',') -%}{% for src in sources %}
 # {{ src }}
 {%- endfor %}

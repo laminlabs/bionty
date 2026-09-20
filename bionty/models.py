@@ -648,7 +648,7 @@ class HasSource(models.Model):
 class BioRecord(SQLRecord, HasSource, CanCurate, HasAbbr, HasSynonyms):
     """Base SQLRecord of bionty.
 
-    BioRecord inherits all methods from :class:`~lamindb.models.SQLRecord` and :meth:`~lamindb.models.CanCurate`.
+    BioRecord inherits all methods from :class:`~lamindb.models.SQLRecord` and :class:`~lamindb.models.CanCurate`.
 
     Notes:
         For more info, see tutorials:

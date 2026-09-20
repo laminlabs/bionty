@@ -1,4 +1,4 @@
-"""Basic biological entities, coupled to public ontologies [`source <https://github.com/laminlabs/bionty/blob/main/bionty/models.py>`__].
+"""Manage biological ontologies [`source <https://github.com/laminlabs/bionty/blob/main/bionty/models.py>`__].
 
 - Create records from public ontologies using `.from_source()`.
 - Access public ontologies via `.public()` to search & bulk-create records.
@@ -8,7 +8,7 @@
 
 Mount `bionty` in a new instance::
 
-   lamin init --storage <path_to_storage_location> --modules bionty
+   lamin init --modules bionty
 
 Import the package::
 
