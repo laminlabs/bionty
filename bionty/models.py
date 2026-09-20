@@ -27,12 +27,14 @@ from lamindb.errors import DoesNotExist, InvalidArgument
 from lamindb.models import (
     Artifact,
     BaseSQLRecord,
+    Branch,
     CanCurate,
     Feature,
     HasParents,
     IsLink,
     Record,
     Schema,
+    Space,
     SQLRecord,
     TracksRun,
     TracksUpdates,
@@ -103,6 +105,19 @@ class Source(SQLRecord, TracksRun, TracksUpdates):
     .. warning::
 
         Do not modify the records unless you know what you are doing!
+
+    Args:
+        entity: Entity class name with schema, e.g. `bionty.CellType`.
+        organism: Organism name, use 'all' if unknown or none applied.
+        name: Source name, short form, CURIE prefix for ontologies.
+        version: Version of the source.
+        currently_used: Whether this record is currently used.
+        description: Source full name, long form.
+        url: URL of the source file.
+        md5: Hash md5 of the source file.
+        source_website: Website of the source.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
     """
 
     class Meta(SQLRecord.Meta, TracksRun.Meta, TracksUpdates.Meta):
@@ -155,6 +170,8 @@ class Source(SQLRecord, TracksRun, TracksUpdates):
         url: str | None,
         md5: str | None,
         source_website: str | None,
+        branch: Branch | None = None,
+        space: Space | None = None,
     ): ...
 
     @overload
@@ -780,6 +797,13 @@ class Organism(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
     Notes:
         For more info, see tutorials :doc:`docs:manage-ontologies` and :doc:`docs:organism`.
 
+    Args:
+        name: Common name of the organism.
+        ontology_id: NCBI Taxon ID of the organism.
+        scientific_name: Scientific name of the organism.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
+
     Example::
 
         import bionty as bt
@@ -810,6 +834,8 @@ class Organism(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         name: str,
         ontology_id: str | None,
         scientific_name: str | None,
+        branch: Branch | None = None,
+        space: Space | None = None,
     ): ...
 
     @overload
@@ -869,6 +895,19 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
 
         We discourage validating gene symbols and to work with unique identifiers such as ENSEMBL IDs instead.
         For more details, see :doc:`docs:faq/symbol-mapping`.
+
+    Args:
+        symbol: A unique short form of gene name.
+        stable_id: Stable ID of a gene that doesn't have an ensembl_gene_id, e.g. a yeast gene.
+        ensembl_gene_id: Ensembl gene stable ID.
+        ncbi_gene_ids: Bar-separated (|) NCBI Gene IDs that correspond to this Ensembl Gene ID.
+        biotype: Type of the gene.
+        description: Description of the gene.
+        synonyms: Bar-separated (|) synonyms.
+        organism: The :class:`~bionty.Organism` of the gene.
+        source: The :class:`~bionty.Source` of the record.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
 
     Example::
 
@@ -934,6 +973,8 @@ class Gene(BioRecord, TracksRun, TracksUpdates):
         synonyms: str | None,
         organism: Organism | None,
         source: Source | None,
+        branch: Branch | None = None,
+        space: Space | None = None,
     ): ...
 
     @overload
@@ -994,6 +1035,18 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
 
         Bulk create records via :meth:`.from_values`.
 
+    Args:
+        name: Unique name of the protein.
+        uniprotkb_id: UniProt protein ID.
+        synonyms: Bar-separated (|) synonyms.
+        length: Length of the protein sequence.
+        gene_symbol: The primary gene symbol that corresponds to this protein.
+        ensembl_gene_ids: Bar-separated (|) Ensembl Gene IDs that correspond to this protein.
+        organism: The :class:`~bionty.Organism` this protein associates with.
+        source: The :class:`~bionty.Source` of the record.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
+
     Example::
 
         import bionty as bt
@@ -1049,6 +1102,8 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
         ensembl_gene_ids: str | None,
         organism: Organism | None,
         source: Source | None,
+        branch: Branch | None = None,
+        space: Space | None = None,
     ): ...
 
     @overload
@@ -1109,6 +1164,17 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
 
         Bulk create CellMarker records via :meth:`.from_values`.
 
+    Args:
+        name: Unique name of the cell marker.
+        synonyms: Bar-separated (|) synonyms.
+        gene_symbol: Gene symbol that corresponds to this cell marker.
+        ncbi_gene_id: NCBI gene id that corresponds to this cell marker.
+        uniprotkb_id: Uniprotkb id that corresponds to this cell marker.
+        organism: The :class:`~bionty.Organism` this cell marker associates with.
+        source: The :class:`~bionty.Source` of the record.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
+
     Example::
 
         import bionty as bt
@@ -1168,6 +1234,8 @@ class CellMarker(BioRecord, TracksRun, TracksUpdates):
         uniprotkb_id: str | None,
         organism: Organism | None,
         source: Source | None,
+        branch: Branch | None = None,
+        space: Space | None = None,
     ): ...
 
     @overload
@@ -1230,6 +1298,17 @@ class Tissue(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
 
         Bulk create Tissue records via :meth:`.from_values`.
 
+    Args:
+        name: Name of the record.
+        ontology_id: Ontology ID of the record.
+        abbr: A unique abbreviation.
+        synonyms: Bar-separated (|) synonyms.
+        description: Description of the record.
+        parents: A list of parent record ontology ids.
+        source: The :class:`~bionty.Source` of the record.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
+
     Example::
 
         import bionty as bt
@@ -1260,6 +1339,8 @@ class Tissue(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[Tissue],
         source: Source | None,
+        branch: Branch | None = None,
+        space: Space | None = None,
     ): ...
 
     @overload
@@ -1317,6 +1398,17 @@ class CellType(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
 
         Bulk create CellType records via :meth:`.from_values`.
 
+    Args:
+        name: Name of the record.
+        ontology_id: Ontology ID of the record.
+        abbr: A unique abbreviation.
+        synonyms: Bar-separated (|) synonyms.
+        description: Description of the record.
+        parents: A list of parent record ontology ids.
+        source: The :class:`~bionty.Source` of the record.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
+
     Example::
 
         import bionty as bt
@@ -1347,6 +1439,8 @@ class CellType(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[CellType],
         source: Source | None,
+        branch: Branch | None = None,
+        space: Space | None = None,
     ): ...
 
     @overload
@@ -1407,6 +1501,17 @@ class Disease(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
 
         For more info, see tutorials: :doc:`docs:disease`.
 
+    Args:
+        name: Name of the record.
+        ontology_id: Ontology ID of the record.
+        abbr: A unique abbreviation.
+        synonyms: Bar-separated (|) synonyms.
+        description: Description of the record.
+        parents: A list of parent record ontology ids.
+        source: The :class:`~bionty.Source` of the record.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
+
     Example::
 
         import bionty as bt
@@ -1437,6 +1542,8 @@ class Disease(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[Disease],
         source: Source | None,
+        branch: Branch | None = None,
+        space: Space | None = None,
     ): ...
 
     @overload
@@ -1495,6 +1602,17 @@ class CellLine(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
 
         Bulk create CellLine records via :meth:`.from_values`.
 
+    Args:
+        name: Name of the record.
+        ontology_id: Ontology ID of the record.
+        abbr: A unique abbreviation.
+        synonyms: Bar-separated (|) synonyms.
+        description: Description of the record.
+        parents: A list of parent record ontology ids.
+        source: The :class:`~bionty.Source` of the record.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
+
     Example::
 
         import bionty as bt
@@ -1526,6 +1644,8 @@ class CellLine(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[CellLine],
         source: Source | None,
+        branch: Branch | None = None,
+        space: Space | None = None,
     ): ...
 
     @overload
@@ -1586,6 +1706,17 @@ class Phenotype(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
 
         Bulk create Phenotype records via :meth:`.from_values`.
 
+    Args:
+        name: Name of the record.
+        ontology_id: Ontology ID of the record.
+        abbr: A unique abbreviation.
+        synonyms: Bar-separated (|) synonyms.
+        description: Description of the record.
+        parents: A list of parent record ontology ids.
+        source: The :class:`~bionty.Source` of the record.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
+
     Example::
 
         import bionty as bt
@@ -1616,6 +1747,8 @@ class Phenotype(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[Phenotype],
         source: Source | None,
+        branch: Branch | None = None,
+        space: Space | None = None,
     ): ...
 
     @overload
@@ -1674,6 +1807,17 @@ class Pathway(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
 
         Bulk create Pathway records via :meth:`.from_values`.
 
+    Args:
+        name: Name of the record.
+        ontology_id: Ontology ID of the record.
+        abbr: A unique abbreviation.
+        synonyms: Bar-separated (|) synonyms.
+        description: Description of the record.
+        parents: A list of parent record ontology ids.
+        source: The :class:`~bionty.Source` of the record.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
+
     Example::
 
         import bionty as bt
@@ -1710,6 +1854,8 @@ class Pathway(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[Pathway],
         source: Source | None,
+        branch: Branch | None = None,
+        space: Space | None = None,
     ): ...
 
     @overload
@@ -1767,6 +1913,17 @@ class ExperimentalFactor(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
 
         Bulk create ExperimentalFactor records via :meth:`.from_values`.
 
+    Args:
+        name: Name of the record.
+        ontology_id: Ontology ID of the record.
+        abbr: A unique abbreviation.
+        synonyms: Bar-separated (|) synonyms.
+        description: Description of the record.
+        parents: A list of parent record ontology ids.
+        source: The :class:`~bionty.Source` of the record.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
+
     Example::
 
         import bionty as bt
@@ -1802,6 +1959,8 @@ class ExperimentalFactor(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[ExperimentalFactor],
         source: Source | None,
+        branch: Branch | None = None,
+        space: Space | None = None,
     ): ...
 
     @overload
@@ -1860,6 +2019,17 @@ class DevelopmentalStage(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
 
         Bulk create DevelopmentalStage records via :meth:`.from_values`.
 
+    Args:
+        name: Name of the record.
+        ontology_id: Ontology ID of the record.
+        abbr: A unique abbreviation.
+        synonyms: Bar-separated (|) synonyms.
+        description: Description of the record.
+        parents: A list of parent record ontology ids.
+        source: The :class:`~bionty.Source` of the record.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
+
     Example::
 
         import bionty as bt
@@ -1894,6 +2064,8 @@ class DevelopmentalStage(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[DevelopmentalStage],
         source: Source | None,
+        branch: Branch | None = None,
+        space: Space | None = None,
     ): ...
 
     @overload
@@ -1951,6 +2123,17 @@ class Ethnicity(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
 
         Bulk create Ethnicity records via :meth:`.from_values`.
 
+    Args:
+        name: Name of the record.
+        ontology_id: Ontology ID of the record.
+        abbr: A unique abbreviation.
+        synonyms: Bar-separated (|) synonyms.
+        description: Description of the record.
+        parents: A list of parent record ontology ids.
+        source: The :class:`~bionty.Source` of the record.
+        branch: A branch. If None, uses the current branch.
+        space: A space. If None, uses the current space.
+
     Example::
 
         import bionty as bt
@@ -1985,6 +2168,8 @@ class Ethnicity(BioRecord, HasOntologyId, TracksRun, TracksUpdates):
         description: str | None,
         parents: list[Ethnicity],
         source: Source | None,
+        branch: Branch | None = None,
+        space: Space | None = None,
     ): ...
 
     @overload
