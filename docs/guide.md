@@ -6,9 +6,5 @@
 
 ./guide/concepts
 ./guide/config
-```
-
-```{toctree}
-:hidden:
-
+public-ontologies
 ```

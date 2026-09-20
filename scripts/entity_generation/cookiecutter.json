@@ -1,0 +1,18 @@
+{
+  "output": "",
+  "entity": "",
+  "entity_lower": "{{ cookiecutter.entity|lower }}",
+  "example_value": "",
+  "example_dict_value": "",
+  "alternative_field_value": "",
+  "alternative_field": "",
+  "search_value": "",
+  "search_synonyms_value": "",
+  "search_field": "",
+  "search_query": "",
+  "identifiers": "",
+  "database": "",
+  "version": "",
+  "organism": "",
+  "sources": ""
+}

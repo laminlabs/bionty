@@ -1,6 +1,7 @@
 import os
 
 import nox
+from laminci import convert_executable_md_files, upload_docs_artifact
 from laminci.nox import build_docs, install_lamindb, run, run_pre_commit
 
 nox.options.default_venv_backend = "none"
@@ -29,6 +30,11 @@ def build(session: nox.Session, group: str):
     elif group == "bionty-core":
         session.run(*f"pytest {coverage_args} ./tests/core".split())
     elif group == "bionty-docs":
-        session.run(*f"pytest -s {coverage_args} ./docs/guide".split())
+        convert_executable_md_files()
+        run(session, "python ./scripts/entity_generation/generate.py")
+        session.run(
+            *f"pytest -s {coverage_args} ./docs/guide ./tests/test_ontology_notebooks.py".split()
+        )
         run(session, "lamin init --storage ./docsbuild --modules bionty")
         build_docs(session, strict=False)
+        upload_docs_artifact()

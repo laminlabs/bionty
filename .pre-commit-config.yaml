@@ -12,7 +12,8 @@ repos:
       - id: prettier
         exclude: |
           (?x)(
-            docs/changelog.md
+            docs/changelog.md|
+            entity_generation
           )
   - repo: https://github.com/kynan/nbstripout
     rev: 0.6.1
@@ -28,12 +29,24 @@ repos:
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix, --unsafe-fixes]
+        exclude: |
+          (?x)(
+            entity_generation
+          )
       - id: ruff-format
+        exclude: |
+          (?x)(
+            entity_generation
+          )
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
       - id: detect-private-key
       - id: check-ast
+        exclude: |
+          (?x)(
+            entity_generation
+          )
       - id: end-of-file-fixer
         exclude: |
           (?x)(
@@ -50,3 +63,7 @@ repos:
       - id: mypy
         args: [--no-strict-optional, --ignore-missing-imports]
         additional_dependencies: ["types-attrs"]
+        exclude: |
+          (?x)(
+            entity_generation
+          )
