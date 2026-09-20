@@ -36,5 +36,5 @@ def build(session: nox.Session, group: str):
             *f"pytest -s {coverage_args} ./docs/guide ./tests/test_ontology_notebooks.py".split()
         )
         run(session, "lamin init --storage ./docsbuild --modules bionty")
-        build_docs(session, strict=False)
+        build_docs(session, strict=True)
         upload_docs_artifact()
