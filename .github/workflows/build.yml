@@ -48,6 +48,8 @@ jobs:
   test:
     needs: pre-filter
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.pre-filter.outputs.matrix)}}

@@ -1,7 +1,9 @@
-from cookiecutter.main import cookiecutter
-import jupytext
+import re
 import shutil
 from pathlib import Path
+
+import jupytext
+from cookiecutter.main import cookiecutter
 
 template = {
     "output": "",
@@ -235,30 +237,45 @@ entities_args = [
     ethnicity,
 ]
 
-for entity_args in entities_args:
-    cookiecutter(
-        template=str(Path(__file__).resolve().parent),
-        no_input=True,
-        overwrite_if_exists=True,
-        extra_context=entity_args,
-    )
+GENERATED_DOC_STEMS = [entity["output"] for entity in entities_args]
 
-    output_name = (
-        entity_args["output"]
-        if entity_args["output"] is not None
-        else entity_args["entity"].lower()
-    )
-    entity_folder = Path(output_name)
-    script_file = entity_folder / f"{output_name}.py"
-    notebook_file = entity_folder / f"{output_name}.ipynb"
-    output_folder = Path(__file__).resolve().parent.parent.parent / "docs"
 
-    # Convert script to notebook
-    with script_file.open("r") as file:
-        script_content = file.read()
+def _to_executable_md(script_content: str) -> str:
     notebook = jupytext.reads(script_content, fmt="py")
-    jupytext.write(notebook, notebook_file, fmt="ipynb")
+    md = jupytext.writes(notebook, fmt="md")
+    md = re.sub(r"^---\n.*?\n---\n*", "", md, count=1, flags=re.DOTALL)
+    md = re.sub(r"\n{3,}", "\n\n", md).strip()
+    md = "\n".join(line.rstrip() for line in md.splitlines()) + "\n"
+    return (
+        "---\nexecute_via: python\n---\n\n"
+        "<!-- auto-generated-docs-via-entity-generation -->\n\n"
+        + md
+    )
 
-    # Clean up output
-    shutil.move(str(notebook_file), output_folder)
-    shutil.rmtree(entity_folder)
+
+def generate_entity_docs() -> list[Path]:
+    """Render cookiecutter entity guides as committed `docs/*.md` files."""
+    template = str(Path(__file__).resolve().parent)
+    output_folder = Path(__file__).resolve().parent.parent.parent / "docs"
+    written = []
+    for entity_args in entities_args:
+        cookiecutter(
+            template=template,
+            no_input=True,
+            overwrite_if_exists=True,
+            extra_context=entity_args,
+        )
+        output_name = entity_args["output"] or entity_args["entity"].lower()
+        entity_folder = Path(output_name)
+        script_file = entity_folder / f"{output_name}.py"
+        script_content = script_file.read_text()
+        shutil.rmtree(entity_folder)
+
+        dest = output_folder / f"{output_name}.md"
+        dest.write_text(_to_executable_md(script_content))
+        written.append(dest)
+    return written
+
+
+if __name__ == "__main__":
+    generate_entity_docs()
