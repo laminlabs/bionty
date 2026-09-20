@@ -1,6 +1,6 @@
-# Access public ontologies
+# Public biological ontologies
 
-This docs section shows how to access public biological ontologies.
+The following guides show how to access public biological ontologies.
 
 For managing in-house ontologies, see {doc}`docs:manage-ontologies`.
 
@@ -25,9 +25,6 @@ The guides cover the following entities.
 - {doc}`docs:experimental_factor` - [Experimental Factor Ontology](https://www.ebi.ac.uk/ols/ontologies/efo)
 - {doc}`docs:developmental_stage` - [Human Developmental Stages](https://github.com/obophenotype/developmental-stage-ontologies/wiki/HsapDv), [Mouse Developmental Stages](https://github.com/obophenotype/developmental-stage-ontologies/wiki/MmusDv)
 - {doc}`docs:ethnicity` - [Human Ancestry Ontology](https://github.com/EBISPOT/hancestro)
-<!--
-- `Drug` - [Drug Ontology](https://bioportal.bioontology.org/ontologies/DRON), [ChEBI](https://www.ebi.ac.uk/chebi/)
-  -->
 
 You can see all supported ontology versions [here](https://github.com/laminlabs/bionty/blob/main/bionty/base/sources.yaml).
 
