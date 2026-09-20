@@ -1,6 +1,6 @@
 # Public biological ontologies
 
-Bionty makes it easy to access public ontologies with a single API. Bionty serves them with high availablity and low latency from AWS S3 as some of the original ontology services suffer from outages or high latency of their web services.
+Bionty makes it easy to access public ontologies with a single API. Bionty serves them with high availablity and low latency from AWS S3 as some of the original ontology services are hosted via unreliable web services.
 
 ## Modeling public ontologies
 
