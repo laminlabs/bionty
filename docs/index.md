@@ -8,5 +8,5 @@
 :hidden:
 
 guide
-reference
+api
 ```

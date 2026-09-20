@@ -3,7 +3,7 @@
 
 # bionty: Manage biological ontologies
 
-- Access >20 public ontologies such as Gene, Protein, CellMarker, ExperimentalFactor, CellType, CellLine, Tissue, …
+- Access >20 public ontologies (Gene, Protein, CellType, …) through a single API, served from S3 with high availability and low latency.
 - Create records from entries in public ontologies using `.from_source()`.
 - Access full underlying public ontologies via `.public()` to search & bulk-create records.
 - Create in-house ontologies by extending public ontologies using hierarchical relationships among records (`.parents`).
