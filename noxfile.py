@@ -28,7 +28,7 @@ def update_entity_docs(session: nox.Session) -> None:
     We commit the generated markdown so a clone is immediately readable —
     including by an agent — without having to run entity-generation first,
     and so git history versions each guide transparently. Same pattern as
-    lamindb's ``clidocs`` session for ``docs/cli.md``: generate, compare with
+    lamindb's `clidocs` session for `docs/cli.md`: generate, compare with
     the repo copy, and on CI commit + push if it changed.
     """
     generate = _entity_generation()
