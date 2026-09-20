@@ -4,24 +4,20 @@ execute_via: python
 
 # Gene
 
-LaminDB provides access to the following public gene ontologies through [bionty](https://docs.lamin.ai/bionty).
-
 Here we show how to access and search gene ontologies.
+
+We need a database that has the `bionty` module.
 
 ```bash
 lamin init --storage ./test-public-ontologies --modules bionty
 ```
 
-```python
-import bionty as bt
-import pandas as pd
-```
-
-## PublicOntology objects
-
 Let us create a public ontology object with the `.public()` class method, which links a default public ontology source from {class}`~docs:bionty.Source`:
 
 ```python
+import bionty as bt
+import pandas as pd
+
 public = bt.Gene.public(organism="human")
 public
 ```

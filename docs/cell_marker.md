@@ -4,22 +4,18 @@ execute_via: python
 
 # CellMarker
 
-lamindb provides access to the following public cell marker ontologies through [bionty](https://lamin.ai/docs/bionty):
+Bionty provides access to the following {doc}`~bionty.CellMarker` ontologies:
 
 1. [CellMarker](http://xteam.xbio.top/CellMarker)
 
 Here we show how to access and search cell marker ontologies to standardize new data.
 
-```python
-import bionty as bt
-import pandas as pd
-```
-
-## PublicOntology objects
-
 Let us create a public ontology object with the `.public()` class method, which chooses a default public ontology source from {class}`~docs:bionty.Source`. It's a [PublicOntology](https://lamin.ai/docs/bionty.dev.publicontology) object, which you can think about as a public registry:
 
 ```python
+import bionty as bt
+import pandas as pd
+
 public = bt.CellMarker.public(organism="human")
 public
 ```

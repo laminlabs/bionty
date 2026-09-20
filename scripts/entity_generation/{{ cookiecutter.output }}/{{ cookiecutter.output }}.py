@@ -16,25 +16,21 @@
 # # {{ cookiecutter.entity }}
 
 # %% [markdown]
-# lamindb provides access to the following public {{ cookiecutter.entity }} ontologies through [bionty](https://lamin.ai/docs/bionty):
+# Bionty provides access to the following public {doc}`~bionty.{{ cookiecutter.entity }}` ontologies through [bionty](https://lamin.ai/docs/bionty):
 #{% set sources = cookiecutter.sources.split(',') -%}{% for src in sources %}
 # {{ src }}
 {%- endfor %}
 #
 # Here we show how to access and search {{ cookiecutter.entity }} ontologies to standardize new data.
 
-# %%
-import bionty as bt
-import pandas as pd
-
-# %% [markdown]
-# ## PublicOntology objects
-
 # %% [markdown]
 # Let us create a public ontology accessor with the `.public()` method, which chooses a default public ontology source from {class}`~docs:bionty.Source`.
 # It's a [PublicOntology](https://lamin.ai/docs/bionty.dev.publicontology) object, which you can think about as a public registry:
 
 # %%
+import bionty as bt
+import pandas as pd
+
 {{ cookiecutter.entity_lower }}s = bt.{{ cookiecutter.entity }}.public(organism="{{ cookiecutter.organism }}")
 {{ cookiecutter.entity_lower }}s
 
