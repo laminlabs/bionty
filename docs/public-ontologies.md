@@ -1,6 +1,6 @@
 # Public biological ontologies
 
-Bionty gives you a single API for public ontologies, served from AWS S3 with high availability and low latency given some of the original ontology services are unreliable.
+Bionty gives you a single API for public ontologies, served from S3 with high availability and low latency given some of the original ontology services are unreliable.
 
 ## Modeling public ontologies
 
