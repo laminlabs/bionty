@@ -51,7 +51,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.pre-filter.outputs.matrix)}}
-    timeout-minutes: 12
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -81,6 +81,13 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        if: ${{ matrix.group == 'bionty-docs' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) }}
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
       - name: checkout lndocs
         uses: actions/checkout@v4

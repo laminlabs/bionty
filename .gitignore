@@ -117,3 +117,5 @@ _dynamic/
 test.ipynb
 run-tests
 registration_template.ipynb
+docs/*.ipynb
+docs/test-public-ontologies
