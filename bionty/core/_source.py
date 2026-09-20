@@ -81,18 +81,14 @@ def update_records_to_source(registry: type[SQLRecord], source: SQLRecord) -> No
 
     from bionty._source import filter_public_df_columns
 
-    entity = registry.__get_name_with_module__()
-
-    if entity != source.entity:
-        raise ValueError(f"please pass a source record of the same entity: {entity}")
-
-    # find records that need to be upgraded
+    # find records that need to be upgraded (associated with old sources)
     filter_kwargs = {
-        "source__entity": entity,
+        "source__entity": registry.__get_name_with_module__(),
         "source__name": source.name,
     }
     if hasattr(registry, "organism_id"):
         filter_kwargs["organism__name"] = source.organism
+    # exclude the records that are already associated with the new source
     records = registry.filter(**filter_kwargs).exclude(source=source).all()
     if len(records) == 0:
         return
@@ -101,7 +97,7 @@ def update_records_to_source(registry: type[SQLRecord], source: SQLRecord) -> No
     ontology_id_field = getattr(registry, "_ontology_id_field", "ontology_id")
     name_field = getattr(registry, "_name_field", "name")
 
-    # get the new data from the source
+    # get data from the new source
     public_df = filter_public_df_columns(registry, registry.public(source=source))
     public_df.rename(columns={"parents": "_parents"}, inplace=True)
     if ontology_id_field not in public_df.columns:
@@ -114,7 +110,7 @@ def update_records_to_source(registry: type[SQLRecord], source: SQLRecord) -> No
     # a dictionary of records indexed by ontology ID
     public_dict = {row[ontology_id_field]: row for _, row in public_df.iterrows()}
 
-    # filter records that have matching ontology IDs
+    # records that have the same ontology IDs in old and new sources
     records = records.filter(
         **{ontology_id_field + "__in": set(public_dict.keys())}
     ).all()
