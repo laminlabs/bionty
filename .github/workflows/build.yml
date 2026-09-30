@@ -50,6 +50,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      deployments: write
+      pull-requests: write
+      statuses: write
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.pre-filter.outputs.matrix)}}
