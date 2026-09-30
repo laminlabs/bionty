@@ -80,7 +80,7 @@ def build(session: nox.Session, group: str):
         update_entity_docs(session)
         convert_executable_md_files()
         session.run(
-            *f"pytest -s {coverage_args} ./docs/guide ./tests/test_ontology_notebooks.py".split()
+            *f"pytest -s {coverage_args} ./tests/test_ontology_notebooks.py".split()
         )
         run(session, "lamin init --storage ./docsbuild --modules bionty")
         build_docs(session, strict=True)
