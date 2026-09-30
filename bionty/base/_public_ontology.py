@@ -4,7 +4,6 @@ import importlib
 import logging
 from typing import TYPE_CHECKING, Literal
 
-import numpy as np
 from lamin_utils import logger
 from lamin_utils._lookup import Lookup
 from lamindb_setup.core import deprecated
@@ -17,6 +16,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
     from pathlib import Path
 
+    import numpy as np
     import pandas as pd
 
     from bionty.base._ontology import Ontology
@@ -635,6 +635,8 @@ class PublicOntology:
 
         if self.version == compare_to.version:
             raise ValueError("The versions of the PublicOntology objects must differ.")
+
+        import numpy as np
 
         # The 'parents' column (among potentially others) contain Numpy array values.
         # We transform them to tuples to determine the diff.
