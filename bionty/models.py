@@ -9,9 +9,9 @@
 from __future__ import annotations
 
 import functools
+import sys
 from typing import TYPE_CHECKING, overload
 
-import numpy as np
 from django.core.exceptions import FieldDoesNotExist
 from django.db import models
 from django.db.models import CASCADE, PROTECT
@@ -727,8 +727,11 @@ class BioRecord(SQLRecord, HasSource, CanCurate, HasAbbr, HasSynonyms):
         # this is a list of strings that store the ontology id
         if "parents" in kwargs:
             parents = kwargs.pop("parents")
-            # this checks if we receive a np.ndarray from pandas
-            if isinstance(parents, list | np.ndarray) and len(parents) > 0:
+            # this checks if we receive a np.ndarray from pandas; numpy is
+            # optional, and an ndarray can only exist if it's already imported
+            np = sys.modules.get("numpy")
+            is_array = np is not None and isinstance(parents, np.ndarray)
+            if (isinstance(parents, list) or is_array) and len(parents) > 0:
                 if not isinstance(parents[0], str):
                     raise ValueError(
                         "Invalid parents kwarg passed. Provide a list of ontology ids."
