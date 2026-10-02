@@ -1,7 +1,7 @@
 import re
 
-from lamin_utils import logger
 from lamindb.base.types import FieldAttr
+from lamindb_setup import logger
 
 from .models import BioRecord, Organism
 

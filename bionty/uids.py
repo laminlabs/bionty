@@ -20,7 +20,7 @@ def base62(n_char: int) -> str:
 
 
 def encode_base62(s: str) -> str:
-    from lamin_utils._base62 import encodebytes
+    from lamindb_setup.core.base62 import encodebytes
 
     return encodebytes(hashlib.md5(s.encode()).digest())
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal, NamedTuple
 
-from lamin_utils import logger
+from lamindb_setup import logger
 
 from bionty.base._public_ontology import PublicOntology
 from bionty.base._settings import settings

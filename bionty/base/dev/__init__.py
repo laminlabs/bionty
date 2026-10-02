@@ -6,4 +6,4 @@
    InspectResult
 """
 
-from lamin_utils._inspect import InspectResult
+from lamindb.models.can_curate import InspectResult

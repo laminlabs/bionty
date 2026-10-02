@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from lamin_utils import logger
+from lamindb_setup import logger
 
 from bionty._organism import create_or_get_organism_record
 

@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import importlib
 import logging
+import re
 from typing import TYPE_CHECKING, Literal
 
-from lamin_utils import logger
-from lamin_utils._lookup import Lookup
+from lamindb.models.can_curate import InspectResult, inspect, standardize, validate
+from lamindb.models.query_manager import Lookup
+from lamindb_setup import logger
 from lamindb_setup.core import deprecated
 
 from ._settings import check_datasetdir_exists, check_dynamicdir_exists, settings
@@ -18,6 +20,7 @@ if TYPE_CHECKING:
 
     import numpy as np
     import pandas as pd
+    from pandas import DataFrame, Series
 
     from bionty.base._ontology import Ontology
 
@@ -36,6 +39,117 @@ def encode_filenames(
     )
 
     return parquet_filename, ontology_filename
+
+
+def _contains(col: Series, string: str, case_sensitive: bool, fields_convert: dict):
+    if col.name not in fields_convert:
+        return [False] * len(col)
+    if fields_convert[col.name]:
+        col = col.astype(str)
+    return col.str.contains(string, case=case_sensitive)
+
+
+# apply ranking based on rules
+# `string` - escaped search query,
+def _ranks(
+    col: Series,
+    string: str,
+    case_sensitive: bool,
+    fields_convert: dict,
+):
+    if col.name not in fields_convert:
+        return [0] * len(col)
+    if fields_convert[col.name]:
+        col = col.astype(str)
+    exact_rank = col.str.fullmatch(string, case=case_sensitive) * 200
+    synonym_rank = (
+        col.str.match(rf"(?:^|.*\|){string}(?:\|.*|$)", case=case_sensitive) * 200
+    )
+    sub_rank = (
+        col.str.match(
+            rf"(?:^|.*[ \|\.,;:]){string}(?:[ \|\.,;:].*|$)", case=case_sensitive
+        )
+        * 10
+    )
+    startswith_rank = (
+        col.str.match(rf"(?:^|.*\|){string}[^ ]*(?:\|.*|$)", case=case_sensitive) * 8
+    )
+    right_rank = col.str.match(rf"(?:^|.*[ \|]){string}.*", case=case_sensitive) * 2
+    left_rank = col.str.match(rf".*{string}(?:$|[ \|\.,;:].*)", case=case_sensitive) * 2
+    contains_rank = col.str.contains(string, case=case_sensitive).astype("int32")
+    return (
+        exact_rank
+        + synonym_rank
+        + sub_rank
+        + startswith_rank
+        + right_rank
+        + left_rank
+        + contains_rank
+    )
+
+
+def search(
+    df: DataFrame,
+    string: str,
+    *,
+    field: str | list[str] | None = None,
+    limit: int | None = 20,
+    case_sensitive: bool = False,
+    _show_rank: bool = False,
+) -> DataFrame:
+    """Search a given string against a field.
+
+    Args:
+        df: The DataFrame to search in.
+        string: The input string to match against the field values.
+        field: The field or fields to search. Search all fields containing strings by default.
+        limit: Maximum amount of top results to return.
+        case_sensitive: Whether the match is case sensitive.
+
+    Returns:
+        A DataFrame of ranked search results.
+        This DataFrame contains the matched rows from the input DataFrame,
+        sorted by the match rank in descending order.
+
+    Raises:
+        KeyError: If the specified field is not found in the DataFrame.
+    """
+    import pandas as pd
+    from pandas.api.types import is_object_dtype, is_string_dtype
+
+    if len(df) == 0:
+        return df
+
+    fields_convert = {}
+    if field is None:
+        fields = df.columns.to_list()
+        for f in fields:
+            df_f = df[f]
+            if is_object_dtype(df_f):
+                fields_convert[f] = True
+            elif is_string_dtype(df_f):
+                fields_convert[f] = False
+    else:
+        fields = [field] if isinstance(field, str) else field
+        for f in fields:
+            fields_convert[f] = not is_string_dtype(df[f])
+
+    string = re.escape(string)
+
+    contains = lambda col: _contains(col, string, case_sensitive, fields_convert)
+    df_contains = df.loc[df.apply(contains).any(axis=1)]
+    if len(df_contains) == 0:
+        return df_contains
+
+    ranks = lambda col: _ranks(col, string, case_sensitive, fields_convert)
+    rank = df_contains.apply(ranks).sum(axis=1)
+
+    if _show_rank:
+        df_contains = df_contains.copy()
+        df_contains.loc[:, "rank"] = rank
+
+    df_result = df_contains.loc[rank.sort_values(ascending=False).index]
+    return df_result if limit is None else df_result.head(limit)
 
 
 class PublicOntology:
@@ -403,8 +517,6 @@ class PublicOntology:
             gene_symbols = ["A1CF", "A1BG", "FANCD1", "FANCD20"]
             public.validate(gene_symbols, field=public.symbol)
         """
-        from lamin_utils._inspect import validate
-
         if isinstance(values, str):
             values = [values]
 
@@ -456,8 +568,6 @@ class PublicOntology:
             gene_symbols = ["A1CF", "A1BG", "FANCD1", "FANCD20"]
             public.inspect(gene_symbols, field=public.symbol)
         """
-        from lamin_utils._inspect import inspect
-
         if isinstance(values, str):
             values = [values]
 
@@ -515,12 +625,10 @@ class PublicOntology:
             gene_symbols = ["A1CF", "A1BG", "FANCD1", "FANCD20"]
             standardized_symbols = public.standardize(gene_symbols, public.symbol)
         """
-        from lamin_utils._standardize import standardize as map_synonyms
-
         if isinstance(values, str):
             values = [values]
 
-        return map_synonyms(
+        return standardize(
             df=self._df,
             identifiers=values,
             field=self._get_default_field(field),
@@ -585,17 +693,20 @@ class PublicOntology:
             public = bt_base.CellType()
             public.search("gamma delta T cell")
         """
-        from lamin_utils._search import search
-
+        search_field: str | list[str] | None
         if isinstance(field, PublicOntologyField):
-            field = field.name
-        elif field is not None and not isinstance(field, str):
-            field = [f.name if isinstance(f, PublicOntologyField) else f for f in field]
+            search_field = field.name
+        elif isinstance(field, list):
+            search_field = [
+                f.name if isinstance(f, PublicOntologyField) else f for f in field
+            ]
+        else:
+            search_field = field
 
         result = search(
             df=self._df,
             string=string,
-            field=field,
+            field=search_field,
             limit=limit,
             case_sensitive=case_sensitive,
         )

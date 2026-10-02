@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from lamin_utils import logger
+from lamindb_setup import logger
 from lamindb_setup.core import deprecated
 
 from bionty.base.dev._handle_sources import LAMINDB_INSTANCE_LOADED
