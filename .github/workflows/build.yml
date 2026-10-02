@@ -51,6 +51,7 @@ jobs:
     permissions:
       contents: write
       deployments: write
+      issues: write
       pull-requests: write
       statuses: write
     strategy:
@@ -112,16 +113,25 @@ jobs:
           path: .coverage
           include-hidden-files: true
 
-      - uses: nwtgck/actions-netlify@v1.2
+      - run: rm -r ./_build/html/.doctrees # do not want to deploy with cloudflare
+        if: ${{ matrix.group == 'bionty-docs' && !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository) }}
+      - uses: cloudflare/wrangler-action@v3
+        id: cloudflare
         if: ${{ matrix.group == 'bionty-docs' && !(github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository) }}
         with:
-          publish-dir: "_build/html"
-          production-deploy: ${{ github.event_name == 'push' }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          enable-commit-comment: false
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 472bdad691b4483dea759eadb37110bd
+          command: pages deploy "_build/html" --project-name=bionty
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+      - uses: edumserrano/find-create-or-update-comment@v2
+        if: ${{ matrix.group == 'bionty-docs' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: "Deployment URL"
+          comment-author: "github-actions[bot]"
+          body: |
+            Deployment URL: ${{ steps.cloudflare.outputs.deployment-url }}
+          edit-mode: replace
 
   coverage:
     needs: test
