@@ -65,7 +65,7 @@ def entitydocs(session: nox.Session) -> None:
 @nox.parametrize("group", ["bionty-base", "bionty-core", "bionty-docs"])
 def build(session: nox.Session, group: str):
     branch = (
-        "nomoreutils" if IS_PR else "main"
+        "nomoreutils" if IS_PR else "nomoreutils"
     )  # point to "main" for PRs, to "release" for main
     install_lamindb(session, branch=branch)
     run(session, "uv pip install --system pertdb")
