@@ -15,7 +15,6 @@ from typing import TYPE_CHECKING, overload
 from django.core.exceptions import FieldDoesNotExist
 from django.db import models
 from django.db.models import CASCADE, PROTECT
-from lamin_utils import logger
 from lamindb.base.fields import (
     BigIntegerField,
     BooleanField,
@@ -39,6 +38,7 @@ from lamindb.models import (
     TracksRun,
     TracksUpdates,
 )
+from lamindb_setup import logger
 
 try:
     from lamindb.models import HasAbbr, HasSynonyms

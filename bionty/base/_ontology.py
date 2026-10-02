@@ -3,7 +3,7 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING, BinaryIO
 
-from lamin_utils import logger
+from lamindb_setup import logger
 
 if TYPE_CHECKING:
     from pathlib import Path

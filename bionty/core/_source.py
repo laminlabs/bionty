@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from lamin_utils import logger
+from lamindb_setup import logger
 
 import bionty.base as bt_base
 
