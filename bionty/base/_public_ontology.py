@@ -5,8 +5,6 @@ import logging
 import re
 from typing import TYPE_CHECKING, Literal
 
-from lamindb.models.can_curate import InspectResult, inspect, standardize, validate
-from lamindb.models.query_manager import Lookup
 from lamindb_setup import logger
 from lamindb_setup.core import deprecated
 
@@ -527,6 +525,8 @@ class PublicOntology:
             field_str = str(field)
         field_values = self._df[str(field_str)]
 
+        from lamindb.models.can_curate import validate
+
         return validate(
             identifiers=values,
             field_values=field_values,
@@ -570,6 +570,8 @@ class PublicOntology:
         """
         if isinstance(values, str):
             values = [values]
+
+        from lamindb.models.can_curate import inspect
 
         return inspect(
             df=self._df,
@@ -628,6 +630,8 @@ class PublicOntology:
         if isinstance(values, str):
             values = [values]
 
+        from lamindb.models.can_curate import standardize
+
         return standardize(
             df=self._df,
             identifiers=values,
@@ -659,6 +663,8 @@ class PublicOntology:
             lookup_dict = lookup.dict()
             lookup['CD103-positive dendritic cell']
         """
+        from lamindb.models.query_manager import Lookup
+
         return Lookup(
             df=self._df,
             field=self._get_default_field(field),
