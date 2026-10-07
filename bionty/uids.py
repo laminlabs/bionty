@@ -59,13 +59,18 @@ def source(input_id: str | None = None):
 
 def encode_uid(registry, kwargs: dict):
     """The type passed needs to be a subclass of BioRecord."""
+    from lamindb.base.utils import concrete_model
     from lamindb.models import SQLRecord
 
     if kwargs.get("uid") is not None:
         # if uid is passed, no encoding is needed
         return kwargs
     registry_name = registry.__get_name_with_module__()
-    if registry.__base__.__name__ == "BioRecord" and registry.require_organism():
+    # A proxy's immediate base is the concrete registry, not BioRecord.
+    is_biorecord = any(
+        base.__name__ == "BioRecord" for base in concrete_model(registry).__mro__
+    )
+    if is_biorecord and registry.require_organism():
         organism = kwargs.get("organism")
         if organism is None:
             organism_id = kwargs.get("organism_id")
