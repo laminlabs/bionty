@@ -22,6 +22,7 @@ from lamindb.base.fields import (
     ForeignKey,
     TextField,
 )
+from lamindb.base.utils import get_registry_name
 from lamindb.errors import DoesNotExist, InvalidArgument
 from lamindb.models import (
     Artifact,
@@ -542,7 +543,7 @@ class HasSource(models.Model):
                 return StaticReference(source)
 
         try:
-            return getattr(bt_base, cls.__name__)(
+            return getattr(bt_base, get_registry_name(cls))(
                 organism=organism, source=source_name, version=version
             )
         except InvalidParamError as e:

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from lamindb.base.utils import get_registry_name
 from lamindb_setup import logger
 
 from bionty._organism import create_or_get_organism_record
@@ -97,7 +98,7 @@ def create_link_records(
     source = records[0].source
     linkorm = registry.parents.through
     link_records = []
-    registry_name_lower = registry.__name__.lower()
+    registry_name_lower = get_registry_name(registry).lower()
 
     # Create a dictionary for quick lookups
     record_dict = {r.ontology_id: r for r in records if r.source_id == source.id}
