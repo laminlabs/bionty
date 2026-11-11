@@ -64,9 +64,9 @@ def entitydocs(session: nox.Session) -> None:
 @nox.session
 @nox.parametrize("group", ["bionty-base", "bionty-core", "bionty-docs"])
 def build(session: nox.Session, group: str):
-    # Paired with laminlabs/lamindb branch pandas-nan. Point this back to
-    # "main" before merge.
-    branch = "pandas-nan" if IS_PR else "main"
+    branch = (
+        "main" if IS_PR else "main"
+    )  # point to "main" for PRs, to "release" for main
     install_lamindb(session, branch=branch)
     run(session, "uv pip install --system pertdb")
     session.run(*"uv pip install --system -e .[dev]".split())
