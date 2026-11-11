@@ -268,6 +268,148 @@ def test_import_source_update_records():
     assert record_wo_artifact.name != record_wo_artifact_name
 
 
+def _ontology_frame(
+    ontology_ids: list[str],
+    *,
+    string_na: bool,
+    synonyms: list[str | None] | None = None,
+    description: list[str | None] | None = None,
+) -> pd.DataFrame:
+    """Build a custom CellType frame, optionally with pandas 3 string NA."""
+    import numpy as np
+
+    synonyms = ["a1|a2", None] if synonyms is None else synonyms
+    description = [None, "has a description"] if description is None else description
+    synonym_values = pd.Series(synonyms)
+    description_values = pd.Series(description)
+    if string_na:
+        dtype = pd.StringDtype(na_value=np.nan)
+        synonym_values = synonym_values.astype(dtype)
+        description_values = description_values.astype(dtype)
+    return pd.DataFrame(
+        {
+            "ontology_id": ontology_ids,
+            "name": ["cell a", "cell b"],
+            "synonyms": synonym_values,
+            "description": description_values,
+            "parents": [[], [ontology_ids[0]]],
+        }
+    )
+
+
+def _text_rows(source: bt.Source, ontology_ids: list[str]) -> list[tuple]:
+    return list(
+        bt.CellType.filter(source=source, ontology_id__in=ontology_ids)
+        .order_by("ontology_id")
+        .values_list("ontology_id", "synonyms", "description")
+    )
+
+
+def _assert_missing_text_is_null(source: bt.Source, ontology_ids: list[str]) -> None:
+    assert _text_rows(source, ontology_ids) == [
+        (ontology_ids[0], "a1|a2", None),
+        (ontology_ids[1], None, "has a description"),
+    ]
+    child = bt.CellType.get(ontology_id=ontology_ids[1], source=source)
+    parent = bt.CellType.get(ontology_id=ontology_ids[0], source=source)
+    assert parent in child.parents.filter().to_list()
+
+
+def test_missing_ontology_text_is_not_persisted_as_nan(monkeypatch):
+    # Pandas 3 string columns use NaN as the missing sentinel. Record
+    # construction has to persist that as NULL, for both the pandas 2 object
+    # dtype and the pandas 3 string dtype, without touching parent lists.
+    import lamindb as ln
+    from bionty.core._add_ontology import create_records
+
+    cases = [
+        ("pandas2", False, ["CL:9100001", "CL:9100002"]),
+        ("pandas3", True, ["CL:9200001", "CL:9200002"]),
+    ]
+    for label, string_na, ontology_ids in cases:
+        frame = _ontology_frame(ontology_ids, string_na=string_na)
+        source = bt.Source(
+            entity="bionty.CellType",
+            name=f"mycl-na-{label}",
+            organism="all",
+            version="1",
+            currently_used=False,
+            description=None,
+            url=None,
+            md5=None,
+            source_website=None,
+        ).save()
+        ln.save(create_records(bt.CellType, frame.set_index("ontology_id"), source))
+        assert _text_rows(source, ontology_ids) == [
+            (ontology_ids[0], "a1|a2", None),
+            (ontology_ids[1], None, "has a description"),
+        ]
+        # create_records drops parents; links are created by from_values below.
+        bt.CellType.filter(ontology_id__in=ontology_ids).delete(permanent=True)
+
+        # Store an object-dtype frame so the public reference can be read back,
+        # then force the pandas 3 string-NA frame into record kwargs. Parquet
+        # roundtrip on pandas 2 turns those NA values into None before bionty
+        # sees them, which hides the bug.
+        source = bt.CellType.add_source(
+            source, df=_ontology_frame(ontology_ids, string_na=False)
+        )
+        if string_na:
+            monkeypatch.setattr(
+                "bionty._source.filter_public_df_columns",
+                lambda registry, public_ontology, frame=frame: frame.copy(),
+            )
+        bt.CellType.from_values(
+            ontology_ids,
+            field=bt.CellType.ontology_id,
+            source=source,
+            mute=True,
+        ).save()
+        _assert_missing_text_is_null(source, ontology_ids)
+
+    # Source upgrade assigns dataframe values onto existing records.
+    ontology_ids = ["CL:9200001", "CL:9200002"]
+    source = bt.Source.get(name="mycl-na-pandas3", version="1")
+    artifact = ln.Artifact(
+        pd.DataFrame({"a": [1]}), key="test-missing-na-upgrade.parquet"
+    ).save()
+    artifact.cell_types.add(bt.CellType.get(ontology_id=ontology_ids[0], source=source))
+    upgraded = _ontology_frame(
+        ontology_ids,
+        string_na=True,
+        synonyms=[None, "b-syn"],
+        description=["now described", None],
+    )
+    source2 = bt.Source(
+        entity="bionty.CellType",
+        name="mycl-na-pandas3",
+        organism="all",
+        version="2",
+        currently_used=False,
+        description=None,
+        url=None,
+        md5=None,
+        source_website=None,
+    )
+    source2 = bt.CellType.add_source(
+        source2, df=_ontology_frame(ontology_ids, string_na=False)
+    )
+    monkeypatch.setattr(
+        "bionty._source.filter_public_df_columns",
+        lambda registry, public_ontology, frame=upgraded: frame.copy(),
+    )
+    bt.CellType.import_source(source=source2, update_records=True)
+    upgraded_rows = list(
+        bt.CellType.filter(ontology_id__in=ontology_ids)
+        .order_by("ontology_id")
+        .values_list("ontology_id", "synonyms", "description", "source_id")
+    )
+    assert upgraded_rows == [
+        (ontology_ids[0], None, "now described", source2.id),
+        (ontology_ids[1], "b-syn", None, source2.id),
+    ]
+
+
 def test_import_source_no_prefix_filter():
     efo_public = bt.base.ExperimentalFactor(version="3.78.0")
     efo_ontology_df = efo_public.to_pronto().to_df(include_id_prefixes=None)
