@@ -58,13 +58,18 @@ def create_records(
     organism: str | Organism | None = None,
 ) -> list[SQLRecord]:
     """Bulk-create records from a DataFrame skipping validation."""
+    from bionty._source import _none_if_missing
+
     df = df.reset_index()
     df = df.rename(columns={"definition": "description"})
 
     if "parents" in df.columns:
         df = df.drop(columns=["parents"])
 
-    df_records = df.to_dict(orient="records")
+    df_records = [
+        {key: _none_if_missing(value) for key, value in record.items()}
+        for record in df.to_dict(orient="records")
+    ]
 
     if organism is None and registry.require_organism():
         organism = source_record.organism

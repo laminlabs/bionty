@@ -79,7 +79,7 @@ def update_records_to_source(registry: type[SQLRecord], source: SQLRecord) -> No
     """
     import lamindb as ln
 
-    from bionty._source import filter_public_df_columns
+    from bionty._source import _none_if_missing, filter_public_df_columns
 
     entity = registry.__get_name_with_module__()
 
@@ -128,7 +128,11 @@ def update_records_to_source(registry: type[SQLRecord], source: SQLRecord) -> No
             ontology_id = getattr(record, ontology_id_field)
             # update all fields from the new source
             for col in public_df.columns:
-                setattr(record, col, public_dict[ontology_id].get(col))
+                setattr(
+                    record,
+                    col,
+                    _none_if_missing(public_dict[ontology_id].get(col)),
+                )
             record.source_id = source.id
             records_to_update.append(record)
 
@@ -148,7 +152,11 @@ def update_records_to_source(registry: type[SQLRecord], source: SQLRecord) -> No
         # otherwise, update the existing record
         else:
             for col in public_df.columns:
-                setattr(record, col, public_dict[ontology_id].get(col))
+                setattr(
+                    record,
+                    col,
+                    _none_if_missing(public_dict[ontology_id].get(col)),
+                )
             record.source_id = source.id
             records_to_update.append(record)
     # bulk update records with artifacts where name didn't change

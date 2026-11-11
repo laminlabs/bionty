@@ -10,9 +10,25 @@ from ._organism import (
 )
 
 if TYPE_CHECKING:
+    from typing import Any
+
     from pandas import DataFrame
 
     import bionty.base as bt_base
+
+
+def _none_if_missing(value: Any) -> Any:
+    """Map a scalar missing value to None.
+
+    Pandas 3 string dtypes use ``NaN`` as the missing sentinel. ``DataFrame.to_dict``
+    and row access then yield ``float("nan")``, which Django text fields persist as
+    the literal ``"nan"``. Non-scalars such as ``parents`` lists are unchanged.
+    """
+    import pandas as pd
+
+    if pd.api.types.is_scalar(value) and pd.isna(value):
+        return None
+    return value
 
 
 def get_source_record(
