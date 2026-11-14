@@ -75,7 +75,23 @@ class StaticReference(PublicOntology):
             source=source_record.name,
             version=source_record.version,
             organism=source_record.organism,
+            entity=source_record.entity,
+            ols_supported=False,
         )
+
+    def _fetch_sources(self) -> None:
+        self._all_sources = None
+
+    def _match_sources(self, *args, **kwargs) -> dict[str, str]:
+        record = self._source_record
+        return {
+            "name": record.name,
+            "version": record.version,
+            "organism": record.organism,
+            "url": record.url or "",
+            "description": record.description,
+            "source_website": record.source_website,
+        }
 
     def _load_df(self) -> DataFrame:
         import pandas as pd
