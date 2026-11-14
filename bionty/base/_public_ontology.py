@@ -182,7 +182,7 @@ class PublicOntology:
             )
 
         except (ValueError, KeyError) as e:
-            if LAMINDB_INSTANCE_LOADED:
+            if LAMINDB_INSTANCE_LOADED():
                 # to support StaticSource in lamindb
                 self._source_dict = {}
                 pass
