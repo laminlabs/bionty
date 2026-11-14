@@ -200,6 +200,45 @@ def test_add_custom_source():
     assert len(records) == 1
 
 
+def test_static_reference_does_not_look_up_its_source_online(monkeypatch):
+    import socket
+
+    from bionty.core import StaticReference
+
+    df = pd.DataFrame(
+        {
+            "name": ["custom cell"],
+            "definition": [None],
+            "synonyms": ["cc"],
+            "parents": [["CL:0000000"]],
+        },
+        index=pd.Index(["CUSTOMCL:0000001"], name="ontology_id"),
+    )
+    source = bt.Source(
+        entity="bionty.CellType", organism="all", name="customcl", version="1"
+    )
+    source = bt.CellType.add_source(source=source, df=df)
+
+    hosts = []
+
+    def getaddrinfo(host, *args, **kwargs):
+        hosts.append(host)
+        raise OSError("offline")
+
+    monkeypatch.setattr(socket, "getaddrinfo", getaddrinfo)
+    public = bt.CellType.public(source=source)
+    assert isinstance(public, StaticReference)
+    assert hosts == []
+    assert "Entity: bionty.CellType" in repr(public)
+    assert (public.source, public.version, public.organism) == ("customcl", "1", "all")
+    assert public.to_dataframe().index.tolist() == ["CUSTOMCL:0000001"]
+    monkeypatch.undo()
+
+    artifact = source.dataframe_artifact
+    source.delete(permanent=True)
+    artifact.delete(permanent=True)
+
+
 def test_sync_public_sources():
     source_gene_latest = bt.Source.get(
         entity="bionty.Gene", name="ensembl", organism="mouse", currently_used=True
