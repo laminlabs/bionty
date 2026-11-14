@@ -243,6 +243,28 @@ def test_sync_public_sources():
     assert source_cl_latest != source_ct_2024_05_15
 
 
+def test_source_save_demotes_currently_used_on_insert():
+    import lamindb as ln
+
+    kwargs = {"entity": "bionty.Tissue", "organism": "all", "name": "uberon"}
+    previous = bt.Source.filter(**kwargs, currently_used=True).one()
+    df = pd.DataFrame({"ontology_id": ["UBERON:9999999"], "name": ["custom tissue"]})
+    artifact = ln.Artifact.from_dataframe(df, key="uberon-2099-12-31.parquet").save()
+    # a single insert: add_source(df=...) saves again as an update, which hides the bug
+    new = bt.Source(
+        **kwargs, version="2099-12-31", currently_used=True, dataframe_artifact=artifact
+    ).save()
+    current = bt.Source.filter(**kwargs, currently_used=True)
+    assert list(current.values_list("version", flat=True)) == ["2099-12-31"]
+    assert bt.Tissue.public().version == "2099-12-31"
+
+    previous.currently_used = True
+    previous.save()
+    new.delete(permanent=True)
+    artifact.delete(permanent=True)
+    assert bt.Source.filter(**kwargs, currently_used=True).one() == previous
+
+
 def test_import_source_update_records():
     import lamindb as ln
 
