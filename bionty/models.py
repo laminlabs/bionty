@@ -191,10 +191,9 @@ class Source(SQLRecord, TracksRun, TracksUpdates):
 
     def save(self, *args, **kwargs) -> Source:
         """Save the source record."""
-        update = self.currently_used and self.pk
         super().save(*args, **kwargs)
-        # when update currently_used, set all other records of the same source as not currently used
-        if update:
+        # checked after saving so that inserts also demote, and transfers see the target row
+        if self.currently_used:
             Source.filter(
                 entity=self.entity, organism=self.organism, name=self.name
             ).exclude(id=self.id).update(currently_used=False)
