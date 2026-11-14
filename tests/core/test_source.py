@@ -265,6 +265,104 @@ def test_source_save_demotes_currently_used_on_insert():
     assert bt.Source.filter(**kwargs, currently_used=True).one() == previous
 
 
+TRANSFER_SOURCE = {
+    "entity": "bionty.CellType",
+    "organism": "all",
+    "name": "transfer-cl",
+}
+
+
+def _transfer_source(version: str, currently_used: bool) -> bt.Source:
+    return bt.Source(
+        **TRANSFER_SOURCE,
+        version=version,
+        currently_used=currently_used,
+        description=None,
+        url=None,
+        md5=None,
+        source_website=None,
+    ).save()
+
+
+def _current_transfer_versions() -> list[str]:
+    current = bt.Source.filter(**TRANSFER_SOURCE, currently_used=True)
+    return list(current.values_list("version", flat=True))
+
+
+@pytest.fixture
+def snapshot_instance(tmp_path):
+    """Snapshot the test instance as a second instance to transfer from.
+
+    The copy has the same schema, users, and branches, so only the rows a test
+    changes after taking the snapshot differ between the two instances.
+    """
+    import sqlite3
+
+    import lamindb_setup as ln_setup
+    from django.db import connections
+    from lamindb.models.sqlrecord import add_db_connection
+
+    slug = "testuser1/bionty-transfer-source"
+    owner, name = slug.split("/")
+    # `.connect()` normally writes this; the transfer reads the source instance uid from it
+    uid_file = ln_setup.settings.cache_dir / f"instance--{owner}--{name}--uid.txt"
+    snapshot_path = tmp_path / "snapshot.db"
+
+    def snapshot() -> str:
+        source = sqlite3.connect(connections["default"].settings_dict["NAME"])
+        target = sqlite3.connect(snapshot_path)
+        source.backup(target)
+        source.close()
+        target.close()
+        add_db_connection(f"sqlite:///{snapshot_path}", slug)
+        uid_file.write_text("bntytrnsfr01\nbionty", encoding="utf-8")
+        return slug
+
+    yield snapshot
+
+    if slug in connections:
+        connections[slug].close()
+        del connections[slug]
+        del connections.settings[slug]
+    uid_file.unlink(missing_ok=True)
+    bt.CellType.filter(source__name=TRANSFER_SOURCE["name"]).delete(permanent=True)
+    bt.Source.filter(**TRANSFER_SOURCE).delete(permanent=True)
+
+
+def test_transfer_with_new_source_demotes_local_current_source(snapshot_instance):
+    # the record's source isn't on the target yet, so the transfer inserts it
+    local = _transfer_source("1", currently_used=False)
+    remote = _transfer_source("2", currently_used=True)
+    record = bt.CellType(
+        name="transferred cell", ontology_id="CL:9300001", source=remote
+    ).save()
+    instance = snapshot_instance()
+    record.delete(permanent=True)
+    remote.delete(permanent=True)
+    local.currently_used = True
+    local.save()
+    assert _current_transfer_versions() == ["1"]
+
+    bt.CellType.connect(instance).get(record.uid).save()
+
+    assert _current_transfer_versions() == ["2"]
+    assert bt.CellType.get(record.uid).source.version == "2"
+
+
+def test_transfer_of_existing_source_keeps_local_current_source(snapshot_instance):
+    # the source is current on the other instance, but already on the target as not current
+    local = _transfer_source("1", currently_used=False)
+    remote = _transfer_source("2", currently_used=True)
+    instance = snapshot_instance()
+    local.currently_used = True
+    local.save()
+    assert _current_transfer_versions() == ["1"]
+
+    bt.Source.connect(instance).get(remote.uid).save()
+
+    assert _current_transfer_versions() == ["1"]
+
+
 def test_import_source_update_records():
     import lamindb as ln
 
