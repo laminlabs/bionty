@@ -86,6 +86,19 @@ def test_add_source():
     assert all(public_df.index.str.startswith("OBA:"))  # restrict_to_prefix
 
 
+def test_display_currently_used_sources_detects_instance(caplog):
+    from lamindb_setup import logger
+
+    # the lamindb-setup logger doesn't propagate to the root logger
+    logger.addHandler(caplog.handler)
+    try:
+        bt.base.display_currently_used_sources()
+    finally:
+        logger.removeHandler(caplog.handler)
+    # the test instance is resolved through a dev-dir marker
+    assert "You have a LaminDB instance loaded" in caplog.text
+
+
 def test_base_gene_register_source_in_lamindb():
     bt.Organism.filter().delete(permanent=True)
     assert not bt.Source.filter(organism="rabbit").exists()
