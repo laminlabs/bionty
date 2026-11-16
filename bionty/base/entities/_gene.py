@@ -96,7 +96,7 @@ class Gene(PublicOntology):
     # TODO: generalize this to all sources
     def register_source_in_lamindb(self):
         """Register the source in lamindb."""
-        if not self._df.empty and LAMINDB_INSTANCE_LOADED:
+        if not self._df.empty and LAMINDB_INSTANCE_LOADED():
             import bionty as bt
 
             # Register the source in lamindb

@@ -1,10 +1,17 @@
 import bionty.base as bt_base
+import lamindb_setup as ln_setup
 import pytest
 
 
 def test_unavailable_sources():
     with pytest.raises(ValueError):
         bt_base.CellType(source="random")
+
+
+@pytest.mark.skipif(ln_setup.settings.is_configured, reason="needs no lamindb instance")
+def test_unavailable_source_raises_without_instance():
+    with pytest.raises(ValueError, match="No source is available"):
+        bt_base.CellMarker(source="random")
 
 
 def test_diff_successful():

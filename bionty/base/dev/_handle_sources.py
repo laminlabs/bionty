@@ -10,13 +10,14 @@ if TYPE_CHECKING:
 from bionty.base.dev._io import load_yaml
 
 
-def LAMINDB_INSTANCE_LOADED():
-    is_loaded = False
-    lnenv_filepath = Path.home() / ".lamin/current_instance.env"
-    if lnenv_filepath.exists():
-        with open(lnenv_filepath.as_posix()) as f:
-            is_loaded = "bionty" in f.read().split("schema_str=")[-1]
-    return is_loaded
+def LAMINDB_INSTANCE_LOADED() -> bool:
+    import lamindb_setup as ln_setup
+
+    # without an instance, the placeholder instance still lists installed modules
+    return (
+        ln_setup.settings.is_configured
+        and "bionty" in ln_setup.settings.instance.modules
+    )
 
 
 def records_from_sources_yaml(
