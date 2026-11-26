@@ -16,6 +16,8 @@ def create_or_get_organism_record(
     organism: str | Organism | None,
     registry: type[BioRecord],
     field: FieldAttr | None = None,
+    *,
+    save: bool = True,
 ) -> Organism | None:
     """Create or get an organism record.
 
@@ -41,9 +43,10 @@ def create_or_get_organism_record(
             organism_record = organism
         elif isinstance(organism, str):
             # not error if organism isn't required, for instance passing organism="all" for CellLine
-            organism_record = get_or_create_organism_from_name(
-                name=organism, error=required
+            resolve = (
+                get_or_create_organism_from_name if save else resolve_organism_from_name
             )
+            organism_record = resolve(name=organism, error=required)
 
     return organism_record
 
@@ -117,42 +120,59 @@ def get_or_create_organism_from_ontology_id(
 
 def get_or_create_organism_from_name(
     name: str, using_key: str | None = None, error: bool = True
-) -> Organism:
+) -> Organism | None:
     """Create organism record if not exists."""
-    from lamindb.errors import DoesNotExist
+    organism_record = resolve_organism_from_name(name, using_key=using_key, error=error)
+    if organism_record is not None and organism_record._state.adding:
+        using_key = None if using_key == "default" else using_key
+        return _save_or_get_organism(organism_record, using_key=using_key)
+    return organism_record
 
+
+def resolve_organism_from_name(
+    name: str, using_key: str | None = None, error: bool = True
+) -> Organism | None:
+    """Find an existing organism or build one from reference data without saving it."""
     import bionty as bt
 
     using_key = None if using_key == "default" else using_key
-
-    organism_record = bt.Organism.connect(using_key).filter(name=name).one_or_none()
+    organisms = bt.Organism.connect(using_key)
+    organism_record = (
+        organisms.filter(name=name).one_or_none()
+        or organisms.filter(scientific_name=name).one_or_none()
+        or organisms.filter(scientific_name__iexact=name).first()
+        or organisms.filter(name__iexact=name).first()
+    )
     if organism_record is None:
-        # try to match organism by scientific name
-        organism_record = (
-            bt.Organism.connect(using_key).filter(scientific_name=name).one_or_none()
+        organism_record = _from_source_organism(name=name, mute=True)
+        if organism_record is None and name != name.lower():
+            organism_record = _from_source_organism(name=name.lower(), mute=True)
+    if organism_record is None:
+        source = bt.Source.filter(name="ncbitaxon").first()
+        scientific_name = name[0].upper() + name[1:] if name else name
+        organism_record = _from_source_organism(
+            scientific_name=scientific_name, source=source, mute=True
         )
-        if organism_record is None:
-            try:
-                organism_record = bt.Organism.from_source(name=name)
-                organism_record = _save_or_get_organism(
-                    organism_record, using_key=using_key
-                )
-            except DoesNotExist:
-                try:
-                    source = bt.Source.filter(name="ncbitaxon").first()
-                    organism_record = bt.Organism.from_source(
-                        scientific_name=name, source=source
-                    )
-                    organism_record = _save_or_get_organism(
-                        organism_record, using_key=using_key
-                    )
-                except DoesNotExist:
-                    if error:
-                        raise OrganismNotSet(
-                            f"Organism {name} can't be created from the source, "
-                            "check your spelling or create it manually."
-                        ) from None
-                    # else: organism="all" for CellLine should pass
+        if organism_record is None and source is not None:
+            organism_record = _from_source_organism(
+                name=name.lower(), source=source, mute=True
+            )
+    if (
+        organism_record is not None
+        and organism_record._state.adding
+        and organism_record.ontology_id
+    ):
+        # A reference alias can have the same taxon ID as a differently named DB row.
+        existing = organisms.filter(
+            ontology_id=organism_record.ontology_id
+        ).one_or_none()
+        if existing is not None:
+            return existing
+    if organism_record is None and error:
+        raise OrganismNotSet(
+            f"Organism {name} can't be created from the source, "
+            "check your spelling or create it manually."
+        )
     return organism_record
 
 

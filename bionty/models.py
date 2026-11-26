@@ -13,7 +13,7 @@ import sys
 from typing import TYPE_CHECKING, overload
 
 from django.core.exceptions import FieldDoesNotExist
-from django.db import models
+from django.db import models, transaction
 from django.db.models import CASCADE, PROTECT
 from lamindb.base.fields import (
     BigIntegerField,
@@ -22,7 +22,7 @@ from lamindb.base.fields import (
     ForeignKey,
     TextField,
 )
-from lamindb.base.utils import get_registry_name
+from lamindb.base.utils import concrete_model, get_registry_name
 from lamindb.errors import DoesNotExist, InvalidArgument
 from lamindb.models import (
     Artifact,
@@ -623,32 +623,143 @@ class HasSource(models.Model):
             else:
                 key = next(iter(kv))
                 value = kwargs.pop(key)
-                existing_records = cls.filter(**{key: value})
-                if existing_records.exists():
-                    results = existing_records.to_list()
-                else:
+                field = getattr(cls, key)
+                passed_organism = kwargs.get("organism")
+                passed_source = kwargs.get("source")
+
+                from ._organism import (
+                    OrganismNotSet,
+                    _save_or_get_organism,
+                    create_or_get_organism_record,
+                    resolve_organism_from_name,
+                )
+                from ._source import (
+                    find_source_for_field_value,
+                    source_matches_organism,
+                )
+
+                organism_record = None
+                requires_organism = cls.require_organism()
+                source_organism = passed_source.organism if passed_source else None
+                if source_organism == "all":
+                    source_organism = None
+                if passed_organism is not None:
+                    if (
+                        requires_organism
+                        and source_organism
+                        and isinstance(passed_organism, str)
+                    ):
+                        organism_record = resolve_organism_from_name(
+                            passed_organism, error=False
+                        )
+                    else:
+                        organism_record = create_or_get_organism_record(
+                            organism=passed_organism, registry=cls, save=False
+                        )
+                    if (
+                        requires_organism
+                        and source_organism
+                        and (
+                            organism_record is None
+                            or not source_matches_organism(
+                                passed_source, organism_record
+                            )
+                        )
+                    ):
+                        organism_name = (
+                            passed_organism.name
+                            if isinstance(passed_organism, Organism)
+                            else passed_organism
+                        )
+                        raise InvalidArgument(
+                            f"Passed organism '{organism_name}' does not match "
+                            f"source organism '{source_organism}'."
+                        )
+                elif passed_source is not None and requires_organism:
+                    organism_record = create_or_get_organism_record(
+                        organism=source_organism, registry=cls, save=False
+                    )
+                elif cls.require_organism(field=field):
+                    organism_record = create_or_get_organism_record(
+                        organism=None, registry=cls, field=field, save=False
+                    )
+                    if organism_record is None:
+                        raise OrganismNotSet(
+                            f"`organism` is required to get Source record for {cls.__name__}!"
+                        )
+
+                existing_filter = {key: value}
+                if organism_record is not None and requires_organism:
+                    existing_filter["organism"] = organism_record
+                if passed_source is not None:
+                    existing_filter["source"] = passed_source
+
+                results = []
+                if (
+                    not requires_organism
+                    or organism_record is None
+                    or not organism_record._state.adding
+                ):
+                    results = cls.filter(**existing_filter).to_list()
+
+                if not results:
+                    import pandas as pd
                     from lamindb.models._from_values import (
                         create_records_from_source,
                         get_organism_record_from_field,
                     )
 
-                    field = getattr(cls, key)
+                    if organism_record is None and passed_organism is None:
+                        organism_record = get_organism_record_from_field(
+                            field, None, values=[value]
+                        )
 
-                    # get the organism record
-                    organism_record = get_organism_record_from_field(
-                        field, kwargs.get("organism"), values=[value]
+                    infer_source = (
+                        organism_record is None
+                        and passed_organism is None
+                        and passed_source is None
+                        and concrete_model(cls).__get_name_with_module__()
+                        == "bionty.Protein"
+                        and key == "uniprotkb_id"
                     )
-                    if organism_record is not None:
-                        kwargs["organism"] = organism_record
+                    if infer_source:
+                        matched_source = find_source_for_field_value(
+                            cls, field_name=key, value=value
+                        )
+                        if matched_source is not None:
+                            organism_record = create_or_get_organism_record(
+                                organism=(
+                                    matched_source.organism
+                                    if matched_source.organism != "all"
+                                    else None
+                                ),
+                                registry=cls,
+                                save=False,
+                            )
+                            kwargs["source"] = matched_source
 
-                    import pandas as pd
+                    if not infer_source or kwargs.get("source") is not None:
+                        if organism_record is not None:
+                            kwargs["organism"] = organism_record
 
-                    results, _ = create_records_from_source(
-                        pd.Index([value]),
-                        field=field,
-                        standardize=False,
-                        **kwargs,
-                    )
+                        results, _ = create_records_from_source(
+                            pd.Index([value]),
+                            field=field,
+                            standardize=False,
+                            mute=mute,
+                            **kwargs,
+                        )
+                        if (
+                            results
+                            and organism_record is not None
+                            and organism_record._state.adding
+                        ):
+                            # A candidate source can change before record construction.
+                            with transaction.atomic():
+                                organism_record = _save_or_get_organism(organism_record)
+                                if requires_organism:
+                                    for record in results:
+                                        record.organism = organism_record
                 error_msg = f"{key}='{value}'"
 
         if len(results) == 1:
@@ -1158,7 +1269,7 @@ class Protein(BioRecord, TracksRun, TracksUpdates):
             name: Protein name (e.g. "Synaptotagmin-15B")
             uniprotkb_id: UniProt protein ID (e.g. "Q8N6N3")
             gene_symbol: Gene symbol (e.g. "SYT15B")
-            organism: Organism name or Organism record
+            organism: Organism name or Organism record. Not required when passing `uniprotkb_id`.
             {doc_from_source}
 
         Returns:

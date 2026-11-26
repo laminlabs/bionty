@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from lamindb.base.utils import concrete_model
 from lamindb.models import SQLRecord
 
 from ._organism import (
@@ -95,6 +96,94 @@ def get_source_record(
             # return source with organism="all"
             return sources_all.first()
         return sources.first()
+
+
+def source_matches_organism(source: SQLRecord, organism: SQLRecord) -> bool:
+    """Return True if a Source record's organism matches an Organism record."""
+    source_organism = getattr(source, "organism", None)
+    if not source_organism or source_organism == "all":
+        return True
+    src_org_lower = source_organism.lower()
+    org_name = getattr(organism, "name", None)
+    if org_name and org_name.lower() == src_org_lower:
+        return True
+    sci_name = getattr(organism, "scientific_name", None)
+    if sci_name and sci_name.lower() == src_org_lower:
+        return True
+    return False
+
+
+def _source_contains_field_value(
+    registry: type[SQLRecord],
+    source_record: SQLRecord,
+    field_name: str,
+    value: Any,
+) -> bool:
+    """Return True if `source_record` contains `value` in `field_name`."""
+    try:
+        public_ontology = registry.public(source=source_record)
+    except Exception:
+        return False
+    df = public_ontology.to_dataframe()
+    if df.empty:
+        return False
+    if field_name in df.columns:
+        return bool((df[field_name] == value).any())
+    if df.index.name == field_name:
+        return value in df.index
+    return False
+
+
+def find_source_for_field_value(
+    registry: type[SQLRecord],
+    field_name: str,
+    value: Any,
+) -> SQLRecord | None:
+    """Search active Source records for `registry` to locate a unique field value.
+
+    Checks `currently_used=True` sources first (ordered by `id`, prioritizing
+    `bionty.settings.organism` if configured as a lookup hint), then falls back
+    to the first non-`currently_used` source for any organism that has no
+    `currently_used=True` source. Does not create `Organism` records while
+    scanning.
+    """
+    from .core._settings import settings
+    from .models import Source
+
+    if not value:
+        return None
+
+    entity_name = concrete_model(registry).__get_name_with_module__()
+    current_sources = list(
+        Source.filter(entity=entity_name, currently_used=True).order_by("id")
+    )
+    covered_organisms = {s.organism for s in current_sources}
+    fallback_sources = []
+    seen_fallback: set[str] = set()
+    for src in Source.filter(entity=entity_name, currently_used=False).order_by("id"):
+        if src.organism not in covered_organisms and src.organism not in seen_fallback:
+            fallback_sources.append(src)
+            seen_fallback.add(src.organism)
+
+    candidate_sources = current_sources + fallback_sources
+    if not candidate_sources:
+        return None
+
+    # Use settings.organism as a fast-path ordering hint without restricting the search.
+    configured_organism = settings.organism
+    if configured_organism is not None:
+        preferred = [
+            s
+            for s in candidate_sources
+            if source_matches_organism(s, configured_organism)
+        ]
+        others = [s for s in candidate_sources if s not in preferred]
+        candidate_sources = preferred + others
+
+    for source_record in candidate_sources:
+        if _source_contains_field_value(registry, source_record, field_name, value):
+            return source_record
+    return None
 
 
 def filter_public_df_columns(
